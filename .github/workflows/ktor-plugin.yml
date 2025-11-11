@@ -65,6 +65,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.repository == 'storyblok/kotlin-sdk' && github.ref == 'refs/heads/main'
     steps:
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
       - name: Check binary compatibility
         run: ./gradlew checkLegacyAbi || { exit_code=$?; printf "*** This commit changes the public API. If this change is intentional, run './gradlew apiDump' and commit the new API files. ***"; exit $exit_code; }
 
@@ -73,8 +75,10 @@ jobs:
     runs-on: ubuntu-latest
     if: github.repository != 'storyblok/kotlin-sdk' || github.ref != 'refs/heads/main'
     steps:
-    - name: Api File Update
-      run: ./gradlew updateLegacyAbi
-    - run: git status
-    - uses: stefanzweifel/git-auto-commit-action@v6
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+      - name: Api File Update
+        run: ./gradlew updateLegacyAbi
+      - run: git status
+      - uses: stefanzweifel/git-auto-commit-action@v6
 
