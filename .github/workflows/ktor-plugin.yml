@@ -1,4 +1,4 @@
-name: Java CI with Gradle
+name: Ktor plugin
 
 on:
   push:
@@ -23,7 +23,7 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  test:
     strategy:
       matrix:
         include:
@@ -39,19 +39,42 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
     - name: Validate Gradle Wrapper
       uses: gradle/actions/wrapper-validation@v4
+
     - uses: actions/cache@v4
       with:
         path: |
           ~/.konan
         key: ${{ runner.os }}-${{ hashFiles('**/.lock') }}
+
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
         java-version: '17'
         distribution: 'temurin'
-    - name: Build with Gradle
+
+    - name: Run unit tests
       uses: gradle/gradle-build-action@ce999babab2de1c4b649dc15f0ee67e6246c994f
       with:
         arguments: ${{ matrix.target }}
+
+  api-check:
+    name: Check API compatibility
+    runs-on: ubuntu-latest
+    if: github.repository == 'storyblok/kotlin-sdk' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Check binary compatibility
+        run: ./gradlew apiCheck || { exit_code=$?; printf "*** This commit changes the public API. If this change is intentional, run './gradlew apiDump' and commit the new API files. ***"; exit $exit_code; }
+
+  api-dump:
+    name: Update API dump
+    runs-on: ubuntu-latest
+    if: github.repository != 'storyblok/kotlin-sdk' || github.ref != 'refs/heads/main'
+    steps:
+    - name: Api File Update
+      run: ./gradlew apiDump
+    - run: git status
+    - uses: stefanzweifel/git-auto-commit-action@v6
+
