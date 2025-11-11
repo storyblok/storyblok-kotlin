@@ -3,9 +3,17 @@ name: Java CI with Gradle
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - 'ktor-plugin/**'
   pull_request:
     branches: [ "main" ]
+    paths:
+      - 'ktor-plugin/**'
   workflow_call:
+concurrency:
+  # Limit concurrency to 1 for PRs. 'main' concurrency isn't limited.
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -17,7 +25,7 @@ jobs:
         include:
 #          - target: iosSimulatorArm64Test
 #            os: macos-latest
-          - target: jvmTest
+          - target: :ktor-client:jvmTest
             os: ubuntu-latest
 #          - target: linuxX64Test
 #            os: ubuntu-latest
