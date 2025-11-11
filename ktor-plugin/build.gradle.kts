@@ -12,6 +12,10 @@ group = "com.storyblok"
 version = "0.1.0"
 
 kotlin {
+    @OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
+    abiValidation {
+        enabled = true
+    }
     jvm()
 //    androidLibrary {
 //        namespace = "com.storyblok.ktor-client-storyblok"

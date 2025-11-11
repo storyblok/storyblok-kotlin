@@ -66,7 +66,7 @@ jobs:
     if: github.repository == 'storyblok/kotlin-sdk' && github.ref == 'refs/heads/main'
     steps:
       - name: Check binary compatibility
-        run: ./gradlew apiCheck || { exit_code=$?; printf "*** This commit changes the public API. If this change is intentional, run './gradlew apiDump' and commit the new API files. ***"; exit $exit_code; }
+        run: ./gradlew checkLegacyAbi || { exit_code=$?; printf "*** This commit changes the public API. If this change is intentional, run './gradlew apiDump' and commit the new API files. ***"; exit $exit_code; }
 
   api-dump:
     name: Update API dump
@@ -74,7 +74,7 @@ jobs:
     if: github.repository != 'storyblok/kotlin-sdk' || github.ref != 'refs/heads/main'
     steps:
     - name: Api File Update
-      run: ./gradlew apiDump
+      run: ./gradlew updateLegacyAbi
     - run: git status
     - uses: stefanzweifel/git-auto-commit-action@v6
 
