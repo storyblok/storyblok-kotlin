@@ -29,7 +29,7 @@ jobs:
         include:
 #          - target: iosSimulatorArm64Test
 #            os: macos-latest
-          - target: :ktor-client:jvmTest
+          - target: :ktor-plugin:jvmTest
             os: ubuntu-latest
 #          - target: linuxX64Test
 #            os: ubuntu-latest
