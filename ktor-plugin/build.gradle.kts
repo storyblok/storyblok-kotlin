@@ -36,6 +36,11 @@ kotlin {
         enabled = true
     }
     jvm()
+    js {
+        browser()
+        nodejs()
+    }
+
 //    androidLibrary {
 //        namespace = "com.storyblok.ktor-client-storyblok"
 //        compileSdk = libs.versions.android.compileSdk.get().toInt()
