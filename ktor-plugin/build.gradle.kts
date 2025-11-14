@@ -8,8 +8,26 @@ plugins {
     alias(libs.plugins.dokka)
 }
 
-group = "com.storyblok"
-version = "0.1.0"
+dokka {
+    moduleName.set("Storyblok Ktor Plugin")
+    dokkaPublications.html {
+        suppressInheritedMembers.set(true)
+        failOnWarning.set(true)
+    }
+    dokkaSourceSets.configureEach {
+        sourceLink {
+            localDirectory.set(file("src/main/kotlin"))
+            remoteUrl("https://github.com/storyblok/kotlin-sdk")
+            remoteLineSuffix.set("#L")
+        }
+        externalDocumentationLinks.register("ktor") {
+            url("https://api.ktor.io/")
+        }
+    }
+    pluginsConfiguration.html {
+        customAssets.from("../.idea/icon.svg")
+    }
+}
 
 kotlin {
     explicitApi()
