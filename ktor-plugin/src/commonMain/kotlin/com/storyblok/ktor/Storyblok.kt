@@ -8,6 +8,7 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.util.logging.KtorSimpleLogger
+import io.ktor.util.logging.Logger
 import kotlinx.coroutines.delay
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
@@ -18,29 +19,29 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource
 
-private val LOGGER = KtorSimpleLogger("com.storyblok.ktor.Storyblok")
+private val LOGGER: Logger = KtorSimpleLogger("com.storyblok.ktor.Storyblok")
 
 /**
  * The API server location, the base URL for the Content Delivery API depends on the server location of the space.
  *
  * Learn more in the [Content Delivery API Reference](https://www.storyblok.com/docs/api/content-delivery/v2)
  */
-sealed class Region(internal val url: Url) {
-    constructor(url: String) : this(Url(url))
+public sealed class Region(internal val url: Url) {
+    private constructor(url: String) : this(Url(url))
     /** European Union API server location. */
-    object EU : Region("https://api.storyblok.com/v2/")
+    public object EU : Region("https://api.storyblok.com/v2/")
     /** United States API server location. */
-    object USA: Region("https://api-us.storyblok.com/v2/")
+    public object USA: Region("https://api-us.storyblok.com/v2/")
     /** Canada API server location. */
-    object CAN: Region("https://api-ca.storyblok.com/v2/")
+    public object CAN: Region("https://api-ca.storyblok.com/v2/")
     /** Australia API server location. */
-    object AUS: Region("https://api-ap.storyblok.com/v2/")
+    public object AUS: Region("https://api-ap.storyblok.com/v2/")
     /** China API server location. */
-    object CHN: Region("https://app.storyblokchina.cn")
+    public object CHN: Region("https://app.storyblokchina.cn")
     /** Custom API server location
      * @param url the custom base URL
      * */
-    class Custom(url: String): Region(url)
+    public class Custom(url: String): Region(url)
 }
 
 /**
@@ -48,18 +49,18 @@ sealed class Region(internal val url: Url) {
  *
  * Resources have two potential versions: draft (unpublished) or published.
  */
-enum class Version(internal val value: String) {
+public enum class Version(internal val value: String) {
     /** This resource will only appear in preview versions of your website. */
     Draft("draft"),
     /** This resource will appear live on your website. */
     Published("published")
 }
 
-class StoryblokConfig {
+public class StoryblokConfig {
     /** API requests must be authenticated by providing an API access token. */
-    lateinit var accessToken: String
+    public lateinit var accessToken: String
     /** The API server location. */
-    var region: Region = Region.EU
+    public var region: Region = Region.EU
     /**
      * Default language to retrieve resources.
      *
@@ -67,7 +68,7 @@ class StoryblokConfig {
      *
      * Note that the language code needs to be provided with underscores, even if it is defined with hyphens. E.g., es_co instead of es-co.
      * */
-    var language: String? = null
+    public var language: String? = null
     /**
      * Default fallback language to handle untranslated fields.
      *
@@ -75,11 +76,11 @@ class StoryblokConfig {
      *
      * Note that the language code needs to be provided with underscores, even if it is defined with hyphens. E.g., es_co instead of es-co.
      * */
-    var fallbackLanguage: String? = null
+    public var fallbackLanguage: String? = null
     /**
      * Default version to retrieve resources.
      * */
-    var version: Version = Version.Published
+    public var version: Version = Version.Published
 
     /** Cached version Unix timestamp (see [Cache Invalidation](https://www.storyblok.com/docs/api/content-delivery/v2/getting-started/cache-invalidation))
      *
@@ -87,7 +88,7 @@ class StoryblokConfig {
      *
      * Learn more in [How stories are cached in the Content Delivery API](https://www.storyblok.com/faq/how-stories-are-cached-content-delivery-api#how-the-js-client-uses-the-cv-param)
      * */
-    var cv: String? = null
+    public var cv: String? = null
 
     /**
      * Sets the maximum number of API requests allowed per second.
@@ -95,7 +96,7 @@ class StoryblokConfig {
      * You can lower the value if necessary to avoid exceeding the
      * [rate limits](https://www.storyblok.com/docs/api/content-delivery/v2/getting-started/rate-limit).
      */
-    var requestsPerSecond = 1000
+    public var requestsPerSecond: Int = 1000
 
     internal var timeSource: TimeSource.WithComparableMarks = TimeSource.Monotonic
 }
@@ -118,7 +119,7 @@ class StoryblokConfig {
  * The plugin ensures request adherence to the API specifications while reducing the complexity of manual configuration.
  */
 @OptIn(ExperimentalAtomicApi::class)
-val HttpClientConfig<*>.Storyblok get(): ClientPlugin<StoryblokConfig> {
+public val HttpClientConfig<*>.Storyblok: ClientPlugin<StoryblokConfig> get() {
 
     lateinit var config: StoryblokConfig
 
