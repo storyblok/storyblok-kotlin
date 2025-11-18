@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "kotlin-sdk"
+rootProject.name = "storyblok-kotlin"
 include(":ktor-plugin")

@@ -17,7 +17,7 @@ dokka {
     dokkaSourceSets.configureEach {
         sourceLink {
             localDirectory.set(file("src/main/kotlin"))
-            remoteUrl("https://github.com/storyblok/kotlin-sdk")
+            remoteUrl("https://github.com/storyblok/storyblok-kotlin")
             remoteLineSuffix.set("#L")
         }
         externalDocumentationLinks.register("ktor") {

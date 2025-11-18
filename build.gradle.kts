@@ -15,7 +15,7 @@ dependencies {
 }
 
 dokka {
-    moduleName.set("Storyblok Kotlin SDK")
+    moduleName.set("Storyblok Kotlin")
     dokkaPublications.html {
         includes.from("README.md")
     }
