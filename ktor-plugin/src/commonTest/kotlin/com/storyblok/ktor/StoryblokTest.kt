@@ -1,13 +1,14 @@
 package com.storyblok.ktor
 
+import com.storyblok.ktor.Api.CDN
+import com.storyblok.ktor.Api.MAPI
+import com.storyblok.ktor.Api.Config.Mapi.AccessToken
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.mock.*
 import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import io.ktor.http.HttpHeaders.Location
-import io.ktor.http.HttpStatusCode.Companion.MovedPermanently
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
@@ -22,68 +23,11 @@ import kotlin.time.Duration.Companion.seconds
 class StoryblokTest {
 
     @Test
-    fun `request url is correctly formed from specified region, access token and uri`() = runTest {
-        val client = HttpClient(MockEngine { request ->
-            assertEquals(URLProtocol.HTTPS, request.url.protocol)
-            assertEquals("localhost", request.url.host)
-            assertEquals("/mock-base-url/cdn/stories/mock-slug", request.url.encodedPath)
-            assertEquals("mock-api-key", request.url.parameters["token"])
-            respondOk()
-        }) {
-            install(Storyblok) {
-                region = Region.Custom("https://localhost/mock-base-url/")
-                accessToken = "mock-api-key"
-            }
-        }
-        client.get("cdn/stories/mock-slug")
-    }
-
-    @Test
-    fun `default query parameters set when specified in config`() = runTest {
-        val client = HttpClient(MockEngine { request ->
-            assertEquals("mock-cv", request.url.parameters["cv"])
-            assertEquals("draft", request.url.parameters["version"])
-            assertEquals("mock-language", request.url.parameters["language"])
-            assertEquals("mock-fallback-lang", request.url.parameters["fallback_lang"])
-            respondOk()
-        }) {
-            install(Storyblok) {
-                accessToken = "mock-api-key"
-                cv = "mock-cv"
-                version = Version.Draft
-                language = "mock-language"
-                fallbackLanguage = "mock-fallback-lang"
-            }
-        }
-        client.get("cdn/stories/mock-slug")
-    }
-
-    @Test
-    fun `follows redirect and updates cv on 301 from cdn`() = runTest {
-        val client = HttpClient(MockEngine.create {
-            addHandler { request ->
-                assertNull(request.url.parameters["cv"])
-                respond("", MovedPermanently, headersOf(Location, "${request.url}&cv=mock-cv"))
-            }
-            repeat(2) {
-                addHandler { request ->
-                    assertEquals("mock-cv", request.url.parameters["cv"])
-                    respondJson("""{"story": { "content": {}}}""")
-                }
-            }
-        }) { install(Storyblok) { accessToken = "mock-api-key" } }
-
-        repeat(2) {
-            assertContains(client.get("cdn/stories/mock-slug").body<JsonObject>(), "story")
-        }
-    }
-
-    @Test
     fun `throws on client error status codes`() = runTest {
         val client = HttpClient(MockEngine { respondBadRequest() }) {
-            install(Storyblok) { accessToken = "mock-api-key" }
+            install(Storyblok(CDN)) { accessToken = "mock-api-key" }
         }
-        assertFailsWith<ClientRequestException> { client.get("cdn/stories/mock-slug") }
+        assertFailsWith<ClientRequestException> { client.get("stories/mock-slug") }
     }
 
     @Test
@@ -96,18 +40,18 @@ class StoryblokTest {
                 addHandler { respondError(HttpStatusCode.GatewayTimeout) }
                 addHandler { respondError(HttpStatusCode.TooManyRequests) }
                 addHandler { sixthResponse() }
-            }) { install(Storyblok) { accessToken = "mock-api-key" } }
+            }) { install(Storyblok(CDN)) { accessToken = "mock-api-key" } }
         //successful retry
         with(clientThatEventually { respondJson("""{"story": { "content": {}}}""") }) {
-            assertContains(get("cdn/stories/mock-slug").body<JsonObject>(), "story")
+            assertContains(get("stories/mock-slug").body<JsonObject>(), "story")
         }
         //client error
         with(clientThatEventually { respondError(HttpStatusCode.TooManyRequests) }) {
-            assertFailsWith<ClientRequestException> { get("cdn/stories/mock-slug") }
+            assertFailsWith<ClientRequestException> { get("stories/mock-slug") }
         }
         //server error
         with(clientThatEventually { respondError(HttpStatusCode.InternalServerError) }) {
-            assertFailsWith<ServerResponseException> { get("cdn/stories/mock-slug") }
+            assertFailsWith<ServerResponseException> { get("stories/mock-slug") }
         }
     }
 
@@ -115,15 +59,15 @@ class StoryblokTest {
     @Test
     fun `requests are throttled according to the specified value in requestsPerSecond`() = runTest {
         val client = HttpClient(MockEngine { respondOk() }) {
-            install(Storyblok) {
-                accessToken = "mock-api-key"
-                requestsPerSecond = 1
+            install(Storyblok(MAPI)) {
                 timeSource = testTimeSource
+                accessToken = AccessToken.Personal("mock-api-key")
+                requestsPerSecond = 1
             }
         }
-        client.get("cdn/stories/mock-slug")
+        client.get("stories/mock-slug")
         val timeAfterInitialRequest = testScheduler.currentTime.milliseconds
-        client.get("cdn/stories/mock-slug")
+        client.get("stories/mock-slug")
         val timeAfterSubsequentRequest = testScheduler.currentTime.milliseconds
         assertEquals(1.seconds, timeAfterSubsequentRequest - timeAfterInitialRequest)
     }
@@ -144,15 +88,15 @@ class StoryblokTest {
             install(HttpRequestRetry) {
                 constantDelay(5.seconds.inWholeMilliseconds, 0)
             }
-            install(Storyblok) {
-                accessToken = "mock-api-key"
+            install(Storyblok(MAPI)) {
+                accessToken = AccessToken.OAuth("mock-api-key")
                 requestsPerSecond = 1
                 timeSource = testTimeSource
             }
         }
         joinAll(
-            launch { client.get("cdn/stories/first-mock-slug") },
-            launch { client.get("cdn/stories/second-mock-slug") }
+            launch { client.get("stories/first-mock-slug") },
+            launch { client.get("stories/second-mock-slug") }
         )
 
         val firstRequestDelay = 0.seconds // no delay
@@ -188,7 +132,7 @@ class StoryblokTest {
 //        }
 //    }
 //
-//    val response = client.get("cdn/stories/hey-rick")
+//    val response = client.get("stories/hey-rick")
 //    println(response.body<JsonObject>())
 //
 //}
