@@ -1,6 +1,6 @@
 # Examples
 
-This module contains example Kotlin code snippets from Storyblok's API docs site as executable unit tests for both the Content Delivery API and the Management API.
+This module contains example Kotlin code snippets from [Storyblok's docs site](https://www.storyblok.com/docs) as executable unit tests for both the [Content Delivery API](https://www.storyblok.com/docs/api/content-delivery/v2) and the [Management API](https://www.storyblok.com/docs/api/management).
 
 > [!TIP]
 > You can run individual tests classes and functions via the play icon in the gutter in IntelliJ or Android Studio.

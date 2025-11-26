@@ -10,22 +10,15 @@ plugins {
 
 dokka {
     moduleName.set("Storyblok Ktor Plugin")
-    dokkaPublications.html {
-        suppressInheritedMembers.set(true)
-        failOnWarning.set(true)
-    }
     dokkaSourceSets.configureEach {
         sourceLink {
             localDirectory.set(file("src/main/kotlin"))
-            remoteUrl("https://github.com/storyblok/storyblok-kotlin")
+            remoteUrl("https://github.com/storyblok/storyblok-kotlin/ktor-plugin/")
             remoteLineSuffix.set("#L")
         }
         externalDocumentationLinks.register("ktor") {
             url("https://api.ktor.io/")
         }
-    }
-    pluginsConfiguration.html {
-        customAssets.from("../.idea/icon.svg")
     }
 }
 
