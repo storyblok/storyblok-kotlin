@@ -24,9 +24,14 @@
 
 [Storyblok](https://www.storyblok.com) is a headless content management system (CMS) that empowers developers and content creators. It provides a visual editor for content teams while giving developers the flexibility to build with their preferred tech stack and deliver content through APIs to any platform or device.
 
-## 📦  Packages
+## 📦 Modules
 
-This monorepo contains all official Storyblok SDKs and integrations:
+This monorepo consists of the the following modules:
+
+| Module                     | Description                                                    |
+|----------------------------|----------------------------------------------------------------|
+| [ktor-plugin](ktor-plugin) | A plugin to simplify calling Storyblok's APIs with Ktor Client |
+| [examples](examples)       | Runnable example code snippets from Storyblok's API docs site  |
 
 ## 📄 Contributing
 
