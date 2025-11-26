@@ -28,10 +28,10 @@
 
 This monorepo consists of the the following modules:
 
-| Module                     | Description                                                    |
-|----------------------------|----------------------------------------------------------------|
-| [ktor-plugin](ktor-plugin) | A plugin to simplify calling Storyblok's APIs with Ktor Client |
-| [examples](examples)       | Runnable example code snippets from Storyblok's API docs site  |
+| Module                     | Description                                                          |
+|----------------------------|----------------------------------------------------------------------|
+| [ktor-plugin](ktor-plugin) | A plugin to simplify calling Storyblok's APIs with the Ktor Client   |
+| [examples](examples)       | Runnable example Kotlin code snippets from Storyblok's API docs site |
 
 ## 📄 Contributing
 

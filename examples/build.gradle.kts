@@ -39,7 +39,7 @@ kotlin {
     sourceSets {
 
         commonTest.dependencies {
-            implementation(project("::ktor-plugin"))
+            implementation(project(":ktor-plugin"))
             implementation(libs.kotlin.test)
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.ktor.serialization.kotlinx.json)
