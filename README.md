@@ -35,7 +35,7 @@ This monorepo consists of the the following modules:
 
 ## 📄 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on:
+We welcome contributions! Please see our [Contributing Guide](https://github.com/storyblok/storyblok-kotlin?tab=contributing-ov-file) for details on:
 - Code style and standards
 - Pull request process
 - Development workflow
