@@ -15,6 +15,7 @@ class Presets {
 
 	/**
      * This endpoint can be used to create new presets.
+     * https://www.storyblok.com/docs/api/management/presets/create-a-preset
      */
     @Test
     fun `Create a Preset`() = runTest {
@@ -48,6 +49,7 @@ class Presets {
 
 	/**
      * Delete a preset by using its numeric id.
+     * https://www.storyblok.com/docs/api/management/presets/delete-a-preset
      */
     @Test
     fun `Delete a Preset`() = runTest {
@@ -70,6 +72,7 @@ class Presets {
 
 	/**
      * Returns a single preset object with a specific numeric id.
+     * https://www.storyblok.com/docs/api/management/presets/retrieve-a-single-preset
      */
     @Test
     fun `Retrieve a Single Preset`() = runTest {
@@ -92,6 +95,7 @@ class Presets {
 
 	/**
      * Returns an array of preset objects.
+     * https://www.storyblok.com/docs/api/management/presets/retrieve-multiple-presets
      */
     @Test
     fun `Retrieve Multiple Presets`() = runTest {
@@ -114,6 +118,7 @@ class Presets {
 
 	/**
      * This endpoint can be used to update presets using the numeric ID.
+     * https://www.storyblok.com/docs/api/management/presets/update-a-preset
      */
     @Test
     fun `Update a Preset`() = runTest {

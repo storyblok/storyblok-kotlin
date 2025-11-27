@@ -15,6 +15,7 @@ class SpaceRoles {
 
 	/**
      * This endpoint allows you to create a new space role.
+     * https://www.storyblok.com/docs/api/management/space-roles/create-a-space-role
      */
     @Test
     fun `Create a Space Role`() = runTest {
@@ -40,6 +41,7 @@ class SpaceRoles {
 
 	/**
      * Delete a space role using its numeric id.
+     * https://www.storyblok.com/docs/api/management/space-roles/delete-a-space-role
      */
     @Test
     fun `Delete a Space Role`() = runTest {
@@ -62,6 +64,7 @@ class SpaceRoles {
 
 	/**
      * Returns a single, space role object by providing a specific numeric id.
+     * https://www.storyblok.com/docs/api/management/space-roles/retrieve-a-single-space-role
      */
     @Test
     fun `Retrieve a Single Space Role`() = runTest {
@@ -84,6 +87,7 @@ class SpaceRoles {
 
 	/**
      * Returns an array of space role objects.
+     * https://www.storyblok.com/docs/api/management/space-roles/retrieve-multiple-space-roles
      */
     @Test
     fun `Retrieve Multiple Space Roles`() = runTest {
@@ -106,6 +110,7 @@ class SpaceRoles {
 
 	/**
      * This endpoint allows you to update a space role by the numeric ID.
+     * https://www.storyblok.com/docs/api/management/space-roles/update-a-space-role
      */
     @Test
     fun `Update a Space Role`() = runTest {

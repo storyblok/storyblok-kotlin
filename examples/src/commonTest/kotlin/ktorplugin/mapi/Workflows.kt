@@ -15,6 +15,7 @@ class Workflows {
 
 	/**
      * This end point creates a new workflow.
+     * https://www.storyblok.com/docs/api/management/workflows/create-a-workflow
      */
     @Test
     fun `Create a Workflow`() = runTest {
@@ -47,6 +48,7 @@ class Workflows {
 
 	/**
      * Delete a workflow using the numeric ID. The default workflow cannot be deleted.
+     * https://www.storyblok.com/docs/api/management/workflows/delete-a-workflow
      */
     @Test
     fun `Delete a Workflow`() = runTest {
@@ -69,6 +71,7 @@ class Workflows {
 
 	/**
      * Creates a new custom workflow by duplicating an existing workflow using the workflow id of the parent workflow. Duplicating a workflow keeps workflow stages the same for the new workflow.The name and content types are required and should be different.
+     * https://www.storyblok.com/docs/api/management/workflows/duplicate-workflow
      */
     @Test
     fun `Duplicate a Workflow`() = runTest {
@@ -101,6 +104,7 @@ class Workflows {
 
 	/**
      * Returns a single, workflow object by providing a specific numeric ID.
+     * https://www.storyblok.com/docs/api/management/workflows/retrieve-a-single-workflow
      */
     @Test
     fun `Retrieve a Single Workflow`() = runTest {
@@ -123,6 +127,7 @@ class Workflows {
 
 	/**
      * Returns an array of all the workflow stages in a space.
+     * https://www.storyblok.com/docs/api/management/workflows/retrieve-multiple-workflows
      */
     @Test
     fun `Retrieve Multiple Workflows`() = runTest {
@@ -145,6 +150,7 @@ class Workflows {
 
 	/**
      * This endpoint can be used to update a workflow using its numeric ID.
+     * https://www.storyblok.com/docs/api/management/workflows/update-a-workflow
      */
     @Test
     fun `Update a Workflow`() = runTest {

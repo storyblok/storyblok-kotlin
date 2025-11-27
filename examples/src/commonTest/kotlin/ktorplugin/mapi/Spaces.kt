@@ -15,6 +15,7 @@ class Spaces {
 
 	/**
      * Trigger the backup task for your space. Make sure you've configured backups in your space options.
+     * https://www.storyblok.com/docs/api/management/spaces/backup-a-space
      */
     @Test
     fun `Backup a Space`() = runTest {
@@ -40,6 +41,7 @@ class Spaces {
 
 	/**
      * This endpoint creates a new space.
+     * https://www.storyblok.com/docs/api/management/spaces/create-a-space
      */
     @Test
     fun `Create a Space`() = runTest {
@@ -69,6 +71,7 @@ class Spaces {
 
 	/**
      * Delete a space by its numeric id.
+     * https://www.storyblok.com/docs/api/management/spaces/delete-a-space
      */
     @Test
     fun `Delete a Space`() = runTest {
@@ -91,6 +94,7 @@ class Spaces {
 
 	/**
      * Duplicate a space and all its content entries and components; Assets will not be duplicated and still will reference the original space.
+     * https://www.storyblok.com/docs/api/management/spaces/duplicate-a-space
      */
     @Test
     fun `Duplicate a Space`() = runTest {
@@ -121,6 +125,7 @@ class Spaces {
 
 	/**
      * Returns a single space object by providing a specific numeric id.
+     * https://www.storyblok.com/docs/api/management/spaces/retrieve-a-single-space
      */
     @Test
     fun `Retrieve a Single Space`() = runTest {
@@ -143,6 +148,7 @@ class Spaces {
 
 	/**
      * Returns an array of space objects.
+     * https://www.storyblok.com/docs/api/management/spaces/retrieve-multiple-spaces
      */
     @Test
     fun `Retrieve Multiple Spaces`() = runTest {
@@ -165,6 +171,7 @@ class Spaces {
 
 	/**
      * Update a space using the numeric ID. You can only able to update the properties mentioned here.
+     * https://www.storyblok.com/docs/api/management/spaces/update-a-space
      */
     @Test
     fun `Update a Space`() = runTest {

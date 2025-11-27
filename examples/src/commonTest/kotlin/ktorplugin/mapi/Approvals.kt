@@ -15,6 +15,7 @@ class Approvals {
 
 	/**
      * 
+     * https://www.storyblok.com/docs/api/management/approvals/create-approval
      */
     @Test
     fun `Create Approval`() = runTest {
@@ -45,6 +46,7 @@ class Approvals {
 
 	/**
      * The Approval feature mentioned is exclusive to Storyblok v1 and discontinued in v2.
+     * https://www.storyblok.com/docs/api/management/approvals/create-release-approval
      */
     @Test
     fun `Create Release Approval`() = runTest {
@@ -76,6 +78,7 @@ class Approvals {
 
 	/**
      * Delete an approval by using its numeric id.
+     * https://www.storyblok.com/docs/api/management/approvals/delete-an-approval
      */
     @Test
     fun `Delete an Approval`() = runTest {
@@ -98,6 +101,7 @@ class Approvals {
 
 	/**
      * Returns a single approval object with a specific numeric id.
+     * https://www.storyblok.com/docs/api/management/approvals/retrieve-a-single-approval
      */
     @Test
     fun `Retrieve a Single Approval`() = runTest {
@@ -120,6 +124,7 @@ class Approvals {
 
 	/**
      * Returns an array of approval objects. This endpoint can be filtered on the approver and is paged.
+     * https://www.storyblok.com/docs/api/management/approvals/retrieve-multiple-approvals
      */
     @Test
     fun `Retrieve Multiple Approvals`() = runTest {

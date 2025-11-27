@@ -15,6 +15,7 @@ class Activities {
 
 	/**
      * Returns a single activity object with a specific numeric ID. Every response contains two extra keys, one called trackable, that contains data about the changed object and the other called user that contains the user information.
+     * https://www.storyblok.com/docs/api/management/activities/retrieve-a-single-activity
      */
     @Test
     fun `Retrieve a Single Activity`() = runTest {
@@ -37,6 +38,7 @@ class Activities {
 
 	/**
      * Returns an array of activity objects, along with trackable and user objects. Can be filtered on date ranges and is paged.
+     * https://www.storyblok.com/docs/api/management/activities/retrieve-multiple-activities
      */
     @Test
     fun `Retrieve Multiple Activities`() = runTest {

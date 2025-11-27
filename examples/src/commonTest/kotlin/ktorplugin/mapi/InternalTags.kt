@@ -15,6 +15,7 @@ class InternalTags {
 
 	/**
      * This endpoint allows creating an internal tag inside a particular space.
+     * https://www.storyblok.com/docs/api/management/internal-tags/create-an-internal-tag
      */
     @Test
     fun `Create an Internal Tag`() = runTest {
@@ -45,6 +46,7 @@ class InternalTags {
 
 	/**
      * This endpoint allows deleting an internal tag using the numeric ID.
+     * https://www.storyblok.com/docs/api/management/internal-tags/delete-an-internal-tag
      */
     @Test
     fun `Delete an Internal Tag`() = runTest {
@@ -67,6 +69,7 @@ class InternalTags {
 
 	/**
      * This endpoint allows retrieving multiple internal tags of a particular space.
+     * https://www.storyblok.com/docs/api/management/internal-tags/retrieve-multiple-internal-tags
      */
     @Test
     fun `Retrieve Multiple Internal Tags`() = runTest {
@@ -89,6 +92,7 @@ class InternalTags {
 
 	/**
      * This endpoint allows updating an internal tag using the numeric ID.
+     * https://www.storyblok.com/docs/api/management/internal-tags/update-an-internal-tag
      */
     @Test
     fun `Update an Internal Tag`() = runTest {

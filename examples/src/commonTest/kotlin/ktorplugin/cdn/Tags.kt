@@ -15,6 +15,7 @@ class Tags {
 
 	/**
      * Retrieve tags used in a space.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/tags/retrieve-multiple-tags
      */
     @Test
     fun `Retrieve Multiple Tags`() = runTest {

@@ -15,6 +15,7 @@ class DatasourceEntries {
 
 	/**
      * Create a datasource entry in a specific datasource
+     * https://www.storyblok.com/docs/api/management/datasource-entries/create-a-datasource-entry
      */
     @Test
     fun `Create a Datasource Entry`() = runTest {
@@ -46,6 +47,7 @@ class DatasourceEntries {
 
 	/**
      * Delete a datasource entry using its numeric ID
+     * https://www.storyblok.com/docs/api/management/datasource-entries/delete-a-datasource-entry
      */
     @Test
     fun `Delete a Datasource Entry`() = runTest {
@@ -68,6 +70,7 @@ class DatasourceEntries {
 
 	/**
      * Retrieve a single datasource entry object with a specific numeric ID
+     * https://www.storyblok.com/docs/api/management/datasource-entries/retrieve-a-single-datasource-entry
      */
     @Test
     fun `Retrieve a Single Datasource Entry`() = runTest {
@@ -90,6 +93,7 @@ class DatasourceEntries {
 
 	/**
      * Returns a paginated array of datasource entry objects
+     * https://www.storyblok.com/docs/api/management/datasource-entries/retrieve-multiple-datasource-entries
      */
     @Test
     fun `Retrieve Multiple Datasource Entries`() = runTest {
@@ -117,6 +121,7 @@ class DatasourceEntries {
 
 	/**
      * Update a datasource entry using its numeric ID
+     * https://www.storyblok.com/docs/api/management/datasource-entries/update-a-datasource-entry
      */
     @Test
     fun `Update a Datasource Entry`() = runTest {
@@ -147,6 +152,7 @@ class DatasourceEntries {
 
 	/**
      * Update a datasource entry using its numeric ID
+     * https://www.storyblok.com/docs/api/management/datasource-entries/update-a-datasource-entry
      */
     @Test
     fun `Update a Datasource Entry 2`() = runTest {

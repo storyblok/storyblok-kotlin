@@ -15,6 +15,7 @@ class Assets {
 
 	/**
      * This endpoint allows moving multiple assets using their IDs to a specific folder.
+     * https://www.storyblok.com/docs/api/management/assets/bulk-moving-of-assets
      */
     @Test
     fun `Bulk Moving of Assets`() = runTest {
@@ -46,6 +47,7 @@ class Assets {
 
 	/**
      * To bulk restoration of deleted assets, pass bulk_restore after assets in the endpoint. Inside of the array from the payload should contain the asset IDs that you want to restore.
+     * https://www.storyblok.com/docs/api/management/assets/bulk-restoration-of-deleted-assets
      */
     @Test
     fun `Bulk Restoration of Deleted Assets`() = runTest {
@@ -75,6 +77,7 @@ class Assets {
 
 	/**
      * Delete an asset by using its numeric id.
+     * https://www.storyblok.com/docs/api/management/assets/delete-an-asset
      */
     @Test
     fun `Delete an Asset`() = runTest {
@@ -97,6 +100,7 @@ class Assets {
 
 	/**
      * Delete multiple assets by using their numeric IDs.
+     * https://www.storyblok.com/docs/api/management/assets/delete-multiple-assets
      */
     @Test
     fun `Delete Multiple Assets`() = runTest {
@@ -127,6 +131,7 @@ class Assets {
 
 	/**
      * Validates an uploaded asset and returns a minimal asset object. See upload and replace assets for further information.
+     * https://www.storyblok.com/docs/api/management/assets/finish-upload
      */
     @Test
     fun `Finish Upload`() = runTest {
@@ -149,6 +154,7 @@ class Assets {
 
 	/**
      * Returns a signed response to be used to upload the asset. See upload and replace assets for further information.
+     * https://www.storyblok.com/docs/api/management/assets/get-signed-response
      */
     @Test
     fun `Get a Signed Response Object`() = runTest {
@@ -180,6 +186,7 @@ class Assets {
 
 	/**
      * Returns an array of asset objects. This endpoint is paginated.
+     * https://www.storyblok.com/docs/api/management/assets/retrieve-multiple-assets
      */
     @Test
     fun `Retrieve Multiple Assets`() = runTest {
@@ -202,6 +209,7 @@ class Assets {
 
 	/**
      * Returns a single asset object by providing a specific numeric id.
+     * https://www.storyblok.com/docs/api/management/assets/retrieve-one-asset
      */
     @Test
     fun `Retrieve One Asset`() = runTest {
@@ -224,6 +232,7 @@ class Assets {
 
 	/**
      * Update an asset using the the numeric ID of the asset.
+     * https://www.storyblok.com/docs/api/management/assets/update-asset
      */
     @Test
     fun `Update Asset`() = runTest {

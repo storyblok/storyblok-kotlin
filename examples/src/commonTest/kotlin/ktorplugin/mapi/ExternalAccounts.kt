@@ -15,6 +15,7 @@ class ExternalAccounts {
 
 	/**
      * Use this endpoint to obtain details of the GitHub account connected to Storyblok.
+     * https://www.storyblok.com/docs/api/management/external-accounts/github
      */
     @Test
     fun GitHub() = runTest {

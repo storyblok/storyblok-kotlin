@@ -15,6 +15,7 @@ class Tags {
 
 	/**
      * You can create a tag, and optionally add it to a story.
+     * https://www.storyblok.com/docs/api/management/tags/create-a-tag
      */
     @Test
     fun `Create a Tag`() = runTest {
@@ -45,6 +46,7 @@ class Tags {
 
 	/**
      * Delete a tag from a space.
+     * https://www.storyblok.com/docs/api/management/tags/delete-a-tag
      */
     @Test
     fun `Delete a Tag`() = runTest {
@@ -67,6 +69,7 @@ class Tags {
 
 	/**
      * This endpoint returns an array of tag objects from a space.
+     * https://www.storyblok.com/docs/api/management/tags/retrieve-multiple-tags
      */
     @Test
     fun `Retrieve Multiple Tags`() = runTest {
@@ -93,6 +96,7 @@ class Tags {
 
 	/**
      * This endpoint returns an array of tag objects from a space.
+     * https://www.storyblok.com/docs/api/management/tags/retrieve-multiple-tags
      */
     @Test
     fun `Retrieve Multiple Tags 2`() = runTest {
@@ -119,6 +123,7 @@ class Tags {
 
 	/**
      * This endpoint is used to add a tag to multiple stories at once.
+     * https://www.storyblok.com/docs/api/management/tags/tag-bulk-association
      */
     @Test
     fun `Tag Bulk Association`() = runTest {
@@ -156,6 +161,7 @@ class Tags {
 
 	/**
      * This endpoint can be used to edit the name of a tag.
+     * https://www.storyblok.com/docs/api/management/tags/update-a-tag
      */
     @Test
     fun `Update a Tag`() = runTest {

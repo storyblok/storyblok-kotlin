@@ -15,6 +15,7 @@ class FieldPlugins {
 
 	/**
      * This endpoint allows you to create a field type plugin.
+     * https://www.storyblok.com/docs/api/management/field-plugins/create-a-field-plugin
      */
     @Test
     fun `Create a Field Plugin`() = runTest {
@@ -44,6 +45,7 @@ class FieldPlugins {
 
 	/**
      * Delete a field plugin by using its numeric id.
+     * https://www.storyblok.com/docs/api/management/field-plugins/delete-a-field-plugin
      */
     @Test
     fun `Delete a Field Plugin`() = runTest {
@@ -66,6 +68,7 @@ class FieldPlugins {
 
 	/**
      * Returns a single field-type object with a specific numeric id.
+     * https://www.storyblok.com/docs/api/management/field-plugins/retrieve-a-single-field-plugin
      */
     @Test
     fun `Retrieve a Single Field Plugin`() = runTest {
@@ -88,6 +91,7 @@ class FieldPlugins {
 
 	/**
      * Returns a single field-type object with a specific numeric id.
+     * https://www.storyblok.com/docs/api/management/field-plugins/retrieve-a-single-field-plugin
      */
     @Test
     fun `Retrieve a Single Field Plugin 2`() = runTest {
@@ -110,6 +114,7 @@ class FieldPlugins {
 
 	/**
      * Returns a single field-type object with a specific numeric id.
+     * https://www.storyblok.com/docs/api/management/field-plugins/retrieve-a-single-field-plugin
      */
     @Test
     fun `Retrieve a Single Field Plugin 3`() = runTest {
@@ -132,6 +137,7 @@ class FieldPlugins {
 
 	/**
      * Returns an array of field plugin objects. This endpoint is paged.
+     * https://www.storyblok.com/docs/api/management/field-plugins/retrieve-multiple-field-plugins
      */
     @Test
     fun `Retrieve Multiple Field Plugins`() = runTest {
@@ -154,6 +160,7 @@ class FieldPlugins {
 
 	/**
      * Returns an array of field plugin objects. This endpoint is paged.
+     * https://www.storyblok.com/docs/api/management/field-plugins/retrieve-multiple-field-plugins
      */
     @Test
     fun `Retrieve Multiple Field Plugins 2`() = runTest {
@@ -176,6 +183,7 @@ class FieldPlugins {
 
 	/**
      * Returns an array of field plugin objects. This endpoint is paged.
+     * https://www.storyblok.com/docs/api/management/field-plugins/retrieve-multiple-field-plugins
      */
     @Test
     fun `Retrieve Multiple Field Plugins 3`() = runTest {
@@ -198,6 +206,7 @@ class FieldPlugins {
 
 	/**
      * This endpoint can be used to perform updates to a field type plugin.
+     * https://www.storyblok.com/docs/api/management/field-plugins/update-a-field-plugin
      */
     @Test
     fun `Update a Field Plugin`() = runTest {

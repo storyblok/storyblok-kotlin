@@ -15,6 +15,7 @@ class Stories {
 
 	/**
      * Retrieve a single story by full slug, ID, or UUID using the Content Delivery API. Includes parameters for resolving links and relations.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/stories/retrieve-a-single-story
      */
     @Test
     fun `Retrieve a Single Story`() = runTest {
@@ -37,6 +38,7 @@ class Stories {
 
 	/**
      * Retrieve multiple stories from Storyblok using the Content Delivery API with filtering, pagination, sorting, and relation resolution options.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/stories/retrieve-multiple-stories
      */
     @Test
     fun `Retrieve Multiple Stories`() = runTest {
@@ -64,6 +66,7 @@ class Stories {
 
 	/**
      * Example showing how to retrieve localized story versions using UUID and language parameters in the Content Delivery API.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/stories/examples/retrieving-localized-stories-by-uuid
      */
     @Test
     fun `Retrieving Localized Stories by UUID`() = runTest {
@@ -92,6 +95,7 @@ class Stories {
 
 	/**
      * Learn how to retrieve stories from specific folders using the starts_with parameter in Storyblok's Content Delivery API.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/stories/examples/retrieving-stories-from-a-folder
      */
     @Test
     fun `Retrieving Stories from a Folder`() = runTest {
@@ -119,6 +123,7 @@ class Stories {
 
 	/**
      * Example demonstrating how to retrieve translated story versions using the language parameter in Storyblok's Content Delivery API.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/stories/examples/retrieving-stories-in-a-particular-language
      */
     @Test
     fun `Retrieving Stories in a Particular Language`() = runTest {
@@ -146,6 +151,7 @@ class Stories {
 
 	/**
      * Learn how to resolve referenced stories using the resolve_relations parameter in Storyblok's Content Delivery API.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/stories/examples/retrieving-stories-with-resolved-relations
      */
     @Test
     fun `Retrieving Stories with Resolved Relations`() = runTest {
@@ -172,6 +178,7 @@ class Stories {
 
 	/**
      * Example showing how to sort stories by custom fields defined in your story type schema using the sort_by parameter.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/stories/examples/sorting-by-fields-associated-with-a-story-type
      */
     @Test
     fun `Sorting by Fields Associated with a Story Type`() = runTest {
@@ -198,6 +205,7 @@ class Stories {
 
 	/**
      * Learn how to sort stories by default story properties like name, position, and publication dates using the Content Delivery API.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/stories/examples/sorting-by-story-object-property
      */
     @Test
     fun `Sorting by Story Object Property`() = runTest {

@@ -15,6 +15,7 @@ class WorkflowStage {
 
 	/**
      * This endpoint allows you to create a workflow stage.
+     * https://www.storyblok.com/docs/api/management/workflow-stage/create-a-workflow-stage
      */
     @Test
     fun `Create a Workflow Stage`() = runTest {
@@ -40,6 +41,7 @@ class WorkflowStage {
 
 	/**
      * Delete a workflow stage using its numeric ID.
+     * https://www.storyblok.com/docs/api/management/workflow-stage/delete-a-workflow-stage
      */
     @Test
     fun `Delete a Workflow Stage`() = runTest {
@@ -62,6 +64,7 @@ class WorkflowStage {
 
 	/**
      * Returns a single workflow stage object by providing a specific numeric id.
+     * https://www.storyblok.com/docs/api/management/workflow-stage/retrieve-a-single-workflow-stage
      */
     @Test
     fun `Retrieve a Single Workflow Stage`() = runTest {
@@ -84,6 +87,7 @@ class WorkflowStage {
 
 	/**
      * Returns an array of workflow stages.
+     * https://www.storyblok.com/docs/api/management/workflow-stage/retrieve-multiple-workflow-stages
      */
     @Test
     fun `Retrieve Multiple Workflow Stages`() = runTest {
@@ -106,6 +110,7 @@ class WorkflowStage {
 
 	/**
      * This endpoint can be used to update a workflow stage using the numeric ID.
+     * https://www.storyblok.com/docs/api/management/workflow-stage/update-a-workflow-stage
      */
     @Test
     fun `Update a Workflow Stage`() = runTest {
@@ -131,6 +136,7 @@ class WorkflowStage {
 
 	/**
      * Create a workflow stage change. It is important to pass a story ID along with the object.
+     * https://www.storyblok.com/docs/api/management/workflow-stage-changes/create-a-workflow-stage-change
      */
     @Test
     fun `Create a Workflow Stage Change`() = runTest {
@@ -161,6 +167,7 @@ class WorkflowStage {
 
 	/**
      * Returns an array of workflow stage change objects.
+     * https://www.storyblok.com/docs/api/management/workflow-stage-changes/retrieve-multiple-workflow-stage-changes
      */
     @Test
     fun `Retrieve Multiple Workflow Stage Changes`() = runTest {

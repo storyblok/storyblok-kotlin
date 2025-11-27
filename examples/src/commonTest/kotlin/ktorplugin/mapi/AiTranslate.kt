@@ -15,6 +15,7 @@ class AiTranslate {
 
 	/**
      * This endpoint returns an object listing the languages currently supported by Storyblok's AI translation.
+     * https://www.storyblok.com/docs/api/management/ai-translate/ai-languages
      */
     @Test
     fun `AI Languages`() = runTest {

@@ -15,6 +15,7 @@ class ComponentFolders {
 
 	/**
      * Create a new component folder
+     * https://www.storyblok.com/docs/api/management/component-folders/create-a-component-folder
      */
     @Test
     fun `Create a Component Folder`() = runTest {
@@ -45,6 +46,7 @@ class ComponentFolders {
 
 	/**
      * Delete a component folder using its numeric ID
+     * https://www.storyblok.com/docs/api/management/component-folders/delete-a-component-folder
      */
     @Test
     fun `Delete a Component Folder`() = runTest {
@@ -67,6 +69,7 @@ class ComponentFolders {
 
 	/**
      * Retrieve a single component folder object using its ID
+     * https://www.storyblok.com/docs/api/management/component-folders/retrieve-a-single-component-folder
      */
     @Test
     fun `Retrieve a Single Component Folder`() = runTest {
@@ -89,6 +92,7 @@ class ComponentFolders {
 
 	/**
      * Retrieve a paginated array of component folder objects
+     * https://www.storyblok.com/docs/api/management/component-folders/retrieve-multiple-component-folders
      */
     @Test
     fun `Retrieve Multiple Component Folders`() = runTest {
@@ -111,6 +115,7 @@ class ComponentFolders {
 
 	/**
      * Update a specific component folder
+     * https://www.storyblok.com/docs/api/management/component-folders/update-a-component-folder
      */
     @Test
     fun `Update a Component folder`() = runTest {

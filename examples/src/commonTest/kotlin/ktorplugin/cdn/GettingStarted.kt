@@ -15,6 +15,7 @@ class GettingStarted {
 
 	/**
      * Discover how Storyblok's API authentication mechanism works through API access tokens.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/getting-started/authentication
      */
     @Test
     fun Authentication() = runTest {
@@ -41,6 +42,7 @@ class GettingStarted {
 
 	/**
      * Explore how Storyblok optimizes content delivery through its Content Delivery Network (CDN) and cache versioning mechanism. Learn about the cv parameter.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/getting-started/cache-invalidation
      */
     @Test
     fun `Cache Invalidation`() = runTest {
@@ -63,6 +65,7 @@ class GettingStarted {
 
 	/**
      * Explore how Storyblok optimizes content delivery through its Content Delivery Network (CDN) and cache versioning mechanism. Learn about the cv parameter.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/getting-started/cache-invalidation
      */
     @Test
     fun `Cache Invalidation 2`() = runTest {

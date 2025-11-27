@@ -15,6 +15,7 @@ class Tasks {
 
 	/**
      * This endpoint creates a new task.
+     * https://www.storyblok.com/docs/api/management/tasks/create-a-task
      */
     @Test
     fun `Create a Task`() = runTest {
@@ -46,6 +47,7 @@ class Tasks {
 
 	/**
      * Delete a task using the numeric ID.
+     * https://www.storyblok.com/docs/api/management/tasks/delete-a-task
      */
     @Test
     fun `Delete a Task`() = runTest {
@@ -68,6 +70,7 @@ class Tasks {
 
 	/**
      * Returns a single task object with a specific numeric id.
+     * https://www.storyblok.com/docs/api/management/tasks/retrieve-a-single-task
      */
     @Test
     fun `Retrieve a Single Task`() = runTest {
@@ -90,6 +93,7 @@ class Tasks {
 
 	/**
      * Returns an array of task objects. This endpoint is paged.
+     * https://www.storyblok.com/docs/api/management/tasks/retrieve-multiple-tasks
      */
     @Test
     fun `Retrieve Multiple Tasks`() = runTest {
@@ -112,6 +116,7 @@ class Tasks {
 
 	/**
      * This endpoint can be used to update tasks.
+     * https://www.storyblok.com/docs/api/management/tasks/update-a-task
      */
     @Test
     fun `Update a Task`() = runTest {

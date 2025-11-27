@@ -15,6 +15,7 @@ class SchedulingStories {
 
 	/**
      * This endpoint allows you to create a new story schedule.
+     * https://www.storyblok.com/docs/api/management/scheduling-stories/create-a-story-schedule
      */
     @Test
     fun `Create a Story Schedule`() = runTest {
@@ -46,6 +47,7 @@ class SchedulingStories {
 
 	/**
      * Delete a schedule by the numeric ID.
+     * https://www.storyblok.com/docs/api/management/scheduling-stories/delete-a-story-schedule
      */
     @Test
     fun `Delete a Story Schedule`() = runTest {
@@ -68,6 +70,7 @@ class SchedulingStories {
 
 	/**
      * Returns an array of story schedule objects.
+     * https://www.storyblok.com/docs/api/management/scheduling-stories/retrieve-multiple-story-schedules
      */
     @Test
     fun `Retrieve Multiple Story Schedules`() = runTest {
@@ -90,6 +93,7 @@ class SchedulingStories {
 
 	/**
      * Returns a single schedule object by providing a specific numeric ID.
+     * https://www.storyblok.com/docs/api/management/scheduling-stories/retrieve-one-story-schedule
      */
     @Test
     fun `Retrieve One Story Schedule`() = runTest {
@@ -112,6 +116,7 @@ class SchedulingStories {
 
 	/**
      * Update a publishing schedule by the numeric ID.
+     * https://www.storyblok.com/docs/api/management/scheduling-stories/update-a-story-schedule
      */
     @Test
     fun `Update a Story Schedule`() = runTest {

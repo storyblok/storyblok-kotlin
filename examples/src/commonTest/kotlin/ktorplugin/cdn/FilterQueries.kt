@@ -15,6 +15,7 @@ class FilterQueries {
 
 	/**
      * Learn how to use filter queries with field-level translation in Storyblok by extending field keys with i18n and language codes for multilingual content filtering.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/filter-queries/field-level-translation
      */
     @Test
     fun `Filter Queries with Field-level Translation`() = runTest {
@@ -43,6 +44,7 @@ class FilterQueries {
 
 	/**
      * Use filter queries to target nestable bloks and fields.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/filter-queries/nested-blocks-and-fields
      */
     @Test
     fun `Filter Queries with Nestable Blocks and Fields`() = runTest {
@@ -69,6 +71,7 @@ class FilterQueries {
 
 	/**
      * Filter stories by checking if a field contains all of the values provided in the query.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/filter-queries/operation-all-in-array
      */
     @Test
     fun all_in_array() = runTest {
@@ -95,6 +98,7 @@ class FilterQueries {
 
 	/**
      * Filter stories by checking if a field contains any of the values provided in the query.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/filter-queries/operation-any-in-array
      */
     @Test
     fun any_in_array() = runTest {
@@ -121,6 +125,7 @@ class FilterQueries {
 
 	/**
      * Filter to return stories with a date field value greater than the provided date.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/filter-queries/operation-gt-date
      */
     @Test
     fun gt_date() = runTest {
@@ -147,6 +152,7 @@ class FilterQueries {
 
 	/**
      * Filter to return stories with a float field value greater than the provided float.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/filter-queries/operation-gt-float
      */
     @Test
     fun gt_float() = runTest {
@@ -173,6 +179,7 @@ class FilterQueries {
 
 	/**
      * Filter to return stories with an integer field value greater than the provided integer.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/filter-queries/operation-gt-int
      */
     @Test
     fun gt_int() = runTest {
@@ -199,6 +206,7 @@ class FilterQueries {
 
 	/**
      * Filter to return stories with a field value matching any of the provided values.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/filter-queries/operation-in
      */
     @Test
     fun `in`() = runTest {
@@ -225,6 +233,7 @@ class FilterQueries {
 
 	/**
      * Filter to return stories with a field value of a specific type.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/filter-queries/operation-is
      */
     @Test
     fun `is`() = runTest {
@@ -251,6 +260,7 @@ class FilterQueries {
 
 	/**
      * Filter to return stories with a field value matching a specific pattern.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/filter-queries/operation-like
      */
     @Test
     fun like() = runTest {
@@ -277,6 +287,7 @@ class FilterQueries {
 
 	/**
      * Filter to return stories with a date field value less than the provided date.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/filter-queries/operation-lt-date
      */
     @Test
     fun lt_date() = runTest {
@@ -303,6 +314,7 @@ class FilterQueries {
 
 	/**
      * Filter to return stories with a float field value less than the provided float.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/filter-queries/operation-lt-float
      */
     @Test
     fun lt_float() = runTest {
@@ -329,6 +341,7 @@ class FilterQueries {
 
 	/**
      * Filter to return stories with an integer field value less than the provided integer.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/filter-queries/operation-lt-int
      */
     @Test
     fun lt_int() = runTest {
@@ -355,6 +368,7 @@ class FilterQueries {
 
 	/**
      * Filter to return stories with a field value not matching any of the provided values.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/filter-queries/operation-not-in
      */
     @Test
     fun not_in() = runTest {
@@ -381,6 +395,7 @@ class FilterQueries {
 
 	/**
      * Filter to return stories with a field value not matching any of the provided patterns.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/filter-queries/operation-not-like
      */
     @Test
     fun not_like() = runTest {
@@ -407,6 +422,7 @@ class FilterQueries {
 
 	/**
      * Example showing how to filter stories by boolean field values using the 'in' operation in Storyblok's filter queries.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/filter-queries/examples/filtering-stories-by-a-boolean-value
      */
     @Test
     fun `Filtering Stories by a Boolean Value`() = runTest {
@@ -434,6 +450,7 @@ class FilterQueries {
 
 	/**
      * Learn how to filter stories within a specific value range using gt_float and lt_float for price filtering and similar use cases.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/filter-queries/examples/filtering-stories-by-defining-a-value-range
      */
     @Test
     fun `Filtering Stories by Defining a Value Range`() = runTest {

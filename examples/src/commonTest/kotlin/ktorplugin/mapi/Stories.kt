@@ -15,6 +15,7 @@ class Stories {
 
 	/**
      * This endpoint returns the story content, translated by AI.
+     * https://www.storyblok.com/docs/api/management/stories/ai-translate
      */
     @Test
     fun `Translate a Story by AI`() = runTest {
@@ -45,6 +46,7 @@ class Stories {
 
 	/**
      * With this endpoint you can compare the changes between two versions of a story in Storyblok. You need to provide the story ID and version ID in the request to retrieve the comparison results.
+     * https://www.storyblok.com/docs/api/management/stories/compare-a-story-version
      */
     @Test
     fun `Compare a Story Version`() = runTest {
@@ -71,6 +73,7 @@ class Stories {
 
 	/**
      * You can set most of the fields that are available in the story object, below we only list the properties in the example and the possible required fields. Stories are not published by default. If you want to create a published story add the parameter publish with the value 1.
+     * https://www.storyblok.com/docs/api/management/stories/create-a-story
      */
     @Test
     fun `Create a Story`() = runTest {
@@ -106,6 +109,7 @@ class Stories {
 
 	/**
      * Use the Story endpoint to create and manage content folders.
+     * https://www.storyblok.com/docs/api/management/stories/create-and-manage-folders
      */
     @Test
     fun `Create and Manage Folders`() = runTest {
@@ -138,6 +142,7 @@ class Stories {
 
 	/**
      * Use the Story endpoint to create and manage content folders.
+     * https://www.storyblok.com/docs/api/management/stories/create-and-manage-folders
      */
     @Test
     fun `Create and Manage Folders 2`() = runTest {
@@ -163,6 +168,7 @@ class Stories {
 
 	/**
      * Use the Story endpoint to create and manage content folders.
+     * https://www.storyblok.com/docs/api/management/stories/create-and-manage-folders
      */
     @Test
     fun `Create and Manage Folders 3`() = runTest {
@@ -201,6 +207,7 @@ class Stories {
 
 	/**
      * Delete a content entry by using its numeric id.
+     * https://www.storyblok.com/docs/api/management/stories/delete-a-story
      */
     @Test
     fun `Delete a Story`() = runTest {
@@ -223,6 +230,7 @@ class Stories {
 
 	/**
      * This endpoint can be used to duplicate a story into another folder.
+     * https://www.storyblok.com/docs/api/management/stories/duplicate-a-story
      */
     @Test
     fun `Duplicate a Story`() = runTest {
@@ -254,6 +262,7 @@ class Stories {
 
 	/**
      * Exporting a story can be done using a GET request for each story you want to export.
+     * https://www.storyblok.com/docs/api/management/stories/export-a-story
      */
     @Test
     fun `Export a Story`() = runTest {
@@ -281,6 +290,7 @@ class Stories {
 
 	/**
      * Exporting a story can be done using a GET request for each story you want to export.
+     * https://www.storyblok.com/docs/api/management/stories/export-a-story
      */
     @Test
     fun `Export a Story 2`() = runTest {
@@ -309,6 +319,7 @@ class Stories {
 
 	/**
      * Retrieve the versions of a story.
+     * https://www.storyblok.com/docs/api/management/stories/get-story-versions-new
      */
     @Test
     fun `Get Story Versions`() = runTest {
@@ -335,6 +346,7 @@ class Stories {
 
 	/**
      * This allows you to retrieve the versions of a story and the corresponding author information. You can also filter the results based on pagination using the page parameter. This can be done with a GET request on the story version you wish to retrieve.
+     * https://www.storyblok.com/docs/api/management/stories/get-story-versions
      */
     @Test
     fun `Get Story Versions (Legacy)`() = runTest {
@@ -357,6 +369,7 @@ class Stories {
 
 	/**
      * This allows you to retrieve the versions of a story and the corresponding author information. You can also filter the results based on pagination using the page parameter. This can be done with a GET request on the story version you wish to retrieve.
+     * https://www.storyblok.com/docs/api/management/stories/get-story-versions
      */
     @Test
     fun `Get Story Versions (Legacy) 2`() = runTest {
@@ -383,6 +396,7 @@ class Stories {
 
 	/**
      * This endpoint is used to get unpublished dependencies of a story.
+     * https://www.storyblok.com/docs/api/management/stories/get-unpublished-dependencies
      */
     @Test
     fun `Get Unpublished Dependencies`() = runTest {
@@ -413,6 +427,7 @@ class Stories {
 
 	/**
      * Importing a story can be done using a PUT request for each story you want to import.
+     * https://www.storyblok.com/docs/api/management/stories/import-a-story
      */
     @Test
     fun `Import a Story`() = runTest {
@@ -442,6 +457,7 @@ class Stories {
 
 	/**
      * Publishing a story (besides using the publish property via creation) can be done by sending a GET request for each story you want to publish with story_id using the following endpoint.Multiple language versions of a story can be published using the lang parameter (Publish translations individually has to be enabled in Settings > Internationalization).
+     * https://www.storyblok.com/docs/api/management/stories/publish-a-story
      */
     @Test
     fun `Publish a Story`() = runTest {
@@ -468,6 +484,7 @@ class Stories {
 
 	/**
      * This endpoint lets you restore a story to a specific version.
+     * https://www.storyblok.com/docs/api/management/stories/restore-a-story-version
      */
     @Test
     fun `Restore a Story Version`() = runTest {
@@ -495,6 +512,7 @@ class Stories {
 
 	/**
      * This endpoint returns an array of story objects without content. Stories can be filtered with the parameters below. The response is paged.
+     * https://www.storyblok.com/docs/api/management/stories/retrieve-multiple-stories
      */
     @Test
     fun `Retrieve Multiple Stories`() = runTest {
@@ -517,6 +535,7 @@ class Stories {
 
 	/**
      * This endpoint returns an array of story objects without content. Stories can be filtered with the parameters below. The response is paged.
+     * https://www.storyblok.com/docs/api/management/stories/retrieve-multiple-stories
      */
     @Test
     fun `Retrieve Multiple Stories 2`() = runTest {
@@ -543,6 +562,7 @@ class Stories {
 
 	/**
      * This endpoint returns an array of story objects without content. Stories can be filtered with the parameters below. The response is paged.
+     * https://www.storyblok.com/docs/api/management/stories/retrieve-multiple-stories
      */
     @Test
     fun `Retrieve Multiple Stories 3`() = runTest {
@@ -569,6 +589,7 @@ class Stories {
 
 	/**
      * This endpoint returns a single, fully loaded story object by providing a specific numeric id.
+     * https://www.storyblok.com/docs/api/management/stories/retrieve-one-story
      */
     @Test
     fun `Retrieve One Story`() = runTest {
@@ -591,6 +612,7 @@ class Stories {
 
 	/**
      * Unpublishing a story (besides using the unpublish action in visual editor or in content viewer) can be done by using a GET request for each story you want to unpublish. Multiple language versions of a story can be unpublished using the lang parameter (Publish translations individually has to be enabled in Settings > Internationalization).
+     * https://www.storyblok.com/docs/api/management/stories/unpublish-a-story
      */
     @Test
     fun `Unpublish a Story`() = runTest {
@@ -613,6 +635,7 @@ class Stories {
 
 	/**
      * Use this endpoint for migrations, updates (new component structure, and more), or bulk actions
+     * https://www.storyblok.com/docs/api/management/stories/update-a-story
      */
     @Test
     fun `Update a Story`() = runTest {

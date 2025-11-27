@@ -15,6 +15,7 @@ class Components {
 
 	/**
      * Create a component with properties available in the collaborator object
+     * https://www.storyblok.com/docs/api/management/components/create-a-component
      */
     @Test
     fun `Create a Component`() = runTest {
@@ -55,6 +56,7 @@ class Components {
 
 	/**
      * Delete a component using its ID
+     * https://www.storyblok.com/docs/api/management/components/delete-a-component
      */
     @Test
     fun `Delete a Component`() = runTest {
@@ -77,6 +79,7 @@ class Components {
 
 	/**
      * Restores a component to a saved version
+     * https://www.storyblok.com/docs/api/management/components/restore-a-component-version
      */
     @Test
     fun `Restore a Component Version`() = runTest {
@@ -105,6 +108,7 @@ class Components {
 
 	/**
      * Retrieve the schema details of a component version
+     * https://www.storyblok.com/docs/api/management/components/retrieve-a-single-component-version
      */
     @Test
     fun `Retrieve a Single Component Version`() = runTest {
@@ -127,6 +131,7 @@ class Components {
 
 	/**
      * Retrieve a single component object using its ID
+     * https://www.storyblok.com/docs/api/management/components/retrieve-a-single-component
      */
     @Test
     fun `Retrieve a Single Component`() = runTest {
@@ -149,6 +154,7 @@ class Components {
 
 	/**
      * Retrieve a paginated array of component versions
+     * https://www.storyblok.com/docs/api/management/components/retrieve-component-versions
      */
     @Test
     fun `Retrieve Component Versions`() = runTest {
@@ -176,6 +182,7 @@ class Components {
 
 	/**
      * Retrieve an array of component objects
+     * https://www.storyblok.com/docs/api/management/components/retrieve-multiple-components
      */
     @Test
     fun `Retrieve Multiple Components`() = runTest {
@@ -198,6 +205,7 @@ class Components {
 
 	/**
      * Update the values of a component
+     * https://www.storyblok.com/docs/api/management/components/update-a-component
      */
     @Test
     fun `Update a Component`() = runTest {

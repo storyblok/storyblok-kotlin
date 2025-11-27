@@ -15,6 +15,7 @@ class WorkflowStageChanges {
 
 	/**
      * Create a workflow stage change. It is important to pass a story ID along with the object.
+     * https://www.storyblok.com/docs/api/management/workflow-stage-changes/create-a-workflow-stage-change
      */
     @Test
     fun `Create a Workflow Stage Change`() = runTest {
@@ -45,6 +46,7 @@ class WorkflowStageChanges {
 
 	/**
      * Returns an array of workflow stage change objects.
+     * https://www.storyblok.com/docs/api/management/workflow-stage-changes/retrieve-multiple-workflow-stage-changes
      */
     @Test
     fun `Retrieve Multiple Workflow Stage Changes`() = runTest {

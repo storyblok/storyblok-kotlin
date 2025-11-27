@@ -15,6 +15,7 @@ class Webhooks {
 
 	/**
      * You can set some of the fields available in the webhook object, below we only list the properties in the example and the possible required fields.
+     * https://www.storyblok.com/docs/api/management/webhooks/add-a-webhook
      */
     @Test
     fun `Add a Webhook`() = runTest {
@@ -50,6 +51,7 @@ class Webhooks {
 
 	/**
      * Delete a webhook by its numeric ID.
+     * https://www.storyblok.com/docs/api/management/webhooks/delete-a-webhook
      */
     @Test
     fun `Delete a Webhook`() = runTest {
@@ -72,6 +74,7 @@ class Webhooks {
 
 	/**
      * Returns a single webhook object by providing a specific numeric ID.
+     * https://www.storyblok.com/docs/api/management/webhooks/retrieve-a-single-webhook
      */
     @Test
     fun `Retrieve a Single Webhook`() = runTest {
@@ -94,6 +97,7 @@ class Webhooks {
 
 	/**
      * Returns an array of webhook objects
+     * https://www.storyblok.com/docs/api/management/webhooks/retrieve-multiple-webhooks
      */
     @Test
     fun `Retrieve Multiple Webhooks`() = runTest {
@@ -116,6 +120,7 @@ class Webhooks {
 
 	/**
      * You can update an existing webhook field using the numeric ID.
+     * https://www.storyblok.com/docs/api/management/webhooks/update-a-webhook
      */
     @Test
     fun `Update a Webhook`() = runTest {

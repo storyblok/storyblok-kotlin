@@ -15,6 +15,7 @@ class Collaborators {
 
 	/**
      * Add collaborators with specific roles and permissions available in the collaborator object
+     * https://www.storyblok.com/docs/api/management/collaborators/add-a-collaborator
      */
     @Test
     fun `Add a Collaborator`() = runTest {
@@ -47,6 +48,7 @@ class Collaborators {
 
 	/**
      * Add collaborators with specific roles and permissions available in the collaborator object
+     * https://www.storyblok.com/docs/api/management/collaborators/add-a-collaborator
      */
     @Test
     fun `Add a Collaborator 2`() = runTest {
@@ -79,6 +81,7 @@ class Collaborators {
 
 	/**
      * Add collaborators with specific roles and permissions available in the collaborator object
+     * https://www.storyblok.com/docs/api/management/collaborators/add-a-collaborator
      */
     @Test
     fun `Add a Collaborator 3`() = runTest {
@@ -113,6 +116,7 @@ class Collaborators {
 
 	/**
      * Add a user with SSO using the 
+     * https://www.storyblok.com/docs/api/management/collaborators/add-a-user-with-sso
      */
     @Test
     fun `Add a User with SSO`() = runTest {
@@ -145,6 +149,7 @@ class Collaborators {
 
 	/**
      * Delete a collaborator using their 
+     * https://www.storyblok.com/docs/api/management/collaborators/delete-a-collaborator
      */
     @Test
     fun `Delete a Collaborator`() = runTest {
@@ -167,6 +172,7 @@ class Collaborators {
 
 	/**
      * Retrieve a paginated array of collaborator objects
+     * https://www.storyblok.com/docs/api/management/collaborators/retrieve-multiple-collaborators
      */
     @Test
     fun `Retrieve Multiple Collaborators`() = runTest {
@@ -189,6 +195,7 @@ class Collaborators {
 
 	/**
      * Update a collaborator using all fields available in the collaborator object
+     * https://www.storyblok.com/docs/api/management/collaborators/update-a-collaborator-roles-and-permissions
      */
     @Test
     fun `Update a Collaborator Roles and Permissions`() = runTest {

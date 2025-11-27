@@ -15,6 +15,7 @@ class AccessTokens {
 
 	/**
      * Create an access token for a particular space.
+     * https://www.storyblok.com/docs/api/management/access-tokens/create-an-access-token
      */
     @Test
     fun `Create an Access Token`() = runTest {
@@ -45,6 +46,7 @@ class AccessTokens {
 
 	/**
      * Delete an access token using its numeric ID.
+     * https://www.storyblok.com/docs/api/management/access-tokens/delete-an-access-token
      */
     @Test
     fun `Delete an Access Token`() = runTest {
@@ -67,6 +69,7 @@ class AccessTokens {
 
 	/**
      * Returns an array of access token objects. The response of this endpoint is not paginated and you will retrieve all tokens.
+     * https://www.storyblok.com/docs/api/management/access-tokens/retrieve-multiple-access-tokens
      */
     @Test
     fun `Retrieve Multiple Access Tokens`() = runTest {
@@ -89,6 +92,7 @@ class AccessTokens {
 
 	/**
      * Update an access token with the numeric ID.
+     * https://www.storyblok.com/docs/api/management/access-tokens/update-an-access-token
      */
     @Test
     fun `Update an Access Token`() = runTest {

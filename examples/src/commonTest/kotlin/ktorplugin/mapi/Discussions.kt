@@ -15,6 +15,7 @@ class Discussions {
 
 	/**
      * This endpoint allows the creation of a comment in a particular discussion using the ID.
+     * https://www.storyblok.com/docs/api/management/discussions/create-a-comment
      */
     @Test
     fun `Create a Comment`() = runTest {
@@ -49,6 +50,7 @@ class Discussions {
 
 	/**
      * This endpoint creates a new discussion.
+     * https://www.storyblok.com/docs/api/management/discussions/create-a-discussion
      */
     @Test
     fun `Create a Discussion`() = runTest {
@@ -74,6 +76,7 @@ class Discussions {
 
 	/**
      * This endpoint allows deletion of a comment using the numeric ID.
+     * https://www.storyblok.com/docs/api/management/discussions/delete-a-comment
      */
     @Test
     fun `Delete a Comment`() = runTest {
@@ -96,6 +99,7 @@ class Discussions {
 
 	/**
      * Resolves a comment in a discussion.
+     * https://www.storyblok.com/docs/api/management/discussions/resolve-a-discussion
      */
     @Test
     fun `Resolve a Discussion`() = runTest {
@@ -125,6 +129,7 @@ class Discussions {
 
 	/**
      * Get a specific discussion.
+     * https://www.storyblok.com/docs/api/management/discussions/retrieve-a-specific-discussion
      */
     @Test
     fun `Retrieve a Specific Discussion`() = runTest {
@@ -147,6 +152,7 @@ class Discussions {
 
 	/**
      * Returns comments for specific idea discussions from the Ideation Room.
+     * https://www.storyblok.com/docs/api/management/discussions/retrieve-idea-discussions-comments
      */
     @Test
     fun `Retrieve Idea Discussions Comments`() = runTest {
@@ -169,6 +175,7 @@ class Discussions {
 
 	/**
      * Retrieve multiple comments from a specific discussion
+     * https://www.storyblok.com/docs/api/management/discussions/retrieve-multiple-comments-from-a-specific-discussion
      */
     @Test
     fun `Retrieve Multiple Comments from a Specific Discussion`() = runTest {
@@ -191,6 +198,7 @@ class Discussions {
 
 	/**
      * Returns an array of discussion objects present inside a particular story. This endpoint is paged and can be filtered by using page=1 , status and per_page=1 for retrieving discussions per page.
+     * https://www.storyblok.com/docs/api/management/discussions/retrieve-multiple-discussions
      */
     @Test
     fun `Retrieve Multiple Discussions`() = runTest {
@@ -219,6 +227,7 @@ class Discussions {
 
 	/**
      * Retrieve your mentioned discussions. The response is paged.
+     * https://www.storyblok.com/docs/api/management/discussions/retrieve-my-discussions
      */
     @Test
     fun `Retrieve My Discussions`() = runTest {
@@ -241,6 +250,7 @@ class Discussions {
 
 	/**
      * Update comments in a particular discussion using the discussion ID and comment ID
+     * https://www.storyblok.com/docs/api/management/discussions/update-a-comment
      */
     @Test
     fun `Update a Comment`() = runTest {

@@ -15,6 +15,7 @@ class IdeationRoom {
 
 	/**
      * This endpoint is to create an Idea in the Ideation Room. In the request body, passing name in the idea object is a minimum requirement.
+     * https://www.storyblok.com/docs/api/management/ideation-room/create-an-idea
      */
     @Test
     fun `Create an Idea`() = runTest {
@@ -40,6 +41,7 @@ class IdeationRoom {
 
 	/**
      * This endpoint allows the deletion of an idea using the uuid.
+     * https://www.storyblok.com/docs/api/management/ideation-room/delete-an-idea
      */
     @Test
     fun `Delete an Idea`() = runTest {
@@ -62,6 +64,7 @@ class IdeationRoom {
 
 	/**
      * This endpoint allows restoring an idea using the uuid. Use deleted idea's id value for idea_id. This endpoint also restores the idea's discussion comments.
+     * https://www.storyblok.com/docs/api/management/ideation-room/restore-an-idea
      */
     @Test
     fun `Restore an Idea`() = runTest {
@@ -87,6 +90,7 @@ class IdeationRoom {
 
 	/**
      * Returns discussions in an idea.
+     * https://www.storyblok.com/docs/api/management/ideation-room/retrieve-discussions-in-idea
      */
     @Test
     fun `Retrieve Discussions in Idea`() = runTest {
@@ -109,6 +113,7 @@ class IdeationRoom {
 
 	/**
      * Returns an array of idea objects.
+     * https://www.storyblok.com/docs/api/management/ideation-room/retrieve-multiple-ideas
      */
     @Test
     fun `Retrieve Multiple Ideas`() = runTest {
@@ -131,6 +136,7 @@ class IdeationRoom {
 
 	/**
      * Returns a single idea object by providing a specific numeric id.
+     * https://www.storyblok.com/docs/api/management/ideation-room/retrieve-one-idea
      */
     @Test
     fun `Retrieve One Idea`() = runTest {
@@ -153,6 +159,7 @@ class IdeationRoom {
 
 	/**
      * Update an idea using an idea uuid. In the request body, it's required to pass the idea object.
+     * https://www.storyblok.com/docs/api/management/ideation-room/update-an-idea
      */
     @Test
     fun `Update an Idea`() = runTest {

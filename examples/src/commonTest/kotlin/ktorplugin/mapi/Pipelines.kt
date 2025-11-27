@@ -15,6 +15,7 @@ class Pipelines {
 
 	/**
      * This endpoint creates a new branch.
+     * https://www.storyblok.com/docs/api/management/pipelines/create-a-branch
      */
     @Test
     fun `Create a Branch`() = runTest {
@@ -47,6 +48,7 @@ class Pipelines {
 
 	/**
      * Delete a branch using its numeric ID.
+     * https://www.storyblok.com/docs/api/management/pipelines/delete-a-branch
      */
     @Test
     fun `Delete a Branch`() = runTest {
@@ -69,6 +71,7 @@ class Pipelines {
 
 	/**
      * Returns a single branch object by providing a specific numeric id.
+     * https://www.storyblok.com/docs/api/management/pipelines/retrieve-a-single-branch
      */
     @Test
     fun `Retrieve a Single Branch`() = runTest {
@@ -91,6 +94,7 @@ class Pipelines {
 
 	/**
      * Returns an array of  branch objects
+     * https://www.storyblok.com/docs/api/management/pipelines/retrieve-multiple-branches
      */
     @Test
     fun `Retrieve Multiple Branches`() = runTest {
@@ -113,6 +117,7 @@ class Pipelines {
 
 	/**
      * This endpoint updates a branch using its numeric ID.
+     * https://www.storyblok.com/docs/api/management/pipelines/update-a-branch
      */
     @Test
     fun `Update a Branch`() = runTest {

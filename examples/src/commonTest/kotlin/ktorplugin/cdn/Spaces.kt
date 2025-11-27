@@ -15,6 +15,7 @@ class Spaces {
 
 	/**
      * Retrieve information about the current Storyblok space including cache version, domain, and language configuration using the Content Delivery API.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/spaces/retrieve-current-space
      */
     @Test
     fun `Retrieve Current Space`() = runTest {

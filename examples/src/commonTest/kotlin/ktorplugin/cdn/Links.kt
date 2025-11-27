@@ -15,6 +15,7 @@ class Links {
 
 	/**
      * Retrieve a concise representation of stories and folders using the links endpoint in the Content Delivery API.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/links/retrieve-multiple-links
      */
     @Test
     fun `Retrieve Multiple Links`() = runTest {

@@ -15,6 +15,7 @@ class Releases {
 
 	/**
      * This endpoint allows you to create a new release.
+     * https://www.storyblok.com/docs/api/management/releases/create-a-release
      */
     @Test
     fun `Create a Release`() = runTest {
@@ -49,6 +50,7 @@ class Releases {
 
 	/**
      * Delete a release using its numeric id.
+     * https://www.storyblok.com/docs/api/management/releases/delete-a-release
      */
     @Test
     fun `Delete a Release`() = runTest {
@@ -71,6 +73,7 @@ class Releases {
 
 	/**
      * Returns a single release object by providing a specific numeric ID.
+     * https://www.storyblok.com/docs/api/management/releases/retrieve-a-single-release
      */
     @Test
     fun `Retrieve a Single Release`() = runTest {
@@ -93,6 +96,7 @@ class Releases {
 
 	/**
      * Returns an array of releases.
+     * https://www.storyblok.com/docs/api/management/releases/retrieve-multiple-releases
      */
     @Test
     fun `Retrieve Multiple Releases`() = runTest {
@@ -115,6 +119,7 @@ class Releases {
 
 	/**
      * This endpoint allows you to update a release using the numeric ID.
+     * https://www.storyblok.com/docs/api/management/releases/update-a-release
      */
     @Test
     fun `Update a Release`() = runTest {

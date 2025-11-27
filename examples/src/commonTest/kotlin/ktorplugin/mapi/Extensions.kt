@@ -15,6 +15,7 @@ class Extensions {
 
 	/**
      * This endpoint allows you to create an extension inside the organization or partner extensions.
+     * https://www.storyblok.com/docs/api/management/extensions/create-an-extension
      */
     @Test
     fun `Create an Extension`() = runTest {
@@ -45,6 +46,7 @@ class Extensions {
 
 	/**
      * This endpoint allows to delete organization and partner extensions by using the numeric ID.
+     * https://www.storyblok.com/docs/api/management/extensions/delete-an-extension
      */
     @Test
     fun `Delete an Extension`() = runTest {
@@ -67,6 +69,7 @@ class Extensions {
 
 	/**
      * Retrieve all the plugins from organization or the partner portal.
+     * https://www.storyblok.com/docs/api/management/extensions/retrieve-all-extensions
      */
     @Test
     fun `Retrieve all Extensions`() = runTest {
@@ -89,6 +92,7 @@ class Extensions {
 
 	/**
      * Retrieve all the plugins from organization or the partner portal.
+     * https://www.storyblok.com/docs/api/management/extensions/retrieve-all-extensions
      */
     @Test
     fun `Retrieve all Extensions 2`() = runTest {
@@ -111,6 +115,7 @@ class Extensions {
 
 	/**
      * Retrieve a specific plugin from organization or the partner extensions.
+     * https://www.storyblok.com/docs/api/management/extensions/retrieve-an-extension
      */
     @Test
     fun `Retrieve an Extension`() = runTest {
@@ -133,6 +138,7 @@ class Extensions {
 
 	/**
      * Retrieve a specific plugin from organization or the partner extensions.
+     * https://www.storyblok.com/docs/api/management/extensions/retrieve-an-extension
      */
     @Test
     fun `Retrieve an Extension 2`() = runTest {
@@ -155,6 +161,7 @@ class Extensions {
 
 	/**
      * Retrieve settings of an extension by the numeric ID. To do so, obtain an OAuth token or a Personal Access Token. This endpoints gives both the app and app_provision objects in the response for the specific extension.
+     * https://www.storyblok.com/docs/api/management/extensions/retrieve-settings-of-a-plugin
      */
     @Test
     fun `Retrieve Settings of an Installed Extension`() = runTest {
@@ -177,6 +184,7 @@ class Extensions {
 
 	/**
      * Retrieve settings of all extensions of a particular space. To do so, obtain an OAuth token or a Personal Access Token.
+     * https://www.storyblok.com/docs/api/management/extensions/retrieve-settings-of-all-installed-extensions
      */
     @Test
     fun `Retrieve Settings of all Installed Extensions`() = runTest {
@@ -199,6 +207,7 @@ class Extensions {
 
 	/**
      * This endpoint allows you to update an extension, specifically the app object using the numeric ID.
+     * https://www.storyblok.com/docs/api/management/extensions/update-an-extension
      */
     @Test
     fun `Update an Extension`() = runTest {
@@ -228,6 +237,7 @@ class Extensions {
 
 	/**
      * Update settings such as plugin properties inside Space Plugins and Tool Plugins. To do so, obtain an OAuth token or a Personal Access Token.
+     * https://www.storyblok.com/docs/api/management/extensions/update-install-plugin-settings
      */
     @Test
     fun `Update Installed Extension Settings`() = runTest {

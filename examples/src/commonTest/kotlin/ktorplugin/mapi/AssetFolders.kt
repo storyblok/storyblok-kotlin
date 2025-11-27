@@ -15,6 +15,7 @@ class AssetFolders {
 
 	/**
      * This endpoint allows you to create a new asset folder.
+     * https://www.storyblok.com/docs/api/management/asset-folders/create-an-asset-folder
      */
     @Test
     fun `Create an Asset Folder`() = runTest {
@@ -45,6 +46,7 @@ class AssetFolders {
 
 	/**
      * Delete an asset folder by using its numeric id.
+     * https://www.storyblok.com/docs/api/management/asset-folders/delete-an-asset-folder
      */
     @Test
     fun `Delete an Asset Folder`() = runTest {
@@ -67,6 +69,7 @@ class AssetFolders {
 
 	/**
      * This endpoint returns a single, asset folder object by providing a specific numeric id.
+     * https://www.storyblok.com/docs/api/management/asset-folders/retrieve-a-single-asset-folder
      */
     @Test
     fun `Retrieve a Single Asset Folder`() = runTest {
@@ -89,6 +92,7 @@ class AssetFolders {
 
 	/**
      * Returns an array of asset folder objects.
+     * https://www.storyblok.com/docs/api/management/asset-folders/retrieve-multiple-asset-folders
      */
     @Test
     fun `Retrieve Multiple Asset Folders`() = runTest {
@@ -111,6 +115,7 @@ class AssetFolders {
 
 	/**
      * This endpoint allows updating an existing asset folder using the numeric ID.
+     * https://www.storyblok.com/docs/api/management/asset-folders/update-an-asset-folder
      */
     @Test
     fun `Update an Asset Folder`() = runTest {

@@ -15,6 +15,7 @@ class Assets {
 
 	/**
      * Retrieves a signed URL to access a private asset.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/assets/get-signed-url
      */
     @Test
     fun `Get Signed URL`() = runTest {

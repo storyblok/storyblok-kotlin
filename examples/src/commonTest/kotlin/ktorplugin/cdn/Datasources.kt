@@ -15,6 +15,7 @@ class Datasources {
 
 	/**
      * Retrieve a single datasource by ID using Storyblok's Content Delivery API to access key-value pairs for options and settings.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/datasources/retrieve-a-single-datasource
      */
     @Test
     fun `Retrieve a Single Datasource`() = runTest {
@@ -37,6 +38,7 @@ class Datasources {
 
 	/**
      * Retrieve multiple datasource entries with filtering by datasource and dimension using Storyblok's Content Delivery API.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/datasources/retrieve-multiple-datasource-entries
      */
     @Test
     fun `Retrieve Multiple Datasource Entries`() = runTest {
@@ -64,6 +66,7 @@ class Datasources {
 
 	/**
      * Retrieve all datasources from your Storyblok space with pagination support using the Content Delivery API.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/datasources/retrieve-multiple-datasources
      */
     @Test
     fun `Retrieve Multiple Datasources`() = runTest {
