@@ -1,10 +1,10 @@
 <div align="center">
   <a href="https://www.storyblok.com?utm_source=github.com&utm_medium=readme&utm_campaign=storyblok-kotlin" align="center">
-    <img src="https://github.com/user-attachments/assets/bd40b62d-db9b-41ac-97d9-d810396da2cc" alt="Storyblok Logo">
+    <img src="images/github-banner.png" alt="Storyblok Logo">
   </a>
   <h1 align="center">Storyblok Kotlin</h1>
   <p align="center">
-    Welcome to Storyblok's repository for all things Kotlin, including Android.
+    Welcome to Storyblok's repository for all things Kotlin, including Android and Kotlin Multiplatform.
   </p>
 </div>
 
@@ -28,10 +28,10 @@
 
 This monorepo consists of the the following modules:
 
-| Module                     | Description                                                          |
-|----------------------------|----------------------------------------------------------------------|
-| [ktor-plugin](ktor-plugin) | A plugin to simplify calling Storyblok's APIs with the Ktor Client   |
-| [examples](examples)       | Runnable example Kotlin code snippets from Storyblok's API docs site |
+| Module                     | Description                                                        |
+|----------------------------|--------------------------------------------------------------------|
+| [ktor-plugin](ktor-plugin) | A plugin to simplify calling Storyblok's APIs with the Ktor Client |
+| [examples](examples)       | Example Kotlin code snippets from Storyblok's docs site            |
 
 ## 📄 Contributing
 
