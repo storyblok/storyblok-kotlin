@@ -1,0 +1,91 @@
+// Klib ABI Dump
+// Targets: [js]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <storyblok-kotlin:ktor-client-plugin>
+sealed class <#A: com.storyblok.ktor/Api.Config> com.storyblok.ktor/Api { // com.storyblok.ktor/Api|null[0]
+    sealed class Config { // com.storyblok.ktor/Api.Config|null[0]
+        abstract var requestsPerSecond // com.storyblok.ktor/Api.Config.requestsPerSecond|{}requestsPerSecond[0]
+            abstract fun <get-requestsPerSecond>(): kotlin/Int // com.storyblok.ktor/Api.Config.requestsPerSecond.<get-requestsPerSecond>|<get-requestsPerSecond>(){}[0]
+            abstract fun <set-requestsPerSecond>(kotlin/Int) // com.storyblok.ktor/Api.Config.requestsPerSecond.<set-requestsPerSecond>|<set-requestsPerSecond>(kotlin.Int){}[0]
+        final var region // com.storyblok.ktor/Api.Config.region|{}region[0]
+            final fun <get-region>(): com.storyblok.ktor/Api.Config.Region // com.storyblok.ktor/Api.Config.region.<get-region>|<get-region>(){}[0]
+            final fun <set-region>(com.storyblok.ktor/Api.Config.Region) // com.storyblok.ktor/Api.Config.region.<set-region>|<set-region>(com.storyblok.ktor.Api.Config.Region){}[0]
+
+        final enum class Version : kotlin/Enum<com.storyblok.ktor/Api.Config.Version> { // com.storyblok.ktor/Api.Config.Version|null[0]
+            enum entry Draft // com.storyblok.ktor/Api.Config.Version.Draft|null[0]
+            enum entry Published // com.storyblok.ktor/Api.Config.Version.Published|null[0]
+
+            final val entries // com.storyblok.ktor/Api.Config.Version.entries|#static{}entries[0]
+                final fun <get-entries>(): kotlin.enums/EnumEntries<com.storyblok.ktor/Api.Config.Version> // com.storyblok.ktor/Api.Config.Version.entries.<get-entries>|<get-entries>#static(){}[0]
+
+            final fun valueOf(kotlin/String): com.storyblok.ktor/Api.Config.Version // com.storyblok.ktor/Api.Config.Version.valueOf|valueOf#static(kotlin.String){}[0]
+            final fun values(): kotlin/Array<com.storyblok.ktor/Api.Config.Version> // com.storyblok.ktor/Api.Config.Version.values|values#static(){}[0]
+        }
+
+        final class Content : com.storyblok.ktor/Api.Config { // com.storyblok.ktor/Api.Config.Content|null[0]
+            final var accessToken // com.storyblok.ktor/Api.Config.Content.accessToken|{}accessToken[0]
+                final fun <get-accessToken>(): kotlin/String // com.storyblok.ktor/Api.Config.Content.accessToken.<get-accessToken>|<get-accessToken>(){}[0]
+                final fun <set-accessToken>(kotlin/String) // com.storyblok.ktor/Api.Config.Content.accessToken.<set-accessToken>|<set-accessToken>(kotlin.String){}[0]
+            final var cv // com.storyblok.ktor/Api.Config.Content.cv|{}cv[0]
+                final fun <get-cv>(): kotlin/String? // com.storyblok.ktor/Api.Config.Content.cv.<get-cv>|<get-cv>(){}[0]
+                final fun <set-cv>(kotlin/String?) // com.storyblok.ktor/Api.Config.Content.cv.<set-cv>|<set-cv>(kotlin.String?){}[0]
+            final var fallbackLanguage // com.storyblok.ktor/Api.Config.Content.fallbackLanguage|{}fallbackLanguage[0]
+                final fun <get-fallbackLanguage>(): kotlin/String? // com.storyblok.ktor/Api.Config.Content.fallbackLanguage.<get-fallbackLanguage>|<get-fallbackLanguage>(){}[0]
+                final fun <set-fallbackLanguage>(kotlin/String?) // com.storyblok.ktor/Api.Config.Content.fallbackLanguage.<set-fallbackLanguage>|<set-fallbackLanguage>(kotlin.String?){}[0]
+            final var language // com.storyblok.ktor/Api.Config.Content.language|{}language[0]
+                final fun <get-language>(): kotlin/String? // com.storyblok.ktor/Api.Config.Content.language.<get-language>|<get-language>(){}[0]
+                final fun <set-language>(kotlin/String?) // com.storyblok.ktor/Api.Config.Content.language.<set-language>|<set-language>(kotlin.String?){}[0]
+            final var requestsPerSecond // com.storyblok.ktor/Api.Config.Content.requestsPerSecond|{}requestsPerSecond[0]
+                final fun <get-requestsPerSecond>(): kotlin/Int // com.storyblok.ktor/Api.Config.Content.requestsPerSecond.<get-requestsPerSecond>|<get-requestsPerSecond>(){}[0]
+                final fun <set-requestsPerSecond>(kotlin/Int) // com.storyblok.ktor/Api.Config.Content.requestsPerSecond.<set-requestsPerSecond>|<set-requestsPerSecond>(kotlin.Int){}[0]
+            final var version // com.storyblok.ktor/Api.Config.Content.version|{}version[0]
+                final fun <get-version>(): com.storyblok.ktor/Api.Config.Version // com.storyblok.ktor/Api.Config.Content.version.<get-version>|<get-version>(){}[0]
+                final fun <set-version>(com.storyblok.ktor/Api.Config.Version) // com.storyblok.ktor/Api.Config.Content.version.<set-version>|<set-version>(com.storyblok.ktor.Api.Config.Version){}[0]
+        }
+
+        final class Management : com.storyblok.ktor/Api.Config { // com.storyblok.ktor/Api.Config.Management|null[0]
+            final var accessToken // com.storyblok.ktor/Api.Config.Management.accessToken|{}accessToken[0]
+                final fun <get-accessToken>(): com.storyblok.ktor/Api.Config.Management.AccessToken // com.storyblok.ktor/Api.Config.Management.accessToken.<get-accessToken>|<get-accessToken>(){}[0]
+                final fun <set-accessToken>(com.storyblok.ktor/Api.Config.Management.AccessToken) // com.storyblok.ktor/Api.Config.Management.accessToken.<set-accessToken>|<set-accessToken>(com.storyblok.ktor.Api.Config.Management.AccessToken){}[0]
+            final var requestsPerSecond // com.storyblok.ktor/Api.Config.Management.requestsPerSecond|{}requestsPerSecond[0]
+                final fun <get-requestsPerSecond>(): kotlin/Int // com.storyblok.ktor/Api.Config.Management.requestsPerSecond.<get-requestsPerSecond>|<get-requestsPerSecond>(){}[0]
+                final fun <set-requestsPerSecond>(kotlin/Int) // com.storyblok.ktor/Api.Config.Management.requestsPerSecond.<set-requestsPerSecond>|<set-requestsPerSecond>(kotlin.Int){}[0]
+
+            sealed class AccessToken { // com.storyblok.ktor/Api.Config.Management.AccessToken|null[0]
+                final class OAuth : com.storyblok.ktor/Api.Config.Management.AccessToken { // com.storyblok.ktor/Api.Config.Management.AccessToken.OAuth|null[0]
+                    constructor <init>(kotlin/String) // com.storyblok.ktor/Api.Config.Management.AccessToken.OAuth.<init>|<init>(kotlin.String){}[0]
+                }
+
+                final class Personal : com.storyblok.ktor/Api.Config.Management.AccessToken { // com.storyblok.ktor/Api.Config.Management.AccessToken.Personal|null[0]
+                    constructor <init>(kotlin/String) // com.storyblok.ktor/Api.Config.Management.AccessToken.Personal.<init>|<init>(kotlin.String){}[0]
+                }
+            }
+        }
+
+        sealed class Region { // com.storyblok.ktor/Api.Config.Region|null[0]
+            final class Custom : com.storyblok.ktor/Api.Config.Region { // com.storyblok.ktor/Api.Config.Region.Custom|null[0]
+                constructor <init>(kotlin/String) // com.storyblok.ktor/Api.Config.Region.Custom.<init>|<init>(kotlin.String){}[0]
+            }
+
+            final object AUS : com.storyblok.ktor/Api.Config.Region // com.storyblok.ktor/Api.Config.Region.AUS|null[0]
+
+            final object CAN : com.storyblok.ktor/Api.Config.Region // com.storyblok.ktor/Api.Config.Region.CAN|null[0]
+
+            final object CHN : com.storyblok.ktor/Api.Config.Region // com.storyblok.ktor/Api.Config.Region.CHN|null[0]
+
+            final object EU : com.storyblok.ktor/Api.Config.Region // com.storyblok.ktor/Api.Config.Region.EU|null[0]
+
+            final object USA : com.storyblok.ktor/Api.Config.Region // com.storyblok.ktor/Api.Config.Region.USA|null[0]
+        }
+    }
+
+    final object CDN : com.storyblok.ktor/Api<com.storyblok.ktor/Api.Config.Content> // com.storyblok.ktor/Api.CDN|null[0]
+
+    final object MAPI : com.storyblok.ktor/Api<com.storyblok.ktor/Api.Config.Management> // com.storyblok.ktor/Api.MAPI|null[0]
+}
+
+final fun <#A: com.storyblok.ktor/Api.Config> (io.ktor.client/HttpClientConfig<*>).com.storyblok.ktor/Storyblok(com.storyblok.ktor/Api<#A>): io.ktor.client.plugins.api/ClientPlugin<#A> // com.storyblok.ktor/Storyblok|Storyblok@io.ktor.client.HttpClientConfig<*>(com.storyblok.ktor.Api<0:0>){0§<com.storyblok.ktor.Api.Config>}[0]
