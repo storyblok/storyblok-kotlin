@@ -13,7 +13,7 @@ dokka {
     dokkaSourceSets.configureEach {
         sourceLink {
             localDirectory.set(file("src/main/kotlin"))
-            remoteUrl("https://github.com/storyblok/storyblok-kotlin/ktor-plugin/")
+            remoteUrl("https://github.com/storyblok/storyblok-kotlin/ktor-client-plugin/")
             remoteLineSuffix.set("#L")
         }
         externalDocumentationLinks.register("ktor") {

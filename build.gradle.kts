@@ -11,7 +11,7 @@ group = "com.storyblok"
 version = "0.1.0"
 
 dependencies {
-    dokka(project(":ktor-plugin"))
+    dokka(project(":ktor-client-plugin"))
 }
 
 dokka {

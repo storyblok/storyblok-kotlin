@@ -14,4 +14,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "storyblok-kotlin"
-include(":ktor-plugin", ":examples")
+include(":ktor-client-plugin", ":examples")
