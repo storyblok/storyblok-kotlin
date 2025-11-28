@@ -1,7 +1,9 @@
 package com.storyblok.ktor
 
-import com.storyblok.ktor.Api.Config.Cdn
-import com.storyblok.ktor.Api.Config.Mapi
+import com.storyblok.ktor.Api.Config.Content
+import com.storyblok.ktor.Api.Config.Management
+import com.storyblok.ktor.Api.Config.Region.EU
+import com.storyblok.ktor.Api.Config.Version.Published
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.api.ClientPluginBuilder
@@ -16,12 +18,21 @@ import kotlin.time.TimeSource
 
 private val LOGGER: Logger = KtorSimpleLogger("com.storyblok.ktor.Api")
 
+/**
+ * It is necessary to specify an [inheritor][Api] of `Api` when [installing][Storyblok] the plugin to configure the
+ * [HttpClient][io.ktor.client.HttpClient] for either the [Content Delivery API][CDN] or the [Management API][MAPI]
+ */
 public sealed class Api<T : Api.Config>(internal val config: () -> T) {
     internal abstract fun HttpClientConfig<*>.configure(config: () -> T)
     internal open fun ClientPluginBuilder<*>.configure(config: T) {}
 
-    public object MAPI : Api<Mapi>(::Mapi) {
-        override fun HttpClientConfig<*>.configure(config: () -> Mapi) {
+    /**
+     * Configure the [HttpClient][io.ktor.client.HttpClient] for the [Management API](https://www.storyblok.com/docs/api/management)
+     *
+     * @see Storyblok
+     */
+    public object MAPI : Api<Management>(::Management) {
+        override fun HttpClientConfig<*>.configure(config: () -> Management) {
             install(DefaultRequest) {
                 with(config()) {
                     url.takeFrom(region.mapiUrl)
@@ -30,9 +41,15 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
             }
         }
     }
-    public object CDN : Api<Cdn>(::Cdn) {
 
-        override fun HttpClientConfig<*>.configure(config: () -> Cdn) {
+    /**
+     * Configure the [HttpClient][io.ktor.client.HttpClient] for the [Content Delivery API](https://www.storyblok.com/docs/api/content-delivery/v2)
+     *
+     * @see Storyblok
+     */
+    public object CDN : Api<Content>(::Content) {
+
+        override fun HttpClientConfig<*>.configure(config: () -> Content) {
             install(HttpCache)
             install(DefaultRequest) {
                 url {
@@ -48,7 +65,7 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
             }
         }
 
-        override fun ClientPluginBuilder<*>.configure(config: Config.Cdn) {
+        override fun ClientPluginBuilder<*>.configure(config: Content) {
             onResponse { response ->
                 when(response.status) {
                     HttpStatusCode.MovedPermanently -> {
@@ -60,11 +77,20 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
         }
     }
 
+    /**
+     * It is necessary to specify an [inheritor][Config] of `Config` when [installing][Storyblok] the plugin to configure the
+     * plugin for either the [Content Delivery API][Content] or the [Management API][Management]
+     */
     public sealed class Config {
-        /** The API server location. */
-        public var region: Region = Region.EU
         /**
-         * Sets the maximum number of API requests allowed per second.
+         * Optionally specify the [region][Region] depending on the server location of your space.
+         * Defaults to the [European Union][EU]
+         */
+        public var region: Region = EU
+        /**
+         * Optionally specify the maximum number of API requests allowed per second.
+         *
+         * Defaults to 1000 requests per second for the [Content Delivery API][Content.requestsPerSecond] and 6 requests per second for the [Management API][Management.requestsPerSecond].
          *
          * You can lower the value if necessary to avoid exceeding the
          * [rate limits](https://www.storyblok.com/docs/api/content-delivery/v2/getting-started/rate-limit).
@@ -73,12 +99,55 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
         /** The time source used for request scheduling and delays. */
         internal var timeSource: TimeSource.WithComparableMarks = TimeSource.Monotonic
 
-        public class Cdn public constructor(): Config() {
+        /**
+         * Optionally specify an [inheritor][Region] of `Region` when [configuring][Api.Config.region]
+         * the plugin depending on the server location of your space. Defaults to the [European Union][EU].
+         *
+         * Learn more in the [Content Delivery API Reference](https://www.storyblok.com/docs/api/content-delivery/v2)
+         * or [Management API Reference](https://www.storyblok.com/docs/api/management).
+         */
+        public sealed class Region(internal val cdnUrl: Url, internal val mapiUrl: Url) {
+            private constructor(cdn: String, mapi: String) : this(Url(cdn), Url(mapi))
+            /** European Union API server location. */
+            public object EU: Region("https://api.storyblok.com/v2/cdn/", "https://mapi.storyblok.com/v1/")
+            /** United States API server location. */
+            public object USA: Region("https://api-us.storyblok.com/v2/cdn/","https://api-us.storyblok.com/")
+            /** Canada API server location. */
+            public object CAN: Region("https://api-ca.storyblok.com/v2/cdn/", "https://api-ca.storyblok.com/")
+            /** Australia API server location. */
+            public object AUS: Region("https://api-ap.storyblok.com/v2/cdn/","https://api-ap.storyblok.com/")
+            /** China API server location. */
+            public object CHN: Region("https://app.storyblokchina.cn/", "https://app.storyblokchina.cn/")
+            /** A custom API server location you specify.
+             * @param url The base URL of the custom API server
+             * */
+            public class Custom(url: String): Region(url, url)
+        }
 
-            /** API requests must be authenticated by providing an API access token. */
+        /**
+         * Optionally specify an [inheritor][Version] of `Version` when [configuring][Api.Config.Content.version]
+         * the plugin for the [Content Delivery API][Api.CDN] that will affect all requests. Defaults to [Published].
+         *
+         * Resources have two potential versions: draft (unpublished) or published.
+         */
+        public enum class Version(internal val value: String) {
+            /** The draft (unpublished) version of your resource. */
+            Draft("draft"),
+            /** This published (live) version of your resource. */
+            Published("published")
+        }
+
+        /**
+         * Configure the plugin for the [Content Delivery API](https://www.storyblok.com/docs/api/content-delivery/v2).
+         *
+         * @see Storyblok
+         */
+        public class Content internal constructor(): Config() {
+
+            /** It is necessary to specify an API access token to [authenticate requests to the Content Delivery API](https://www.storyblok.com/docs/api/content-delivery/v2/getting-started/authentication). */
             public lateinit var accessToken: String
             /**
-             * Default language to retrieve resources.
+             * Optionally specify the default language to retrieve resources.
              *
              * Accepts any language code configured in the Storyblok space.
              *
@@ -86,7 +155,7 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
              * */
             public var language: String? = null
             /**
-             * Default fallback language to handle untranslated fields.
+             * Optionally specify the default fallback language to handle untranslated fields.
              *
              * Accepts any language code configured in the Storyblok space.
              *
@@ -94,25 +163,49 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
              * */
             public var fallbackLanguage: String? = null
             /**
-             * Default version to retrieve resources.
-             * */
+             * Optionally specify the [version][Version] to retrieve all resources. Defaults to [Published].
+             */
             public var version: Version = Version.Published
-            /** Cached version Unix timestamp (see [Cache Invalidation](https://www.storyblok.com/docs/api/content-delivery/v2/getting-started/cache-invalidation))
+            /** Optionally specify the cached version Unix timestamp (see [Cache Invalidation](https://www.storyblok.com/docs/api/content-delivery/v2/getting-started/cache-invalidation)).
              *
-             * Note this is set automatically, set this property manually if you want to override this behavior.
+             * Note this is set automatically, set this property manually if you want to retrieve a specific cached version of a resource.
              *
-             * Learn more in [How stories are cached in the Content Delivery API](https://www.storyblok.com/faq/how-stories-are-cached-content-delivery-api#how-the-js-client-uses-the-cv-param)
+             * Learn more in [How stories are cached in the Content Delivery API](https://www.storyblok.com/faq/how-stories-are-cached-content-delivery-api#how-the-js-client-uses-the-cv-param).
              * */
             public var cv: String? = null
+
+            /**
+             * Optionally specify the maximum number of API requests allowed per second, defaults to 1000.
+             */
             override var requestsPerSecond: Int = 1000
         }
 
-        public class Mapi : Config() {
-            /** API requests must be authenticated by providing an API access token. */
+        /**
+         * Configure the plugin for the [Management API](https://www.storyblok.com/docs/api/management).
+         *
+         * @see Storyblok
+         */
+        public class Management internal constructor() : Config() {
+            /** It is necessary to specify a [personal][AccessToken.Personal] or [OAuth][AccessToken.OAuth] access token to
+             * [authenticate requests to the Management API](https://www.storyblok.com/docs/api/management/getting-started/authentication).
+             * */
             public lateinit var accessToken: AccessToken
+            /**
+             * Optionally specify the maximum number of API requests allowed per second, defaults to 6.
+             */
             override var requestsPerSecond: Int = 6
+            /**
+             * It is necessary to specify an [inheritor][AccessToken] of `AccessToken` when [configuring][Management.accessToken] the plugin to
+             * [authenticate requests to the Management API](https://www.storyblok.com/docs/api/management/getting-started/authentication).             */
             public sealed class AccessToken private constructor(internal val value: String) {
+                /**
+                 * An OAuth Access Token is obtained via the OAuth2 authentication flow and is tied to a single space.
+                 */
                 public class OAuth(token: String) : AccessToken("Bearer ${token.removePrefix("Bearer ")}")
+
+                /**
+                 * A Personal Access Token is obtained from the Storyblok UI and grants access to all spaces associated with your account
+                 */
                 public class Personal(token: String) : AccessToken(token)
             }
         }

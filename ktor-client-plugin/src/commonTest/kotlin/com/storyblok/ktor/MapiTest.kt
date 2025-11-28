@@ -1,6 +1,8 @@
 package com.storyblok.ktor
 
-import com.storyblok.ktor.Api.Config.Mapi.AccessToken
+import com.storyblok.ktor.Api.Config.Management.AccessToken.OAuth
+import com.storyblok.ktor.Api.Config.Management.AccessToken.Personal
+import com.storyblok.ktor.Api.Config.Region.EU
 import com.storyblok.ktor.Api.MAPI
 import io.ktor.client.*
 import io.ktor.client.engine.mock.*
@@ -22,8 +24,8 @@ class MapiTest {
             respondOk()
         }) {
             install(Storyblok(MAPI)) {
-                region = Region.EU
-                accessToken = AccessToken.Personal("mock-api-key")
+                region = EU
+                accessToken = Personal("mock-api-key")
             }
         }
         client.get("spaces/606/stories/369689")
@@ -39,8 +41,8 @@ class MapiTest {
             respondOk()
         }) {
             install(Storyblok(MAPI)) {
-                region = Region.EU
-                accessToken = AccessToken.OAuth("mock-api-key")
+                region = EU
+                accessToken = OAuth("mock-api-key")
             }
         }
         client.get("spaces/606/stories/369689")
@@ -50,8 +52,8 @@ class MapiTest {
     fun `requests per second defaults to 6`() = runTest {
         HttpClient {
             install(Storyblok(MAPI)) {
-                region = Region.EU
-                accessToken = AccessToken.OAuth("mock-api-key")
+                region = EU
+                accessToken = OAuth("mock-api-key")
                 assertEquals(6, requestsPerSecond)
             }
         }

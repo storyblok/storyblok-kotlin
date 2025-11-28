@@ -1,6 +1,8 @@
 package com.storyblok.ktor
 
 import com.storyblok.ktor.Api.CDN
+import com.storyblok.ktor.Api.Config.Region.Custom
+import com.storyblok.ktor.Api.Config.Version.Draft
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.mock.*
@@ -24,7 +26,7 @@ class CapiTest {
             respondOk()
         }) {
             install(Storyblok(CDN)) {
-                region = Region.Custom("https://localhost/mock-base-url/cdn/")
+                region = Custom("https://localhost/mock-base-url/cdn/")
                 accessToken = "mock-api-key"
             }
         }
@@ -43,7 +45,7 @@ class CapiTest {
             install(Storyblok(CDN)) {
                 accessToken = "mock-api-key"
                 cv = "mock-cv"
-                version = Version.Draft
+                version = Draft
                 language = "mock-language"
                 fallbackLanguage = "mock-fallback-lang"
             }

@@ -20,21 +20,24 @@ import kotlin.time.Duration.Companion.seconds
 private val LOGGER: Logger = KtorSimpleLogger("com.storyblok.ktor.Storyblok")
 
 /**
- * Storyblok is a pre-configured HTTP client plugin for interfacing with the Storyblok Content Delivery API.
+ * Invoke this function in your [HttpClient][io.ktor.client.HttpClient] configuration block to [install][HttpClientConfig.install] the Storyblok plugin.
  *
- * This plugin provides the following features:
- * - HTTP caching configuration through `HttpCache`.
- * - Content negotiation with default JSON support using `ContentNegotiation`.
- * - Retry logic for requests with exponential backoff using `HttpRequestRetry`.
- * - Request configuration through `DefaultRequest` where URL, token, version, and additional parameters are automatically set.
- * - Handling of special cases like `MovedPermanently` responses and automatic updates to cached version (`cv`).
- *
- * The required configuration, such as `accessToken`, region, and optional settings like language and fallback language,
- * must be provided through the `StoryblokConfig` configuration object.
- *
- * Delays between retry attempts are managed based on HTTP status codes (`429` or `5xx`) and controlled through adjustable parameters.
- *
- * The plugin ensures request adherence to the API specifications while reducing the complexity of manual configuration.
+ * #### Example for the Content Delivery API
+ * ```kotlin
+ * val client = HttpClient {
+ *   install(Storyblok(CDN)) {
+ *     accessToken = "YOUR_ACCESS_TOKEN"
+ *   }
+ * }
+ *  ```
+ * #### Example for the Management API
+ * ```kotlin
+ * val client = HttpClient {
+ *   install(Storyblok(MAPI)) {
+ *     accessToken = OAuth("YOUR_OAUTH_TOKEN")
+ *   }
+ * }
+ *  ```
  */
 @OptIn(ExperimentalAtomicApi::class)
 public fun <T: Api.Config> HttpClientConfig<*>.Storyblok(api: Api<T>): ClientPlugin<T> {

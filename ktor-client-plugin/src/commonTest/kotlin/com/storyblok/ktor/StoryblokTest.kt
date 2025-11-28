@@ -2,7 +2,7 @@ package com.storyblok.ktor
 
 import com.storyblok.ktor.Api.CDN
 import com.storyblok.ktor.Api.MAPI
-import com.storyblok.ktor.Api.Config.Mapi.AccessToken
+import com.storyblok.ktor.Api.Config.Management.AccessToken
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.mock.*
