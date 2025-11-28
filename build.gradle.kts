@@ -17,12 +17,19 @@ dependencies {
 dokka {
     moduleName.set("Storyblok Kotlin")
     dokkaPublications.html {
-        includes.from("README.md")
-        suppressInheritedMembers.set(true)
+        includes.from("Module.md")
+        includes.from("CHANGELOG.md")
         failOnWarning.set(true)
+
     }
-    pluginsConfiguration.html {
-        customAssets.from("images/logo-icon.svg")
+    pluginsConfiguration {
+        html {
+            customAssets.from("images/logo-icon.svg")
+        }
+        versioning {
+            version.set("0.1.0")
+//            olderVersionsDir.set(projectDir.resolve("dokka-docs"))
+        }
     }
     dokkaSourceSets.configureEach {
         externalDocumentationLinks.register("ktor") {

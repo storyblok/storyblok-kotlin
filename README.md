@@ -26,7 +26,7 @@
 
 ## 📦 Modules
 
-This monorepo consists of the the following modules:
+This monorepo consists of the following modules:
 
 | Module                     | Description                                                        |
 |----------------------------|--------------------------------------------------------------------|
