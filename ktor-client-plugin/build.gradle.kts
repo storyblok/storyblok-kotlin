@@ -9,8 +9,9 @@ plugins {
 }
 
 dokka {
-    moduleName.set("Storyblok Ktor Plugin")
+    moduleName.set("Storyblok Ktor Client Plugin")
     dokkaSourceSets.configureEach {
+        includes.from("Module.md")
         sourceLink {
             localDirectory.set(file("src/main/kotlin"))
             remoteUrl("https://github.com/storyblok/storyblok-kotlin/ktor-client-plugin/")
@@ -60,7 +61,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.ktor.client)
+            api(libs.ktor.client)
             implementation(libs.ktor.client.cio)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
