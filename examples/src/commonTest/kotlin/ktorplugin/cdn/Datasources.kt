@@ -26,12 +26,12 @@ class Datasources {
 		    install(DefaultRequest) {
 		        url {
 		            takeFrom("https://api.storyblok.com/v2/cdn/")
-		            parameters.append("token", "ask9soUkv02QqbZgmZdeDAtt")
+		            parameters.append("token", "58OZ7YzONi094irsjQWPCAtt")
 		        }
 		    }
 		}
 		
-		val response = client.get("datasources/313699")
+		val response = client.get("datasources/product-labels")
 		
 		println(response.body<JsonElement>())
     }
@@ -49,7 +49,7 @@ class Datasources {
 		    install(DefaultRequest) {
 		        url {
 		            takeFrom("https://api.storyblok.com/v2/cdn/")
-		            parameters.append("token", "ask9soUkv02QqbZgmZdeDAtt")
+		            parameters.append("token", "58OZ7YzONi094irsjQWPCAtt")
 		        }
 		    }
 		}
