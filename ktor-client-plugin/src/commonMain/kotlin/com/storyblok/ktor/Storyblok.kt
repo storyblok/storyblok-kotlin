@@ -9,6 +9,7 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.util.logging.KtorSimpleLogger
 import io.ktor.util.logging.Logger
 import kotlinx.coroutines.delay
+import kotlinx.serialization.json.Json
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.concurrent.atomics.fetchAndUpdate
@@ -50,7 +51,9 @@ public fun <T: Api.Config> HttpClientConfig<*>.Storyblok(api: Api<T>): ClientPlu
 
     expectSuccess = true
 
-    install(ContentNegotiation) { json() }
+    install(ContentNegotiation) {
+        json(Json { ignoreUnknownKeys = true })
+    }
 
     install(HttpRequestRetry) {
         noRetry() //clear default of retryOnExceptionOrServerErrors()
