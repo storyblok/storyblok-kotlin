@@ -71,6 +71,11 @@ public fun <T: Api.Config> HttpClientConfig<*>.Storyblok(api: Api<T>): ClientPlu
     return createClientPlugin("Storyblok", api.config) {
         config = this.pluginConfig
         with(api) { configure(config) }
+        onRequest { request, _ ->
+            when(request.method) {
+                HttpMethod.Put, HttpMethod.Post -> request.contentType(ContentType.Application.Json)
+            }
+        }
         // on user request or retries/redirects
         on(SendingRequest) { request, _ ->
             val backoffUntil = backoffUntil.fetchAndUpdate { maxOf(it, timeSource.markNow()) + minDelayBetweenRequests }
