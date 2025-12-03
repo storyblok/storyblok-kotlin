@@ -1,10 +1,10 @@
 # Module Storyblok Ktor Client Plugin
 
-A custom client plugin to simplify calling Storyblok's Content Delivery and Management APIs with the Ktor HTTP client.
+A custom client plugin to simplify calling Storyblok's [Content Delivery](https://www.storyblok.com/docs/api/content-delivery/v2) and [Management](https://www.storyblok.com/docs/api/management) APIs with the Ktor HTTP client.
 
 With out-of-the-box support for authentication, regions, cache invalidation, error and rate limit handling, and more.
 
-## Getting started
+## Quick start
 
 #### First, add the dependency to your project:
 
@@ -13,7 +13,7 @@ dependencies {
     implementation("com.storyblok:ktor-client-storyblok:0.1.0")
 }
 ```
-#### Then create an HttpClient, install the plugin, and start making requests to the [Content Delivery API](https://www.storyblok.com/docs/api/content-delivery/v2):
+#### Then create an HttpClient, install the plugin, and start making requests to the Content Delivery API:
 
 ```kotlin
 val client = HttpClient {
@@ -25,7 +25,7 @@ val response = client.get("stories/posts/my-third-post")
 println(response.body<JsonElement>())
 ```
 
-#### Or requests to the [Management API](https://www.storyblok.com/docs/api/management):
+#### Or requests to the Management API:
 
 ```kotlin
 val client = HttpClient {
@@ -35,7 +35,6 @@ val client = HttpClient {
 }
 
 val response = client.post("spaces/") {
-    contentType(ContentType.Application.Json)
     setBody("""{
       "space": {
         "name": "Example Space"
@@ -46,3 +45,6 @@ val response = client.post("spaces/") {
 println(response.body<JsonElement>())
 ```
 
+## Other resources
+
+You can find the full guide to the Storyblok Ktor Client Plugin inside [README.md](https://github.com/storyblok/storyblok-kotlin/blob/main/ktor-client-plugin/README.md#detailed-guide).
