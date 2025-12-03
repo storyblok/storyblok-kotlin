@@ -4,19 +4,19 @@ A custom client plugin to simplify calling Storyblok's Content Delivery and Mana
 
 With out-of-the-box support for authentication, regions, cache invalidation, error and rate limit handling, and more.
 
-## Getting Started
-### Add plugin dependency
+# Getting Started
+## Add plugin dependency
 
 The Storyblok plugin requires adding the `ktor-client-storyblok` artifact in your build script:
 
-#### Gradle (Kotlin)
+### Gradle (Kotlin)
 
 ```kotlin
 dependencies {
     implementation("com.storyblok:ktor-client-storyblok:0.1.0")
 }
 ```
-#### Maven
+### Maven
 
 ```xml
 <dependency>
@@ -26,7 +26,7 @@ dependencies {
 </dependency>
 ```
 
-### Install the plugin
+## Install the plugin
 
 To install the plugin, you need to pass it to the [`install`](https://api.ktor.io/ktor-client-core/io.ktor.client/-http-client-config/install.html) function inside your [client configuration block](https://ktor.io/docs/client-create-and-configure.html#configure-client), like this:
 
@@ -40,7 +40,7 @@ val client = HttpClient {
 
 API requests must be authenticated by providing a API access token. Learn more in the [Access Tokens concept](https://www.storyblok.com/docs/concepts/access-tokens).
 
-### Make a request
+## Make a request
 
 The plugin configures the client's base URL so you can just pass the relative path of the endpoint you want to call:
 
@@ -53,23 +53,23 @@ val response = client.get("stories") {
 }
 ```
 
-## Plugin Guide
-### Installation
+# Plugin Guide
+## Installation
 
 To install the plugin invoke [`Storyblok(api: Api)`](http://localhost:63342/storyblok-kotlin/build/dokka/html/ktor-client-plugin/com.storyblok.ktor/-storyblok.html) and pass it to the [`install`](https://api.ktor.io/ktor-client-core/io.ktor.client/-http-client-config/install.html) function inside your [client configuration block](https://ktor.io/docs/client-create-and-configure.html#configure-client).
 The [`Api`](http://localhost:63342/storyblok-kotlin/build/dokka/html/ktor-client-plugin/com.storyblok.ktor/-api/index.html) argument [configures](#client-configuration) the `HttpClient` for calling either the [Content Delivery API](https://www.storyblok.com/docs/api/content-delivery/v2) ([`Api.CDN`](http://localhost:63342/storyblok-kotlin/build/dokka/html/ktor-client-plugin/com.storyblok.ktor/-api/-c-d-n/index.html)) or the [Management API](https://www.storyblok.com/docs/api/management) ([`Api.MAPI`](http://localhost:63342/storyblok-kotlin/build/dokka/html/ktor-client-plugin/com.storyblok.ktor/-api/-m-a-p-i/index.html)). 
 > [!NOTE]
 > Only a single Storyblok plugin can be installed in any one `HttpClient` instance.
 
-### Plugin configuration
+## Plugin configuration
 
 The [`install`](https://api.ktor.io/ktor-client-core/io.ktor.client/-http-client-config/install.html) function also takes the [plugin configuration block](http://localhost:63342/storyblok-kotlin/build/dokka/html/ktor-client-plugin/com.storyblok.ktor/-api/-config/index.html) as the second argument, in the block you can customize the plugin configuration further:
 
-#### Authentication
+### Authentication
 
 As API requests must be authenticated, you'll need to provide an access token in the configuration block. The Content Delivery API requires a read-only access token, whilst the Management API requires either an [OAuth](http://localhost:63342/storyblok-kotlin/build/dokka/html/ktor-client-plugin/com.storyblok.ktor/-api/-config/-management/-access-token/-o-auth/index.html) or [personal](http://localhost:63342/storyblok-kotlin/build/dokka/html/ktor-client-plugin/com.storyblok.ktor/-api/-config/-management/-access-token/-personal/index.html) access token. You can learn more about authentication in the [Access Tokens concept](https://www.storyblok.com/docs/concepts/access-tokens).
 
-##### Content Delivery API
+#### Content Delivery API
 
 ```kotlin
 val client = HttpClient {
@@ -78,7 +78,7 @@ val client = HttpClient {
     }
 }
 ```
-##### Management API
+#### Management API
 
 ```kotlin
 val client = HttpClient {
@@ -89,7 +89,7 @@ val client = HttpClient {
     }
 }
 ```
-#### Specifying a region
+### Specifying a region
 
 By default the plugin uses the [EU](http://localhost:63342/storyblok-kotlin/build/dokka/html/ktor-client-plugin/com.storyblok.ktor/-api/-config/-region/-e-u/index.html) region, if your space is located in a [different region](http://localhost:63342/storyblok-kotlin/build/dokka/html/ktor-client-plugin/com.storyblok.ktor/-api/-config/-region/index.html) you can set it in the configuration block:
 
@@ -101,7 +101,7 @@ val client = HttpClient {
 }
 
 ```
-##### Custom region
+#### Custom region
 
 You can also specify a custom region by providing a custom base URL:
 
@@ -113,7 +113,7 @@ val client = HttpClient {
 }
 ```
 
-#### Rate limit handling
+### Rate limit handling
 
 The Content Delivery and Management APIs have different rate limits depending on the [type of request](https://www.storyblok.com/docs/api/content-delivery/v2/getting-started/rate-limit) and your [pricing plan](https://www.storyblok.com/pricing/technical-limits), these are expressed in requests per second.
 
@@ -141,7 +141,7 @@ The value of [`requestsPerSecond`](http://localhost:63342/storyblok-kotlin/build
 
 The plugin also implements a [retry mechanism](#retrying-failed-requests) along with an exponential backoff if the HTTP status `429 Too Many Requests` is received.
 
-#### Configuring default parameters for all requests
+### Configuring default parameters for all requests
 
 > [!IMPORTANT]
 > Default parameters are only available for the Content Delivery API.
@@ -159,36 +159,36 @@ val client = HttpClient {
 }
 ```
 
-##### CV parameter handling
+#### CV parameter handling
 
 By specifying a default value for the `cv` parameter you can retrieve a specific [cached version](ttps://www.storyblok.com/docs/api/content-delivery/v2/getting-started/cache-invalidation) of a resource.
 
-Otherwise, the plugin will automatically set the `cv` parameter to the latest version of the resource after the first request to the Content Delivery API.
+Otherwise, the plugin will automatically set the `cv` parameter to the latest version of the space after the first request to the Content Delivery API.
 
-### Client configuration
+## Client configuration
 
 Installing the plugin applies the following configuration to the `HttpClient` to simplify calling Storyblok's Content Delivery and Management APIs:
 > [!TIP]
 > You can override any part of this configuration inside your [client configuration block](https://ktor.io/docs/client-create-and-configure.html#configure-client) if needed.
 
-#### Response validation
+### Response validation
 
 The plugin sets the [`expectSuccess`](https://api.ktor.io/ktor-client-core/io.ktor.client/-http-client-config/expect-success.html?query=var%20expectSuccess:%20Boolean) property to `true` to throw exceptions for non-2xx responses.
 
-#### Retrying failed requests
+### Retrying failed requests
 
 The plugin installs the [`HttpRequestRetry`](https://ktor.io/docs/client-request-retry.html) plugin and configures 5 [retries](https://api.ktor.io/ktor-client-core/io.ktor.client.plugins/-http-request-retry-config/max-retries.html) with an [exponential delay](https://api.ktor.io/ktor-client-core/io.ktor.client.plugins/-http-request-retry-config/exponential-delay.html) for `Too Many Requests (429)` and `Server Errors (5xx)` responses.
 
 > [!NOTE]
 > When a request is retried the plugin applies the delay to all pending requests made with the same `HttpClient` instance. 
 
-#### Content negotiation and serialization
+### Content negotiation and serialization
 
 The plugin installs the [`ContentNegotiation`](https://ktor.io/docs/client-serialization.html) plugin and configures the [JSON serializer](https://ktor.io/docs/client-serialization.html#register_json). The JSON serializer is configured to [ignore unknown keys](https://kotlinlang.org/api/kotlinx.serialization/kotlinx-serialization-json/kotlinx.serialization.json/-json-builder/ignore-unknown-keys.html) and the content type of request bodies are automatically set to `application/json`. 
 
 This allows you to use a [`JsonElement`](https://kotlinlang.org/api/kotlinx.serialization/kotlinx-serialization-json/kotlinx.serialization.json/-json-element/) or a custom class as the request or response body:
 
-##### JsonElement serialization
+#### JsonElement serialization
 
 ```kotlin
 val response = client.post("spaces/288868932106293/stories") {
@@ -208,7 +208,7 @@ val response = client.post("spaces/288868932106293/stories") {
 println("Story ${response.body<JsonObject>().getValue("story").jsonObject["name"]} created")
 ```
 
-##### Custom class serialization
+#### Custom class serialization
 
 ```kotlin
 @Serializable
@@ -235,4 +235,4 @@ val response = client.post("spaces/288868932106293/stories") {
 println("Story ${response.body<Body>().story.name} created")
 ```
 
-#### Caching
+### Caching
