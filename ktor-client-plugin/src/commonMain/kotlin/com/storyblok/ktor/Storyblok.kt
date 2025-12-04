@@ -43,10 +43,10 @@ private val LOGGER: Logger = KtorSimpleLogger("com.storyblok.ktor.Storyblok")
 @OptIn(ExperimentalAtomicApi::class)
 public fun <T: Api.Config> HttpClientConfig<*>.Storyblok(api: Api<T>): ClientPlugin<T> {
 
-    lateinit var config: T
+    var config: T? = null
 
-    val timeSource by lazy { config.timeSource }
-    val minDelayBetweenRequests by lazy { 1.seconds / config.requestsPerSecond }
+    val timeSource by lazy { config!!.timeSource }
+    val minDelayBetweenRequests by lazy { 1.seconds / config!!.requestsPerSecond }
     val backoffUntil by lazy { AtomicReference(timeSource.markNow()) } // to share back off across all requests pre-flight
 
     expectSuccess = true

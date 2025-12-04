@@ -4,6 +4,7 @@ import com.storyblok.ktor.Api.CDN
 import com.storyblok.ktor.Api.MAPI
 import com.storyblok.ktor.Api.Config.Management.AccessToken
 import com.storyblok.ktor.Api.Config.Management.AccessToken.OAuth
+import com.storyblok.ktor.Api.Config.Version.Draft
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.mock.*
@@ -132,6 +133,28 @@ class StoryblokTest {
             maxOf(firstRequestDelay, secondRequestDelay) + maxOf(firstRetryDelay, secondRetryDelay),
             testScheduler.currentTime.milliseconds
         )
+    }
+
+    @Test
+    fun `supports reconfiguration after installation`() = runTest {
+        val client = HttpClient(MockEngine.create {
+            reuseHandlers = false
+            addHandler {
+                assertEquals("published", it.url.parameters["version"])
+                assertEquals("mock-api-key", it.url.parameters["token"])
+                respondOk()
+            }
+            addHandler {
+                assertEquals("draft", it.url.parameters["version"])
+                assertEquals("mock-api-key", it.url.parameters["token"])
+                respondOk()
+            }
+        }) {
+            install(Storyblok(CDN)) { accessToken = "mock-api-key" }
+        }
+        client.get("stories/mock-slug")
+        client.config { install(Storyblok(CDN)) { version = Draft } }
+            .get("stories/mock-slug")
     }
 
     private fun MockRequestHandleScope.respondJson(content: String) =

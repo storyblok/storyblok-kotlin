@@ -23,7 +23,7 @@ private val LOGGER: Logger = KtorSimpleLogger("com.storyblok.ktor.Api")
  * [HttpClient][io.ktor.client.HttpClient] for either the [Content Delivery API][CDN] or the [Management API][MAPI]
  */
 public sealed class Api<T : Api.Config>(internal val config: () -> T) {
-    internal abstract fun HttpClientConfig<*>.configure(config: () -> T)
+    internal abstract fun HttpClientConfig<*>.configure(config: () -> T?)
     internal open fun ClientPluginBuilder<*>.configure(config: T) {}
 
     /**
@@ -32,9 +32,9 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
      * @see Storyblok
      */
     public object MAPI : Api<Management>(::Management) {
-        override fun HttpClientConfig<*>.configure(config: () -> Management) {
+        override fun HttpClientConfig<*>.configure(config: () -> Management?) {
             install(DefaultRequest) {
-                with(config()) {
+                with(config() ?: return@install) {
                     url.takeFrom(region.mapiUrl)
                     headers.append(HttpHeaders.Authorization, accessToken.value)
                 }
@@ -49,13 +49,13 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
      */
     public object CDN : Api<Content>(::Content) {
 
-        override fun HttpClientConfig<*>.configure(config: () -> Content) {
+        override fun HttpClientConfig<*>.configure(config: () -> Content?) {
             install(HttpCache) {
                 isShared = true
             }
             install(DefaultRequest) {
                 url {
-                    with(config()) {
+                    with(config() ?: return@url) {
                         takeFrom(region.cdnUrl)
                         parameters.append("token", accessToken)
                         parameters.append("version", version.value)

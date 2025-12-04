@@ -96,7 +96,7 @@ By default the plugin uses the [EU](http://localhost:63342/storyblok-kotlin/buil
 ```kotlin
 val client = HttpClient {
     install(Storyblok(CDN)) {
-        region = US
+        region = USA
     }
 }
 
@@ -119,9 +119,6 @@ The Content Delivery and Management APIs have different rate limits depending on
 
 The plugin implements *API throttling* to slow down the API requests by introducing intermediate delays. You can specify the [maximum number of requests per second allowed](http://localhost:63342/storyblok-kotlin/build/dokka/html/ktor-client-plugin/com.storyblok.ktor/-api/-config/requests-per-second.html) in the configuration block:
 
-> [!NOTE]
-> The value of [`requestsPerSecond`](http://localhost:63342/storyblok-kotlin/build/dokka/html/ktor-client-plugin/com.storyblok.ktor/-api/-config/requests-per-second.html) defaults to `1000` for the Content Delivery API and `6` for the Management API.
-
 ```kotlin
 val client = HttpClient {
     install(Storyblok(MAPI)) {
@@ -129,6 +126,9 @@ val client = HttpClient {
     }
 }
 ```
+
+> [!NOTE] 
+> The value of [`requestsPerSecond`](http://localhost:63342/storyblok-kotlin/build/dokka/html/ktor-client-plugin/com.storyblok.ktor/-api/-config/requests-per-second.html) defaults to `1000` for the Content Delivery API and `6` for the Management API.
 
 > [!TIP]
 > As the rate limit can differ on the type of request and you can only configure `requestsPerSecond` per `HttpClient` instance, use [HttpClient.config](https://api.ktor.io/ktor-client-core/io.ktor.client/-http-client/config.html) to clone your client when you need to make requests with a different rate limit: 
