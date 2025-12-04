@@ -7,24 +7,24 @@ With out-of-the-box support for authentication, regions, cache invalidation, err
 # Getting Started
 ## Add plugin dependency
 
-The Storyblok plugin requires adding the `ktor-client-storyblok` artifact in your build script:
+The Storyblok plugin requires adding the `ktor-client-storyblok` artifact in your `build.gradle.kts`:
 
-### Gradle (Kotlin)
 
 ```kotlin
 dependencies {
     implementation("com.storyblok:ktor-client-storyblok:0.1.0")
 }
 ```
-### Maven
 
-```xml
-<dependency>
-    <groupId>com.storyblok</groupId>
-    <artifactId>ktor-client-storyblok-jvm</artifactId>
-    <version>0.1.0</version>
-</dependency>
-```
+> [!NOTE]
+> The plugin ships with the Ktor CIO engine (`io.ktor:ktor-client-cio`) as a dependency so it works out of the box with JVM, Android, Native, JavaScript and WasmJs. If you want to use a different engine, you can exclude CIO in your `build.gradle.kts`:
+> ```kotlin
+> dependencies {
+>     implementation("com.storyblok:ktor-client-storyblok:0.1.0") {
+>         exclude(group = "io.ktor", module = "ktor-client-cio")
+>     }
+> }
+> ```
 
 ## Install the plugin
 
@@ -190,7 +190,7 @@ The plugin installs the [`HttpRequestRetry`](https://ktor.io/docs/client-request
 
 Responses from the Content Delivery API contain the `Cache-Control` and `ETag` headers, to respect these, the plugin installs the [`HttpCache`](https://ktor.io/docs/client-caching.html) plugin and configures a shared in-memory cache.
 
-This means subsequent requests for the same resource made with the same `HttpClient` instance will be served from the cache instead of making a network request.
+This means subsequent requests for the same resource made with the same `HttpClient` instance will be served from the cache instead of performing a network request.
 
 ### Content negotiation and serialization
 
