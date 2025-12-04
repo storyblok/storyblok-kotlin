@@ -3,12 +3,17 @@ package com.storyblok.ktor
 import com.storyblok.ktor.Api.CDN
 import com.storyblok.ktor.Api.MAPI
 import com.storyblok.ktor.Api.Config.Management.AccessToken
+import com.storyblok.ktor.Api.Config.Management.AccessToken.OAuth
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.mock.*
 import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.http.ContentType.Application.Json
+import io.ktor.http.HttpHeaders.ContentType
+import io.ktor.http.HttpMethod.Companion.Post
+import io.ktor.http.HttpMethod.Companion.Put
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
@@ -28,6 +33,25 @@ class StoryblokTest {
             install(Storyblok(CDN)) { accessToken = "mock-api-key" }
         }
         assertFailsWith<ClientRequestException> { client.get("stories/mock-slug") }
+    }
+
+    @Test
+    fun `adds json content type header on put and post requests`() = runTest {
+        val client = HttpClient(MockEngine.create {
+            addHandler {
+                when(it.method) {
+                    Put, Post -> assertEquals(Json.toString(), it.headers[ContentType])
+                    else -> assertNull(it.headers[ContentType])
+                }
+                respondOk()
+            }
+        }) {
+            install(Storyblok(MAPI)) { accessToken = OAuth("mock-api-key") }
+        }
+        client.get("spaces/123/stories/1234")
+        client.post("spaces/123/stories/1234")
+        client.put("spaces/123/stories/1234")
+        client.delete("spaces/123/stories/1234")
     }
 
     @Test
@@ -89,7 +113,7 @@ class StoryblokTest {
                 constantDelay(5.seconds.inWholeMilliseconds, 0)
             }
             install(Storyblok(MAPI)) {
-                accessToken = AccessToken.OAuth("mock-api-key")
+                accessToken = OAuth("mock-api-key")
                 requestsPerSecond = 1
                 timeSource = testTimeSource
             }
@@ -111,28 +135,6 @@ class StoryblokTest {
     }
 
     private fun MockRequestHandleScope.respondJson(content: String) =
-        respond(content, headers = headersOf(HttpHeaders.ContentType, "${ContentType.Application.Json}"))
+        respond(content, headers = headersOf(ContentType, "${Json}"))
 
 }
-
-//suspend fun main() {
-//
-//    val client = HttpClient(CIO) {
-//        install(Logging) {
-//            level = LogLevel.ALL
-//            logger = object : Logger { override fun log(message: String) { println(message) } }
-//        }
-//        install(Storyblok) {
-//            accessToken = "dpG18erLZFJTbIR5sciKFAtt" //required
-//            baseUrl = "https://api.storyblok.com/v2/" // optional
-//            version = Version.Draft // optional, defaults to published
-//            cv = "1735815318" // optional, set when you make your first API call to the /stories/ endpoint
-//            language = "de" // optional
-//            fallbackLanguage = "en" // optional
-//        }
-//    }
-//
-//    val response = client.get("stories/hey-rick")
-//    println(response.body<JsonObject>())
-//
-//}
