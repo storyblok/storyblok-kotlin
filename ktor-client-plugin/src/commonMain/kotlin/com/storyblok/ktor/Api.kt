@@ -50,7 +50,9 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
     public object CDN : Api<Content>(::Content) {
 
         override fun HttpClientConfig<*>.configure(config: () -> Content) {
-            install(HttpCache)
+            install(HttpCache) {
+                isShared = true
+            }
             install(DefaultRequest) {
                 url {
                     with(config()) {
@@ -83,12 +85,12 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
      */
     public sealed class Config {
         /**
-         * Optionally specify the [region][Region] depending on the server location of your space.
+         * Optionally, specify the [region][Region] depending on the server location of your space.
          * Defaults to the [European Union][EU]
          */
         public var region: Region = EU
         /**
-         * Optionally specify the maximum number of API requests allowed per second.
+         * Optionally, specify the maximum number of API requests allowed per second.
          *
          * Defaults to 1000 requests per second for the [Content Delivery API][Content.requestsPerSecond] and 6 requests per second for the [Management API][Management.requestsPerSecond].
          *
@@ -100,7 +102,7 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
         internal var timeSource: TimeSource.WithComparableMarks = TimeSource.Monotonic
 
         /**
-         * Optionally specify an [inheritor][Region] of `Region` when [configuring][Api.Config.region]
+         * Optionally, specify an [inheritor][Region] of `Region` when [configuring][Api.Config.region]
          * the plugin depending on the server location of your space. Defaults to the [European Union][EU].
          *
          * Learn more in the [Content Delivery API Reference](https://www.storyblok.com/docs/api/content-delivery/v2)
@@ -125,7 +127,7 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
         }
 
         /**
-         * Optionally specify an [inheritor][Version] of `Version` when [configuring][Api.Config.Content.version]
+         * Optionally, specify an [inheritor][Version] of `Version` when [configuring][Api.Config.Content.version]
          * the plugin for the [Content Delivery API][Api.CDN] that will affect all requests. Defaults to [Published].
          *
          * Resources have two potential versions: draft (unpublished) or published.
@@ -147,7 +149,7 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
             /** It is necessary to specify an API access token to [authenticate requests to the Content Delivery API](https://www.storyblok.com/docs/api/content-delivery/v2/getting-started/authentication). */
             public lateinit var accessToken: String
             /**
-             * Optionally specify the default language to retrieve resources.
+             * Optionally, specify the default language to retrieve resources.
              *
              * Accepts any language code configured in the Storyblok space.
              *
@@ -155,7 +157,7 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
              * */
             public var language: String? = null
             /**
-             * Optionally specify the default fallback language to handle untranslated fields.
+             * Optionally, specify the default fallback language to handle untranslated fields.
              *
              * Accepts any language code configured in the Storyblok space.
              *
@@ -163,10 +165,10 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
              * */
             public var fallbackLanguage: String? = null
             /**
-             * Optionally specify the [version][Version] to retrieve all resources. Defaults to [Published].
+             * Optionally, specify the [version][Version] to retrieve all resources. Defaults to [Published].
              */
-            public var version: Version = Version.Published
-            /** Optionally specify the cached version Unix timestamp (see [Cache Invalidation](https://www.storyblok.com/docs/api/content-delivery/v2/getting-started/cache-invalidation)).
+            public var version: Version = Published
+            /** Optionally, specify the cached version Unix timestamp (see [Cache Invalidation](https://www.storyblok.com/docs/api/content-delivery/v2/getting-started/cache-invalidation)).
              *
              * Note this is set automatically, set this property manually if you want to retrieve a specific cached version of a resource.
              *
@@ -175,7 +177,7 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
             public var cv: String? = null
 
             /**
-             * Optionally specify the maximum number of API requests allowed per second, defaults to 1000.
+             * Optionally, specify the maximum number of API requests allowed per second, defaults to 1000.
              */
             override var requestsPerSecond: Int = 1000
         }
@@ -191,7 +193,7 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
              * */
             public lateinit var accessToken: AccessToken
             /**
-             * Optionally specify the maximum number of API requests allowed per second, defaults to 6.
+             * Optionally, specify the maximum number of API requests allowed per second, defaults to 6.
              */
             override var requestsPerSecond: Int = 6
             /**

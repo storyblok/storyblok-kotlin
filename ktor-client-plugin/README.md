@@ -1,4 +1,4 @@
-# Storyblok Ktor Client Plugin
+# <ins>Storyblok Ktor Client Plugin</ins>
 
 A custom client plugin to simplify calling Storyblok's Content Delivery and Management APIs with the Ktor HTTP client.
 
@@ -127,7 +127,7 @@ val client = HttpClient {
 }
 ```
 
-The value of [`requestsPerSecond`](http://localhost:63342/storyblok-kotlin/build/dokka/html/ktor-client-plugin/com.storyblok.ktor/-api/-config/requests-per-second.html) defaults to `1000` for the Content Delivery API and `6` for the Management API.
+> [!NOTE] The value of [`requestsPerSecond`](http://localhost:63342/storyblok-kotlin/build/dokka/html/ktor-client-plugin/com.storyblok.ktor/-api/-config/requests-per-second.html) defaults to `1000` for the Content Delivery API and `6` for the Management API.
 
 > [!TIP]
 > As the rate limit can differ on the type of request and you can only configure `requestsPerSecond` per `HttpClient` instance, use [HttpClient.config](https://api.ktor.io/ktor-client-core/io.ktor.client/-http-client/config.html) to clone your client when you need to make requests with a different rate limit: 
@@ -182,6 +182,15 @@ The plugin installs the [`HttpRequestRetry`](https://ktor.io/docs/client-request
 > [!NOTE]
 > When a request is retried the plugin applies the delay to all pending requests made with the same `HttpClient` instance. 
 
+### Caching
+
+> [!IMPORTANT]
+> Caching is only implemented for the Content Delivery API.
+
+Responses from the Content Delivery API contain the `Cache-Control` and `ETag` headers, to respect these, the plugin installs the [`HttpCache`](https://ktor.io/docs/client-caching.html) plugin and configures a shared in-memory cache.
+
+This means subsequent requests for the same resource will be served from the cache instead of making a network request.
+
 ### Content negotiation and serialization
 
 The plugin installs the [`ContentNegotiation`](https://ktor.io/docs/client-serialization.html) plugin and configures the [JSON serializer](https://ktor.io/docs/client-serialization.html#register_json). The JSON serializer is configured to [ignore unknown keys](https://kotlinlang.org/api/kotlinx.serialization/kotlinx-serialization-json/kotlinx.serialization.json/-json-builder/ignore-unknown-keys.html) and the content type of request bodies are automatically set to `application/json`. 
@@ -234,5 +243,3 @@ val response = client.post("spaces/288868932106293/stories") {
 
 println("Story ${response.body<Body>().story.name} created")
 ```
-
-### Caching
