@@ -35,6 +35,8 @@ jobs:
 #            os: ubuntu-latest
 #          - target: testAndroidHostTest
 #            os: ubuntu-latest
+          - target: :ktor-client-plugin:jsTest
+            os: ubuntu-latest
     runs-on: ${{ matrix.os }}
 
     steps:
