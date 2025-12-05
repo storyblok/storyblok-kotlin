@@ -1,12 +1,20 @@
 name: Publish
+
 on:
   release:
     types: [released, prereleased]
+
 jobs:
-  publish:
-    name: Release build and publish
-    runs-on: macOS-latest
+  dokka:
+    name: Generate and publish documentation
+    runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v5
       - name: Generate documentation
         run: ./gradlew :dokkaGenerate
       - name: Uploading build folder
@@ -20,13 +28,16 @@ jobs:
           branch: gh-pages
           folder: build/dokka/html
           target-folder: docs
-      - name: Check out code
-        uses: actions/checkout@v4
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
+  publish:
+    name: Release build and publish
+    runs-on: macOS-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: 21
+      - uses: gradle/actions/setup-gradle@v5
 #      - name: Publish to MavenCentral
 #        run: ./gradlew publishToMavenCentral --no-configuration-cache
 #        env:
