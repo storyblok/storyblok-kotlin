@@ -1,0 +1,1 @@
+sourceset_dependencies = '{":ktor-client-plugin/commonMain":[],":ktor-client-plugin/jsMain":[":ktor-client-plugin/webMain"],":ktor-client-plugin/jvmMain":[":ktor-client-plugin/commonMain"],":ktor-client-plugin/webMain":[":ktor-client-plugin/commonMain"]}'
