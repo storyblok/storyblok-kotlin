@@ -62,9 +62,16 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(libs.ktor.client)
-            api(libs.ktor.client.cio)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
+        }
+
+        jvmMain.dependencies {
+            api(libs.ktor.client.cio)
+        }
+
+        jsMain.dependencies {
+            api(libs.ktor.client.js)
         }
 
         commonTest.dependencies {
