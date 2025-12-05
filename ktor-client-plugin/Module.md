@@ -35,11 +35,11 @@ val client = HttpClient {
 }
 
 val response = client.post("spaces/") {
-    setBody("""{
-      "space": {
-        "name": "Example Space"
-      }
-    }""")
+    setBody(buildJsonObject {
+        putJsonObject("space") {
+            put("name", "Example Space")
+        }
+    })
 }
 
 println(response.body<JsonElement>())
