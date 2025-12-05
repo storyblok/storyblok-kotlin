@@ -8,8 +8,16 @@ plugins {
 kotlin {
     jvm()
     js {
-        browser()
-        nodejs()
+        browser {
+            testTask {
+                useMocha { timeout = "5s" }
+            }
+        }
+        nodejs {
+            testTask {
+                useMocha { timeout = "5s" }
+            }
+        }
     }
 
 //    androidLibrary {
