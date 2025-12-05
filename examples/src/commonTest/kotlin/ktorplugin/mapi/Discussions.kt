@@ -1,12 +1,11 @@
 package ktorplugin.mapi
 
+import com.storyblok.ktor.Api.*
+import com.storyblok.ktor.Api.Config.Management.AccessToken.OAuth
+import com.storyblok.ktor.Storyblok
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.DefaultRequest
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonElement
 import kotlin.test.Test
@@ -21,18 +20,13 @@ class Discussions {
     fun `Create a Comment`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.post("spaces/288868932106293/discussions/456/comments") {
-		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "comment": {
 		        "message_json": [
@@ -56,18 +50,13 @@ class Discussions {
     fun `Create a Discussion`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.post("spaces/288868932106293/stories/12367/discussions") {
-		    contentType(ContentType.Application.Json)
 		    setBody("""{"discussion":{"block_uid":"f7bd92e3-b309-4441-a8a0-654e499fefc8","comment":{"message_json":[{"text":"this is a comment ","type":"text"},{"attrs":{"id":99734,"label":"Fortune Ikechi"},"type":"mention"}]},"component":"feature","fieldname":"name","lang":"default","title":"Name"}}""")
 		}
 		
@@ -82,14 +71,10 @@ class Discussions {
     fun `Delete a Comment`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.delete("spaces/288868932106293/discussions/456/comments/789")
@@ -105,18 +90,13 @@ class Discussions {
     fun `Resolve a Discussion`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.put("spaces/288868932106293/discussions/49468") {
-		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "discussion": {
 		        "solved_at": "2024-02-06T22:07:04.729Z"
@@ -135,14 +115,10 @@ class Discussions {
     fun `Retrieve a Specific Discussion`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.get("spaces/288868932106293/discussions/49473")
@@ -158,14 +134,10 @@ class Discussions {
     fun `Retrieve Idea Discussions Comments`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.get("spaces/288868932106293/ideas/1a2b3456-c7d8-9ef1-gh01-11i2jk13l14m/discussions")
@@ -181,14 +153,10 @@ class Discussions {
     fun `Retrieve Multiple Comments from a Specific Discussion`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.get("spaces/288868932106293/discussions/49471/comments")
@@ -204,14 +172,10 @@ class Discussions {
     fun `Retrieve Multiple Discussions`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.get("spaces/288868932106293/stories/1234/discussions") {
@@ -233,14 +197,10 @@ class Discussions {
     fun `Retrieve My Discussions`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.get("spaces/288868932106293/mentioned_discussions/me")
@@ -256,18 +216,13 @@ class Discussions {
     fun `Update a Comment`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.put("spaces/288868932106293/discussions/2345/comments/456") {
-		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "comment": {
 		        "message_json": [

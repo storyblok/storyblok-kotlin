@@ -1,12 +1,11 @@
 package ktorplugin.mapi
 
+import com.storyblok.ktor.Api.*
+import com.storyblok.ktor.Api.Config.Management.AccessToken.OAuth
+import com.storyblok.ktor.Storyblok
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.DefaultRequest
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonElement
 import kotlin.test.Test
@@ -21,18 +20,13 @@ class Components {
     fun `Create a Component`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.post("spaces/288868932106293/components/") {
-		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "component": {
 		        "display_name": null,
@@ -62,14 +56,10 @@ class Components {
     fun `Delete a Component`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.delete("spaces/288868932106293/components/4321")
@@ -85,18 +75,13 @@ class Components {
     fun `Restore a Component Version`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.put("spaces/288868932106293/versions/279820276") {
-		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "model": "components",
 		      "model_id": 6826721
@@ -114,14 +99,10 @@ class Components {
     fun `Retrieve a Single Component Version`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.get("spaces/288868932106293/components/6826721/component_versions/279820267")
@@ -137,14 +118,10 @@ class Components {
     fun `Retrieve a Single Component`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.get("spaces/288868932106293/components/4123")
@@ -160,14 +137,10 @@ class Components {
     fun `Retrieve Component Versions`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.get("spaces/288868932106293/versions") {
@@ -188,14 +161,10 @@ class Components {
     fun `Retrieve Multiple Components`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.get("spaces/288868932106293/components/")
@@ -211,18 +180,13 @@ class Components {
     fun `Update a Component`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.put("spaces/288868932106293/components/4123") {
-		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "component": {
 		        "display_name": null,

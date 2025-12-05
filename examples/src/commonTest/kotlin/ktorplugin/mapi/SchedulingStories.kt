@@ -1,12 +1,11 @@
 package ktorplugin.mapi
 
+import com.storyblok.ktor.Api.*
+import com.storyblok.ktor.Api.Config.Management.AccessToken.OAuth
+import com.storyblok.ktor.Storyblok
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.DefaultRequest
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonElement
 import kotlin.test.Test
@@ -21,18 +20,13 @@ class SchedulingStories {
     fun `Create a Story Schedule`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.post("spaces/288868932106293/story_schedulings") {
-		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "story_scheduling": {
 		        "language": "pt-br",
@@ -53,14 +47,10 @@ class SchedulingStories {
     fun `Delete a Story Schedule`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.delete("spaces/288868932106293/story_schedulings/123/")
@@ -76,14 +66,10 @@ class SchedulingStories {
     fun `Retrieve Multiple Story Schedules`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.get("spaces/288868932106293/story_schedulings")
@@ -99,14 +85,10 @@ class SchedulingStories {
     fun `Retrieve One Story Schedule`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.get("spaces/288868932106293/story_schedulings/91")
@@ -122,18 +104,13 @@ class SchedulingStories {
     fun `Update a Story Schedule`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.put("spaces/288868932106293/story_schedulings/123") {
-		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "story_scheduling": {
 		        "publish_at": "2024-08-26T06:56:00.000Z"

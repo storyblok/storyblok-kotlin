@@ -1,12 +1,11 @@
 package ktorplugin.mapi
 
+import com.storyblok.ktor.Api.*
+import com.storyblok.ktor.Api.Config.Management.AccessToken.OAuth
+import com.storyblok.ktor.Storyblok
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.DefaultRequest
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonElement
 import kotlin.test.Test
@@ -21,18 +20,13 @@ class Datasources {
     fun `Create a Datasource`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.post("spaces/288868932106293/datasources/") {
-		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "datasource": {
 		        "name": "Labels for Website",
@@ -52,18 +46,13 @@ class Datasources {
     fun `Create a Datasource 2`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.post("spaces/288868932106293/datasources/") {
-		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "datasource": {
 		        "dimensions_attributes": [
@@ -93,14 +82,10 @@ class Datasources {
     fun `Delete a Datasource`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.delete("spaces/288868932106293/datasources/91")
@@ -116,14 +101,10 @@ class Datasources {
     fun `Retrieve a Single Datasource`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.get("spaces/288868932106293/datasources/91")
@@ -139,14 +120,10 @@ class Datasources {
     fun `Retrieve Multiple Datasources`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.get("spaces/288868932106293/datasources/") {
@@ -166,18 +143,13 @@ class Datasources {
     fun `Update a Datasource`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.put("spaces/288868932106293/datasources/91") {
-		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "datasource": {
 		        "name": "Labels for Website",
@@ -197,18 +169,13 @@ class Datasources {
     fun `Update a Datasource 2`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.put("spaces/288868932106293/datasources/91") {
-		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "datasource": {
 		        "dimensions_attributes": [

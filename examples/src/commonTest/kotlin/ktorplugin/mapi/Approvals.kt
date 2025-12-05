@@ -1,12 +1,11 @@
 package ktorplugin.mapi
 
+import com.storyblok.ktor.Api.*
+import com.storyblok.ktor.Api.Config.Management.AccessToken.OAuth
+import com.storyblok.ktor.Storyblok
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.DefaultRequest
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonElement
 import kotlin.test.Test
@@ -21,18 +20,13 @@ class Approvals {
     fun `Create Approval`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.post("spaces/288868932106293/approvals/") {
-		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "approval": {
 		        "approver_id": 1028,
@@ -52,18 +46,13 @@ class Approvals {
     fun `Create Release Approval`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.post("spaces/288868932106293/approvals/") {
-		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "approval": {
 		        "approver_id": 1030,
@@ -84,14 +73,10 @@ class Approvals {
     fun `Delete an Approval`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.delete("spaces/288868932106293/approvals/5405")
@@ -107,14 +92,10 @@ class Approvals {
     fun `Retrieve a Single Approval`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.get("spaces/288868932106293/approvals/5405")
@@ -130,14 +111,10 @@ class Approvals {
     fun `Retrieve Multiple Approvals`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.get("spaces/288868932106293/approvals") {

@@ -1,12 +1,10 @@
 package ktorplugin.cdn
 
+import com.storyblok.ktor.Api.*
+import com.storyblok.ktor.Storyblok
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.DefaultRequest
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonElement
 import kotlin.test.Test
@@ -22,12 +20,8 @@ class Assets {
 
         val client = HttpClient {
 			expectSuccess = true
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://api.storyblok.com/v2/cdn/")
-		            parameters.append("token", "cNGPp8cvuCfoAZB3g3eHrAtt")
-		        }
+		    install(Storyblok(CDN)) {
+		        accessToken = "cNGPp8cvuCfoAZB3g3eHrAtt"
 		    }
 		}
 		

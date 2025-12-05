@@ -1,12 +1,11 @@
 package ktorplugin.mapi
 
+import com.storyblok.ktor.Api.*
+import com.storyblok.ktor.Api.Config.Management.AccessToken.OAuth
+import com.storyblok.ktor.Storyblok
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.DefaultRequest
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonElement
 import kotlin.test.Test
@@ -21,18 +20,13 @@ class IdeationRoom {
     fun `Create an Idea`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.post("spaces/288868932106293/ideas") {
-		    contentType(ContentType.Application.Json)
 		    setBody("""{"idea":{"assignee":null,"author":{"avatar":"avatars/67891/838dcb304c/avatar.jpg","friendly_name":"Jon Doe","id":67891,"userid":"test@email.com"},"bookmarks":[],"content":{},"deleted_at":null,"description":"First idea","internal_tag_ids":["12345"],"internal_tags_list":[{"id":12345,"name":"docs"}],"is_private":true,"name":"My first idea","status":"draft","stories":[],"story_ids":[]}}""")
 		}
 		
@@ -47,14 +41,10 @@ class IdeationRoom {
     fun `Delete an Idea`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.delete("spaces/288868932106293/ideas/123ab45c-6d78-9101-11ef-213gh1i4j1k5")
@@ -70,18 +60,13 @@ class IdeationRoom {
     fun `Restore an Idea`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.put("spaces/288868932106293/ideas/123ab45c-6d78-9101-11ef-213gh1i4j1k5") {
-		    contentType(ContentType.Application.Json)
 		    setBody("""undefined""")
 		}
 		
@@ -96,14 +81,10 @@ class IdeationRoom {
     fun `Retrieve Discussions in Idea`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.get("spaces/288868932106293/ideas/1a2b3456-c7d8-9ef1-gh01-11i2jk13l14m/discussions")
@@ -119,14 +100,10 @@ class IdeationRoom {
     fun `Retrieve Multiple Ideas`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.get("spaces/288868932106293/ideas/")
@@ -142,14 +119,10 @@ class IdeationRoom {
     fun `Retrieve One Idea`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.get("spaces/288868932106293/ideas/1a2b3456-c7d8-9ef1-gh01-11i2jk13l14m")
@@ -165,18 +138,13 @@ class IdeationRoom {
     fun `Update an Idea`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.put("spaces/288868932106293/ideas/ab123cd4-5e6f-7gh8-9ij1-01k112l13m1n") {
-		    contentType(ContentType.Application.Json)
 		    setBody("""{"idea":{"assignee":null,"author":{"avatar":"avatars/67891/838dcb304c/avatar.jpg","friendly_name":"Jon Doe","id":67891,"userid":"test@email.com"},"bookmarks":[],"content":{},"deleted_at":null,"description":"First idea","internal_tag_ids":["12345"],"internal_tags_list":[{"id":12345,"name":"docs"}],"is_private":true,"name":"My first idea","status":"draft","stories":[],"story_ids":[]}}""")
 		}
 		

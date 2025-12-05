@@ -1,12 +1,11 @@
 package ktorplugin.mapi
 
+import com.storyblok.ktor.Api.*
+import com.storyblok.ktor.Api.Config.Management.AccessToken.OAuth
+import com.storyblok.ktor.Storyblok
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.DefaultRequest
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonElement
 import kotlin.test.Test
@@ -21,18 +20,13 @@ class WorkflowStage {
     fun `Create a Workflow Stage`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.post("spaces/space_id/workflow_stages") {
-		    contentType(ContentType.Application.Json)
 		    setBody("""{"workflow_stage":{"after_publish_id":561398,"allow_admin_change":true,"allow_admin_publish":true,"allow_all_stages":false,"allow_all_users":false,"allow_editor_change":false,"allow_publish":true,"color":"#2d3v22","is_default":false,"name":"testb","position":3,"space_role_ids":[111111,222222],"user_ids":[123123],"workflow_id":43112,"workflow_stage_ids":[561398]}}""")
 		}
 		
@@ -47,14 +41,10 @@ class WorkflowStage {
     fun `Delete a Workflow Stage`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.delete("spaces/288868932106293/workflow_stages/18")
@@ -70,14 +60,10 @@ class WorkflowStage {
     fun `Retrieve a Single Workflow Stage`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.get("spaces/288868932106293/workflow_stages/18")
@@ -93,14 +79,10 @@ class WorkflowStage {
     fun `Retrieve Multiple Workflow Stages`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.get("spaces/288868932106293/workflow_stages/")
@@ -116,18 +98,13 @@ class WorkflowStage {
     fun `Update a Workflow Stage`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.put("spaces/space_id/workflow_stages/18") {
-		    contentType(ContentType.Application.Json)
 		    setBody("""{"workflow_stage":{"after_publish_id":561398,"allow_admin_change":true,"allow_admin_publish":false,"allow_all_stages":false,"allow_all_users":false,"allow_editor_change":true,"allow_publish":true,"color":"#fff","is_default":true,"name":"an updated stage ","position":2,"space_role_ids":[232323],"user_ids":[343434],"workflow_stage_ids":[561398]}}""")
 		}
 		
@@ -142,18 +119,13 @@ class WorkflowStage {
     fun `Create a Workflow Stage Change`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.post("spaces/space_id/workflow_stage_changes/") {
-		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "workflow_stage_change": {
 		        "story_id": 123,
@@ -173,14 +145,10 @@ class WorkflowStage {
     fun `Retrieve Multiple Workflow Stage Changes`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = false
-		    install(ContentNegotiation) { json() }
-		    install(DefaultRequest) {
-		        url {
-		            takeFrom("https://mapi.storyblok.com/v1/")
-		            headers.append("Authorization", "YOUR_OAUTH_TOKEN")
-		        }
+		    install(Storyblok(MAPI)) {
+		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
 		    }
+			expectSuccess = false
 		}
 		
 		val response = client.get("spaces/288868932106293/workflow_stage_changes") {
