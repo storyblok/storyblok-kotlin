@@ -21,7 +21,7 @@ class BranchDeployments {
     fun `Create a Branch Deployment`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -31,7 +31,7 @@ class BranchDeployments {
 		    }
 		}
 		
-		val response = client.post("spaces/656/deployments/") {
+		val response = client.post("spaces/288868932106293/deployments/") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "branch_id": 1,

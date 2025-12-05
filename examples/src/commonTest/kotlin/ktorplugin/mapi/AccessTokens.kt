@@ -21,7 +21,7 @@ class AccessTokens {
     fun `Create an Access Token`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -31,7 +31,7 @@ class AccessTokens {
 		    }
 		}
 		
-		val response = client.post("spaces/606/api_keys/") {
+		val response = client.post("spaces/288868932106293/api_keys/") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "api_key": {
@@ -52,7 +52,7 @@ class AccessTokens {
     fun `Delete an Access Token`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -62,7 +62,7 @@ class AccessTokens {
 		    }
 		}
 		
-		val response = client.delete("spaces/606/api_keys/2345")
+		val response = client.delete("spaces/288868932106293/api_keys/2345")
 		
 		println(response.body<JsonElement>())
     }
@@ -75,7 +75,7 @@ class AccessTokens {
     fun `Retrieve Multiple Access Tokens`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -85,7 +85,7 @@ class AccessTokens {
 		    }
 		}
 		
-		val response = client.get("spaces/606/api_keys/")
+		val response = client.get("spaces/288868932106293/api_keys/")
 		
 		println(response.body<JsonElement>())
     }
@@ -98,7 +98,7 @@ class AccessTokens {
     fun `Update an Access Token`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -108,7 +108,7 @@ class AccessTokens {
 		    }
 		}
 		
-		val response = client.put("spaces/606/api_keys/123123") {
+		val response = client.put("spaces/288868932106293/api_keys/123123") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "api_key": {

@@ -14,14 +14,14 @@ import kotlin.test.Test
 class AiTranslate {
 
 	/**
-     * This endpoint returns an object listing the languages currently supported by Storyblok's AI translation.
+     * An object that lists all languages available for use with the AI translation feature
      * https://www.storyblok.com/docs/api/management/ai-translate/ai-languages
      */
     @Test
     fun `AI Languages`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {

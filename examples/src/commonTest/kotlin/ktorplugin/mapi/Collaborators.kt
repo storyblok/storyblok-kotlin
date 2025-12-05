@@ -21,7 +21,7 @@ class Collaborators {
     fun `Add a Collaborator`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -31,7 +31,7 @@ class Collaborators {
 		    }
 		}
 		
-		val response = client.post("spaces/656/collaborators/") {
+		val response = client.post("spaces/288868932106293/collaborators/") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "allow_multiple_roles_creation": false,
@@ -54,7 +54,7 @@ class Collaborators {
     fun `Add a Collaborator 2`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -64,7 +64,7 @@ class Collaborators {
 		    }
 		}
 		
-		val response = client.post("spaces/656/collaborators/") {
+		val response = client.post("spaces/288868932106293/collaborators/") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "allow_multiple_roles_creation": false,
@@ -87,7 +87,7 @@ class Collaborators {
     fun `Add a Collaborator 3`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -97,7 +97,7 @@ class Collaborators {
 		    }
 		}
 		
-		val response = client.post("spaces/656/collaborators/") {
+		val response = client.post("spaces/288868932106293/collaborators/") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "allow_multiple_roles_creation": true,
@@ -122,7 +122,7 @@ class Collaborators {
     fun `Add a User with SSO`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -132,7 +132,7 @@ class Collaborators {
 		    }
 		}
 		
-		val response = client.post("spaces/656/collaborators/") {
+		val response = client.post("spaces/288868932106293/collaborators/") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "collaborator": {
@@ -155,7 +155,7 @@ class Collaborators {
     fun `Delete a Collaborator`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -165,7 +165,7 @@ class Collaborators {
 		    }
 		}
 		
-		val response = client.delete("spaces/656/collaborators/2362")
+		val response = client.delete("spaces/288868932106293/collaborators/2362")
 		
 		println(response.body<JsonElement>())
     }
@@ -178,7 +178,7 @@ class Collaborators {
     fun `Retrieve Multiple Collaborators`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -188,7 +188,7 @@ class Collaborators {
 		    }
 		}
 		
-		val response = client.get("spaces/656/collaborators/")
+		val response = client.get("spaces/288868932106293/collaborators/")
 		
 		println(response.body<JsonElement>())
     }
@@ -201,7 +201,7 @@ class Collaborators {
     fun `Update a Collaborator Roles and Permissions`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -211,7 +211,7 @@ class Collaborators {
 		    }
 		}
 		
-		val response = client.put("spaces/656/collaborators/2362") {
+		val response = client.put("spaces/288868932106293/collaborators/2362") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "collaborator": {

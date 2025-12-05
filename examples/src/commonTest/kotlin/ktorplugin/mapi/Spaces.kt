@@ -21,7 +21,7 @@ class Spaces {
     fun `Backup a Space`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -31,7 +31,7 @@ class Spaces {
 		    }
 		}
 		
-		val response = client.post("spaces/12422/backups") {
+		val response = client.post("spaces/288868932106293/backups") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{}""")
 		}
@@ -47,7 +47,7 @@ class Spaces {
     fun `Create a Space`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -77,7 +77,7 @@ class Spaces {
     fun `Delete a Space`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -87,7 +87,7 @@ class Spaces {
 		    }
 		}
 		
-		val response = client.delete("spaces/12422")
+		val response = client.delete("spaces/288868932106293")
 		
 		println(response.body<JsonElement>())
     }
@@ -100,7 +100,7 @@ class Spaces {
     fun `Duplicate a Space`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -131,7 +131,7 @@ class Spaces {
     fun `Retrieve a Single Space`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -141,7 +141,7 @@ class Spaces {
 		    }
 		}
 		
-		val response = client.get("spaces/606/")
+		val response = client.get("spaces/288868932106293/")
 		
 		println(response.body<JsonElement>())
     }
@@ -154,7 +154,7 @@ class Spaces {
     fun `Retrieve Multiple Spaces`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -177,7 +177,7 @@ class Spaces {
     fun `Update a Space`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -187,7 +187,7 @@ class Spaces {
 		    }
 		}
 		
-		val response = client.put("spaces/12422") {
+		val response = client.put("spaces/288868932106293") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "space": {

@@ -21,7 +21,7 @@ class SchedulingStories {
     fun `Create a Story Schedule`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -31,7 +31,7 @@ class SchedulingStories {
 		    }
 		}
 		
-		val response = client.post("spaces/606/story_schedulings") {
+		val response = client.post("spaces/288868932106293/story_schedulings") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "story_scheduling": {
@@ -53,7 +53,7 @@ class SchedulingStories {
     fun `Delete a Story Schedule`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -63,7 +63,7 @@ class SchedulingStories {
 		    }
 		}
 		
-		val response = client.delete("spaces/606/story_schedulings/123/")
+		val response = client.delete("spaces/288868932106293/story_schedulings/123/")
 		
 		println(response.body<JsonElement>())
     }
@@ -76,7 +76,7 @@ class SchedulingStories {
     fun `Retrieve Multiple Story Schedules`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -86,7 +86,7 @@ class SchedulingStories {
 		    }
 		}
 		
-		val response = client.get("spaces/606/story_schedulings")
+		val response = client.get("spaces/288868932106293/story_schedulings")
 		
 		println(response.body<JsonElement>())
     }
@@ -99,7 +99,7 @@ class SchedulingStories {
     fun `Retrieve One Story Schedule`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -109,7 +109,7 @@ class SchedulingStories {
 		    }
 		}
 		
-		val response = client.get("spaces/606/story_schedulings/91")
+		val response = client.get("spaces/288868932106293/story_schedulings/91")
 		
 		println(response.body<JsonElement>())
     }
@@ -122,7 +122,7 @@ class SchedulingStories {
     fun `Update a Story Schedule`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -132,7 +132,7 @@ class SchedulingStories {
 		    }
 		}
 		
-		val response = client.put("spaces/606/story_schedulings/123") {
+		val response = client.put("spaces/288868932106293/story_schedulings/123") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "story_scheduling": {

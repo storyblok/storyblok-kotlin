@@ -21,7 +21,7 @@ class Tasks {
     fun `Create a Task`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -31,7 +31,7 @@ class Tasks {
 		    }
 		}
 		
-		val response = client.post("spaces/606/tasks/") {
+		val response = client.post("spaces/288868932106293/tasks/") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "task": {
@@ -53,7 +53,7 @@ class Tasks {
     fun `Delete a Task`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -63,7 +63,7 @@ class Tasks {
 		    }
 		}
 		
-		val response = client.delete("spaces/606/tasks/124")
+		val response = client.delete("spaces/288868932106293/tasks/124")
 		
 		println(response.body<JsonElement>())
     }
@@ -76,7 +76,7 @@ class Tasks {
     fun `Retrieve a Single Task`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -86,7 +86,7 @@ class Tasks {
 		    }
 		}
 		
-		val response = client.get("spaces/606/tasks/124")
+		val response = client.get("spaces/288868932106293/tasks/124")
 		
 		println(response.body<JsonElement>())
     }
@@ -99,7 +99,7 @@ class Tasks {
     fun `Retrieve Multiple Tasks`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -109,7 +109,7 @@ class Tasks {
 		    }
 		}
 		
-		val response = client.get("spaces/606/tasks/")
+		val response = client.get("spaces/288868932106293/tasks/")
 		
 		println(response.body<JsonElement>())
     }
@@ -122,7 +122,7 @@ class Tasks {
     fun `Update a Task`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -132,7 +132,7 @@ class Tasks {
 		    }
 		}
 		
-		val response = client.put("spaces/606/tasks/124") {
+		val response = client.put("spaces/288868932106293/tasks/124") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "task": {

@@ -26,14 +26,14 @@ class Assets {
 		    install(DefaultRequest) {
 		        url {
 		            takeFrom("https://api.storyblok.com/v2/cdn/")
-		            parameters.append("token", "xHIPUic7WKoHeQ4HrfEMrgtt")
+		            parameters.append("token", "cNGPp8cvuCfoAZB3g3eHrAtt")
 		        }
 		    }
 		}
 		
 		val response = client.get("assets/me") {
 		    url {
-		        parameters.append("filename", "https://a.storyblok.com/f/288868932106293/32x32/c37377910d/favicon.svg")
+		        parameters.append("filename", "https://a.storyblok.com/f/44203/x/5231aa9c8a/favicon.ico")
 		    }
 		}
 		

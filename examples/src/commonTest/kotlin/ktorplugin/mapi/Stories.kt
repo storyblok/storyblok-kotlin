@@ -21,7 +21,7 @@ class Stories {
     fun `Translate a Story by AI`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -31,7 +31,7 @@ class Stories {
 		    }
 		}
 		
-		val response = client.put("spaces/606/stories/536503907/ai_translate") {
+		val response = client.put("spaces/288868932106293/stories/536503907/ai_translate") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "code": "fr",
@@ -52,7 +52,7 @@ class Stories {
     fun `Compare a Story Version`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -62,7 +62,7 @@ class Stories {
 		    }
 		}
 		
-		val response = client.get("spaces/185/stories/267/compare") {
+		val response = client.get("spaces/288868932106293/stories/267/compare") {
 		    url {
 		        parameters.append("version", "151")
 		    }
@@ -79,7 +79,7 @@ class Stories {
     fun `Create a Story`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -89,7 +89,7 @@ class Stories {
 		    }
 		}
 		
-		val response = client.post("spaces/606/stories") {
+		val response = client.post("spaces/288868932106293/stories") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "publish": 1,
@@ -115,7 +115,7 @@ class Stories {
     fun `Create and Manage Folders`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -125,7 +125,7 @@ class Stories {
 		    }
 		}
 		
-		val response = client.post("spaces/606/stories") {
+		val response = client.post("spaces/288868932106293/stories") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "story": {
@@ -148,7 +148,7 @@ class Stories {
     fun `Create and Manage Folders 2`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -158,7 +158,7 @@ class Stories {
 		    }
 		}
 		
-		val response = client.post("spaces/606/stories") {
+		val response = client.post("spaces/288868932106293/stories") {
 		    contentType(ContentType.Application.Json)
 		    setBody(""""{\n  story: {\n    default_root: \"article\",\n    is_folder: true,\n    name: \"A new folder\",\n    parent_id: 0,\n    slug: \"a-new-folder\",\n  },\n}"""")
 		}
@@ -174,7 +174,7 @@ class Stories {
     fun `Create and Manage Folders 3`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -184,7 +184,7 @@ class Stories {
 		    }
 		}
 		
-		val response = client.put("spaces/606/stories") {
+		val response = client.put("spaces/288868932106293/stories") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "story": {
@@ -213,7 +213,7 @@ class Stories {
     fun `Delete a Story`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -223,7 +223,7 @@ class Stories {
 		    }
 		}
 		
-		val response = client.delete("spaces/606/stories/2141")
+		val response = client.delete("spaces/288868932106293/stories/2141")
 		
 		println(response.body<JsonElement>())
     }
@@ -236,7 +236,7 @@ class Stories {
     fun `Duplicate a Story`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -246,7 +246,7 @@ class Stories {
 		    }
 		}
 		
-		val response = client.put("spaces/296898/stories/531458099/duplicate") {
+		val response = client.put("spaces/288868932106293/stories/531458099/duplicate") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "same_path": true,
@@ -268,7 +268,7 @@ class Stories {
     fun `Export a Story`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -278,7 +278,7 @@ class Stories {
 		    }
 		}
 		
-		val response = client.get("spaces/233027/stories/314931981/export.json") {
+		val response = client.get("spaces/288868932106293/stories/314931981/export.json") {
 		    url {
 		        parameters.append("lang_code", "pt-br")
 		        parameters.append("export_lang", "true")
@@ -296,7 +296,7 @@ class Stories {
     fun `Export a Story 2`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -306,7 +306,7 @@ class Stories {
 		    }
 		}
 		
-		val response = client.get("spaces/233027/stories/314931981/export.json") {
+		val response = client.get("spaces/288868932106293/stories/314931981/export.json") {
 		    url {
 		        parameters.append("lang_code", "pt-br")
 		        parameters.append("export_lang", "true")
@@ -325,7 +325,7 @@ class Stories {
     fun `Get Story Versions`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -335,7 +335,7 @@ class Stories {
 		    }
 		}
 		
-		val response = client.get("spaces/302787/story_versions") {
+		val response = client.get("spaces/288868932106293/story_versions") {
 		    url {
 		        parameters.append("by_story_id", "174957")
 		    }
@@ -352,7 +352,7 @@ class Stories {
     fun `Get Story Versions (Legacy)`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -362,7 +362,7 @@ class Stories {
 		    }
 		}
 		
-		val response = client.get("spaces/606/stories/123/versions")
+		val response = client.get("spaces/288868932106293/stories/123/versions")
 		
 		println(response.body<JsonElement>())
     }
@@ -375,7 +375,7 @@ class Stories {
     fun `Get Story Versions (Legacy) 2`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -385,7 +385,7 @@ class Stories {
 		    }
 		}
 		
-		val response = client.get("spaces/606/stories/123/versions") {
+		val response = client.get("spaces/288868932106293/stories/123/versions") {
 		    url {
 		        parameters.append("page", "2")
 		    }
@@ -402,7 +402,7 @@ class Stories {
     fun `Get Unpublished Dependencies`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -412,7 +412,7 @@ class Stories {
 		    }
 		}
 		
-		val response = client.post("spaces/296898/stories/unpublished_dependencies") {
+		val response = client.post("spaces/288868932106293/stories/unpublished_dependencies") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "story_ids": [
@@ -433,7 +433,7 @@ class Stories {
     fun `Import a Story`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -443,7 +443,7 @@ class Stories {
 		    }
 		}
 		
-		val response = client.put("spaces/233027/stories/314931981/import.json") {
+		val response = client.put("spaces/288868932106293/stories/314931981/import.json") {
 		    url {
 		        parameters.append("lang_code", "pt-br")
 		        parameters.append("import_lang", "true")
@@ -463,7 +463,7 @@ class Stories {
     fun `Publish a Story`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -473,7 +473,7 @@ class Stories {
 		    }
 		}
 		
-		val response = client.get("spaces/606/stories/2141/publish") {
+		val response = client.get("spaces/288868932106293/stories/2141/publish") {
 		    url {
 		        parameters.append("lang", "de")
 		    }
@@ -490,7 +490,7 @@ class Stories {
     fun `Restore a Story Version`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -500,7 +500,7 @@ class Stories {
 		    }
 		}
 		
-		val response = client.get("spaces/325428/stories/623949938/restore_with") {
+		val response = client.get("spaces/288868932106293/stories/623949938/restore_with") {
 		    url {
 		        parameters.append("version", "55648825")
 		        parameters.append("versions_v2", "true")
@@ -518,7 +518,7 @@ class Stories {
     fun `Retrieve Multiple Stories`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -528,7 +528,7 @@ class Stories {
 		    }
 		}
 		
-		val response = client.get("spaces/606/stories/")
+		val response = client.get("spaces/288868932106293/stories/")
 		
 		println(response.body<JsonElement>())
     }
@@ -541,7 +541,7 @@ class Stories {
     fun `Retrieve Multiple Stories 2`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -551,7 +551,7 @@ class Stories {
 		    }
 		}
 		
-		val response = client.get("spaces/606/stories/") {
+		val response = client.get("spaces/288868932106293/stories/") {
 		    url {
 		        parameters.append("text_search", "My fulltext search")
 		    }
@@ -568,7 +568,7 @@ class Stories {
     fun `Retrieve Multiple Stories 3`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -578,7 +578,7 @@ class Stories {
 		    }
 		}
 		
-		val response = client.get("spaces/606/stories/") {
+		val response = client.get("spaces/288868932106293/stories/") {
 		    url {
 		        parameters.append("by_uuids", "fb3afwa58-277f-4690-81fb-e0a080bd39ac,81fb81fb-e9fa-42b5-b952-c7d96ab6099d")
 		    }
@@ -595,7 +595,7 @@ class Stories {
     fun `Retrieve One Story`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -605,7 +605,7 @@ class Stories {
 		    }
 		}
 		
-		val response = client.get("spaces/606/stories/369689")
+		val response = client.get("spaces/288868932106293/stories/369689")
 		
 		println(response.body<JsonElement>())
     }
@@ -618,7 +618,7 @@ class Stories {
     fun `Unpublish a Story`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -628,7 +628,7 @@ class Stories {
 		    }
 		}
 		
-		val response = client.get("spaces/606/stories/2141/unpublish")
+		val response = client.get("spaces/288868932106293/stories/2141/unpublish")
 		
 		println(response.body<JsonElement>())
     }
@@ -641,7 +641,7 @@ class Stories {
     fun `Update a Story`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -651,7 +651,7 @@ class Stories {
 		    }
 		}
 		
-		val response = client.put("spaces/606/stories/2141") {
+		val response = client.put("spaces/288868932106293/stories/2141") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "force_update": 1,

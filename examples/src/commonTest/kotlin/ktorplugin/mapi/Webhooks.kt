@@ -21,7 +21,7 @@ class Webhooks {
     fun `Add a Webhook`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -31,7 +31,7 @@ class Webhooks {
 		    }
 		}
 		
-		val response = client.post("spaces/656/webhook_endpoints/") {
+		val response = client.post("spaces/288868932106293/webhook_endpoints/") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "webhook_endpoint": {
@@ -57,7 +57,7 @@ class Webhooks {
     fun `Delete a Webhook`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -67,7 +67,7 @@ class Webhooks {
 		    }
 		}
 		
-		val response = client.delete("spaces/656/webhook_endpoints/4573")
+		val response = client.delete("spaces/288868932106293/webhook_endpoints/4573")
 		
 		println(response.body<JsonElement>())
     }
@@ -80,7 +80,7 @@ class Webhooks {
     fun `Retrieve a Single Webhook`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -90,7 +90,7 @@ class Webhooks {
 		    }
 		}
 		
-		val response = client.get("spaces/656/webhook_endpoints/4570")
+		val response = client.get("spaces/288868932106293/webhook_endpoints/4570")
 		
 		println(response.body<JsonElement>())
     }
@@ -103,7 +103,7 @@ class Webhooks {
     fun `Retrieve Multiple Webhooks`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -113,7 +113,7 @@ class Webhooks {
 		    }
 		}
 		
-		val response = client.get("spaces/656/webhook_endpoints/")
+		val response = client.get("spaces/288868932106293/webhook_endpoints/")
 		
 		println(response.body<JsonElement>())
     }
@@ -126,7 +126,7 @@ class Webhooks {
     fun `Update a Webhook`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -136,7 +136,7 @@ class Webhooks {
 		    }
 		}
 		
-		val response = client.put("spaces/656/webhook_endpoints/4570") {
+		val response = client.put("spaces/288868932106293/webhook_endpoints/4570") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "webhook_endpoint": {

@@ -21,7 +21,7 @@ class Components {
     fun `Create a Component`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -31,7 +31,7 @@ class Components {
 		    }
 		}
 		
-		val response = client.post("spaces/606/components/") {
+		val response = client.post("spaces/288868932106293/components/") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "component": {
@@ -62,7 +62,7 @@ class Components {
     fun `Delete a Component`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -72,7 +72,7 @@ class Components {
 		    }
 		}
 		
-		val response = client.delete("spaces/656/components/4321")
+		val response = client.delete("spaces/288868932106293/components/4321")
 		
 		println(response.body<JsonElement>())
     }
@@ -85,7 +85,7 @@ class Components {
     fun `Restore a Component Version`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -95,7 +95,7 @@ class Components {
 		    }
 		}
 		
-		val response = client.put("spaces/656/versions/279820276") {
+		val response = client.put("spaces/288868932106293/versions/279820276") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "model": "components",
@@ -114,7 +114,7 @@ class Components {
     fun `Retrieve a Single Component Version`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -124,7 +124,7 @@ class Components {
 		    }
 		}
 		
-		val response = client.get("spaces/656/components/6826721/component_versions/279820267")
+		val response = client.get("spaces/288868932106293/components/6826721/component_versions/279820267")
 		
 		println(response.body<JsonElement>())
     }
@@ -137,7 +137,7 @@ class Components {
     fun `Retrieve a Single Component`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -147,7 +147,7 @@ class Components {
 		    }
 		}
 		
-		val response = client.get("spaces/656/components/4123")
+		val response = client.get("spaces/288868932106293/components/4123")
 		
 		println(response.body<JsonElement>())
     }
@@ -160,7 +160,7 @@ class Components {
     fun `Retrieve Component Versions`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -170,7 +170,7 @@ class Components {
 		    }
 		}
 		
-		val response = client.get("spaces/656/versions") {
+		val response = client.get("spaces/288868932106293/versions") {
 		    url {
 		        parameters.append("model", "components")
 		        parameters.append("model_id", "6826721")
@@ -188,7 +188,7 @@ class Components {
     fun `Retrieve Multiple Components`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -198,7 +198,7 @@ class Components {
 		    }
 		}
 		
-		val response = client.get("spaces/656/components/")
+		val response = client.get("spaces/288868932106293/components/")
 		
 		println(response.body<JsonElement>())
     }
@@ -211,7 +211,7 @@ class Components {
     fun `Update a Component`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -221,7 +221,7 @@ class Components {
 		    }
 		}
 		
-		val response = client.put("spaces/656/components/4123") {
+		val response = client.put("spaces/288868932106293/components/4123") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "component": {

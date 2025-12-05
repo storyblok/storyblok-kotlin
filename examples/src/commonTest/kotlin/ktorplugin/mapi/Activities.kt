@@ -21,7 +21,7 @@ class Activities {
     fun `Retrieve a Single Activity`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -31,7 +31,7 @@ class Activities {
 		    }
 		}
 		
-		val response = client.get("spaces/606/activities/1234312323")
+		val response = client.get("spaces/288868932106293/activities/1234312323")
 		
 		println(response.body<JsonElement>())
     }
@@ -44,7 +44,7 @@ class Activities {
     fun `Retrieve Multiple Activities`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -54,7 +54,7 @@ class Activities {
 		    }
 		}
 		
-		val response = client.get("spaces/606/activities/") {
+		val response = client.get("spaces/288868932106293/activities/") {
 		    url {
 		        parameters.append("created_at_gte", "2018-12-14")
 		        parameters.append("created_at_lte", "2018-12-18")

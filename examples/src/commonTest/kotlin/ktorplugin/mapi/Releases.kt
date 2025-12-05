@@ -21,7 +21,7 @@ class Releases {
     fun `Create a Release`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -31,7 +31,7 @@ class Releases {
 		    }
 		}
 		
-		val response = client.post("spaces/606/releases/") {
+		val response = client.post("spaces/288868932106293/releases/") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "release": {
@@ -56,7 +56,7 @@ class Releases {
     fun `Delete a Release`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -66,7 +66,7 @@ class Releases {
 		    }
 		}
 		
-		val response = client.delete("spaces/606/releases/18")
+		val response = client.delete("spaces/288868932106293/releases/18")
 		
 		println(response.body<JsonElement>())
     }
@@ -79,7 +79,7 @@ class Releases {
     fun `Retrieve a Single Release`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -89,7 +89,7 @@ class Releases {
 		    }
 		}
 		
-		val response = client.get("spaces/606/releases/18")
+		val response = client.get("spaces/288868932106293/releases/18")
 		
 		println(response.body<JsonElement>())
     }
@@ -102,7 +102,7 @@ class Releases {
     fun `Retrieve Multiple Releases`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -112,7 +112,7 @@ class Releases {
 		    }
 		}
 		
-		val response = client.get("spaces/606/releases/")
+		val response = client.get("spaces/288868932106293/releases/")
 		
 		println(response.body<JsonElement>())
     }
@@ -125,7 +125,7 @@ class Releases {
     fun `Update a Release`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -135,7 +135,7 @@ class Releases {
 		    }
 		}
 		
-		val response = client.put("spaces/606/releases/123") {
+		val response = client.put("spaces/288868932106293/releases/123") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "do_release": true,

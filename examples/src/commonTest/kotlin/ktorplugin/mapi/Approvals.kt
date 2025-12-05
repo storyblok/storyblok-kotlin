@@ -21,7 +21,7 @@ class Approvals {
     fun `Create Approval`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -31,7 +31,7 @@ class Approvals {
 		    }
 		}
 		
-		val response = client.post("spaces/606/approvals/") {
+		val response = client.post("spaces/288868932106293/approvals/") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "approval": {
@@ -52,7 +52,7 @@ class Approvals {
     fun `Create Release Approval`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -62,7 +62,7 @@ class Approvals {
 		    }
 		}
 		
-		val response = client.post("spaces/606/approvals/") {
+		val response = client.post("spaces/288868932106293/approvals/") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "approval": {
@@ -84,7 +84,7 @@ class Approvals {
     fun `Delete an Approval`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -94,7 +94,7 @@ class Approvals {
 		    }
 		}
 		
-		val response = client.delete("spaces/606/approvals/5405")
+		val response = client.delete("spaces/288868932106293/approvals/5405")
 		
 		println(response.body<JsonElement>())
     }
@@ -107,7 +107,7 @@ class Approvals {
     fun `Retrieve a Single Approval`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -117,7 +117,7 @@ class Approvals {
 		    }
 		}
 		
-		val response = client.get("spaces/606/approvals/5405")
+		val response = client.get("spaces/288868932106293/approvals/5405")
 		
 		println(response.body<JsonElement>())
     }
@@ -130,7 +130,7 @@ class Approvals {
     fun `Retrieve Multiple Approvals`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -140,7 +140,7 @@ class Approvals {
 		    }
 		}
 		
-		val response = client.get("spaces/606/approvals") {
+		val response = client.get("spaces/288868932106293/approvals") {
 		    url {
 		        parameters.append("approver", "1028")
 		    }

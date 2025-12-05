@@ -21,7 +21,7 @@ class IdeationRoom {
     fun `Create an Idea`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -31,7 +31,7 @@ class IdeationRoom {
 		    }
 		}
 		
-		val response = client.post("spaces/606/ideas") {
+		val response = client.post("spaces/288868932106293/ideas") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{"idea":{"assignee":null,"author":{"avatar":"avatars/67891/838dcb304c/avatar.jpg","friendly_name":"Jon Doe","id":67891,"userid":"test@email.com"},"bookmarks":[],"content":{},"deleted_at":null,"description":"First idea","internal_tag_ids":["12345"],"internal_tags_list":[{"id":12345,"name":"docs"}],"is_private":true,"name":"My first idea","status":"draft","stories":[],"story_ids":[]}}""")
 		}
@@ -47,7 +47,7 @@ class IdeationRoom {
     fun `Delete an Idea`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -57,7 +57,7 @@ class IdeationRoom {
 		    }
 		}
 		
-		val response = client.delete("spaces/606/ideas/123ab45c-6d78-9101-11ef-213gh1i4j1k5")
+		val response = client.delete("spaces/288868932106293/ideas/123ab45c-6d78-9101-11ef-213gh1i4j1k5")
 		
 		println(response.body<JsonElement>())
     }
@@ -70,7 +70,7 @@ class IdeationRoom {
     fun `Restore an Idea`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -80,7 +80,7 @@ class IdeationRoom {
 		    }
 		}
 		
-		val response = client.put("spaces/606/ideas/123ab45c-6d78-9101-11ef-213gh1i4j1k5") {
+		val response = client.put("spaces/288868932106293/ideas/123ab45c-6d78-9101-11ef-213gh1i4j1k5") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""undefined""")
 		}
@@ -96,7 +96,7 @@ class IdeationRoom {
     fun `Retrieve Discussions in Idea`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -106,7 +106,7 @@ class IdeationRoom {
 		    }
 		}
 		
-		val response = client.get("spaces/606/ideas/1a2b3456-c7d8-9ef1-gh01-11i2jk13l14m/discussions")
+		val response = client.get("spaces/288868932106293/ideas/1a2b3456-c7d8-9ef1-gh01-11i2jk13l14m/discussions")
 		
 		println(response.body<JsonElement>())
     }
@@ -119,7 +119,7 @@ class IdeationRoom {
     fun `Retrieve Multiple Ideas`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -129,7 +129,7 @@ class IdeationRoom {
 		    }
 		}
 		
-		val response = client.get("spaces/606/ideas/")
+		val response = client.get("spaces/288868932106293/ideas/")
 		
 		println(response.body<JsonElement>())
     }
@@ -142,7 +142,7 @@ class IdeationRoom {
     fun `Retrieve One Idea`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -152,7 +152,7 @@ class IdeationRoom {
 		    }
 		}
 		
-		val response = client.get("spaces/606/ideas/1a2b3456-c7d8-9ef1-gh01-11i2jk13l14m")
+		val response = client.get("spaces/288868932106293/ideas/1a2b3456-c7d8-9ef1-gh01-11i2jk13l14m")
 		
 		println(response.body<JsonElement>())
     }
@@ -165,7 +165,7 @@ class IdeationRoom {
     fun `Update an Idea`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -175,7 +175,7 @@ class IdeationRoom {
 		    }
 		}
 		
-		val response = client.put("spaces/606/ideas/ab123cd4-5e6f-7gh8-9ij1-01k112l13m1n") {
+		val response = client.put("spaces/288868932106293/ideas/ab123cd4-5e6f-7gh8-9ij1-01k112l13m1n") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{"idea":{"assignee":null,"author":{"avatar":"avatars/67891/838dcb304c/avatar.jpg","friendly_name":"Jon Doe","id":67891,"userid":"test@email.com"},"bookmarks":[],"content":{},"deleted_at":null,"description":"First idea","internal_tag_ids":["12345"],"internal_tags_list":[{"id":12345,"name":"docs"}],"is_private":true,"name":"My first idea","status":"draft","stories":[],"story_ids":[]}}""")
 		}

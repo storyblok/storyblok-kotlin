@@ -21,7 +21,7 @@ class DatasourceEntries {
     fun `Create a Datasource Entry`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -31,7 +31,7 @@ class DatasourceEntries {
 		    }
 		}
 		
-		val response = client.post("spaces/656/datasource_entries") {
+		val response = client.post("spaces/288868932106293/datasource_entries") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "datasource_entry": {
@@ -53,7 +53,7 @@ class DatasourceEntries {
     fun `Delete a Datasource Entry`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -63,7 +63,7 @@ class DatasourceEntries {
 		    }
 		}
 		
-		val response = client.delete("spaces/656/datasource_entries/52")
+		val response = client.delete("spaces/288868932106293/datasource_entries/52")
 		
 		println(response.body<JsonElement>())
     }
@@ -76,7 +76,7 @@ class DatasourceEntries {
     fun `Retrieve a Single Datasource Entry`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -86,7 +86,7 @@ class DatasourceEntries {
 		    }
 		}
 		
-		val response = client.get("spaces/656/datasource_entries/52")
+		val response = client.get("spaces/288868932106293/datasource_entries/52")
 		
 		println(response.body<JsonElement>())
     }
@@ -99,7 +99,7 @@ class DatasourceEntries {
     fun `Retrieve Multiple Datasource Entries`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -109,7 +109,7 @@ class DatasourceEntries {
 		    }
 		}
 		
-		val response = client.get("spaces/656/datasource_entries/") {
+		val response = client.get("spaces/288868932106293/datasource_entries/") {
 		    url {
 		        parameters.append("datasource_id", "123")
 		        parameters.append("dimension", "456")
@@ -127,7 +127,7 @@ class DatasourceEntries {
     fun `Update a Datasource Entry`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -137,7 +137,7 @@ class DatasourceEntries {
 		    }
 		}
 		
-		val response = client.put("spaces/656/datasource_entries/52") {
+		val response = client.put("spaces/288868932106293/datasource_entries/52") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "datasource_entry": {
@@ -158,7 +158,7 @@ class DatasourceEntries {
     fun `Update a Datasource Entry 2`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -168,7 +168,7 @@ class DatasourceEntries {
 		    }
 		}
 		
-		val response = client.put("spaces/656/datasource_entries/52") {
+		val response = client.put("spaces/288868932106293/datasource_entries/52") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "datasource_entry": {

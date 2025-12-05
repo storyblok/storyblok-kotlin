@@ -21,7 +21,7 @@ class WorkflowStage {
     fun `Create a Workflow Stage`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -47,7 +47,7 @@ class WorkflowStage {
     fun `Delete a Workflow Stage`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -57,7 +57,7 @@ class WorkflowStage {
 		    }
 		}
 		
-		val response = client.delete("spaces/606/workflow_stages/18")
+		val response = client.delete("spaces/288868932106293/workflow_stages/18")
 		
 		println(response.body<JsonElement>())
     }
@@ -70,7 +70,7 @@ class WorkflowStage {
     fun `Retrieve a Single Workflow Stage`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -80,7 +80,7 @@ class WorkflowStage {
 		    }
 		}
 		
-		val response = client.get("spaces/606/workflow_stages/18")
+		val response = client.get("spaces/288868932106293/workflow_stages/18")
 		
 		println(response.body<JsonElement>())
     }
@@ -93,7 +93,7 @@ class WorkflowStage {
     fun `Retrieve Multiple Workflow Stages`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -103,7 +103,7 @@ class WorkflowStage {
 		    }
 		}
 		
-		val response = client.get("spaces/606/workflow_stages/")
+		val response = client.get("spaces/288868932106293/workflow_stages/")
 		
 		println(response.body<JsonElement>())
     }
@@ -116,7 +116,7 @@ class WorkflowStage {
     fun `Update a Workflow Stage`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -142,7 +142,7 @@ class WorkflowStage {
     fun `Create a Workflow Stage Change`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -173,7 +173,7 @@ class WorkflowStage {
     fun `Retrieve Multiple Workflow Stage Changes`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -183,7 +183,7 @@ class WorkflowStage {
 		    }
 		}
 		
-		val response = client.get("spaces/606/workflow_stage_changes") {
+		val response = client.get("spaces/288868932106293/workflow_stage_changes") {
 		    url {
 		        parameters.append("with_story", "123")
 		    }

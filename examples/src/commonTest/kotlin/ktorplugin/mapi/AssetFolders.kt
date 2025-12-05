@@ -21,7 +21,7 @@ class AssetFolders {
     fun `Create an Asset Folder`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -31,7 +31,7 @@ class AssetFolders {
 		    }
 		}
 		
-		val response = client.post("spaces/606/asset_folders/") {
+		val response = client.post("spaces/288868932106293/asset_folders/") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "asset_folder": {
@@ -52,7 +52,7 @@ class AssetFolders {
     fun `Delete an Asset Folder`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -62,7 +62,7 @@ class AssetFolders {
 		    }
 		}
 		
-		val response = client.delete("spaces/606/asset_folders/41")
+		val response = client.delete("spaces/288868932106293/asset_folders/41")
 		
 		println(response.body<JsonElement>())
     }
@@ -75,7 +75,7 @@ class AssetFolders {
     fun `Retrieve a Single Asset Folder`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -85,7 +85,7 @@ class AssetFolders {
 		    }
 		}
 		
-		val response = client.get("spaces/606/asset_folders/41")
+		val response = client.get("spaces/288868932106293/asset_folders/41")
 		
 		println(response.body<JsonElement>())
     }
@@ -98,7 +98,7 @@ class AssetFolders {
     fun `Retrieve Multiple Asset Folders`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -108,7 +108,7 @@ class AssetFolders {
 		    }
 		}
 		
-		val response = client.get("spaces/606/asset_folders/")
+		val response = client.get("spaces/288868932106293/asset_folders/")
 		
 		println(response.body<JsonElement>())
     }
@@ -121,7 +121,7 @@ class AssetFolders {
     fun `Update an Asset Folder`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -131,7 +131,7 @@ class AssetFolders {
 		    }
 		}
 		
-		val response = client.put("spaces/606/asset_folders/414142") {
+		val response = client.put("spaces/288868932106293/asset_folders/414142") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "asset_folder": {

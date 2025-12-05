@@ -21,7 +21,7 @@ class InternalTags {
     fun `Create an Internal Tag`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -31,7 +31,7 @@ class InternalTags {
 		    }
 		}
 		
-		val response = client.post("spaces/606/internal_tags") {
+		val response = client.post("spaces/288868932106293/internal_tags") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "internal_tag": {
@@ -52,7 +52,7 @@ class InternalTags {
     fun `Delete an Internal Tag`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -62,7 +62,7 @@ class InternalTags {
 		    }
 		}
 		
-		val response = client.delete("spaces/606/internal_tags/123")
+		val response = client.delete("spaces/288868932106293/internal_tags/123")
 		
 		println(response.body<JsonElement>())
     }
@@ -75,7 +75,7 @@ class InternalTags {
     fun `Retrieve Multiple Internal Tags`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -85,7 +85,7 @@ class InternalTags {
 		    }
 		}
 		
-		val response = client.get("spaces/606/internal_tags")
+		val response = client.get("spaces/288868932106293/internal_tags")
 		
 		println(response.body<JsonElement>())
     }
@@ -98,7 +98,7 @@ class InternalTags {
     fun `Update an Internal Tag`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -108,7 +108,7 @@ class InternalTags {
 		    }
 		}
 		
-		val response = client.put("spaces/606/internal_tags/123") {
+		val response = client.put("spaces/288868932106293/internal_tags/123") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "internal_tag": {

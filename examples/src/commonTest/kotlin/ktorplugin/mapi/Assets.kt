@@ -21,7 +21,7 @@ class Assets {
     fun `Bulk Moving of Assets`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -31,7 +31,7 @@ class Assets {
 		    }
 		}
 		
-		val response = client.post("spaces/123123/assets/bulk_update") {
+		val response = client.post("spaces/288868932106293/assets/bulk_update") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "asset_folder_id": 299783,
@@ -53,7 +53,7 @@ class Assets {
     fun `Bulk Restoration of Deleted Assets`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -63,7 +63,7 @@ class Assets {
 		    }
 		}
 		
-		val response = client.post("spaces/656/assets/bulk_restore") {
+		val response = client.post("spaces/288868932106293/assets/bulk_restore") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "ids": [
@@ -83,7 +83,7 @@ class Assets {
     fun `Delete an Asset`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -93,7 +93,7 @@ class Assets {
 		    }
 		}
 		
-		val response = client.delete("spaces/606/assets/14")
+		val response = client.delete("spaces/288868932106293/assets/14")
 		
 		println(response.body<JsonElement>())
     }
@@ -106,7 +106,7 @@ class Assets {
     fun `Delete Multiple Assets`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -116,7 +116,7 @@ class Assets {
 		    }
 		}
 		
-		val response = client.post("spaces/606/assets/bulk_destroy") {
+		val response = client.post("spaces/288868932106293/assets/bulk_destroy") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "ids": [
@@ -137,7 +137,7 @@ class Assets {
     fun `Finish Upload`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -147,7 +147,7 @@ class Assets {
 		    }
 		}
 		
-		val response = client.get("spaces/123123/assets/89062407031871/finish_upload")
+		val response = client.get("spaces/288868932106293/assets/89062407031871/finish_upload")
 		
 		println(response.body<JsonElement>())
     }
@@ -160,7 +160,7 @@ class Assets {
     fun `Get a Signed Response Object`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -170,7 +170,7 @@ class Assets {
 		    }
 		}
 		
-		val response = client.post("spaces/123123/assets/") {
+		val response = client.post("spaces/288868932106293/assets/") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "asset_folder_id": 638352,
@@ -192,7 +192,7 @@ class Assets {
     fun `Retrieve Multiple Assets`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -202,7 +202,7 @@ class Assets {
 		    }
 		}
 		
-		val response = client.get("spaces/606/assets/")
+		val response = client.get("spaces/288868932106293/assets/")
 		
 		println(response.body<JsonElement>())
     }
@@ -215,7 +215,7 @@ class Assets {
     fun `Retrieve One Asset`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -225,7 +225,7 @@ class Assets {
 		    }
 		}
 		
-		val response = client.get("spaces/606/assets/14")
+		val response = client.get("spaces/288868932106293/assets/14")
 		
 		println(response.body<JsonElement>())
     }
@@ -238,7 +238,7 @@ class Assets {
     fun `Update Asset`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -248,7 +248,7 @@ class Assets {
 		    }
 		}
 		
-		val response = client.put("spaces/123123/assets/656565") {
+		val response = client.put("spaces/288868932106293/assets/656565") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "asset_folder_id": 123123,

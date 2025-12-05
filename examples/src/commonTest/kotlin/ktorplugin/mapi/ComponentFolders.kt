@@ -21,7 +21,7 @@ class ComponentFolders {
     fun `Create a Component Folder`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -31,7 +31,7 @@ class ComponentFolders {
 		    }
 		}
 		
-		val response = client.post("spaces/656/component_groups/") {
+		val response = client.post("spaces/288868932106293/component_groups/") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "component_group": {
@@ -52,7 +52,7 @@ class ComponentFolders {
     fun `Delete a Component Folder`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -62,7 +62,7 @@ class ComponentFolders {
 		    }
 		}
 		
-		val response = client.delete("spaces/656/component_groups/4123")
+		val response = client.delete("spaces/288868932106293/component_groups/4123")
 		
 		println(response.body<JsonElement>())
     }
@@ -75,7 +75,7 @@ class ComponentFolders {
     fun `Retrieve a Single Component Folder`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -85,7 +85,7 @@ class ComponentFolders {
 		    }
 		}
 		
-		val response = client.get("spaces/656/component_groups/4123")
+		val response = client.get("spaces/288868932106293/component_groups/4123")
 		
 		println(response.body<JsonElement>())
     }
@@ -98,7 +98,7 @@ class ComponentFolders {
     fun `Retrieve Multiple Component Folders`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -108,7 +108,7 @@ class ComponentFolders {
 		    }
 		}
 		
-		val response = client.get("spaces/656/component_groups/")
+		val response = client.get("spaces/288868932106293/component_groups/")
 		
 		println(response.body<JsonElement>())
     }
@@ -121,7 +121,7 @@ class ComponentFolders {
     fun `Update a Component folder`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -131,7 +131,7 @@ class ComponentFolders {
 		    }
 		}
 		
-		val response = client.put("spaces/656/component_groups/4123") {
+		val response = client.put("spaces/288868932106293/component_groups/4123") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "component_group": {

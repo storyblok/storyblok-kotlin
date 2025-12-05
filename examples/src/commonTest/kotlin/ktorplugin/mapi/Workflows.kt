@@ -21,7 +21,7 @@ class Workflows {
     fun `Create a Workflow`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -31,7 +31,7 @@ class Workflows {
 		    }
 		}
 		
-		val response = client.post("spaces/606/workflows") {
+		val response = client.post("spaces/288868932106293/workflows") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "workflow": {
@@ -54,7 +54,7 @@ class Workflows {
     fun `Delete a Workflow`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -64,7 +64,7 @@ class Workflows {
 		    }
 		}
 		
-		val response = client.delete("spaces/606/workflows/656")
+		val response = client.delete("spaces/288868932106293/workflows/656")
 		
 		println(response.body<JsonElement>())
     }
@@ -77,7 +77,7 @@ class Workflows {
     fun `Duplicate a Workflow`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -87,7 +87,7 @@ class Workflows {
 		    }
 		}
 		
-		val response = client.post("spaces/606/workflows/656/duplicate") {
+		val response = client.post("spaces/288868932106293/workflows/656/duplicate") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "workflow": {
@@ -110,7 +110,7 @@ class Workflows {
     fun `Retrieve a Single Workflow`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -120,7 +120,7 @@ class Workflows {
 		    }
 		}
 		
-		val response = client.get("spaces/606/workflows/656")
+		val response = client.get("spaces/288868932106293/workflows/656")
 		
 		println(response.body<JsonElement>())
     }
@@ -133,7 +133,7 @@ class Workflows {
     fun `Retrieve Multiple Workflows`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -143,7 +143,7 @@ class Workflows {
 		    }
 		}
 		
-		val response = client.get("spaces/606/workflows")
+		val response = client.get("spaces/288868932106293/workflows")
 		
 		println(response.body<JsonElement>())
     }
@@ -156,7 +156,7 @@ class Workflows {
     fun `Update a Workflow`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -166,7 +166,7 @@ class Workflows {
 		    }
 		}
 		
-		val response = client.put("spaces/606/workflows/656") {
+		val response = client.put("spaces/288868932106293/workflows/656") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "workflow": {

@@ -21,7 +21,7 @@ class Tags {
     fun `Create a Tag`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -31,7 +31,7 @@ class Tags {
 		    }
 		}
 		
-		val response = client.post("spaces/606/tags") {
+		val response = client.post("spaces/288868932106293/tags") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "tag": {
@@ -52,7 +52,7 @@ class Tags {
     fun `Delete a Tag`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -62,7 +62,7 @@ class Tags {
 		    }
 		}
 		
-		val response = client.delete("spaces/606/stories/2141")
+		val response = client.delete("spaces/288868932106293/stories/2141")
 		
 		println(response.body<JsonElement>())
     }
@@ -75,7 +75,7 @@ class Tags {
     fun `Retrieve Multiple Tags`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -85,7 +85,7 @@ class Tags {
 		    }
 		}
 		
-		val response = client.get("spaces/606/tags/") {
+		val response = client.get("spaces/288868932106293/tags/") {
 		    url {
 		        parameters.append("search", "article")
 		    }
@@ -102,7 +102,7 @@ class Tags {
     fun `Retrieve Multiple Tags 2`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -112,7 +112,7 @@ class Tags {
 		    }
 		}
 		
-		val response = client.get("spaces/606/stories/") {
+		val response = client.get("spaces/288868932106293/stories/") {
 		    url {
 		        parameters.append("all_tags", "true")
 		    }
@@ -129,7 +129,7 @@ class Tags {
     fun `Tag Bulk Association`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -139,7 +139,7 @@ class Tags {
 		    }
 		}
 		
-		val response = client.post("spaces/296898/tags/bulk_association") {
+		val response = client.post("spaces/288868932106293/tags/bulk_association") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "tags": {
@@ -167,7 +167,7 @@ class Tags {
     fun `Update a Tag`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -177,7 +177,7 @@ class Tags {
 		    }
 		}
 		
-		val response = client.put("spaces/606/stories/2141") {
+		val response = client.put("spaces/288868932106293/stories/2141") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "id": "Editor's Choice",

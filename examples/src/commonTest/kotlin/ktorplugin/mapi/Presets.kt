@@ -21,7 +21,7 @@ class Presets {
     fun `Create a Preset`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -31,7 +31,7 @@ class Presets {
 		    }
 		}
 		
-		val response = client.post("spaces/606/presets/") {
+		val response = client.post("spaces/288868932106293/presets/") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "preset": {
@@ -55,7 +55,7 @@ class Presets {
     fun `Delete a Preset`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -65,7 +65,7 @@ class Presets {
 		    }
 		}
 		
-		val response = client.delete("spaces/606/presets/1814")
+		val response = client.delete("spaces/288868932106293/presets/1814")
 		
 		println(response.body<JsonElement>())
     }
@@ -78,7 +78,7 @@ class Presets {
     fun `Retrieve a Single Preset`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -88,7 +88,7 @@ class Presets {
 		    }
 		}
 		
-		val response = client.get("spaces/606/presets/1814")
+		val response = client.get("spaces/288868932106293/presets/1814")
 		
 		println(response.body<JsonElement>())
     }
@@ -101,7 +101,7 @@ class Presets {
     fun `Retrieve Multiple Presets`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -111,7 +111,7 @@ class Presets {
 		    }
 		}
 		
-		val response = client.get("spaces/606/presets")
+		val response = client.get("spaces/288868932106293/presets")
 		
 		println(response.body<JsonElement>())
     }
@@ -124,7 +124,7 @@ class Presets {
     fun `Update a Preset`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -134,7 +134,7 @@ class Presets {
 		    }
 		}
 		
-		val response = client.put("spaces/606/presets/1814") {
+		val response = client.put("spaces/288868932106293/presets/1814") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "preset": {

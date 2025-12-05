@@ -21,7 +21,7 @@ class Discussions {
     fun `Create a Comment`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -31,7 +31,7 @@ class Discussions {
 		    }
 		}
 		
-		val response = client.post("spaces/606/discussions/456/comments") {
+		val response = client.post("spaces/288868932106293/discussions/456/comments") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "comment": {
@@ -56,7 +56,7 @@ class Discussions {
     fun `Create a Discussion`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -66,7 +66,7 @@ class Discussions {
 		    }
 		}
 		
-		val response = client.post("spaces/606/stories/12367/discussions") {
+		val response = client.post("spaces/288868932106293/stories/12367/discussions") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{"discussion":{"block_uid":"f7bd92e3-b309-4441-a8a0-654e499fefc8","comment":{"message_json":[{"text":"this is a comment ","type":"text"},{"attrs":{"id":99734,"label":"Fortune Ikechi"},"type":"mention"}]},"component":"feature","fieldname":"name","lang":"default","title":"Name"}}""")
 		}
@@ -82,7 +82,7 @@ class Discussions {
     fun `Delete a Comment`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -92,7 +92,7 @@ class Discussions {
 		    }
 		}
 		
-		val response = client.delete("spaces/606/discussions/456/comments/789")
+		val response = client.delete("spaces/288868932106293/discussions/456/comments/789")
 		
 		println(response.body<JsonElement>())
     }
@@ -105,7 +105,7 @@ class Discussions {
     fun `Resolve a Discussion`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -115,7 +115,7 @@ class Discussions {
 		    }
 		}
 		
-		val response = client.put("spaces/606/discussions/49468") {
+		val response = client.put("spaces/288868932106293/discussions/49468") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "discussion": {
@@ -135,7 +135,7 @@ class Discussions {
     fun `Retrieve a Specific Discussion`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -145,7 +145,7 @@ class Discussions {
 		    }
 		}
 		
-		val response = client.get("spaces/606/discussions/49473")
+		val response = client.get("spaces/288868932106293/discussions/49473")
 		
 		println(response.body<JsonElement>())
     }
@@ -158,7 +158,7 @@ class Discussions {
     fun `Retrieve Idea Discussions Comments`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -168,7 +168,7 @@ class Discussions {
 		    }
 		}
 		
-		val response = client.get("spaces/606/ideas/1a2b3456-c7d8-9ef1-gh01-11i2jk13l14m/discussions")
+		val response = client.get("spaces/288868932106293/ideas/1a2b3456-c7d8-9ef1-gh01-11i2jk13l14m/discussions")
 		
 		println(response.body<JsonElement>())
     }
@@ -181,7 +181,7 @@ class Discussions {
     fun `Retrieve Multiple Comments from a Specific Discussion`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -191,7 +191,7 @@ class Discussions {
 		    }
 		}
 		
-		val response = client.get("spaces/606/discussions/49471/comments")
+		val response = client.get("spaces/288868932106293/discussions/49471/comments")
 		
 		println(response.body<JsonElement>())
     }
@@ -204,7 +204,7 @@ class Discussions {
     fun `Retrieve Multiple Discussions`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -214,7 +214,7 @@ class Discussions {
 		    }
 		}
 		
-		val response = client.get("spaces/606/stories/1234/discussions") {
+		val response = client.get("spaces/288868932106293/stories/1234/discussions") {
 		    url {
 		        parameters.append("per_page", "1")
 		        parameters.append("page", "1")
@@ -233,7 +233,7 @@ class Discussions {
     fun `Retrieve My Discussions`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -243,7 +243,7 @@ class Discussions {
 		    }
 		}
 		
-		val response = client.get("spaces/606/mentioned_discussions/me")
+		val response = client.get("spaces/288868932106293/mentioned_discussions/me")
 		
 		println(response.body<JsonElement>())
     }
@@ -256,7 +256,7 @@ class Discussions {
     fun `Update a Comment`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -266,7 +266,7 @@ class Discussions {
 		    }
 		}
 		
-		val response = client.put("spaces/606/discussions/2345/comments/456") {
+		val response = client.put("spaces/288868932106293/discussions/2345/comments/456") {
 		    contentType(ContentType.Application.Json)
 		    setBody("""{
 		      "comment": {

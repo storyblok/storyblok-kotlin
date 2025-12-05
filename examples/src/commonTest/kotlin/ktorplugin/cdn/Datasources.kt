@@ -26,7 +26,7 @@ class Datasources {
 		    install(DefaultRequest) {
 		        url {
 		            takeFrom("https://api.storyblok.com/v2/cdn/")
-		            parameters.append("token", "58OZ7YzONi094irsjQWPCAtt")
+		            parameters.append("token", "ask9soUkv02QqbZgmZdeDAtt")
 		        }
 		    }
 		}
@@ -49,7 +49,7 @@ class Datasources {
 		    install(DefaultRequest) {
 		        url {
 		            takeFrom("https://api.storyblok.com/v2/cdn/")
-		            parameters.append("token", "58OZ7YzONi094irsjQWPCAtt")
+		            parameters.append("token", "ask9soUkv02QqbZgmZdeDAtt")
 		        }
 		    }
 		}

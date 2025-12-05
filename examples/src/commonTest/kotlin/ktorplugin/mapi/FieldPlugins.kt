@@ -21,7 +21,7 @@ class FieldPlugins {
     fun `Create a Field Plugin`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -51,7 +51,7 @@ class FieldPlugins {
     fun `Delete a Field Plugin`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -74,7 +74,7 @@ class FieldPlugins {
     fun `Retrieve a Single Field Plugin`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -97,7 +97,7 @@ class FieldPlugins {
     fun `Retrieve a Single Field Plugin 2`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -120,7 +120,7 @@ class FieldPlugins {
     fun `Retrieve a Single Field Plugin 3`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -143,7 +143,7 @@ class FieldPlugins {
     fun `Retrieve Multiple Field Plugins`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -166,7 +166,7 @@ class FieldPlugins {
     fun `Retrieve Multiple Field Plugins 2`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -189,7 +189,7 @@ class FieldPlugins {
     fun `Retrieve Multiple Field Plugins 3`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
@@ -212,7 +212,7 @@ class FieldPlugins {
     fun `Update a Field Plugin`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
+			expectSuccess = false
 		    install(ContentNegotiation) { json() }
 		    install(DefaultRequest) {
 		        url {
