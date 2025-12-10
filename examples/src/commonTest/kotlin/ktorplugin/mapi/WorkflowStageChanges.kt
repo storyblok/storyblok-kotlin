@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class WorkflowStageChanges {
 
 	/**
@@ -27,12 +29,12 @@ class WorkflowStageChanges {
 		}
 		
 		val response = client.post("spaces/space_id/workflow_stage_changes/") {
-		    setBody("""{
-		      "workflow_stage_change": {
-		        "story_id": 123,
-		        "workflow_stage_id": 123
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("workflow_stage_change") {
+		            put("story_id", 123)
+		            put("workflow_stage_id", 123)
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())

@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class FieldPlugins {
 
 	/**
@@ -27,11 +29,11 @@ class FieldPlugins {
 		}
 		
 		val response = client.post("field_types/") {
-		    setBody("""{
-		      "field_type": {
-		        "name": "my-geo-selector"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("field_type") {
+		            put("name", "my-geo-selector")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -185,12 +187,12 @@ class FieldPlugins {
 		}
 		
 		val response = client.put("field_types/123123") {
-		    setBody("""{
-		      "field_type": {
-		        "body": "const Fieldtype = {}",
-		        "compiled_body": ""
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("field_type") {
+		            put("body", "const Fieldtype = {}")
+		            put("compiled_body", "")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())

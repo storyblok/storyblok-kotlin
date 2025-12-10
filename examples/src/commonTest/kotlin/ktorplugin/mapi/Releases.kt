@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class Releases {
 
 	/**
@@ -27,16 +29,16 @@ class Releases {
 		}
 		
 		val response = client.post("spaces/288868932106293/releases/") {
-		    setBody("""{
-		      "release": {
-		        "branches_to_deploy": [
-		          123,
-		          456
-		        ],
-		        "name": "Summer Special",
-		        "release_at": "2025-01-01 01:01"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("release") {
+		            putJsonArray("branches_to_deploy") {
+		                add(123)
+		                add(456)
+		            }
+		            put("name", "Summer Special")
+		            put("release_at", "2025-01-01 01:01")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -114,17 +116,17 @@ class Releases {
 		}
 		
 		val response = client.put("spaces/288868932106293/releases/123") {
-		    setBody("""{
-		      "do_release": true,
-		      "release": {
-		        "branches_to_deploy": [
-		          123,
-		          456
-		        ],
-		        "name": "Summer Special",
-		        "release_at": "2025-01-01 01:01"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        put("do_release", true)
+		        putJsonObject("release") {
+		            putJsonArray("branches_to_deploy") {
+		                add(123)
+		                add(456)
+		            }
+		            put("name", "Summer Special")
+		            put("release_at", "2025-01-01 01:01")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())

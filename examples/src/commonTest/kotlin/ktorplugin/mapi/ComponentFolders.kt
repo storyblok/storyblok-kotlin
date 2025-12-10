@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class ComponentFolders {
 
 	/**
@@ -27,12 +29,12 @@ class ComponentFolders {
 		}
 		
 		val response = client.post("spaces/288868932106293/component_groups/") {
-		    setBody("""{
-		      "component_group": {
-		        "name": "Teasers",
-		        "parent_id": "123123"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("component_group") {
+		            put("name", "Teasers")
+		            put("parent_id", "123123")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -110,12 +112,12 @@ class ComponentFolders {
 		}
 		
 		val response = client.put("spaces/288868932106293/component_groups/4123") {
-		    setBody("""{
-		      "component_group": {
-		        "name": "New Teaser Name",
-		        "parent_id": 123123
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("component_group") {
+		            put("name", "New Teaser Name")
+		            put("parent_id", 123123)
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())

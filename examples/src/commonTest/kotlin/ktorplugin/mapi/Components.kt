@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class Components {
 
 	/**
@@ -27,22 +29,22 @@ class Components {
 		}
 		
 		val response = client.post("spaces/288868932106293/components/") {
-		    setBody("""{
-		      "component": {
-		        "display_name": null,
-		        "is_nestable": true,
-		        "is_root": false,
-		        "name": "banner_section",
-		        "schema": {
-		          "headline": {
-		            "description": "This field is used to render a title",
-		            "pos": 0,
-		            "translatable": true,
-		            "type": "text"
-		          }
+		    setBody(buildJsonObject {
+		        putJsonObject("component") {
+		            put("display_name", null)
+		            put("is_nestable", true)
+		            put("is_root", false)
+		            put("name", "banner_section")
+		            putJsonObject("schema") {
+		                putJsonObject("headline") {
+		                    put("description", "This field is used to render a title")
+		                    put("pos", 0)
+		                    put("translatable", true)
+		                    put("type", "text")
+		                }
+		            }
 		        }
-		      }
-		    }""")
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -82,10 +84,10 @@ class Components {
 		}
 		
 		val response = client.put("spaces/288868932106293/versions/279820276") {
-		    setBody("""{
-		      "model": "components",
-		      "model_id": 6826721
-		    }""")
+		    setBody(buildJsonObject {
+		        put("model", "components")
+		        put("model_id", 6826721)
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -187,23 +189,23 @@ class Components {
 		}
 		
 		val response = client.put("spaces/288868932106293/components/4123") {
-		    setBody("""{
-		      "component": {
-		        "display_name": null,
-		        "id": 4123,
-		        "is_nestable": true,
-		        "is_root": false,
-		        "name": "banner_section",
-		        "schema": {
-		          "headline": {
-		            "description": "Use this field for the title",
-		            "pos": 0,
-		            "translatable": true,
-		            "type": "text"
-		          }
+		    setBody(buildJsonObject {
+		        putJsonObject("component") {
+		            put("display_name", null)
+		            put("id", 4123)
+		            put("is_nestable", true)
+		            put("is_root", false)
+		            put("name", "banner_section")
+		            putJsonObject("schema") {
+		                putJsonObject("headline") {
+		                    put("description", "Use this field for the title")
+		                    put("pos", 0)
+		                    put("translatable", true)
+		                    put("type", "text")
+		                }
+		            }
 		        }
-		      }
-		    }""")
+		    })
 		}
 		
 		println(response.body<JsonElement>())

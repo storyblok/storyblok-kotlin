@@ -6,9 +6,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class Spaces {
 
 	/**
@@ -19,7 +21,6 @@ class Spaces {
     fun `Retrieve Current Space`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "ask9soUkv02QqbZgmZdeDAtt"
 		    }

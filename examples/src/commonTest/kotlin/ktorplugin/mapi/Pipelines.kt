@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class Pipelines {
 
 	/**
@@ -27,14 +29,14 @@ class Pipelines {
 		}
 		
 		val response = client.post("spaces/288868932106293/branches/") {
-		    setBody("""{
-		      "branch": {
-		        "name": "A new branch",
-		        "position": 2,
-		        "source_id": 12332,
-		        "url": "https://new_domain.com"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("branch") {
+		            put("name", "A new branch")
+		            put("position", 2)
+		            put("source_id", 12332)
+		            put("url", "https://new_domain.com")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -112,14 +114,14 @@ class Pipelines {
 		}
 		
 		val response = client.put("spaces/288868932106293/branches/14") {
-		    setBody("""{
-		      "branch": {
-		        "name": "Branche 123",
-		        "position": 7,
-		        "source_id": 12345,
-		        "url": "https://new_url.com/"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("branch") {
+		            put("name", "Branche 123")
+		            put("position", 7)
+		            put("source_id", 12345)
+		            put("url", "https://new_url.com/")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())

@@ -6,9 +6,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class Stories {
 
 	/**
@@ -19,7 +21,6 @@ class Stories {
     fun `Retrieve a Single Story`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "ask9soUkv02QqbZgmZdeDAtt"
 		    }
@@ -38,7 +39,6 @@ class Stories {
     fun `Retrieve Multiple Stories`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "ask9soUkv02QqbZgmZdeDAtt"
 		    }
@@ -62,7 +62,6 @@ class Stories {
     fun `Retrieving Localized Stories by UUID`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "krcV6QGxWORpYLUWt12xKQtt"
 		    }
@@ -87,7 +86,6 @@ class Stories {
     fun `Retrieving Stories from a Folder`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "ask9soUkv02QqbZgmZdeDAtt"
 		    }
@@ -111,7 +109,6 @@ class Stories {
     fun `Retrieving Stories in a Particular Language`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "krcV6QGxWORpYLUWt12xKQtt"
 		    }
@@ -135,7 +132,6 @@ class Stories {
     fun `Retrieving Stories with Resolved Relations`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "krcV6QGxWORpYLUWt12xKQtt"
 		    }
@@ -158,7 +154,6 @@ class Stories {
     fun `Sorting by Fields Associated with a Story Type`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "krcV6QGxWORpYLUWt12xKQtt"
 		    }
@@ -181,7 +176,6 @@ class Stories {
     fun `Sorting by Story Object Property`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "krcV6QGxWORpYLUWt12xKQtt"
 		    }

@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class IdeationRoom {
 
 	/**
@@ -27,7 +29,35 @@ class IdeationRoom {
 		}
 		
 		val response = client.post("spaces/288868932106293/ideas") {
-		    setBody("""{"idea":{"assignee":null,"author":{"avatar":"avatars/67891/838dcb304c/avatar.jpg","friendly_name":"Jon Doe","id":67891,"userid":"test@email.com"},"bookmarks":[],"content":{},"deleted_at":null,"description":"First idea","internal_tag_ids":["12345"],"internal_tags_list":[{"id":12345,"name":"docs"}],"is_private":true,"name":"My first idea","status":"draft","stories":[],"story_ids":[]}}""")
+		    setBody(buildJsonObject {
+		        putJsonObject("idea") {
+		            put("assignee", null)
+		            putJsonObject("author") {
+		                put("avatar", "avatars/67891/838dcb304c/avatar.jpg")
+		                put("friendly_name", "Jon Doe")
+		                put("id", 67891)
+		                put("userid", "test@email.com")
+		            }
+		            putJsonArray("bookmarks") { }
+		            putJsonObject("content") { }
+		            put("deleted_at", null)
+		            put("description", "First idea")
+		            putJsonArray("internal_tag_ids") {
+		                add("12345")
+		            }
+		            putJsonArray("internal_tags_list") {
+		                addJsonObject {
+		                    put("id", 12345)
+		                    put("name", "docs")
+		                }
+		            }
+		            put("is_private", true)
+		            put("name", "My first idea")
+		            put("status", "draft")
+		            putJsonArray("stories") { }
+		            putJsonArray("story_ids") { }
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -66,9 +96,7 @@ class IdeationRoom {
 			expectSuccess = false
 		}
 		
-		val response = client.put("spaces/288868932106293/ideas/123ab45c-6d78-9101-11ef-213gh1i4j1k5") {
-		    setBody("""undefined""")
-		}
+		val response = client.put("spaces/288868932106293/ideas/123ab45c-6d78-9101-11ef-213gh1i4j1k5")
 		
 		println(response.body<JsonElement>())
     }
@@ -145,7 +173,35 @@ class IdeationRoom {
 		}
 		
 		val response = client.put("spaces/288868932106293/ideas/ab123cd4-5e6f-7gh8-9ij1-01k112l13m1n") {
-		    setBody("""{"idea":{"assignee":null,"author":{"avatar":"avatars/67891/838dcb304c/avatar.jpg","friendly_name":"Jon Doe","id":67891,"userid":"test@email.com"},"bookmarks":[],"content":{},"deleted_at":null,"description":"First idea","internal_tag_ids":["12345"],"internal_tags_list":[{"id":12345,"name":"docs"}],"is_private":true,"name":"My first idea","status":"draft","stories":[],"story_ids":[]}}""")
+		    setBody(buildJsonObject {
+		        putJsonObject("idea") {
+		            put("assignee", null)
+		            putJsonObject("author") {
+		                put("avatar", "avatars/67891/838dcb304c/avatar.jpg")
+		                put("friendly_name", "Jon Doe")
+		                put("id", 67891)
+		                put("userid", "test@email.com")
+		            }
+		            putJsonArray("bookmarks") { }
+		            putJsonObject("content") { }
+		            put("deleted_at", null)
+		            put("description", "First idea")
+		            putJsonArray("internal_tag_ids") {
+		                add("12345")
+		            }
+		            putJsonArray("internal_tags_list") {
+		                addJsonObject {
+		                    put("id", 12345)
+		                    put("name", "docs")
+		                }
+		            }
+		            put("is_private", true)
+		            put("name", "My first idea")
+		            put("status", "draft")
+		            putJsonArray("stories") { }
+		            putJsonArray("story_ids") { }
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())

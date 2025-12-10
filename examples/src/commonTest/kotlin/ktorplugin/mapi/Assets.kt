@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class Assets {
 
 	/**
@@ -27,13 +29,13 @@ class Assets {
 		}
 		
 		val response = client.post("spaces/288868932106293/assets/bulk_update") {
-		    setBody("""{
-		      "asset_folder_id": 299783,
-		      "ids": [
-		        15904978,
-		        15878980
-		      ]
-		    }""")
+		    setBody(buildJsonObject {
+		        put("asset_folder_id", 299783)
+		        putJsonArray("ids") {
+		            add(15904978)
+		            add(15878980)
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -54,11 +56,11 @@ class Assets {
 		}
 		
 		val response = client.post("spaces/288868932106293/assets/bulk_restore") {
-		    setBody("""{
-		      "ids": [
-		        13941914
-		      ]
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonArray("ids") {
+		            add(13941914)
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -98,12 +100,12 @@ class Assets {
 		}
 		
 		val response = client.post("spaces/288868932106293/assets/bulk_destroy") {
-		    setBody("""{
-		      "ids": [
-		        20142579,
-		        20142580
-		      ]
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonArray("ids") {
+		            add(20142579)
+		            add(20142580)
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -143,13 +145,13 @@ class Assets {
 		}
 		
 		val response = client.post("spaces/288868932106293/assets/") {
-		    setBody("""{
-		      "asset_folder_id": 638352,
-		      "filename": "123.jpg",
-		      "id": 89293614204583,
-		      "size": "",
-		      "validate_upload": 1
-		    }""")
+		    setBody(buildJsonObject {
+		        put("asset_folder_id", 638352)
+		        put("filename", "123.jpg")
+		        put("id", 89293614204583)
+		        put("size", "")
+		        put("validate_upload", 1)
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -208,21 +210,21 @@ class Assets {
 		}
 		
 		val response = client.put("spaces/288868932106293/assets/656565") {
-		    setBody("""{
-		      "asset_folder_id": 123123,
-		      "internal_tag_ids": [
-		        1111
-		      ],
-		      "is_private": true,
-		      "locked": false,
-		      "meta_data": {
-		        "alt": "Asset ALT",
-		        "copyright": "Custom Text",
-		        "source": "Asset Source",
-		        "title": "Asset Title"
-		      },
-		      "publish_at": "2024-05-31T11:52:00.000Z"
-		    }""")
+		    setBody(buildJsonObject {
+		        put("asset_folder_id", 123123)
+		        putJsonArray("internal_tag_ids") {
+		            add(1111)
+		        }
+		        put("is_private", true)
+		        put("locked", false)
+		        putJsonObject("meta_data") {
+		            put("alt", "Asset ALT")
+		            put("copyright", "Custom Text")
+		            put("source", "Asset Source")
+		            put("title", "Asset Title")
+		        }
+		        put("publish_at", "2024-05-31T11:52:00.000Z")
+		    })
 		}
 		
 		println(response.body<JsonElement>())

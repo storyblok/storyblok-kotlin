@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class Spaces {
 
 	/**
@@ -27,7 +29,7 @@ class Spaces {
 		}
 		
 		val response = client.post("spaces/288868932106293/backups") {
-		    setBody("""{}""")
+		    setBody(buildJsonObject { })
 		}
 		
 		println(response.body<JsonElement>())
@@ -48,11 +50,11 @@ class Spaces {
 		}
 		
 		val response = client.post("spaces/") {
-		    setBody("""{
-		      "space": {
-		        "name": "Example Space"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("space") {
+		            put("name", "Example Space")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -92,12 +94,12 @@ class Spaces {
 		}
 		
 		val response = client.post("spaces/") {
-		    setBody("""{
-		      "dup_id": 12422,
-		      "space": {
-		        "name": "Example Space"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        put("dup_id", 12422)
+		        putJsonObject("space") {
+		            put("name", "Example Space")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -156,12 +158,12 @@ class Spaces {
 		}
 		
 		val response = client.put("spaces/288868932106293") {
-		    setBody("""{
-		      "space": {
-		        "id": 12422,
-		        "name": "Updated Example Space"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("space") {
+		            put("id", 12422)
+		            put("name", "Updated Example Space")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())

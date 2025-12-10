@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class SpaceRoles {
 
 	/**
@@ -27,7 +29,58 @@ class SpaceRoles {
 		}
 		
 		val response = client.post("spaces/288868932106293/space_roles/") {
-		    setBody("""{"space_role":{"allowed_languages":["default","de"],"allowed_paths":[43097198,48581646],"asset_folder_ids":[56328,29783],"branch_ids":[304011],"component_ids":[57584,43743,72760,67535],"datasource_ids":[2189],"field_permissions":["article.title","hero.image"],"permissions":["manage_block_library","deny_component_technical_name_update","deny_component_fields_name_update","edit_image","delete_stories","deploy_stories","unpublish_stories","unpublish_folders","publish_stories","publish_folders","manage-non-translatable-fields","manage_tags"],"readonly_field_permissions":["hero.RichText_type","hero.TextArea_type"],"role":"Test role","subtitle":"desc"}}""")
+		    setBody(buildJsonObject {
+		        putJsonObject("space_role") {
+		            putJsonArray("allowed_languages") {
+		                add("default")
+		                add("de")
+		            }
+		            putJsonArray("allowed_paths") {
+		                add(43097198)
+		                add(48581646)
+		            }
+		            putJsonArray("asset_folder_ids") {
+		                add(56328)
+		                add(29783)
+		            }
+		            putJsonArray("branch_ids") {
+		                add(304011)
+		            }
+		            putJsonArray("component_ids") {
+		                add(57584)
+		                add(43743)
+		                add(72760)
+		                add(67535)
+		            }
+		            putJsonArray("datasource_ids") {
+		                add(2189)
+		            }
+		            putJsonArray("field_permissions") {
+		                add("article.title")
+		                add("hero.image")
+		            }
+		            putJsonArray("permissions") {
+		                add("manage_block_library")
+		                add("deny_component_technical_name_update")
+		                add("deny_component_fields_name_update")
+		                add("edit_image")
+		                add("delete_stories")
+		                add("deploy_stories")
+		                add("unpublish_stories")
+		                add("unpublish_folders")
+		                add("publish_stories")
+		                add("publish_folders")
+		                add("manage-non-translatable-fields")
+		                add("manage_tags")
+		            }
+		            putJsonArray("readonly_field_permissions") {
+		                add("hero.RichText_type")
+		                add("hero.TextArea_type")
+		            }
+		            put("role", "Test role")
+		            put("subtitle", "desc")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -105,7 +158,54 @@ class SpaceRoles {
 		}
 		
 		val response = client.put("spaces/288868932106293/space_roles/18") {
-		    setBody("""{"space_role":{"allowed_languages":["de"],"allowed_paths":[430937198],"asset_folder_ids":[563628],"branch_ids":[30403],"component_ids":[5758347],"datasource_ids":[218499],"field_permissions":["a-new-blok.title","A new comppppp.Text_type","a-new-blok.image","page.body"],"permissions":["manage_block_library","deny_component_technical_name_update","deny_component_fields_name_update","edit_image","delete_stories","deploy_stories","unpublish_stories","unpublish_folders","publish_stories","publish_folders","manage-non-translatable-fields"],"readonly_field_permissions":["A new comppppp.RichText_type","A new comppppp.TextArea_type","page.body"],"role":"Another new space role","subtitle":"new desc"}}""")
+		    setBody(buildJsonObject {
+		        putJsonObject("space_role") {
+		            putJsonArray("allowed_languages") {
+		                add("de")
+		            }
+		            putJsonArray("allowed_paths") {
+		                add(430937198)
+		            }
+		            putJsonArray("asset_folder_ids") {
+		                add(563628)
+		            }
+		            putJsonArray("branch_ids") {
+		                add(30403)
+		            }
+		            putJsonArray("component_ids") {
+		                add(5758347)
+		            }
+		            putJsonArray("datasource_ids") {
+		                add(218499)
+		            }
+		            putJsonArray("field_permissions") {
+		                add("a-new-blok.title")
+		                add("A new comppppp.Text_type")
+		                add("a-new-blok.image")
+		                add("page.body")
+		            }
+		            putJsonArray("permissions") {
+		                add("manage_block_library")
+		                add("deny_component_technical_name_update")
+		                add("deny_component_fields_name_update")
+		                add("edit_image")
+		                add("delete_stories")
+		                add("deploy_stories")
+		                add("unpublish_stories")
+		                add("unpublish_folders")
+		                add("publish_stories")
+		                add("publish_folders")
+		                add("manage-non-translatable-fields")
+		            }
+		            putJsonArray("readonly_field_permissions") {
+		                add("A new comppppp.RichText_type")
+		                add("A new comppppp.TextArea_type")
+		                add("page.body")
+		            }
+		            put("role", "Another new space role")
+		            put("subtitle", "new desc")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())

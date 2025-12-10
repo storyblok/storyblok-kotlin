@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class Workflows {
 
 	/**
@@ -27,14 +29,14 @@ class Workflows {
 		}
 		
 		val response = client.post("spaces/288868932106293/workflows") {
-		    setBody("""{
-		      "workflow": {
-		        "content_types": [
-		          "page"
-		        ],
-		        "name": "page"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("workflow") {
+		            putJsonArray("content_types") {
+		                add("page")
+		            }
+		            put("name", "page")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -74,14 +76,14 @@ class Workflows {
 		}
 		
 		val response = client.post("spaces/288868932106293/workflows/656/duplicate") {
-		    setBody("""{
-		      "workflow": {
-		        "content_types": [
-		          "page_new"
-		        ],
-		        "name": "duplicated page"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("workflow") {
+		            putJsonArray("content_types") {
+		                add("page_new")
+		            }
+		            put("name", "duplicated page")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -140,15 +142,15 @@ class Workflows {
 		}
 		
 		val response = client.put("spaces/288868932106293/workflows/656") {
-		    setBody("""{
-		      "workflow": {
-		        "content_types": [
-		          "page",
-		          "teaser"
-		        ],
-		        "name": "updated_name"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("workflow") {
+		            putJsonArray("content_types") {
+		                add("page")
+		                add("teaser")
+		            }
+		            put("name", "updated_name")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())

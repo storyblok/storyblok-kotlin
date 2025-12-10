@@ -6,9 +6,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class FilterQueries {
 
 	/**
@@ -19,7 +21,6 @@ class FilterQueries {
     fun `Filter Queries with Field-level Translation`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "ask9soUkv02QqbZgmZdeDAtt"
 		    }
@@ -44,7 +45,6 @@ class FilterQueries {
     fun `Filter Queries with Nestable Blocks and Fields`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "ask9soUkv02QqbZgmZdeDAtt"
 		    }
@@ -67,7 +67,6 @@ class FilterQueries {
     fun all_in_array() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "ask9soUkv02QqbZgmZdeDAtt"
 		    }
@@ -90,7 +89,6 @@ class FilterQueries {
     fun any_in_array() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "ask9soUkv02QqbZgmZdeDAtt"
 		    }
@@ -113,7 +111,6 @@ class FilterQueries {
     fun gt_date() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "ask9soUkv02QqbZgmZdeDAtt"
 		    }
@@ -136,7 +133,6 @@ class FilterQueries {
     fun gt_float() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "ask9soUkv02QqbZgmZdeDAtt"
 		    }
@@ -159,7 +155,6 @@ class FilterQueries {
     fun gt_int() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "ask9soUkv02QqbZgmZdeDAtt"
 		    }
@@ -182,7 +177,6 @@ class FilterQueries {
     fun `in`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "ask9soUkv02QqbZgmZdeDAtt"
 		    }
@@ -205,7 +199,6 @@ class FilterQueries {
     fun `is`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "ask9soUkv02QqbZgmZdeDAtt"
 		    }
@@ -228,7 +221,6 @@ class FilterQueries {
     fun like() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "ask9soUkv02QqbZgmZdeDAtt"
 		    }
@@ -251,7 +243,6 @@ class FilterQueries {
     fun lt_date() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "ask9soUkv02QqbZgmZdeDAtt"
 		    }
@@ -274,7 +265,6 @@ class FilterQueries {
     fun lt_float() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "ask9soUkv02QqbZgmZdeDAtt"
 		    }
@@ -297,7 +287,6 @@ class FilterQueries {
     fun lt_int() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "ask9soUkv02QqbZgmZdeDAtt"
 		    }
@@ -320,7 +309,6 @@ class FilterQueries {
     fun not_in() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "ask9soUkv02QqbZgmZdeDAtt"
 		    }
@@ -343,7 +331,6 @@ class FilterQueries {
     fun not_like() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "ask9soUkv02QqbZgmZdeDAtt"
 		    }
@@ -366,7 +353,6 @@ class FilterQueries {
     fun `Filtering Stories by a Boolean Value`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "ask9soUkv02QqbZgmZdeDAtt"
 		    }
@@ -390,7 +376,6 @@ class FilterQueries {
     fun `Filtering Stories by Defining a Value Range`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "ask9soUkv02QqbZgmZdeDAtt"
 		    }

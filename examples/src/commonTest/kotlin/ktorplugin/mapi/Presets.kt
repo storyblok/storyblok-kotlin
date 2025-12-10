@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class Presets {
 
 	/**
@@ -27,15 +29,15 @@ class Presets {
 		}
 		
 		val response = client.post("spaces/288868932106293/presets/") {
-		    setBody("""{
-		      "preset": {
-		        "component_id": 62,
-		        "name": "Teaser with filled headline",
-		        "preset": {
-		          "headline": "This is a default value for the preset!"
+		    setBody(buildJsonObject {
+		        putJsonObject("preset") {
+		            put("component_id", 62)
+		            put("name", "Teaser with filled headline")
+		            putJsonObject("preset") {
+		                put("headline", "This is a default value for the preset!")
+		            }
 		        }
-		      }
-		    }""")
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -113,16 +115,16 @@ class Presets {
 		}
 		
 		val response = client.put("spaces/288868932106293/presets/1814") {
-		    setBody("""{
-		      "preset": {
-		        "component_id": 62,
-		        "name": "Teaser with headline and image",
-		        "preset": {
-		          "headline": "This is a default value for the preset!",
-		          "image": "//a.storyblok.com/f/606/..."
+		    setBody(buildJsonObject {
+		        putJsonObject("preset") {
+		            put("component_id", 62)
+		            put("name", "Teaser with headline and image")
+		            putJsonObject("preset") {
+		                put("headline", "This is a default value for the preset!")
+		                put("image", "//a.storyblok.com/f/606/...")
+		            }
 		        }
-		      }
-		    }""")
+		    })
 		}
 		
 		println(response.body<JsonElement>())

@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class Collaborators {
 
 	/**
@@ -27,14 +29,14 @@ class Collaborators {
 		}
 		
 		val response = client.post("spaces/288868932106293/collaborators/") {
-		    setBody("""{
-		      "allow_multiple_roles_creation": false,
-		      "email": "api.test@storyblok.com",
-		      "permissions": [],
-		      "role": "admin",
-		      "space_role_id": "",
-		      "space_role_ids": []
-		    }""")
+		    setBody(buildJsonObject {
+		        put("allow_multiple_roles_creation", false)
+		        put("email", "api.test@storyblok.com")
+		        putJsonArray("permissions") { }
+		        put("role", "admin")
+		        put("space_role_id", null)
+		        putJsonArray("space_role_ids") { }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -55,14 +57,14 @@ class Collaborators {
 		}
 		
 		val response = client.post("spaces/288868932106293/collaborators/") {
-		    setBody("""{
-		      "allow_multiple_roles_creation": false,
-		      "email": "api.test@storyblok.com",
-		      "permissions": [],
-		      "role": "62454",
-		      "space_role_id": 62454,
-		      "space_role_ids": []
-		    }""")
+		    setBody(buildJsonObject {
+		        put("allow_multiple_roles_creation", false)
+		        put("email", "api.test@storyblok.com")
+		        putJsonArray("permissions") { }
+		        put("role", "62454")
+		        put("space_role_id", 62454)
+		        putJsonArray("space_role_ids") { }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -83,16 +85,17 @@ class Collaborators {
 		}
 		
 		val response = client.post("spaces/288868932106293/collaborators/") {
-		    setBody("""{
-		      "allow_multiple_roles_creation": true,
-		      "email": "api.test@storyblok.com",
-		      "permissions": [],
-		      "role": "multi",
-		      "space_role_ids": [
-		        62454,
-		        123123
-		      ]
-		    }""")
+		    setBody(buildJsonObject {
+		        put("allow_multiple_roles_creation", true)
+		        put("email", "api.test@storyblok.com")
+		        putJsonArray("permissions") { }
+		        put("role", "multi")
+		        put("space_role_id", null)
+		        putJsonArray("space_role_ids") {
+		            add(62454)
+		            add(123123)
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -113,14 +116,14 @@ class Collaborators {
 		}
 		
 		val response = client.post("spaces/288868932106293/collaborators/") {
-		    setBody("""{
-		      "collaborator": {
-		        "email": "api@storyblok.com",
-		        "role": "editor",
-		        "space_role_id": 18,
-		        "sso_id": "123456789"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("collaborator") {
+		            put("email", "api@storyblok.com")
+		            put("role", "editor")
+		            put("space_role_id", 18)
+		            put("sso_id", "123456789")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -179,12 +182,12 @@ class Collaborators {
 		}
 		
 		val response = client.put("spaces/288868932106293/collaborators/2362") {
-		    setBody("""{
-		      "collaborator": {
-		        "role": 49707,
-		        "space_role_id": 49707
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("collaborator") {
+		            put("role", 49707)
+		            put("space_role_id", 49707)
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())

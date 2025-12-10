@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class Stories {
 
 	/**
@@ -27,12 +29,12 @@ class Stories {
 		}
 		
 		val response = client.put("spaces/288868932106293/stories/536503907/ai_translate") {
-		    setBody("""{
-		      "code": "fr",
-		      "lang": "fr",
-		      "overwrite": true,
-		      "release_id": 0
-		    }""")
+		    setBody(buildJsonObject {
+		        put("code", "fr")
+		        put("lang", "fr")
+		        put("overwrite", true)
+		        put("release_id", 0)
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -76,17 +78,17 @@ class Stories {
 		}
 		
 		val response = client.post("spaces/288868932106293/stories") {
-		    setBody("""{
-		      "publish": 1,
-		      "story": {
-		        "content": {
-		          "body": [],
-		          "component": "page"
-		        },
-		        "name": "Story Name",
-		        "slug": "story-name"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        put("publish", 1)
+		        putJsonObject("story") {
+		            putJsonObject("content") {
+		                putJsonArray("body") { }
+		                put("component", "page")
+		            }
+		            put("name", "Story Name")
+		            put("slug", "story-name")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -107,14 +109,14 @@ class Stories {
 		}
 		
 		val response = client.post("spaces/288868932106293/stories") {
-		    setBody("""{
-		      "story": {
-		        "is_folder": true,
-		        "name": "A new folder",
-		        "parent_id": 0,
-		        "slug": "a-new-folder"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("story") {
+		            put("is_folder", true)
+		            put("name", "A new folder")
+		            put("parent_id", 0)
+		            put("slug", "a-new-folder")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -135,7 +137,15 @@ class Stories {
 		}
 		
 		val response = client.post("spaces/288868932106293/stories") {
-		    setBody(""""{\n  story: {\n    default_root: \"article\",\n    is_folder: true,\n    name: \"A new folder\",\n    parent_id: 0,\n    slug: \"a-new-folder\",\n  },\n}"""")
+		    setBody(buildJsonObject {
+		        putJsonObject("story") {
+		            put("default_root", "article")
+		            put("is_folder", true)
+		            put("name", "A new folder")
+		            put("parent_id", 0)
+		            put("slug", "a-new-folder")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -156,20 +166,20 @@ class Stories {
 		}
 		
 		val response = client.put("spaces/288868932106293/stories") {
-		    setBody("""{
-		      "story": {
-		        "content": {
-		          "content_types": [
-		            "category"
-		          ],
-		          "lock_subfolders_content_types": false
-		        },
-		        "is_folder": true,
-		        "name": "Categories",
-		        "parent_id": 0,
-		        "slug": "categories"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("story") {
+		            putJsonObject("content") {
+		                putJsonArray("content_types") {
+		                    add("category")
+		                }
+		                put("lock_subfolders_content_types", false)
+		            }
+		            put("is_folder", true)
+		            put("name", "Categories")
+		            put("parent_id", 0)
+		            put("slug", "categories")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -209,13 +219,13 @@ class Stories {
 		}
 		
 		val response = client.put("spaces/288868932106293/stories/531458099/duplicate") {
-		    setBody("""{
-		      "same_path": true,
-		      "story": {
-		        "group_id": "4f77133f-bb1c-4799-a54d-b6217107247f"
-		      },
-		      "target_dimension": 531452775
-		    }""")
+		    setBody(buildJsonObject {
+		        put("same_path", true)
+		        putJsonObject("story") {
+		            put("group_id", "4f77133f-bb1c-4799-a54d-b6217107247f")
+		        }
+		        put("target_dimension", 531452775)
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -350,12 +360,12 @@ class Stories {
 		}
 		
 		val response = client.post("spaces/288868932106293/stories/unpublished_dependencies") {
-		    setBody("""{
-		      "story_ids": [
-		        522672112,
-		        534980620
-		      ]
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonArray("story_ids") {
+		            add(522672112)
+		            add(534980620)
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -380,7 +390,68 @@ class Stories {
 		        parameters.append("lang_code", "pt-br")
 		        parameters.append("import_lang", "true")
 		    }
-		    setBody("""{"story":{"alternates":[],"breadcrumbs":[],"can_not_view":null,"content":{"_uid":"98cccd01-f807-4494-996d-c6b0de2045a5","component":"your_content_type"},"created_at":"2023-05-29T09:53:40.231Z","default_root":null,"deleted_at":null,"disble_fe_editor":false,"expire_at":null,"favourite_for_user_ids":[],"first_published_at":"2023-06-06T08:47:05.426Z","full_slug":"home","group_id":"fb33b858-277f-4690-81fb-e0a080bd39ac","id":314931981,"imported_at":"2024-02-08T11:26:42.505Z","is_folder":false,"is_scheduled":null,"is_startpage":false,"last_author":{"friendly_name":"Storyblok","id":39821,"userid":"storyblok"},"localized_paths":[{}],"meta_data":null,"name":"Home","parent":null,"parent_id":0,"path":null,"pinned":false,"position":0,"preview_token":{"timestamp":"1545530576","token":"279395174a25be38b702f9ec90d08a960e1a5a84"},"publish_at":null,"published":true,"published_at":"2023-08-30T09:16:42.066Z","scheduled_dates":null,"slug":"home","sort_by_date":null,"space_role_ids":[],"tag_list":[],"translated_slugs":[{}],"translated_stories":[],"unpublished_changes":true,"updated_at":"2024-02-08T11:26:42.514Z","user_ids":[12345],"uuid":"2497c493-168a-443f-bbb1-ccfd6340d319"}}""")
+		    setBody(buildJsonObject {
+		        putJsonObject("story") {
+		            putJsonArray("alternates") { }
+		            putJsonArray("breadcrumbs") { }
+		            put("can_not_view", null)
+		            putJsonObject("content") {
+		                put("_uid", "98cccd01-f807-4494-996d-c6b0de2045a5")
+		                put("component", "your_content_type")
+		            }
+		            put("created_at", "2023-05-29T09:53:40.231Z")
+		            put("default_root", null)
+		            put("deleted_at", null)
+		            put("disble_fe_editor", false)
+		            put("expire_at", null)
+		            putJsonArray("favourite_for_user_ids") { }
+		            put("first_published_at", "2023-06-06T08:47:05.426Z")
+		            put("full_slug", "home")
+		            put("group_id", "fb33b858-277f-4690-81fb-e0a080bd39ac")
+		            put("id", 314931981)
+		            put("imported_at", "2024-02-08T11:26:42.505Z")
+		            put("is_folder", false)
+		            put("is_scheduled", null)
+		            put("is_startpage", false)
+		            putJsonObject("last_author") {
+		                put("friendly_name", "Storyblok")
+		                put("id", 39821)
+		                put("userid", "storyblok")
+		            }
+		            putJsonArray("localized_paths") {
+		                addJsonObject { }
+		            }
+		            put("meta_data", null)
+		            put("name", "Home")
+		            put("parent", null)
+		            put("parent_id", 0)
+		            put("path", null)
+		            put("pinned", false)
+		            put("position", 0)
+		            putJsonObject("preview_token") {
+		                put("timestamp", "1545530576")
+		                put("token", "279395174a25be38b702f9ec90d08a960e1a5a84")
+		            }
+		            put("publish_at", null)
+		            put("published", true)
+		            put("published_at", "2023-08-30T09:16:42.066Z")
+		            put("scheduled_dates", null)
+		            put("slug", "home")
+		            put("sort_by_date", null)
+		            putJsonArray("space_role_ids") { }
+		            putJsonArray("tag_list") { }
+		            putJsonArray("translated_slugs") {
+		                addJsonObject { }
+		            }
+		            putJsonArray("translated_stories") { }
+		            put("unpublished_changes", true)
+		            put("updated_at", "2024-02-08T11:26:42.514Z")
+		            putJsonArray("user_ids") {
+		                add(12345)
+		            }
+		            put("uuid", "2497c493-168a-443f-bbb1-ccfd6340d319")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -551,19 +622,19 @@ class Stories {
 		}
 		
 		val response = client.put("spaces/288868932106293/stories/2141") {
-		    setBody("""{
-		      "force_update": 1,
-		      "publish": 1,
-		      "story": {
-		        "content": {
-		          "body": [],
-		          "component": "page"
-		        },
-		        "id": 2141,
-		        "name": "Updated Story Name",
-		        "slug": "story-name"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        put("force_update", 1)
+		        put("publish", 1)
+		        putJsonObject("story") {
+		            putJsonObject("content") {
+		                putJsonArray("body") { }
+		                put("component", "page")
+		            }
+		            put("id", 2141)
+		            put("name", "Updated Story Name")
+		            put("slug", "story-name")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())

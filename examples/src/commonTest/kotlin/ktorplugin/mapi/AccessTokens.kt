@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class AccessTokens {
 
 	/**
@@ -27,12 +29,12 @@ class AccessTokens {
 		}
 		
 		val response = client.post("spaces/288868932106293/api_keys/") {
-		    setBody("""{
-		      "api_key": {
-		        "access": "public",
-		        "name": "My public Access token"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("api_key") {
+		            put("access", "public")
+		            put("name", "My public Access token")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -91,12 +93,12 @@ class AccessTokens {
 		}
 		
 		val response = client.put("spaces/288868932106293/api_keys/123123") {
-		    setBody("""{
-		      "api_key": {
-		        "access": "private",
-		        "name": "My updated token"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("api_key") {
+		            put("access", "private")
+		            put("name", "My updated token")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())

@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class DatasourceEntries {
 
 	/**
@@ -27,13 +29,13 @@ class DatasourceEntries {
 		}
 		
 		val response = client.post("spaces/288868932106293/datasource_entries") {
-		    setBody("""{
-		      "datasource_entry": {
-		        "datasource_id": 12345,
-		        "name": "newsletter_text",
-		        "value": "Subscribe to our newsletter."
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("datasource_entry") {
+		            put("datasource_id", 12345)
+		            put("name", "newsletter_text")
+		            put("value", "Subscribe to our newsletter.")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -116,12 +118,12 @@ class DatasourceEntries {
 		}
 		
 		val response = client.put("spaces/288868932106293/datasource_entries/52") {
-		    setBody("""{
-		      "datasource_entry": {
-		        "name": "updated_newsletter_text",
-		        "value": "Update: Subscribe to our updated newsletter."
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("datasource_entry") {
+		            put("name", "updated_newsletter_text")
+		            put("value", "Update: Subscribe to our updated newsletter.")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -142,14 +144,14 @@ class DatasourceEntries {
 		}
 		
 		val response = client.put("spaces/288868932106293/datasource_entries/52") {
-		    setBody("""{
-		      "datasource_entry": {
-		        "dimension_value": "Changed the value in the dimension",
-		        "name": "updated_newsletter_text",
-		        "value": "Update: Sign up to our updated newsletter."
-		      },
-		      "dimension_id": 70466
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("datasource_entry") {
+		            put("dimension_value", "Changed the value in the dimension")
+		            put("name", "updated_newsletter_text")
+		            put("value", "Update: Sign up to our updated newsletter.")
+		        }
+		        put("dimension_id", 70466)
+		    })
 		}
 		
 		println(response.body<JsonElement>())

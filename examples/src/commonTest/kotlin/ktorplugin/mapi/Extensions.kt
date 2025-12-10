@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class Extensions {
 
 	/**
@@ -27,12 +29,12 @@ class Extensions {
 		}
 		
 		val response = client.post("org_apps") {
-		    setBody("""{
-		      "app": {
-		        "name": "My extension",
-		        "slug": "storyblok-gmbh@extension-1"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("app") {
+		            put("name", "My extension")
+		            put("slug", "storyblok-gmbh@extension-1")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -186,11 +188,11 @@ class Extensions {
 		}
 		
 		val response = client.put("org_apps/a8d372f8-5659-4f77-b549-0a82ff9c6e72") {
-		    setBody("""{
-		      "app": {
-		        "enable_space_settings": true
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("app") {
+		            put("enable_space_settings", true)
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -211,14 +213,14 @@ class Extensions {
 		}
 		
 		val response = client.put("spaces/288868932106293/app_provisions/a8d372f8-5659-4f77-b549-0a82ff9c6e72") {
-		    setBody("""{
-		      "app_provision": {
-		        "space_level_settings": {
-		          "any_setting_1": "hello",
-		          "any_setting_2": 123456
+		    setBody(buildJsonObject {
+		        putJsonObject("app_provision") {
+		            putJsonObject("space_level_settings") {
+		                put("any_setting_1", "hello")
+		                put("any_setting_2", 123456)
+		            }
 		        }
-		      }
-		    }""")
+		    })
 		}
 		
 		println(response.body<JsonElement>())

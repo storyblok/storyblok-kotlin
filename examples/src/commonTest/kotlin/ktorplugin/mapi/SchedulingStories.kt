@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class SchedulingStories {
 
 	/**
@@ -27,13 +29,13 @@ class SchedulingStories {
 		}
 		
 		val response = client.post("spaces/288868932106293/story_schedulings") {
-		    setBody("""{
-		      "story_scheduling": {
-		        "language": "pt-br",
-		        "publish_at": "2024-07-26T06:56:00.000Z",
-		        "story_id": 362419485
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("story_scheduling") {
+		            put("language", "pt-br")
+		            put("publish_at", "2024-07-26T06:56:00.000Z")
+		            put("story_id", 362419485)
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -111,11 +113,11 @@ class SchedulingStories {
 		}
 		
 		val response = client.put("spaces/288868932106293/story_schedulings/123") {
-		    setBody("""{
-		      "story_scheduling": {
-		        "publish_at": "2024-08-26T06:56:00.000Z"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("story_scheduling") {
+		            put("publish_at", "2024-08-26T06:56:00.000Z")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())

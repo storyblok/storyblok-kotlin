@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class Approvals {
 
 	/**
@@ -27,12 +29,12 @@ class Approvals {
 		}
 		
 		val response = client.post("spaces/288868932106293/approvals/") {
-		    setBody("""{
-		      "approval": {
-		        "approver_id": 1028,
-		        "story_id": 1066
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("approval") {
+		            put("approver_id", 1028)
+		            put("story_id", 1066)
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -53,13 +55,13 @@ class Approvals {
 		}
 		
 		val response = client.post("spaces/288868932106293/approvals/") {
-		    setBody("""{
-		      "approval": {
-		        "approver_id": 1030,
-		        "story_id": 1067
-		      },
-		      "release_id": 16
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("approval") {
+		            put("approver_id", 1030)
+		            put("story_id", 1067)
+		        }
+		        put("release_id", 16)
+		    })
 		}
 		
 		println(response.body<JsonElement>())

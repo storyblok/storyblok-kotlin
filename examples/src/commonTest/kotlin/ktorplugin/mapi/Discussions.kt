@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class Discussions {
 
 	/**
@@ -27,16 +29,16 @@ class Discussions {
 		}
 		
 		val response = client.post("spaces/288868932106293/discussions/456/comments") {
-		    setBody("""{
-		      "comment": {
-		        "message_json": [
-		          {
-		            "text": "Hello new comment",
-		            "type": "text"
-		          }
-		        ]
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("comment") {
+		            putJsonArray("message_json") {
+		                addJsonObject {
+		                    put("text", "Hello new comment")
+		                    put("type", "text")
+		                }
+		            }
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -57,7 +59,30 @@ class Discussions {
 		}
 		
 		val response = client.post("spaces/288868932106293/stories/12367/discussions") {
-		    setBody("""{"discussion":{"block_uid":"f7bd92e3-b309-4441-a8a0-654e499fefc8","comment":{"message_json":[{"text":"this is a comment ","type":"text"},{"attrs":{"id":99734,"label":"Fortune Ikechi"},"type":"mention"}]},"component":"feature","fieldname":"name","lang":"default","title":"Name"}}""")
+		    setBody(buildJsonObject {
+		        putJsonObject("discussion") {
+		            put("block_uid", "f7bd92e3-b309-4441-a8a0-654e499fefc8")
+		            putJsonObject("comment") {
+		                putJsonArray("message_json") {
+		                    addJsonObject {
+		                        put("text", "this is a comment ")
+		                        put("type", "text")
+		                    }
+		                    addJsonObject {
+		                        putJsonObject("attrs") {
+		                            put("id", 99734)
+		                            put("label", "Fortune Ikechi")
+		                        }
+		                        put("type", "mention")
+		                    }
+		                }
+		            }
+		            put("component", "feature")
+		            put("fieldname", "name")
+		            put("lang", "default")
+		            put("title", "Name")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -97,11 +122,11 @@ class Discussions {
 		}
 		
 		val response = client.put("spaces/288868932106293/discussions/49468") {
-		    setBody("""{
-		      "discussion": {
-		        "solved_at": "2024-02-06T22:07:04.729Z"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("discussion") {
+		            put("solved_at", "2024-02-06T22:07:04.729Z")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -223,16 +248,16 @@ class Discussions {
 		}
 		
 		val response = client.put("spaces/288868932106293/discussions/2345/comments/456") {
-		    setBody("""{
-		      "comment": {
-		        "message_json": [
-		          {
-		            "text": "Updated Comment ",
-		            "type": "text"
-		          }
-		        ]
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("comment") {
+		            putJsonArray("message_json") {
+		                addJsonObject {
+		                    put("text", "Updated Comment ")
+		                    put("type", "text")
+		                }
+		            }
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())

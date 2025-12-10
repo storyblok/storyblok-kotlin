@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class AssetFolders {
 
 	/**
@@ -27,12 +29,12 @@ class AssetFolders {
 		}
 		
 		val response = client.post("spaces/288868932106293/asset_folders/") {
-		    setBody("""{
-		      "asset_folder": {
-		        "name": "Header Images",
-		        "parent_id": 123123
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("asset_folder") {
+		            put("name", "Header Images")
+		            put("parent_id", 123123)
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -110,12 +112,12 @@ class AssetFolders {
 		}
 		
 		val response = client.put("spaces/288868932106293/asset_folders/414142") {
-		    setBody("""{
-		      "asset_folder": {
-		        "name": "Updated folder",
-		        "parent_id": 288983
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("asset_folder") {
+		            put("name", "Updated folder")
+		            put("parent_id", 288983)
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())

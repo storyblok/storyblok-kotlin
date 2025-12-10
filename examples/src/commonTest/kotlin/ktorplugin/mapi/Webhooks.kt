@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class Webhooks {
 
 	/**
@@ -27,17 +29,17 @@ class Webhooks {
 		}
 		
 		val response = client.post("spaces/288868932106293/webhook_endpoints/") {
-		    setBody("""{
-		      "webhook_endpoint": {
-		        "actions": [
-		          "story.published"
-		        ],
-		        "activated": true,
-		        "endpoint": "https://apiendpoint.com",
-		        "name": "Rebuild Website",
-		        "secret": ""
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("webhook_endpoint") {
+		            putJsonArray("actions") {
+		                add("story.published")
+		            }
+		            put("activated", true)
+		            put("endpoint", "https://apiendpoint.com")
+		            put("name", "Rebuild Website")
+		            put("secret", "")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -115,18 +117,18 @@ class Webhooks {
 		}
 		
 		val response = client.put("spaces/288868932106293/webhook_endpoints/4570") {
-		    setBody("""{
-		      "webhook_endpoint": {
-		        "actions": [
-		          "story.published",
-		          "story.unpublished"
-		        ],
-		        "activated": true,
-		        "endpoint": "https://new-api-endpoint.com",
-		        "name": "Rebuild Website",
-		        "secret": "HelloSecret"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("webhook_endpoint") {
+		            putJsonArray("actions") {
+		                add("story.published")
+		                add("story.unpublished")
+		            }
+		            put("activated", true)
+		            put("endpoint", "https://new-api-endpoint.com")
+		            put("name", "Rebuild Website")
+		            put("secret", "HelloSecret")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())

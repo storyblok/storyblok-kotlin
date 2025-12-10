@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class InternalTags {
 
 	/**
@@ -27,12 +29,12 @@ class InternalTags {
 		}
 		
 		val response = client.post("spaces/288868932106293/internal_tags") {
-		    setBody("""{
-		      "internal_tag": {
-		        "name": "New Release",
-		        "object_type": "component"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("internal_tag") {
+		            put("name", "New Release")
+		            put("object_type", "component")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -91,12 +93,12 @@ class InternalTags {
 		}
 		
 		val response = client.put("spaces/288868932106293/internal_tags/123") {
-		    setBody("""{
-		      "internal_tag": {
-		        "name": "Updated Tag name",
-		        "object_type": "asset"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("internal_tag") {
+		            put("name", "Updated Tag name")
+		            put("object_type", "asset")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())

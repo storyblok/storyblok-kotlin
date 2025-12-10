@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class BranchDeployments {
 
 	/**
@@ -27,13 +29,13 @@ class BranchDeployments {
 		}
 		
 		val response = client.post("spaces/288868932106293/deployments/") {
-		    setBody("""{
-		      "branch_id": 1,
-		      "release_uuids": [
-		        "1234-4567",
-		        "1234-4568"
-		      ]
-		    }""")
+		    setBody(buildJsonObject {
+		        put("branch_id", 1)
+		        putJsonArray("release_uuids") {
+		            add("1234-4567")
+		            add("1234-4568")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())

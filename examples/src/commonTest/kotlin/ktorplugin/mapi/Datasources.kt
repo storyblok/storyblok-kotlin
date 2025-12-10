@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class Datasources {
 
 	/**
@@ -27,12 +29,12 @@ class Datasources {
 		}
 		
 		val response = client.post("spaces/288868932106293/datasources/") {
-		    setBody("""{
-		      "datasource": {
-		        "name": "Labels for Website",
-		        "slug": "labels"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("datasource") {
+		            put("name", "Labels for Website")
+		            put("slug", "labels")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -53,22 +55,22 @@ class Datasources {
 		}
 		
 		val response = client.post("spaces/288868932106293/datasources/") {
-		    setBody("""{
-		      "datasource": {
-		        "dimensions_attributes": [
-		          {
-		            "entry_value": "es",
-		            "name": "Spanish"
-		          },
-		          {
-		            "entry_value": "de",
-		            "name": "German"
-		          }
-		        ],
-		        "name": "Labels for Website",
-		        "slug": "label"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("datasource") {
+		            putJsonArray("dimensions_attributes") {
+		                addJsonObject {
+		                    put("entry_value", "es")
+		                    put("name", "Spanish")
+		                }
+		                addJsonObject {
+		                    put("entry_value", "de")
+		                    put("name", "German")
+		                }
+		            }
+		            put("name", "Labels for Website")
+		            put("slug", "label")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -150,12 +152,12 @@ class Datasources {
 		}
 		
 		val response = client.put("spaces/288868932106293/datasources/91") {
-		    setBody("""{
-		      "datasource": {
-		        "name": "Labels for Website",
-		        "slug": "labels_for_website"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("datasource") {
+		            put("name", "Labels for Website")
+		            put("slug", "labels_for_website")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -176,18 +178,18 @@ class Datasources {
 		}
 		
 		val response = client.put("spaces/288868932106293/datasources/91") {
-		    setBody("""{
-		      "datasource": {
-		        "dimensions_attributes": [
-		          {
-		            "entry_value": "another_slug",
-		            "name": "Another Name"
-		          }
-		        ],
-		        "name": "Labels for Website",
-		        "slug": "label"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("datasource") {
+		            putJsonArray("dimensions_attributes") {
+		                addJsonObject {
+		                    put("entry_value", "another_slug")
+		                    put("name", "Another Name")
+		                }
+		            }
+		            put("name", "Labels for Website")
+		            put("slug", "label")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())

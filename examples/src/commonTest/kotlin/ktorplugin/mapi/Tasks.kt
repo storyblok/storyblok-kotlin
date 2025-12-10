@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class Tasks {
 
 	/**
@@ -27,13 +29,13 @@ class Tasks {
 		}
 		
 		val response = client.post("spaces/288868932106293/tasks/") {
-		    setBody("""{
-		      "task": {
-		        "name": "My Task Name",
-		        "task_type": "webhook",
-		        "webhook_url": "https://www.storyblok.com"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("task") {
+		            put("name", "My Task Name")
+		            put("task_type", "webhook")
+		            put("webhook_url", "https://www.storyblok.com")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -111,13 +113,13 @@ class Tasks {
 		}
 		
 		val response = client.put("spaces/288868932106293/tasks/124") {
-		    setBody("""{
-		      "task": {
-		        "name": "My Updated Task Name",
-		        "task_type": "webhook",
-		        "webhook_url": "https://www.storyblok.com"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("task") {
+		            put("name", "My Updated Task Name")
+		            put("task_type", "webhook")
+		            put("webhook_url", "https://www.storyblok.com")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())

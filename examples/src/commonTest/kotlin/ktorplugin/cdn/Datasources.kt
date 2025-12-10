@@ -6,9 +6,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class Datasources {
 
 	/**
@@ -19,7 +21,6 @@ class Datasources {
     fun `Retrieve a Single Datasource`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "ask9soUkv02QqbZgmZdeDAtt"
 		    }
@@ -38,7 +39,6 @@ class Datasources {
     fun `Retrieve Multiple Datasource Entries`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "ask9soUkv02QqbZgmZdeDAtt"
 		    }
@@ -62,7 +62,6 @@ class Datasources {
     fun `Retrieve Multiple Datasources`() = runTest {
 
         val client = HttpClient {
-			expectSuccess = true
 		    install(Storyblok(CDN)) {
 		        accessToken = "ask9soUkv02QqbZgmZdeDAtt"
 		    }

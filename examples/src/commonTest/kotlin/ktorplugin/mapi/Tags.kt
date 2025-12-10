@@ -7,9 +7,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlin.test.Test
 
+@OptIn(ExperimentalSerializationApi::class)
 class Tags {
 
 	/**
@@ -27,12 +29,12 @@ class Tags {
 		}
 		
 		val response = client.post("spaces/288868932106293/tags") {
-		    setBody("""{
-		      "tag": {
-		        "name": "Editor's Choice",
-		        "story_id": 202
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("tag") {
+		            put("name", "Editor's Choice")
+		            put("story_id", 202)
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -118,19 +120,19 @@ class Tags {
 		}
 		
 		val response = client.post("spaces/288868932106293/tags/bulk_association") {
-		    setBody("""{
-		      "tags": {
-		        "stories": [
-		          {
-		            "story_id": 69934114531566,
-		            "tag_list": [
-		              "Editor's Choice",
-		              "Featured"
-		            ]
-		          }
-		        ]
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        putJsonObject("tags") {
+		            putJsonArray("stories") {
+		                addJsonObject {
+		                    put("story_id", 69934114531566)
+		                    putJsonArray("tag_list") {
+		                        add("Editor's Choice")
+		                        add("Featured")
+		                    }
+		                }
+		            }
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
@@ -151,12 +153,12 @@ class Tags {
 		}
 		
 		val response = client.put("spaces/288868932106293/stories/2141") {
-		    setBody("""{
-		      "id": "Editor's Choice",
-		      "tag": {
-		        "name": "Editorial"
-		      }
-		    }""")
+		    setBody(buildJsonObject {
+		        put("id", "Editor's Choice")
+		        putJsonObject("tag") {
+		            put("name", "Editorial")
+		        }
+		    })
 		}
 		
 		println(response.body<JsonElement>())
