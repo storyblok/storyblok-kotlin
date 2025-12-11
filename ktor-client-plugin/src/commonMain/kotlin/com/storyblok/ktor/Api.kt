@@ -111,15 +111,15 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
         public sealed class Region(internal val cdnUrl: Url, internal val mapiUrl: Url) {
             private constructor(cdn: String, mapi: String) : this(Url(cdn), Url(mapi))
             /** European Union API server location. */
-            public object EU: Region("https://api.storyblok.com/v2/cdn/", "https://mapi.storyblok.com/v1/")
+            public object EU: Region(cdn = "https://api.storyblok.com/v2/cdn/", mapi = "https://mapi.storyblok.com/v1/")
             /** United States API server location. */
-            public object USA: Region("https://api-us.storyblok.com/v2/cdn/","https://api-us.storyblok.com/")
+            public object USA: Region(cdn = "https://api-us.storyblok.com/v2/cdn/", mapi = "https://api-us.storyblok.com/v1/")
             /** Canada API server location. */
-            public object CAN: Region("https://api-ca.storyblok.com/v2/cdn/", "https://api-ca.storyblok.com/")
+            public object CAN: Region(cdn = "https://api-ca.storyblok.com/v2/cdn/", mapi = "https://api-ca.storyblok.com/v1/")
             /** Australia API server location. */
-            public object AUS: Region("https://api-ap.storyblok.com/v2/cdn/","https://api-ap.storyblok.com/")
+            public object AUS: Region(cdn ="https://api-ap.storyblok.com/v2/cdn/", mapi = "https://api-ap.storyblok.com/v1/")
             /** China API server location. */
-            public object CHN: Region("https://app.storyblokchina.cn/", "https://app.storyblokchina.cn/")
+            public object CHN: Region(cdn = "https://app.storyblokchina.cn/v2/cdn/", mapi = "https://app.storyblokchina.cn/v1/")
             /** A custom API server location you specify.
              * @param url The base URL of the custom API server
              * */
