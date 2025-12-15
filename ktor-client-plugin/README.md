@@ -17,7 +17,7 @@ dependencies {
 ```
 
 > [!NOTE]
-> The plugin ships with the Ktor CIO engine (`io.ktor:ktor-client-cio`) as a dependency so it works out of the box with JVM, Android, Native, JavaScript and WasmJs. If you want to use a different engine, you can exclude CIO in your `build.gradle.kts`:
+> The plugin ships with the Ktor CIO engine (`io.ktor:ktor-client-cio`) as a dependency so it works out of the box with JVM, Android, and Native. If you want to use a different engine, you can exclude CIO in your `build.gradle.kts`:
 > ```kotlin
 > dependencies {
 >     implementation("com.storyblok:ktor-client-storyblok:0.1.0") {
@@ -38,7 +38,7 @@ val client = HttpClient {
 }
 ```
 
-API requests must be authenticated by providing a API access token. Learn more in the [Access Tokens concept](https://www.storyblok.com/docs/concepts/access-tokens).
+API requests must be authenticated by providing an API access token. Learn more in the [Access Tokens concept](https://www.storyblok.com/docs/concepts/access-tokens).
 
 ## Make a request
 
@@ -91,7 +91,7 @@ val client = HttpClient {
 ```
 ### Specifying a region
 
-By default the plugin uses the [EU](https://storyblok.github.io/storyblok-kotlin/ktor-client-plugin/com.storyblok.ktor/-api/-config/-region/-e-u/index.html) region, if your space is located in a [different region](https://storyblok.github.io/storyblok-kotlin/ktor-client-plugin/com.storyblok.ktor/-api/-config/-region/index.html) you can set it in the configuration block:
+By default, the plugin uses the [EU](https://storyblok.github.io/storyblok-kotlin/ktor-client-plugin/com.storyblok.ktor/-api/-config/-region/-e-u/index.html) region, if your space is located in a [different region](https://storyblok.github.io/storyblok-kotlin/ktor-client-plugin/com.storyblok.ktor/-api/-config/-region/index.html) you can set it in the configuration block:
 
 ```kotlin
 val client = HttpClient {

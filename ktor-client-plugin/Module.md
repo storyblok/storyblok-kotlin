@@ -13,7 +13,7 @@ dependencies {
     implementation("com.storyblok:ktor-client-storyblok:0.1.0")
 }
 ```
-#### Then create an HttpClient, install the plugin, and start making requests to the Content Delivery API:
+#### Then create a HttpClient, install the plugin, and start making requests to the Content Delivery API:
 
 ```kotlin
 val client = HttpClient {
@@ -47,4 +47,4 @@ println(response.body<JsonElement>())
 
 ## Other resources
 
-You can find the full guide to the Storyblok Ktor Client Plugin inside [README.md](https://github.com/storyblok/storyblok-kotlin/blob/main/ktor-client-plugin/README.md#detailed-guide).
+You can find the full guide to the Storyblok Ktor Client Plugin inside [README.md](https://github.com/storyblok/storyblok-kotlin/tree/main/ktor-client-plugin#plugin-guide).

@@ -7,7 +7,7 @@ This module contains example Kotlin code snippets from [Storyblok's docs site](h
 
 ## 📦 Packages
 
-This module consists of the the following packages:
+This module consists of the following packages:
 
 | Package                                                  | Description                                                                         | Run all tests (JVM platform)                            |
 |----------------------------------------------------------|-------------------------------------------------------------------------------------|---------------------------------------------------------|
