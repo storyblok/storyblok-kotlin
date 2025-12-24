@@ -8,6 +8,7 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.util.logging.KtorSimpleLogger
 import io.ktor.util.logging.Logger
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
 import kotlin.concurrent.atomics.AtomicReference
@@ -56,7 +57,7 @@ public fun <T: Api.Config> HttpClientConfig<*>.Storyblok(api: Api<T>): ClientPlu
     }
 
     install(HttpRequestRetry) {
-        noRetry() //clear default of retryOnExceptionOrServerErrors()
+        retryOnExceptionIf { request, cause -> request.method == HttpMethod.Get && cause !is CancellationException }
         retryIf(5) { _, response ->
             response.status == HttpStatusCode.TooManyRequests || response.status.value in 500..599
         }

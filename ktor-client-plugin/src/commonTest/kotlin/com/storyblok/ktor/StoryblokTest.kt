@@ -1,10 +1,10 @@
 package com.storyblok.ktor
 
 import com.storyblok.ktor.Api.CDN
-import com.storyblok.ktor.Api.MAPI
 import com.storyblok.ktor.Api.Config.Management.AccessToken
 import com.storyblok.ktor.Api.Config.Management.AccessToken.OAuth
 import com.storyblok.ktor.Api.Config.Version.Draft
+import com.storyblok.ktor.Api.MAPI
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.mock.*
@@ -56,6 +56,21 @@ class StoryblokTest {
     }
 
     @Test
+    fun `retries up to 5 times on network failures`() = runTest {
+        val client = HttpClient(MockEngine.create {
+            addHandler { HttpClient().get("https:/127.0.0.1:666/"); error("get did not throw") }
+            addHandler { HttpClient().get("https:/127.0.0.1:666/"); error("get did not throw") }
+            addHandler { HttpClient().get("https:/127.0.0.1:666/"); error("get did not throw") }
+            addHandler { HttpClient().get("https:/127.0.0.1:666/"); error("get did not throw") }
+            addHandler { HttpClient().get("https:/127.0.0.1:666/"); error("get did not throw") }
+            addHandler { respondJson("""{"story": { "content": {}}}""") }
+        }) {
+            install(Storyblok(CDN)) { accessToken = "mock-api-key" }
+        }
+        assertContains(client.get("stories/mock-slug").body<JsonObject>(), "story")
+}
+
+    @Test
     fun `retries up to 5 times on server error or 429 (too many requests) status codes`() = runTest {
         fun clientThatEventually(sixthResponse: MockRequestHandleScope.() -> HttpResponseData) =
             HttpClient(MockEngine.create {
@@ -90,13 +105,12 @@ class StoryblokTest {
                 requestsPerSecond = 1
             }
         }
-        client.get("stories/mock-slug")
+        client.get("spaces/123/stories/1234")
         val timeAfterInitialRequest = testScheduler.currentTime.milliseconds
-        client.get("stories/mock-slug")
+        client.get("spaces/123/stories/1234")
         val timeAfterSubsequentRequest = testScheduler.currentTime.milliseconds
         assertEquals(1.seconds, timeAfterSubsequentRequest - timeAfterInitialRequest)
     }
-
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
@@ -158,6 +172,6 @@ class StoryblokTest {
     }
 
     private fun MockRequestHandleScope.respondJson(content: String) =
-        respond(content, headers = headersOf(ContentType, "${Json}"))
+        respond(content, headers = headersOf(ContentType, "$Json"))
 
 }

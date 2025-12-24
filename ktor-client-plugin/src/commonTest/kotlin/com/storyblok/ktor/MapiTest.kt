@@ -32,7 +32,7 @@ class MapiTest {
     }
 
     @Test
-    fun `specifying a oauth access token is added as auth header with bearer prefix`() = runTest {
+    fun `specifying an oauth access token is added as auth header with bearer prefix`() = runTest {
         val client = HttpClient(MockEngine { request ->
             assertEquals(URLProtocol.HTTPS, request.url.protocol)
             assertEquals("mapi.storyblok.com", request.url.host)
