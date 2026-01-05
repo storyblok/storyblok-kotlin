@@ -10,9 +10,14 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.http.HttpHeaders.Location
 import io.ktor.http.HttpStatusCode.Companion.MovedPermanently
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.testTimeSource
 import kotlinx.serialization.json.JsonObject
 import kotlin.test.*
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 class CapiTest {
 
@@ -66,6 +71,7 @@ class CapiTest {
     @Test
     fun `follows redirect and updates cv on 301 from cdn`() = runTest {
         val client = HttpClient(MockEngine.create {
+            reuseHandlers = false
             addHandler { request ->
                 assertNull(request.url.parameters["cv"])
                 respond("", MovedPermanently, headersOf(Location, "${request.url}&cv=mock-cv"))
@@ -82,6 +88,51 @@ class CapiTest {
             assertContains(client.get("stories/mock-slug").body<JsonObject>(), "story")
         }
     }
+
+    @Test
+    fun `subsequent requests for the same resource will be served from the cache`() = runTest {
+        val client = HttpClient(MockEngine.create {
+            reuseHandlers = false
+            addHandler {
+                respond("""{"story": { "content": {}}}""", headers = headersOf(
+                    HttpHeaders.ContentType to listOf("${ContentType.Application.Json}"),
+                    HttpHeaders.CacheControl to listOf("max-age=0, public, s-maxage=604800")
+                ))
+            }
+            addHandler { respondError(HttpStatusCode.TooManyRequests) }
+        }) { install(Storyblok(CDN)) { accessToken = "mock-api-key" } }
+
+        repeat(2) {
+            assertContains(client.get("stories/mock-slug").body<JsonObject>(), "story")
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `requests served from the cache are not subject to delays`() = runTest {
+        val client = HttpClient(MockEngine.create {
+            dispatcher = StandardTestDispatcher(testScheduler)
+            reuseHandlers = false
+            addHandler {
+                respond("""{"story": { "content": {}}}""", headers = headersOf(
+                    HttpHeaders.ContentType to listOf("${ContentType.Application.Json}"),
+                    HttpHeaders.CacheControl to listOf("max-age=0, public, s-maxage=604800")
+                ))
+            }
+        }) {
+            install(Storyblok(CDN)) {
+                accessToken = "mock-api-key"
+                requestsPerSecond = 1
+                timeSource = testTimeSource
+            }
+        }
+
+        repeat(2) {
+            assertContains(client.get("stories/mock-slug").body<JsonObject>(), "story")
+        }
+        assertEquals(Duration.ZERO, testScheduler.currentTime.milliseconds)
+    }
+
 
     private fun MockRequestHandleScope.respondJson(content: String) =
         respond(content, headers = headersOf(HttpHeaders.ContentType, "${ContentType.Application.Json}"))

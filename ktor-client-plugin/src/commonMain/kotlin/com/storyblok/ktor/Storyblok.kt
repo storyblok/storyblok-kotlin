@@ -4,6 +4,7 @@ import io.ktor.client.HttpClientConfig
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.api.*
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.HttpSendPipeline
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.util.logging.KtorSimpleLogger
@@ -56,13 +57,14 @@ public fun <T: Api.Config> HttpClientConfig<*>.Storyblok(api: Api<T>): ClientPlu
         json(Json { ignoreUnknownKeys = true })
     }
 
+    // Installs retry logic with backoff for transient errors
     install(HttpRequestRetry) {
         retryOnExceptionIf { request, cause -> request.method == HttpMethod.Get && cause !is CancellationException }
         retryIf(5) { _, response ->
             response.status == HttpStatusCode.TooManyRequests || response.status.value in 500..599
         }
         delay { delay ->
-            //delay is applied in onRequest instead of here
+            //delay is applied in sendPipeline instead of here
             backoffUntil.update { maxOf(it + minDelayBetweenRequests, timeSource.markNow() + delay.milliseconds) }
         }
     }
@@ -77,11 +79,11 @@ public fun <T: Api.Config> HttpClientConfig<*>.Storyblok(api: Api<T>): ClientPlu
                 HttpMethod.Put, HttpMethod.Post -> request.contentType(ContentType.Application.Json)
             }
         }
-        // on user request or retries/redirects
-        on(SendingRequest) { request, _ ->
+        // Delays requests to respect rate limits
+        client.sendPipeline.intercept(HttpSendPipeline.Monitoring) { _ ->
             val backoffUntil = backoffUntil.fetchAndUpdate { maxOf(it, timeSource.markNow()) + minDelayBetweenRequests }
             val delay = maxOf(Duration.ZERO, -backoffUntil.elapsedNow())
-            LOGGER.debug("delaying $delay for ${request.url}")
+            LOGGER.debug("delaying $delay for ${context.url}")
             delay(delay)
         }
     }

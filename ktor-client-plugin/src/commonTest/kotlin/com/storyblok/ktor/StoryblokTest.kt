@@ -58,6 +58,7 @@ class StoryblokTest {
     @Test
     fun `retries up to 5 times on network failures`() = runTest {
         val client = HttpClient(MockEngine.create {
+            reuseHandlers = false
             addHandler { HttpClient().get("https:/127.0.0.1:666/"); error("get did not throw") }
             addHandler { HttpClient().get("https:/127.0.0.1:666/"); error("get did not throw") }
             addHandler { HttpClient().get("https:/127.0.0.1:666/"); error("get did not throw") }
@@ -74,6 +75,7 @@ class StoryblokTest {
     fun `retries up to 5 times on server error or 429 (too many requests) status codes`() = runTest {
         fun clientThatEventually(sixthResponse: MockRequestHandleScope.() -> HttpResponseData) =
             HttpClient(MockEngine.create {
+                reuseHandlers = false
                 addHandler { respondError(HttpStatusCode.InternalServerError) }
                 addHandler { respondError(HttpStatusCode.BadGateway) }
                 addHandler { respondError(HttpStatusCode.ServiceUnavailable) }
