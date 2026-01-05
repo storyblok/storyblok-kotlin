@@ -47,8 +47,8 @@ The plugin configures the client's base URL so you can just pass the relative pa
 ```kotlin
 val response = client.get("stories") {
     url {
-        parameters.append("version", "published")
         parameters.append("starts_with", "articles")
+        parameters.append("search_term", "mars")
     }
 }
 ```
@@ -131,14 +131,16 @@ val client = HttpClient {
 > The value of [`requestsPerSecond`](https://storyblok.github.io/storyblok-kotlin/ktor-client-plugin/com.storyblok.ktor/-api/-config/requests-per-second.html) defaults to `1000` for the Content Delivery API and `6` for the Management API.
 
 > [!TIP]
-> As the rate limit can differ on the type of request and you can only configure `requestsPerSecond` per `HttpClient` instance, use [HttpClient.config](https://api.ktor.io/ktor-client-core/io.ktor.client/-http-client/config.html) to clone your client when you need to make requests with a different rate limit: 
+> As the rate limit can differ on the type of request, and you can only configure `requestsPerSecond` per `HttpClient` instance, use [HttpClient.config](https://api.ktor.io/ktor-client-core/io.ktor.client/-http-client/config.html) to clone your client when you need to make requests with a different rate limit: 
 > ```kotlin
-> val pagingClient = client.config {
+> // create a new client with a lower rate limit for listings
+> val listingsClient = client.config {
 >     install(Storyblok(CDN)) {
 >         requestsPerSecond = 15
 >     }
 > }
 > ```
+> Be careful when using multiple clients concurrently as the requests sent to the API from their combined usage may still exceed the rate limit.
 
 The plugin also implements a [retry mechanism](#retrying-failed-requests) along with an exponential backoff if the HTTP status `429 Too Many Requests` is received.
 
@@ -194,7 +196,7 @@ This means subsequent requests for the same resource made with the same `HttpCli
 
 ### Content negotiation and serialization
 
-The plugin installs the [`ContentNegotiation`](https://ktor.io/docs/client-serialization.html) plugin and configures the [JSON serializer](https://ktor.io/docs/client-serialization.html#register_json). The JSON serializer is configured to [ignore unknown keys](https://kotlinlang.org/api/kotlinx.serialization/kotlinx-serialization-json/kotlinx.serialization.json/-json-builder/ignore-unknown-keys.html) and the content type of request bodies are automatically set to `application/json`. 
+The plugin installs the [`ContentNegotiation`](https://ktor.io/docs/client-serialization.html) plugin and configures the [JSON serializer](https://ktor.io/docs/client-serialization.html#register_json). The JSON serializer is configured to [ignore unknown keys](https://kotlinlang.org/api/kotlinx.serialization/kotlinx-serialization-json/kotlinx.serialization.json/-json-builder/ignore-unknown-keys.html) and the content type of request bodies is automatically set to `application/json`. 
 
 This allows you to use a [`JsonElement`](https://kotlinlang.org/api/kotlinx.serialization/kotlinx-serialization-json/kotlinx.serialization.json/-json-element/) or a custom class as the request or response body:
 
