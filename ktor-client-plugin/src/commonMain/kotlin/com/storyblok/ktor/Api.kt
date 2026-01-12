@@ -198,7 +198,8 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
             override var requestsPerSecond: Int = 6
             /**
              * It is necessary to specify an [inheritor][AccessToken] of `AccessToken` when [configuring][Management.accessToken] the plugin to
-             * [authenticate requests to the Management API](https://www.storyblok.com/docs/api/management/getting-started/authentication).             */
+             * [authenticate requests to the Management API](https://www.storyblok.com/docs/api/management/getting-started/authentication).
+             */
             public sealed class AccessToken private constructor(internal val value: String) {
                 /**
                  * An OAuth Access Token is obtained via the OAuth2 authentication flow and is tied to a single space.

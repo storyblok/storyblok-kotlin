@@ -103,7 +103,7 @@ val client = HttpClient {
 ```
 #### Custom region
 
-You can also specify a custom region by providing a custom base URL:
+You can also specify a [custom region](https://storyblok.github.io/storyblok-kotlin/ktor-client-plugin/com.storyblok.ktor/-api/-config/-region/-custom/index.html) by providing a custom base URL:
 
 ```kotlin
 val client = HttpClient {
@@ -164,7 +164,7 @@ val client = HttpClient {
 
 #### CV parameter handling
 
-By specifying a default value for the `cv` parameter you can retrieve a specific [cached version](ttps://www.storyblok.com/docs/api/content-delivery/v2/getting-started/cache-invalidation) of a resource.
+By specifying a default value for the `cv` parameter you can retrieve a specific [cached version](ttps://www.storyblok.com/docs/api/content-delivery/v2/getting-started/cache-invalidation) of a published resource.
 
 Otherwise, the plugin will automatically set the `cv` parameter to the latest version of the space after the first request to the Content Delivery API.
 

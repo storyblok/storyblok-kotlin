@@ -99,7 +99,6 @@ class CapiTest {
                     HttpHeaders.CacheControl to listOf("max-age=0, public, s-maxage=604800")
                 ))
             }
-            addHandler { respondError(HttpStatusCode.TooManyRequests) }
         }) { install(Storyblok(CDN)) { accessToken = "mock-api-key" } }
 
         repeat(2) {
