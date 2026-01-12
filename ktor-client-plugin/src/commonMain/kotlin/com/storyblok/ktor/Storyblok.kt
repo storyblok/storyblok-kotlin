@@ -22,6 +22,7 @@ import kotlin.time.Duration.Companion.seconds
 
 private val LOGGER: Logger = KtorSimpleLogger("com.storyblok.ktor.Storyblok")
 
+internal expect fun HttpClientConfig<*>.configureEngine()
 /**
  * Invoke this function in your [HttpClient][io.ktor.client.HttpClient] configuration block to [install][HttpClientConfig.install] the Storyblok plugin.
  *
@@ -44,6 +45,7 @@ private val LOGGER: Logger = KtorSimpleLogger("com.storyblok.ktor.Storyblok")
  */
 @OptIn(ExperimentalAtomicApi::class)
 public fun <T: Api.Config> HttpClientConfig<*>.Storyblok(api: Api<T>): ClientPlugin<T> {
+    configureEngine()
 
     var config: T? = null
 
