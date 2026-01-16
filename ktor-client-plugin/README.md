@@ -156,7 +156,7 @@ val client = HttpClient {
     install(Storyblok(CDN)) {
         cv = "1706094649" //cached version Unix timestamp
         language = "en" //language to retrieve resources
-        fallbackLang = "de" //language for untranslated fields
+        fallbackLanguage = "de" //language for untranslated fields
         version = Draft //the version of resources to retrieve
     }
 }
