@@ -13,7 +13,7 @@ import kotlin.test.Test
 @OptIn(ExperimentalSerializationApi::class)
 class GettingStarted {
 
-	/**
+    /**
      * Discover how Storyblok's API authentication mechanism works through API access tokens.
      * https://www.storyblok.com/docs/api/content-delivery/v2/getting-started/authentication
      */
@@ -21,21 +21,21 @@ class GettingStarted {
     fun Authentication() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(CDN)) {
-		        accessToken = "wANpEQEsMYGOwLxwXQ76Ggtt"
-		    }
-		}
-		
-		val response = client.get("stories") {
-		    url {
-		        parameters.append("version", "published")
-		    }
-		}
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(CDN)) {
+                accessToken = "wANpEQEsMYGOwLxwXQ76Ggtt"
+            }
+        }
+        
+        val response = client.get("stories") {
+            url {
+                parameters.append("version", "published")
+            }
+        }
+        
+        println(response.body<JsonElement>())
     }
 
-	/**
+    /**
      * Explore how Storyblok optimizes content delivery through its Content Delivery Network (CDN) and cache versioning mechanism. Learn about the cv parameter.
      * https://www.storyblok.com/docs/api/content-delivery/v2/getting-started/cache-invalidation
      */
@@ -43,17 +43,17 @@ class GettingStarted {
     fun `Cache Invalidation`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(CDN)) {
-		        accessToken = "wANpEQEsMYGOwLxwXQ76Ggtt"
-		    }
-		}
-		
-		val response = client.get("spaces/me")
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(CDN)) {
+                accessToken = "wANpEQEsMYGOwLxwXQ76Ggtt"
+            }
+        }
+        
+        val response = client.get("spaces/me")
+        
+        println(response.body<JsonElement>())
     }
 
-	/**
+    /**
      * Explore how Storyblok optimizes content delivery through its Content Delivery Network (CDN) and cache versioning mechanism. Learn about the cv parameter.
      * https://www.storyblok.com/docs/api/content-delivery/v2/getting-started/cache-invalidation
      */
@@ -61,18 +61,18 @@ class GettingStarted {
     fun `Cache Invalidation 2`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(CDN)) {
-		        accessToken = "wANpEQEsMYGOwLxwXQ76Ggtt"
-		    }
-		}
-		
-		val response = client.get("stories") {
-		    url {
-		        parameters.append("cv", "1541863983")
-		    }
-		}
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(CDN)) {
+                accessToken = "wANpEQEsMYGOwLxwXQ76Ggtt"
+            }
+        }
+        
+        val response = client.get("stories") {
+            url {
+                parameters.append("cv", "1541863983")
+            }
+        }
+        
+        println(response.body<JsonElement>())
     }
 
 }

@@ -14,7 +14,7 @@ import kotlin.test.Test
 @OptIn(ExperimentalSerializationApi::class)
 class ComponentFolders {
 
-	/**
+    /**
      * Create a new component folder
      * https://www.storyblok.com/docs/api/management/component-folders/create-a-component-folder
      */
@@ -22,25 +22,25 @@ class ComponentFolders {
     fun `Create a Component Folder`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.post("spaces/288868932106293/component_groups/") {
-		    setBody(buildJsonObject {
-		        putJsonObject("component_group") {
-		            put("name", "Teasers")
-		            put("parent_id", "123123")
-		        }
-		    })
-		}
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.post("spaces/288868932106293/component_groups/") {
+            setBody(buildJsonObject {
+                putJsonObject("component_group") {
+                    put("name", "Teasers")
+                    put("parent_id", "123123")
+                }
+            })
+        }
+        
+        println(response.body<JsonElement>())
     }
 
-	/**
+    /**
      * Delete a component folder using its numeric ID
      * https://www.storyblok.com/docs/api/management/component-folders/delete-a-component-folder
      */
@@ -48,18 +48,18 @@ class ComponentFolders {
     fun `Delete a Component Folder`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.delete("spaces/288868932106293/component_groups/4123")
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.delete("spaces/288868932106293/component_groups/4123")
+        
+        println(response.body<JsonElement>())
     }
 
-	/**
+    /**
      * Retrieve a single component folder object using its ID
      * https://www.storyblok.com/docs/api/management/component-folders/retrieve-a-single-component-folder
      */
@@ -67,18 +67,18 @@ class ComponentFolders {
     fun `Retrieve a Single Component Folder`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.get("spaces/288868932106293/component_groups/4123")
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.get("spaces/288868932106293/component_groups/4123")
+        
+        println(response.body<JsonElement>())
     }
 
-	/**
+    /**
      * Retrieve a paginated array of component folder objects
      * https://www.storyblok.com/docs/api/management/component-folders/retrieve-multiple-component-folders
      */
@@ -86,18 +86,18 @@ class ComponentFolders {
     fun `Retrieve Multiple Component Folders`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.get("spaces/288868932106293/component_groups/")
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.get("spaces/288868932106293/component_groups/")
+        
+        println(response.body<JsonElement>())
     }
 
-	/**
+    /**
      * Update a specific component folder
      * https://www.storyblok.com/docs/api/management/component-folders/update-a-component-folder
      */
@@ -105,22 +105,22 @@ class ComponentFolders {
     fun `Update a Component folder`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.put("spaces/288868932106293/component_groups/4123") {
-		    setBody(buildJsonObject {
-		        putJsonObject("component_group") {
-		            put("name", "New Teaser Name")
-		            put("parent_id", 123123)
-		        }
-		    })
-		}
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.put("spaces/288868932106293/component_groups/4123") {
+            setBody(buildJsonObject {
+                putJsonObject("component_group") {
+                    put("name", "New Teaser Name")
+                    put("parent_id", 123123)
+                }
+            })
+        }
+        
+        println(response.body<JsonElement>())
     }
 
 }

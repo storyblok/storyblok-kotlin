@@ -13,7 +13,7 @@ import kotlin.test.Test
 @OptIn(ExperimentalSerializationApi::class)
 class Links {
 
-	/**
+    /**
      * Retrieve a concise representation of stories and folders using the links endpoint in the Content Delivery API.
      * https://www.storyblok.com/docs/api/content-delivery/v2/links/retrieve-multiple-links
      */
@@ -21,19 +21,19 @@ class Links {
     fun `Retrieve Multiple Links`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(CDN)) {
-		        accessToken = "krcV6QGxWORpYLUWt12xKQtt"
-		    }
-		}
-		
-		val response = client.get("links") {
-		    url {
-		        parameters.append("version", "published")
-		        parameters.append("starts_with", "articles")
-		    }
-		}
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(CDN)) {
+                accessToken = "krcV6QGxWORpYLUWt12xKQtt"
+            }
+        }
+        
+        val response = client.get("links") {
+            url {
+                parameters.append("version", "published")
+                parameters.append("starts_with", "articles")
+            }
+        }
+        
+        println(response.body<JsonElement>())
     }
 
 }

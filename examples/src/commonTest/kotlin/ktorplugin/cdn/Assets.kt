@@ -13,7 +13,7 @@ import kotlin.test.Test
 @OptIn(ExperimentalSerializationApi::class)
 class Assets {
 
-	/**
+    /**
      * Retrieves a signed URL to access a private asset.
      * https://www.storyblok.com/docs/api/content-delivery/v2/assets/get-signed-url
      */
@@ -21,18 +21,18 @@ class Assets {
     fun `Get Signed URL`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(CDN)) {
-		        accessToken = "cNGPp8cvuCfoAZB3g3eHrAtt"
-		    }
-		}
-		
-		val response = client.get("assets/me") {
-		    url {
-		        parameters.append("filename", "https://a.storyblok.com/f/44203/x/5231aa9c8a/favicon.ico")
-		    }
-		}
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(CDN)) {
+                accessToken = "cNGPp8cvuCfoAZB3g3eHrAtt"
+            }
+        }
+        
+        val response = client.get("assets/me") {
+            url {
+                parameters.append("filename", "https://a.storyblok.com/f/44203/x/5231aa9c8a/favicon.ico")
+            }
+        }
+        
+        println(response.body<JsonElement>())
     }
 
 }

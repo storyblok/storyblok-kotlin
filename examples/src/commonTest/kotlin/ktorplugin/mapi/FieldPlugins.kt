@@ -14,7 +14,7 @@ import kotlin.test.Test
 @OptIn(ExperimentalSerializationApi::class)
 class FieldPlugins {
 
-	/**
+    /**
      * This endpoint allows you to create a field type plugin.
      * https://www.storyblok.com/docs/api/management/field-plugins/create-a-field-plugin
      */
@@ -22,24 +22,24 @@ class FieldPlugins {
     fun `Create a Field Plugin`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.post("field_types/") {
-		    setBody(buildJsonObject {
-		        putJsonObject("field_type") {
-		            put("name", "my-geo-selector")
-		        }
-		    })
-		}
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.post("field_types/") {
+            setBody(buildJsonObject {
+                putJsonObject("field_type") {
+                    put("name", "my-geo-selector")
+                }
+            })
+        }
+        
+        println(response.body<JsonElement>())
     }
 
-	/**
+    /**
      * Delete a field plugin by using its numeric id.
      * https://www.storyblok.com/docs/api/management/field-plugins/delete-a-field-plugin
      */
@@ -47,18 +47,18 @@ class FieldPlugins {
     fun `Delete a Field Plugin`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.delete("field_types/1")
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.delete("field_types/1")
+        
+        println(response.body<JsonElement>())
     }
 
-	/**
+    /**
      * Returns a single field-type object with a specific numeric id.
      * https://www.storyblok.com/docs/api/management/field-plugins/retrieve-a-single-field-plugin
      */
@@ -66,18 +66,18 @@ class FieldPlugins {
     fun `Retrieve a Single Field Plugin`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.get("field_types/124")
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.get("field_types/124")
+        
+        println(response.body<JsonElement>())
     }
 
-	/**
+    /**
      * Returns a single field-type object with a specific numeric id.
      * https://www.storyblok.com/docs/api/management/field-plugins/retrieve-a-single-field-plugin
      */
@@ -85,18 +85,18 @@ class FieldPlugins {
     fun `Retrieve a Single Field Plugin 2`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.get("org_field_types/124")
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.get("org_field_types/124")
+        
+        println(response.body<JsonElement>())
     }
 
-	/**
+    /**
      * Returns a single field-type object with a specific numeric id.
      * https://www.storyblok.com/docs/api/management/field-plugins/retrieve-a-single-field-plugin
      */
@@ -104,18 +104,18 @@ class FieldPlugins {
     fun `Retrieve a Single Field Plugin 3`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.get("partner_field_types/124")
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.get("partner_field_types/124")
+        
+        println(response.body<JsonElement>())
     }
 
-	/**
+    /**
      * Returns an array of field plugin objects. This endpoint is paged.
      * https://www.storyblok.com/docs/api/management/field-plugins/retrieve-multiple-field-plugins
      */
@@ -123,18 +123,18 @@ class FieldPlugins {
     fun `Retrieve Multiple Field Plugins`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.get("field_types/")
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.get("field_types/")
+        
+        println(response.body<JsonElement>())
     }
 
-	/**
+    /**
      * Returns an array of field plugin objects. This endpoint is paged.
      * https://www.storyblok.com/docs/api/management/field-plugins/retrieve-multiple-field-plugins
      */
@@ -142,18 +142,18 @@ class FieldPlugins {
     fun `Retrieve Multiple Field Plugins 2`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.get("org_field_types/")
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.get("org_field_types/")
+        
+        println(response.body<JsonElement>())
     }
 
-	/**
+    /**
      * Returns an array of field plugin objects. This endpoint is paged.
      * https://www.storyblok.com/docs/api/management/field-plugins/retrieve-multiple-field-plugins
      */
@@ -161,18 +161,18 @@ class FieldPlugins {
     fun `Retrieve Multiple Field Plugins 3`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.get("partner_field_types/")
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.get("partner_field_types/")
+        
+        println(response.body<JsonElement>())
     }
 
-	/**
+    /**
      * This endpoint can be used to perform updates to a field type plugin.
      * https://www.storyblok.com/docs/api/management/field-plugins/update-a-field-plugin
      */
@@ -180,22 +180,22 @@ class FieldPlugins {
     fun `Update a Field Plugin`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.put("field_types/123123") {
-		    setBody(buildJsonObject {
-		        putJsonObject("field_type") {
-		            put("body", "const Fieldtype = {}")
-		            put("compiled_body", "")
-		        }
-		    })
-		}
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.put("field_types/123123") {
+            setBody(buildJsonObject {
+                putJsonObject("field_type") {
+                    put("body", "const Fieldtype = {}")
+                    put("compiled_body", "")
+                }
+            })
+        }
+        
+        println(response.body<JsonElement>())
     }
 
 }

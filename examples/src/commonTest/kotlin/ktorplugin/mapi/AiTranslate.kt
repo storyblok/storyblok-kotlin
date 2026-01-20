@@ -14,7 +14,7 @@ import kotlin.test.Test
 @OptIn(ExperimentalSerializationApi::class)
 class AiTranslate {
 
-	/**
+    /**
      * An object that lists all languages available for use with the AI translation feature
      * https://www.storyblok.com/docs/api/management/ai-translate/ai-languages
      */
@@ -22,15 +22,15 @@ class AiTranslate {
     fun `AI Languages`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.get("ai_languages")
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.get("ai_languages")
+        
+        println(response.body<JsonElement>())
     }
 
 }

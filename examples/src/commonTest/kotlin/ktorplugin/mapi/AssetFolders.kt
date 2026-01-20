@@ -14,7 +14,7 @@ import kotlin.test.Test
 @OptIn(ExperimentalSerializationApi::class)
 class AssetFolders {
 
-	/**
+    /**
      * This endpoint allows you to create a new asset folder.
      * https://www.storyblok.com/docs/api/management/asset-folders/create-an-asset-folder
      */
@@ -22,25 +22,25 @@ class AssetFolders {
     fun `Create an Asset Folder`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.post("spaces/288868932106293/asset_folders/") {
-		    setBody(buildJsonObject {
-		        putJsonObject("asset_folder") {
-		            put("name", "Header Images")
-		            put("parent_id", 123123)
-		        }
-		    })
-		}
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.post("spaces/288868932106293/asset_folders/") {
+            setBody(buildJsonObject {
+                putJsonObject("asset_folder") {
+                    put("name", "Header Images")
+                    put("parent_id", 123123)
+                }
+            })
+        }
+        
+        println(response.body<JsonElement>())
     }
 
-	/**
+    /**
      * Delete an asset folder by using its numeric id.
      * https://www.storyblok.com/docs/api/management/asset-folders/delete-an-asset-folder
      */
@@ -48,18 +48,18 @@ class AssetFolders {
     fun `Delete an Asset Folder`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.delete("spaces/288868932106293/asset_folders/41")
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.delete("spaces/288868932106293/asset_folders/41")
+        
+        println(response.body<JsonElement>())
     }
 
-	/**
+    /**
      * This endpoint returns a single, asset folder object by providing a specific numeric id.
      * https://www.storyblok.com/docs/api/management/asset-folders/retrieve-a-single-asset-folder
      */
@@ -67,18 +67,18 @@ class AssetFolders {
     fun `Retrieve a Single Asset Folder`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.get("spaces/288868932106293/asset_folders/41")
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.get("spaces/288868932106293/asset_folders/41")
+        
+        println(response.body<JsonElement>())
     }
 
-	/**
+    /**
      * Returns an array of asset folder objects.
      * https://www.storyblok.com/docs/api/management/asset-folders/retrieve-multiple-asset-folders
      */
@@ -86,18 +86,18 @@ class AssetFolders {
     fun `Retrieve Multiple Asset Folders`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.get("spaces/288868932106293/asset_folders/")
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.get("spaces/288868932106293/asset_folders/")
+        
+        println(response.body<JsonElement>())
     }
 
-	/**
+    /**
      * This endpoint allows updating an existing asset folder using the numeric ID.
      * https://www.storyblok.com/docs/api/management/asset-folders/update-an-asset-folder
      */
@@ -105,22 +105,22 @@ class AssetFolders {
     fun `Update an Asset Folder`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.put("spaces/288868932106293/asset_folders/414142") {
-		    setBody(buildJsonObject {
-		        putJsonObject("asset_folder") {
-		            put("name", "Updated folder")
-		            put("parent_id", 288983)
-		        }
-		    })
-		}
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.put("spaces/288868932106293/asset_folders/414142") {
+            setBody(buildJsonObject {
+                putJsonObject("asset_folder") {
+                    put("name", "Updated folder")
+                    put("parent_id", 288983)
+                }
+            })
+        }
+        
+        println(response.body<JsonElement>())
     }
 
 }

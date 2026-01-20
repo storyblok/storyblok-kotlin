@@ -14,7 +14,7 @@ import kotlin.test.Test
 @OptIn(ExperimentalSerializationApi::class)
 class SchedulingStories {
 
-	/**
+    /**
      * This endpoint allows you to create a new story schedule.
      * https://www.storyblok.com/docs/api/management/scheduling-stories/create-a-story-schedule
      */
@@ -22,26 +22,26 @@ class SchedulingStories {
     fun `Create a Story Schedule`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.post("spaces/288868932106293/story_schedulings") {
-		    setBody(buildJsonObject {
-		        putJsonObject("story_scheduling") {
-		            put("language", "pt-br")
-		            put("publish_at", "2024-07-26T06:56:00.000Z")
-		            put("story_id", 362419485)
-		        }
-		    })
-		}
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.post("spaces/288868932106293/story_schedulings") {
+            setBody(buildJsonObject {
+                putJsonObject("story_scheduling") {
+                    put("language", "pt-br")
+                    put("publish_at", "2024-07-26T06:56:00.000Z")
+                    put("story_id", 362419485)
+                }
+            })
+        }
+        
+        println(response.body<JsonElement>())
     }
 
-	/**
+    /**
      * Delete a schedule by the numeric ID.
      * https://www.storyblok.com/docs/api/management/scheduling-stories/delete-a-story-schedule
      */
@@ -49,18 +49,18 @@ class SchedulingStories {
     fun `Delete a Story Schedule`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.delete("spaces/288868932106293/story_schedulings/123/")
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.delete("spaces/288868932106293/story_schedulings/123/")
+        
+        println(response.body<JsonElement>())
     }
 
-	/**
+    /**
      * Returns an array of story schedule objects.
      * https://www.storyblok.com/docs/api/management/scheduling-stories/retrieve-multiple-story-schedules
      */
@@ -68,18 +68,18 @@ class SchedulingStories {
     fun `Retrieve Multiple Story Schedules`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.get("spaces/288868932106293/story_schedulings")
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.get("spaces/288868932106293/story_schedulings")
+        
+        println(response.body<JsonElement>())
     }
 
-	/**
+    /**
      * Returns a single schedule object by providing a specific numeric ID.
      * https://www.storyblok.com/docs/api/management/scheduling-stories/retrieve-one-story-schedule
      */
@@ -87,18 +87,18 @@ class SchedulingStories {
     fun `Retrieve One Story Schedule`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.get("spaces/288868932106293/story_schedulings/91")
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.get("spaces/288868932106293/story_schedulings/91")
+        
+        println(response.body<JsonElement>())
     }
 
-	/**
+    /**
      * Update a publishing schedule by the numeric ID.
      * https://www.storyblok.com/docs/api/management/scheduling-stories/update-a-story-schedule
      */
@@ -106,21 +106,21 @@ class SchedulingStories {
     fun `Update a Story Schedule`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.put("spaces/288868932106293/story_schedulings/123") {
-		    setBody(buildJsonObject {
-		        putJsonObject("story_scheduling") {
-		            put("publish_at", "2024-08-26T06:56:00.000Z")
-		        }
-		    })
-		}
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.put("spaces/288868932106293/story_schedulings/123") {
+            setBody(buildJsonObject {
+                putJsonObject("story_scheduling") {
+                    put("publish_at", "2024-08-26T06:56:00.000Z")
+                }
+            })
+        }
+        
+        println(response.body<JsonElement>())
     }
 
 }

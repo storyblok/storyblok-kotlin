@@ -13,7 +13,7 @@ import kotlin.test.Test
 @OptIn(ExperimentalSerializationApi::class)
 class Tags {
 
-	/**
+    /**
      * Retrieve tags used in a space.
      * https://www.storyblok.com/docs/api/content-delivery/v2/tags/retrieve-multiple-tags
      */
@@ -21,18 +21,18 @@ class Tags {
     fun `Retrieve Multiple Tags`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(CDN)) {
-		        accessToken = "ask9soUkv02QqbZgmZdeDAtt"
-		    }
-		}
-		
-		val response = client.get("tags") {
-		    url {
-		        parameters.append("starts_with", "articles/")
-		    }
-		}
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(CDN)) {
+                accessToken = "ask9soUkv02QqbZgmZdeDAtt"
+            }
+        }
+        
+        val response = client.get("tags") {
+            url {
+                parameters.append("starts_with", "articles/")
+            }
+        }
+        
+        println(response.body<JsonElement>())
     }
 
 }

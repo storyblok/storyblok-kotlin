@@ -14,7 +14,7 @@ import kotlin.test.Test
 @OptIn(ExperimentalSerializationApi::class)
 class InternalTags {
 
-	/**
+    /**
      * This endpoint allows creating an internal tag inside a particular space.
      * https://www.storyblok.com/docs/api/management/internal-tags/create-an-internal-tag
      */
@@ -22,25 +22,25 @@ class InternalTags {
     fun `Create an Internal Tag`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.post("spaces/288868932106293/internal_tags") {
-		    setBody(buildJsonObject {
-		        putJsonObject("internal_tag") {
-		            put("name", "New Release")
-		            put("object_type", "component")
-		        }
-		    })
-		}
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.post("spaces/288868932106293/internal_tags") {
+            setBody(buildJsonObject {
+                putJsonObject("internal_tag") {
+                    put("name", "New Release")
+                    put("object_type", "component")
+                }
+            })
+        }
+        
+        println(response.body<JsonElement>())
     }
 
-	/**
+    /**
      * This endpoint allows deleting an internal tag using the numeric ID.
      * https://www.storyblok.com/docs/api/management/internal-tags/delete-an-internal-tag
      */
@@ -48,18 +48,18 @@ class InternalTags {
     fun `Delete an Internal Tag`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.delete("spaces/288868932106293/internal_tags/123")
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.delete("spaces/288868932106293/internal_tags/123")
+        
+        println(response.body<JsonElement>())
     }
 
-	/**
+    /**
      * This endpoint allows retrieving multiple internal tags of a particular space.
      * https://www.storyblok.com/docs/api/management/internal-tags/retrieve-multiple-internal-tags
      */
@@ -67,18 +67,18 @@ class InternalTags {
     fun `Retrieve Multiple Internal Tags`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.get("spaces/288868932106293/internal_tags")
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.get("spaces/288868932106293/internal_tags")
+        
+        println(response.body<JsonElement>())
     }
 
-	/**
+    /**
      * This endpoint allows updating an internal tag using the numeric ID.
      * https://www.storyblok.com/docs/api/management/internal-tags/update-an-internal-tag
      */
@@ -86,22 +86,22 @@ class InternalTags {
     fun `Update an Internal Tag`() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.put("spaces/288868932106293/internal_tags/123") {
-		    setBody(buildJsonObject {
-		        putJsonObject("internal_tag") {
-		            put("name", "Updated Tag name")
-		            put("object_type", "asset")
-		        }
-		    })
-		}
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.put("spaces/288868932106293/internal_tags/123") {
+            setBody(buildJsonObject {
+                putJsonObject("internal_tag") {
+                    put("name", "Updated Tag name")
+                    put("object_type", "asset")
+                }
+            })
+        }
+        
+        println(response.body<JsonElement>())
     }
 
 }

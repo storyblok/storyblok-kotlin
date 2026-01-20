@@ -14,7 +14,7 @@ import kotlin.test.Test
 @OptIn(ExperimentalSerializationApi::class)
 class ExternalAccounts {
 
-	/**
+    /**
      * Use this endpoint to obtain details of the GitHub account connected to Storyblok.
      * https://www.storyblok.com/docs/api/management/external-accounts/github
      */
@@ -22,15 +22,15 @@ class ExternalAccounts {
     fun GitHub() = runTest {
 
         val client = HttpClient {
-		    install(Storyblok(MAPI)) {
-		        accessToken = OAuth("YOUR_OAUTH_TOKEN")
-		    }
-			expectSuccess = false
-		}
-		
-		val response = client.get("v1/auth/github/me")
-		
-		println(response.body<JsonElement>())
+            install(Storyblok(MAPI)) {
+                accessToken = OAuth("YOUR_OAUTH_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.get("v1/auth/github/me")
+        
+        println(response.body<JsonElement>())
     }
 
 }
