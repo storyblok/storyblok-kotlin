@@ -130,34 +130,32 @@ tasks.withType<org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimu
 
 mavenPublishing {
     publishToMavenCentral()
-
     signAllPublications()
-
-    coordinates(group.toString(), "ktor-client-storyblok", version.toString())
+    coordinates("com.storyblok", "ktor-client-storyblok", libs.versions.storyblok.kotlin.get())
 
     pom {
         name = "ktor-client-storyblok"
-        description = "A library."
-        inceptionYear = "2024"
-        url = "https://github.com/kotlin/multiplatform-library-template/"
+        description = "A plugin to simplify calling Storyblok's APIs with the Ktor Client."
+        inceptionYear = "2026"
+        url = "https://github.com/storyblok/storyblok-kotlin"
         licenses {
             license {
-                name = "XXX"
-                url = "YYY"
-                distribution = "ZZZ"
+                name = "The MIT License (MIT)"
+                url = "https://github.com/storyblok/storyblok-kotlin?tab=MIT-1-ov-file"
+                distribution = "repo"
             }
         }
         developers {
             developer {
-                id = "XXX"
-                name = "YYY"
-                url = "ZZZ"
+                id = "storyblok"
+                name = "Storyblok"
+                url = "https://www.storyblok.com/"
             }
         }
         scm {
-            url = "XXX"
-            connection = "YYY"
-            developerConnection = "ZZZ"
+            url = "https://github.com/storyblok/storyblok-kotlin"
+            connection = "scm:git:https://github.com/storyblok/storyblok-kotlin"
+            developerConnection = "scm:git:https://github.com/storyblok/storyblok-kotlin"
         }
     }
 }

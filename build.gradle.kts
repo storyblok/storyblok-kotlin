@@ -5,9 +5,6 @@ plugins {
     alias(libs.plugins.dokka)
 }
 
-group = "com.storyblok"
-version = "0.1.0"
-
 dependencies {
     dokka(project(":ktor-client-plugin"))
 }
