@@ -29,16 +29,29 @@ jobs:
     strategy:
       matrix:
         include:
-#          - target: iosSimulatorArm64Test
-#            os: macos-latest
           - target: :examples:jvmTest
             os: ubuntu-latest
-#          - target: linuxX64Test
-#            os: ubuntu-latest
-#          - target: testAndroidHostTest
-#            os: ubuntu-latest
+          - target: :examples:linuxX64Test
+            os: ubuntu-latest
+          - target: :examples:testAndroidHostTest
+            os: ubuntu-latest
           - target: :examples:jsTest
             os: ubuntu-latest
+          - target: :examples:wasmJsTest
+            os: ubuntu-latest
+          - target: :examples:mingwX64Test
+            os: windows-latest
+          - target: :examples:macosArm64Test
+            os: macos-latest
+          - target: :examples:iosSimulatorArm64Test
+            simulator: iPhone 17
+            os: macos-latest
+          - target: :examples:tvosSimulatorArm64Test
+            simulator: Apple Watch SE 3 (40mm)
+            os: macos-latest
+          - target: :examples:watchosSimulatorArm64Test
+            simulator: Apple TV
+            os: macos-latest
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -50,7 +63,17 @@ jobs:
     - uses: gradle/actions/setup-gradle@v5
     - uses: actions/cache@v4
       with:
-        path: |
-          ~/.konan
+        path: ~/.konan
         key: ${{ runner.os }}-${{ hashFiles('**/.lock') }}
-    - run: ./gradlew ${{ matrix.target }}
+    - name: Install Xcode
+      if: matrix.simulator
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+    - name: Boot simulator
+      if: matrix.simulator
+      run: |
+        xcrun simctl list
+        xcrun simctl boot "${{ matrix.simulator }}"
+    - name: Run tests
+      run: ./gradlew ${{ matrix.target }}

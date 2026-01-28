@@ -3,6 +3,7 @@ storyblok-kotlin = "0.1.0"
 agp = "9.0.0"
 kotlin = "2.3.0"
 kotlin-corountines = "1.10.2"
+kotlin-serialization = "1.10.0"
 ktor-client = "3.4.0"
 android-minSdk = "30"
 android-compileSdk = "36"
@@ -13,6 +14,8 @@ dokka = "2.1.0"
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlin-corountines" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlin-serialization" }
+
 ktor-client = { module = "io.ktor:ktor-client-core", version.ref = "ktor-client" }
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor-client" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor-client" }
