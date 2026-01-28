@@ -1,9 +1,11 @@
-//import com.android.build.api.dsl.androidLibrary
+@file:OptIn(ExperimentalWasmDsl::class)
+
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-//    alias(libs.plugins.android.kotlin.multiplatform.library)
+    alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.vanniktech.mavenPublish)
     alias(libs.plugins.dokka)
 }
@@ -34,30 +36,42 @@ kotlin {
         browser()
         nodejs()
     }
-
-//    androidLibrary {
-//        namespace = "com.storyblok.ktor-client-storyblok"
-//        compileSdk = libs.versions.android.compileSdk.get().toInt()
-//        minSdk = libs.versions.android.minSdk.get().toInt()
-//
-//        withJava() // enable java compilation support
-//        withHostTestBuilder {}.configure {}
-//        withDeviceTestBuilder {
-//            sourceSetTreeName = "test"
-//        }
-//
-//        compilations.configureEach {
-//            compilerOptions.configure {
-//                jvmTarget.set(
-//                    JvmTarget.JVM_11
-//                )
-//            }
-//        }
-//    }
-//    iosX64()
-//    iosArm64()
-//    iosSimulatorArm64()
-//    linuxX64()
+    androidLibrary {
+        namespace = "com.storyblok"
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
+        minSdk = libs.versions.android.minSdk.get().toInt()
+        withHostTest {}
+        compilations.configureEach {
+            compileTaskProvider.configure {
+                compilerOptions {
+                    jvmTarget.set(JvmTarget.JVM_11)
+                }
+            }
+        }
+    }
+    androidNativeArm32()
+    androidNativeArm64()
+    androidNativeX64()
+    androidNativeX86()
+    iosArm64()
+    iosSimulatorArm64()
+    iosX64()
+    linuxArm64()
+    linuxX64()
+    macosArm64()
+    macosX64()
+    mingwX64()
+    tvosArm64()
+    tvosSimulatorArm64()
+    tvosX64()
+    wasmJs {
+        nodejs()
+    }
+    watchosArm32()
+    watchosArm64()
+    watchosDeviceArm64()
+    watchosSimulatorArm64()
+    watchosX64()
 
     sourceSets {
         commonMain.dependencies {
@@ -68,6 +82,22 @@ kotlin {
 
         jvmMain.dependencies {
             api(libs.ktor.client.cio)
+        }
+
+        androidMain.dependencies {
+            api(libs.ktor.client.cio)
+        }
+
+        linuxMain.dependencies {
+            api(libs.ktor.client.curl)
+        }
+
+        appleMain.dependencies {
+            api(libs.ktor.client.darwin)
+        }
+
+        wasmJsMain.dependencies {
+            api(libs.ktor.client.js)
         }
 
         jsMain.dependencies {
@@ -88,6 +118,13 @@ kotlin {
         all {
             languageSettings.enableLanguageFeature("ContextParameters")
         }
+    }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest>().configureEach {
+    testLogging {
+        events("passed", "skipped", "failed")
+        showStandardStreams = true
     }
 }
 
