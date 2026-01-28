@@ -22,7 +22,7 @@ import kotlin.time.Duration.Companion.milliseconds
 class CapiTest {
 
     @Test
-    fun `request url is correctly formed from specified region, access token and uri`() = runTest {
+    fun `request url is correctly formed from specified region access token and uri`() = runTest {
         val client = HttpClient(MockEngine { request ->
             assertEquals(URLProtocol.HTTPS, request.url.protocol)
             assertEquals("localhost", request.url.host)

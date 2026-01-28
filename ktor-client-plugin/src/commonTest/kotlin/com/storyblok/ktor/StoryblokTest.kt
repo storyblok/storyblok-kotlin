@@ -72,7 +72,7 @@ class StoryblokTest {
 }
 
     @Test
-    fun `retries up to 5 times on server error or 429 (too many requests) status codes`() = runTest {
+    fun `retries up to 5 times on server error or 429 too many requests status codes`() = runTest {
         fun clientThatEventually(sixthResponse: MockRequestHandleScope.() -> HttpResponseData) =
             HttpClient(MockEngine.create {
                 reuseHandlers = false

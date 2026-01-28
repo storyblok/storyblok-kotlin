@@ -308,7 +308,7 @@ class Stories {
      * https://www.storyblok.com/docs/api/management/stories/get-story-versions
      */
     @Test
-    fun `Get Story Versions (Legacy)`() = runTest {
+    fun `Get Story Versions Legacy`() = runTest {
 
         val client = HttpClient {
             install(Storyblok(MAPI)) {
@@ -327,7 +327,7 @@ class Stories {
      * https://www.storyblok.com/docs/api/management/stories/get-story-versions
      */
     @Test
-    fun `Get Story Versions (Legacy) 2`() = runTest {
+    fun `Get Story Versions Legacy 2`() = runTest {
 
         val client = HttpClient {
             install(Storyblok(MAPI)) {
