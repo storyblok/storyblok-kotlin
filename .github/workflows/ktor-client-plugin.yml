@@ -73,7 +73,7 @@ jobs:
         distribution: temurin
         java-version: 17
     - uses: gradle/actions/setup-gradle@v5
-    - run: ./gradlew checkLegacyAbi || { exit_code=$?; printf "*** This commit changes the public API. If intentional run './gradlew apiDump' and commit updated files. ***"; exit $exit_code; }
+    - run: ./gradlew checkLegacyAbi || { exit_code=$?; printf "*** This commit changes the public API. If intentional run './gradlew updateLegacyAbi' and commit updated files. ***"; exit $exit_code; }
 
   api-dump:
     runs-on: ubuntu-latest

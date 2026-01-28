@@ -17,7 +17,7 @@ dependencies {
 ```
 
 > [!NOTE]
-> The plugin ships with the Ktor CIO engine (`io.ktor:ktor-client-cio`) as a dependency so it works out of the box with JVM, Android, and Native. If you want to use a different engine, you can exclude CIO in your `build.gradle.kts`:
+> The plugin ships with the Ktor CIO engine (`io.ktor:ktor-client-cio`) as a dependency so it works out of the box with JVM and Android. If you want to use a different engine, you can exclude CIO in your `build.gradle.kts`:
 > ```kotlin
 > dependencies {
 >     implementation("com.storyblok:ktor-client-storyblok:0.1.0") {
