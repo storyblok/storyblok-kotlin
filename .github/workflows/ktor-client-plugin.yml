@@ -27,16 +27,26 @@ jobs:
     strategy:
       matrix:
         include:
-#          - target: iosSimulatorArm64Test
-#            os: macos-latest
           - target: :ktor-client-plugin:jvmTest
             os: ubuntu-latest
-#          - target: linuxX64Test
-#            os: ubuntu-latest
-#          - target: testAndroidHostTest
-#            os: ubuntu-latest
+          - target: :ktor-client-plugin:linuxX64Test
+            os: ubuntu-latest
+          - target: :ktor-client-plugin:testAndroidHostTest
+            os: ubuntu-latest
           - target: :ktor-client-plugin:jsTest
             os: ubuntu-latest
+          - target: :ktor-client-plugin:wasmJsTest
+            os: ubuntu-latest
+          - target: :ktor-client-plugin:mingwX64Test
+            os: windows-latest
+          - target: :ktor-client-plugin:macosArm64Test
+            os: macos-latest
+          - target: :ktor-client-plugin:iosSimulatorArm64Test
+            os: macos-latest
+          - target: :ktor-client-plugin:tvosSimulatorArm64Test
+            os: macos-latest
+          - target: :ktor-client-plugin:watchosSimulatorArm64Test
+            os: macos-latest
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -55,7 +65,7 @@ jobs:
 
   api-check:
     runs-on: ubuntu-latest
-    if: github.repository == 'storyblok/kotlin-sdk' && github.ref == 'refs/heads/main'
+    if: github.repository == 'storyblok/storyblok-kotlin' && github.ref == 'refs/heads/main'
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-java@v4
@@ -67,7 +77,7 @@ jobs:
 
   api-dump:
     runs-on: ubuntu-latest
-    if: github.repository != 'storyblok/kotlin-sdk' || github.ref != 'refs/heads/main'
+    if: github.repository != 'storyblok/storyblok-kotlin' || github.ref != 'refs/heads/main'
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-java@v4
