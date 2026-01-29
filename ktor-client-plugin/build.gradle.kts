@@ -157,7 +157,7 @@ mavenPublishing {
         scm {
             url = "https://github.com/storyblok/storyblok-kotlin"
             connection = "scm:git:https://github.com/storyblok/storyblok-kotlin"
-            developerConnection = "scm:git:https://github.com/storyblok/storyblok-kotlin"
+            developerConnection = "scm:git:ssh://git@github.com/storyblok/storyblok-kotlin"
         }
     }
 }
