@@ -9,19 +9,17 @@ plugins {
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.vanniktech.mavenPublish)
     alias(libs.plugins.dokka)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 dokka {
-    moduleName.set("Storyblok Ktor Client Plugin")
+    moduleName.set("Storylok Content Delivery API Client")
     dokkaSourceSets.configureEach {
-        includes.from("Module.md")
+//        includes.from("Module.md")
         sourceLink {
             localDirectory.set(file("src/main/kotlin"))
-            remoteUrl("https://github.com/storyblok/storyblok-kotlin/ktor-client-storyblok/")
+            remoteUrl("https://github.com/storyblok/storyblok-kotlin/content-api-client/")
             remoteLineSuffix.set("#L")
-        }
-        externalDocumentationLinks.register("ktor") {
-            url("https://api.ktor.io/")
         }
     }
 }
@@ -37,8 +35,8 @@ kotlin {
         browser()
         nodejs()
     }
-    android {
-        namespace = "com.storyblok.ktorClientPlugin"
+    androidLibrary {
+        namespace = "com.storyblok.contentApiClient"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
         withHostTest {}
@@ -60,9 +58,11 @@ kotlin {
     linuxArm64()
     linuxX64()
     macosArm64()
+    macosX64()
     mingwX64()
     tvosArm64()
     tvosSimulatorArm64()
+    tvosX64()
     wasmJs {
         nodejs()
     }
@@ -70,36 +70,15 @@ kotlin {
     watchosArm64()
     watchosDeviceArm64()
     watchosSimulatorArm64()
+    watchosX64()
 
     sourceSets {
         commonMain.dependencies {
-            api(libs.ktor.client)
+            api(project(":ktor-client-plugin"))
+            implementation(libs.kotlinx.serialization.json)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
-        }
-
-        jvmMain.dependencies {
-            api(libs.ktor.client.cio)
-        }
-
-        androidMain.dependencies {
-            api(libs.ktor.client.cio)
-        }
-
-        linuxMain.dependencies {
-            api(libs.ktor.client.curl)
-        }
-
-        appleMain.dependencies {
-            api(libs.ktor.client.darwin)
-        }
-
-        wasmJsMain.dependencies {
-            api(libs.ktor.client.js)
-        }
-
-        jsMain.dependencies {
-            api(libs.ktor.client.js)
+            implementation(libs.ktor.client.logging)
         }
 
         commonTest.dependencies {
@@ -111,6 +90,10 @@ kotlin {
 
         jvmTest.dependencies {
             implementation(libs.logback.classic)
+        }
+
+        all {
+            languageSettings.enableLanguageFeature("ContextParameters")
         }
     }
 }
@@ -125,11 +108,11 @@ tasks.withType<KotlinNativeSimulatorTest>().configureEach {
 mavenPublishing {
     publishToMavenCentral()
     signAllPublications()
-    coordinates("com.storyblok", "ktor-client-storyblok", libs.versions.storyblok.kotlin.get())
+    coordinates("com.storyblok", "storyblok-content-api", libs.versions.storyblok.kotlin.get())
 
     pom {
-        name = "ktor-client-storyblok"
-        description = "A plugin to simplify calling Storyblok's APIs with the Ktor Client."
+        name = "storyblok-content-api"
+        description = "A client for Storyblok's Content Delivery API"
         inceptionYear = "2026"
         url = "https://github.com/storyblok/storyblok-kotlin"
         licenses {
