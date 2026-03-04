@@ -6,6 +6,10 @@ pluginManagement {
     }
 }
 
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
+
 dependencyResolutionManagement {
     repositories {
         google()
@@ -15,3 +19,8 @@ dependencyResolutionManagement {
 
 rootProject.name = "storyblok-kotlin"
 include(":ktor-client-plugin", ":examples")
+include(
+    ":ktor-client-plugin",
+    ":content-api-client",
+    ":examples"
+)
