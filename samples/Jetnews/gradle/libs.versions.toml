@@ -45,7 +45,7 @@ kotlinx_immutable = "0.4.0"
 ksp = "2.3.6"
 maps-compose = "8.2.0"
 # @keep
-minSdk = "23"
+minSdk = "30"
 okhttp = "5.3.2"
 play-services-wearable = "19.0.0"
 robolectric = "4.16.1"
@@ -55,6 +55,8 @@ room = "2.8.4"
 secrets = "2.0.1"
 spotless = "8.2.1"
 # @keep
+storyblokComposeMaterial3Android = "0.1.0"
+storyblokComposeRuntimeAndroid = "0.1.0"
 targetSdk = "33"
 version-catalog-update = "1.1.0"
 
@@ -158,6 +160,8 @@ roborazzi-compose = { module = "io.github.takahirom.roborazzi:roborazzi-compose"
 roborazzi-rule = { module = "io.github.takahirom.roborazzi:roborazzi-junit-rule", version.ref = "roborazzi" }
 rometools-modules = { module = "com.rometools:rome-modules", version.ref = "rome" }
 rometools-rome = { module = "com.rometools:rome", version.ref = "rome" }
+storyblok-compose-material3-android = { module = "com.storyblok:storyblok-compose-material3-android", version.ref = "storyblokComposeMaterial3Android" }
+storyblok-compose-runtime-android = { module = "com.storyblok:storyblok-compose-runtime-android", version.ref = "storyblokComposeRuntimeAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

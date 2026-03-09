@@ -20,6 +20,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -118,6 +119,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.window)
+
+    implementation(libs.storyblok.compose.runtime.android)
+    implementation(libs.storyblok.compose.material3.android)
 
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.core)
