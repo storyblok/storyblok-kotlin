@@ -3,12 +3,12 @@
 package com.storyblok.compose
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.remember
 import com.storyblok.cdn.StoryblokClient
 import com.storyblok.compose.provider.BlokProvider
 import com.storyblok.ktor.Api.Config.Version
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+
+private val clients = mutableMapOf<List<Any?>, StoryblokClient>()
 
 @Composable
 public fun Storyblok(
@@ -16,11 +16,13 @@ public fun Storyblok(
     version: Version,
     language: String? = null,
     fallbackLanguage: String? = null,
+    cv: String? = null,
     blokProvider: BlokProvider,
     content: @Composable StoryblokScope.() -> Unit,
 ) {
-    val client = remember { StoryblokClient(accessToken, version, language, fallbackLanguage, blokProvider.serializersModule) }
-    DisposableEffect(client) { onDispose { client.close() } }
+    val client = clients.getOrPut(listOf(accessToken, version, language, fallbackLanguage, cv)) {
+        StoryblokClient(accessToken, version, language, fallbackLanguage, cv, blokProvider.serializersModule)
+    }
     content(StoryblokScope(client, blokProvider.blokScope))
 }
 
