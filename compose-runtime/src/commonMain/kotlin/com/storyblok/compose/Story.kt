@@ -12,38 +12,51 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.storyblok.cdn.StoryblokClient
 import com.storyblok.cdn.schema.Component
 import com.storyblok.cdn.schema.Story
+import io.ktor.util.reflect.TypeInfo
+import io.ktor.util.reflect.typeInfo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onCompletion
 
-public class StoryScope(slug: String, client: StoryblokClient, blokScope: BlokScope) : BlokScope by blokScope {
-    public var isRefreshing: Boolean by mutableStateOf(true)
+public interface StoryScope : BlokScope {
+    public var isRefreshing: Boolean
+}
 
-    internal val story = snapshotFlow { isRefreshing }
+
+@PublishedApi internal class StoryScopeImpl<T : Component>(
+    slug: String,
+    typeInfo: TypeInfo,
+    client: StoryblokClient,
+    blokScope: BlokScope
+) : StoryScope, BlokScope by blokScope {
+    override var isRefreshing: Boolean by mutableStateOf(true)
+
+    val story: Flow<Story<T>> = snapshotFlow { isRefreshing }
         .filter { it }
         .flatMapLatest {
-            client.story<Component>(slug)
+            client.story<T>(slug, typeInfo)
                 .onCompletion { isRefreshing = false }
         }
 }
 
 @Composable
-public fun StoryblokScope.Story(
+public inline fun <reified T : Component> StoryblokScope.Story(
     slug: String,
-    content: @Composable StoryScope.(story: Story<Component>?) -> Unit
+    content: @Composable StoryScope.(story: Story<T>?) -> Unit
 ) {
-    val scope = remember { StoryScope(slug, client, blokScope) }
+    val scope = remember { StoryScopeImpl<T>(slug, typeInfo<Story<T>>(), client, blokScope) }
     val story by scope.story.collectAsStateWithLifecycle(null)
     scope.content(story)
 }
 
 @Composable
-public fun StoryblokScope.Story(
-    story: Story<Component>,
-    content: @Composable StoryScope.(story: Story<Component>?) -> Unit
+public inline fun <reified T : Component> StoryblokScope.Story(
+    story: Story<T>,
+    content: @Composable StoryScope.(story: Story<T>) -> Unit
 ) {
-    val scope = remember { StoryScope(story.slug, client, blokScope) }
+    val scope = remember { StoryScopeImpl<T>(story.slug, typeInfo<Story<T>>(), client, blokScope) }
     val story by scope.story.collectAsStateWithLifecycle(story)
     scope.content(story)
 }
