@@ -1,6 +1,7 @@
 package com.storyblok.compose.provider
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import com.storyblok.cdn.schema.Component
 import com.storyblok.compose.BlokScope
 import com.storyblok.compose.BlokScopeImpl
@@ -14,7 +15,7 @@ public class BlokProvider internal constructor(
 )
 
 public fun blokProviderWithoutRichText(
-    fallback: @Composable (unknownComponent: Component) -> Unit = { throw IllegalStateException("Unknown component ${it.component}") },
+    fallback: @Composable (unknownComponent: Component, Modifier) -> Unit = { it, _ -> throw IllegalStateException("Unknown component ${it.component}") },
     builder: BlokProviderScope.() -> Unit,
 ): BlokProvider {
     val providers = mutableMapOf<KClass<*>, Provider>(Component.Unknown::class to Provider.Blok(fallback))

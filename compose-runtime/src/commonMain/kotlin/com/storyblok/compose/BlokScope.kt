@@ -10,35 +10,35 @@ import kotlin.reflect.KClass
 
 public interface BlokScope {
     @Composable
-    public fun Blok(content: Component)
+    public fun Blok(content: Component, modifier: Modifier = Modifier)
     @Composable
-    public fun Blok(content: Component, modifier: Modifier)
+    public fun <T> Blok(content: Component, context: T, modifier: Modifier = Modifier)
     @Composable
-    public fun RichText(content: RichText)
+    public fun RichText(content: RichText, modifier: Modifier = Modifier)
     @Composable
-    public fun RichText(content: RichText, modifier: Modifier)
+    public fun <T> RichText(content: RichText, context: T, modifier: Modifier)
 }
 
 @JvmInline
 internal value class BlokScopeImpl internal constructor(val providers: Map<KClass<*>, Provider>) : BlokScope {
-    @Composable
-    override fun Blok(content: Component) {
-        providers.getOrElse(content::class) { error("No blok registered for ${content.component}") }
-            .invoke(content)
-    }
-
     @Composable
     override fun Blok(content: Component, modifier: Modifier) =
         providers.getOrElse(content::class) { error("No blok registered for ${content.component}") }
             .invoke(content, modifier)
 
     @Composable
-    override fun RichText(content: RichText) =
-        providers.getOrElse(content::class) { error("No rich text blok registered for ${content.type}") }
-            .invoke(content)
+    override fun <T> Blok(content: Component, context: T, modifier: Modifier) {
+        providers.getOrElse(content::class) { error("No blok registered for ${content.component}") }
+            .invoke(content, modifier)
+    }
 
     @Composable
     override fun RichText(content: RichText, modifier: Modifier) =
+        providers.getOrElse(content::class) { error("No rich text blok registered for ${content.type}") }
+            .invoke(content, modifier)
+
+    @Composable
+    override fun <T> RichText(content: RichText, context: T, modifier: Modifier) =
         providers.getOrElse(content::class) { error("No rich text blok registered for ${content.type}") }
             .invoke(content, modifier)
 
