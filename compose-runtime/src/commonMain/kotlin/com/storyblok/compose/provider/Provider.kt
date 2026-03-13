@@ -10,36 +10,36 @@ import kotlin.jvm.JvmInline
 internal sealed interface Provider {
 
     @Composable
-    operator fun invoke(content: Component): Unit =
-        error("${content.component} was registered as Blok(content: Component, modifier: Modifier) but invoked as Blok(content: Component)")
-    @Composable
     operator fun invoke(content: Component, modifier: Modifier): Unit =
-        error("${content.component} was registered as Blok(content: Component) but invoked as Blok(content: Component, modifier: Modifier)")
+        error("${content.component} was registered as Blok(content: Component, context: T, modifier: Modifier) but invoked as Blok(content: Component, modifier: Modifier)")
     @Composable
-    operator fun invoke(richText: com.storyblok.cdn.schema.RichText): Unit =
-        error("${richText.type} was registered as RichText(content: RichText, modifier: Modifier) but invoked as RichText(content: Component)")
+    operator fun <T> invoke(content: Component, context: T, modifier: Modifier): Unit =
+        error("${content.component} was registered as Blok(content: Component, modifier: Modifier) but invoked as Blok(content: Component, context: T, modifier: Modifier)")
     @Composable
     operator fun invoke(richText: com.storyblok.cdn.schema.RichText, modifier: Modifier): Unit =
-        error("${richText.type} was registered as RichText(content: RichText) but invoked as RichText(content: Component, modifier: Modifier)")
+        error("${richText.type} was registered as RichText(content: RichText, context: T, modifier: Modifier) but invoked as RichText(content: Component, modifier: Modifier)")
+    @Composable
+    operator fun <T> invoke(richText: com.storyblok.cdn.schema.RichText, context: T, modifier: Modifier): Unit =
+        error("${richText.type} was registered as RichText(content: RichText, modifier: Modifier) but invoked as RichText(content: Component, context: T, modifier: Modifier)")
 
     @JvmInline
-    value class Blok<T : Component>(private val composable: @Composable (T) -> Unit) : Provider {
-        @Composable
-        override fun invoke(content: Component) = composable(content as T)
-    }
-    @JvmInline
-    value class ModifiableBlok<T : Component>(private val composable: @Composable (T, Modifier) -> Unit) : Provider {
+    value class Blok<T : Component>(private val composable: @Composable (T, Modifier) -> Unit) : Provider {
         @Composable
         override fun invoke(content: Component, modifier: Modifier) = composable(content as T, modifier)
     }
     @JvmInline
-    value class RichText<T : com.storyblok.cdn.schema.RichText>(private val composable: @Composable (T) -> Unit) : Provider {
+    value class BlokWithContext<T : Component, S>(private val composable: @Composable (T, S, Modifier) -> Unit) : Provider {
         @Composable
-        override fun invoke(richText: com.storyblok.cdn.schema.RichText) = composable(richText as T)
+        override fun <Context> invoke(content: Component, context: Context, modifier: Modifier) = composable(content as T, context as S, modifier)
     }
     @JvmInline
-    value class ModifiableRichText<T : com.storyblok.cdn.schema.RichText>(private val composable: @Composable (T, Modifier) -> Unit) : Provider {
+    value class RichText<T : com.storyblok.cdn.schema.RichText>(private val composable: @Composable (T, Modifier) -> Unit) : Provider {
         @Composable
         override fun invoke(richText: com.storyblok.cdn.schema.RichText, modifier: Modifier) = composable(richText as T, modifier)
+    }
+    @JvmInline
+    value class RichTextWithContext<T : com.storyblok.cdn.schema.RichText, S>(private val composable: @Composable (T, S, Modifier) -> Unit) : Provider {
+        @Composable
+        override fun <Context> invoke(richText: com.storyblok.cdn.schema.RichText, context: Context, modifier: Modifier) = composable(richText as T, context as S, modifier)
     }
 }
