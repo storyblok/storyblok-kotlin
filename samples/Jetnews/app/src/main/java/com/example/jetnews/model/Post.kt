@@ -16,25 +16,69 @@
 
 package com.example.jetnews.model
 
-import androidx.annotation.DrawableRes
+import com.storyblok.cdn.schema.Component
+import com.storyblok.cdn.schema.Link
+import com.storyblok.cdn.schema.RichText
+import com.storyblok.cdn.schema.Story
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.format.char
+import kotlinx.datetime.serializers.FormattedLocalDateTimeSerializer
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
+@Serializable
+@SerialName("page")
+data class Page(val body: List<Component>) : Component()
+
+@Serializable
+@SerialName("highlighted")
+class HighlightedPost(val title: String, val post: Story<Post>) : Component()
+
+@Serializable
+@SerialName("recent")
+class RecentPosts(val posts: List<Story<Post>>) : Component()
+
+@Serializable
+@SerialName("popular")
+class PopularPosts(val title: String, val posts: List<Story<Post>>) : Component()
+
+@Serializable
+@SerialName("recommended")
+class RecommendedPosts(val strapline: String, val posts: List<Story<Post>>) : Component()
+
+@Serializable
+@SerialName("post")
 data class Post(
-    val id: String,
     val title: String,
     val subtitle: String? = null,
-    val url: String,
-    val publication: Publication? = null,
-    val metadata: Metadata,
-    val paragraphs: List<Paragraph> = emptyList(),
-    @DrawableRes val imageId: Int,
-    @DrawableRes val imageThumbId: Int,
-)
+    val url: Link,
+    val imageId: String,
+    val imageThumbId: String,
+    val body: List<Component>,
+    @Serializable(with = StoryblokDateTimeSerializer::class)
+    val date: LocalDateTime,
+    val author: Story<Author>,
+    val readTimeMinutes: Int
+) : Component()
 
-data class Metadata(val author: PostAuthor, val date: String, val readTimeMinutes: Int)
+@Serializable
+@SerialName("author")
+data class Author(val name: String, val url: Link? = null) : Component()
 
-data class PostAuthor(val name: String, val url: String? = null)
+@Serializable
+@SerialName("header")
+data class Header(val alternativeTitle: String, val alternativeSubtitle: String) : Component()
 
-data class Publication(val name: String, val logoUrl: String)
+@Serializable
+@SerialName("metadata")
+class Metadata() : Component()
+
+@Serializable
+@SerialName("body")
+data class Body(val text: RichText) : Component()
 
 data class Paragraph(val type: ParagraphType, val text: String, val markups: List<Markup> = emptyList())
 
@@ -57,3 +101,12 @@ enum class ParagraphType {
     Quote,
     Bullet,
 }
+
+// serializes LocalDateTime(2020, 1, 4, 12, 30) as the string "2020-01-04 12:30"
+object StoryblokDateTimeSerializer : FormattedLocalDateTimeSerializer("com.example.jetnews.model.StoryblokDateTime",
+    LocalDateTime.Format {
+        date(LocalDate.Formats.ISO)
+        char(' ')
+        time(LocalTime.Formats.ISO)
+    }
+)

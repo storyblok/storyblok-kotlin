@@ -92,6 +92,7 @@ dependencies {
     androidTestImplementation(composeBom)
 
     implementation(libs.kotlin.stdlib)
+    implementation(libs.kotlinx.datetime)
     implementation(libs.kotlinx.coroutines.android)
 
     implementation(libs.androidx.compose.animation)
