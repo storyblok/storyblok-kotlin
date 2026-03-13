@@ -51,6 +51,7 @@ public class StoryblokClient constructor(
         version: Version,
         language: String? = null,
         fallbackLanguage: String? = null,
+        cv: String? = null,
         serializersModule: SerializersModule = EmptySerializersModule()
     ): this(
         lenientJsonParsing = version == Version.Published,
@@ -60,6 +61,7 @@ public class StoryblokClient constructor(
             this.version = version
             this.language = language
             this.fallbackLanguage = fallbackLanguage
+            this.cv = cv
         }
     )
 
