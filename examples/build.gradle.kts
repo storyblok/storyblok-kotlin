@@ -65,7 +65,6 @@ kotlin {
         commonTest.dependencies {
             implementation(project(":ktor-client-plugin"))
             implementation(libs.kotlin.test)
-            implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.coroutines.test)
         }
 

@@ -57,9 +57,9 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
                 url {
                     with(config() ?: return@url) {
                         takeFrom(region.cdnUrl)
+                        cv?.run { parameters.append("cv", this) }
                         parameters.append("token", accessToken)
                         parameters.append("version", version.value)
-                        cv?.run { parameters.append("cv", this) }
                         language?.run { parameters.append("language", this) }
                         fallbackLanguage?.run { parameters.append("fallback_lang", this) }
                     }
