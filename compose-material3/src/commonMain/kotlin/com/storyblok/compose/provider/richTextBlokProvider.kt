@@ -12,18 +12,18 @@ import com.storyblok.cdn.schema.Component
 import com.storyblok.cdn.schema.RichText
 
 public fun blokProvider(
-    fallback: @Composable (unknownComponent: Component) -> Unit = { throw IllegalStateException("Unknown component ${it.component}") },
+    fallback: @Composable (unknownComponent: Component, Modifier) -> Unit = { it, _ -> throw IllegalStateException("Unknown component ${it.component}") },
     builder: BlokProviderScope.() -> Unit,
 ): BlokProvider = blokProviderWithoutRichText(fallback) {
     builder()
-    defaultRichText<RichText.Document> { document ->
-        FlowRow {
+    defaultRichText<RichText.Document> { document, modifier ->
+        FlowRow(modifier) {
             document.content.forEach { RichText(it) }
         }
     }
-    defaultRichText<RichText.Heading> {
+    defaultRichText<RichText.Heading> { heading, modifier ->
         Text(
-            it.text, modifier = Modifier.fillMaxWidth(), style = when (it.level) {
+            heading.text, modifier = modifier.fillMaxWidth(), style = when (heading.level) {
                 1 -> MaterialTheme.typography.displayLarge
                 2 -> MaterialTheme.typography.displayMedium
                 3 -> MaterialTheme.typography.displaySmall
@@ -33,20 +33,20 @@ public fun blokProvider(
             }
         )
     }
-    defaultRichText<RichText.BulletList> { list ->
+    defaultRichText<RichText.BulletList> { list, modifier ->
         list.content.forEach { point ->
-            Row(modifier = Modifier.fillMaxWidth()) {
+            Row(modifier = modifier.fillMaxWidth()) {
                 Text("• \t\t")
                 point.content.forEach { RichText(it) }
             }
         }
     }
-    defaultRichText<RichText.Paragraph> { paragraph ->
+    defaultRichText<RichText.Paragraph> { paragraph, modifier ->
         Text(buildAnnotatedString {
             paragraph.content.forEach { append(it.text) }
-        })
+        }, modifier)
     }
-    defaultRichText<RichText.Blok> { blok ->
-        blok.body.forEach { Blok(it) }
+    defaultRichText<RichText.Blok> { blok, modifier ->
+        blok.body.forEach { Blok(it, modifier) }
     }
 }
