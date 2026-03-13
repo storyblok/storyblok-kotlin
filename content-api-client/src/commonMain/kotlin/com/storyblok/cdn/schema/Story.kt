@@ -60,7 +60,7 @@ public data class Story<T : Component>(
     val isStartPage: Boolean,
 
     @SerialName("parent_id")
-    val parentId: Long,
+    val parentId: Long? = null,
 
     @SerialName("meta_data")
     val metadata: List<String>?,
