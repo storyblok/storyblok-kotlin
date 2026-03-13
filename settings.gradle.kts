@@ -22,5 +22,6 @@ include(
     ":ktor-client-plugin",
     ":content-api-client",
     ":compose-runtime",
+    ":compose-material3",
     ":examples"
 )
