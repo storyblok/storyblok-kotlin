@@ -32,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -40,27 +41,23 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
-import com.example.jetnews.data.posts.impl.post1
-import com.example.jetnews.data.posts.impl.post2
-import com.example.jetnews.data.posts.impl.post3
-import com.example.jetnews.data.posts.impl.post4
-import com.example.jetnews.data.posts.impl.post5
 import com.example.jetnews.model.Post
-import com.example.jetnews.model.PostAuthor
+import com.example.jetnews.model.Author
 import com.example.jetnews.ui.theme.JetnewsTheme
+import com.storyblok.cdn.schema.Story
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PostCardPopular(post: Post, navigateToArticle: (String) -> Unit, modifier: Modifier = Modifier) {
+fun PostCardPopular(post: Story<Post>, navigateToArticle: (Story<Post>) -> Unit, modifier: Modifier = Modifier) {
     Card(
-        onClick = { navigateToArticle(post.id) },
+        onClick = { navigateToArticle(post) },
         shape = MaterialTheme.shapes.medium,
         modifier = modifier
             .width(280.dp),
     ) {
         Column {
             Image(
-                painter = painterResource(post.imageId),
+                painter = painterResource(LocalContext.current.resources.getIdentifier(post.content.imageId, "drawable", LocalContext.current.packageName)),
                 contentDescription = null, // decorative
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -70,14 +67,14 @@ fun PostCardPopular(post: Post, navigateToArticle: (String) -> Unit, modifier: M
 
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
-                    text = post.title,
+                    text = post.content.title,
                     style = MaterialTheme.typography.headlineSmall,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = post.metadata.author.name,
+                    text = post.content.author!!.name,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.bodyMedium,
@@ -86,8 +83,8 @@ fun PostCardPopular(post: Post, navigateToArticle: (String) -> Unit, modifier: M
                 Text(
                     text = stringResource(
                         id = R.string.home_post_min_read,
-                        post.metadata.date,
-                        post.metadata.readTimeMinutes,
+                        "${post.content.date.month.name.run { first() + drop(1).lowercase()}} ${post.content.date.day}",
+                        post.content.readTimeMinutes,
                     ),
                     style = MaterialTheme.typography.bodySmall,
                 )
@@ -96,44 +93,44 @@ fun PostCardPopular(post: Post, navigateToArticle: (String) -> Unit, modifier: M
     }
 }
 
-@Preview("Regular colors")
-@Preview("Dark colors", uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun PreviewPostCardPopular(@PreviewParameter(PostPreviewParameterProvider::class, limit = 1) post: Post) {
-    JetnewsTheme {
-        Surface {
-            PostCardPopular(post, {})
-        }
-    }
-}
+//@Preview("Regular colors")
+//@Preview("Dark colors", uiMode = UI_MODE_NIGHT_YES)
+//@Composable
+//fun PreviewPostCardPopular(@PreviewParameter(PostPreviewParameterProvider::class, limit = 1) post: Post) {
+//    JetnewsTheme {
+//        Surface {
+//            PostCardPopular(post, {})
+//        }
+//    }
+//}
 
-@Preview("Regular colors, long text")
-@Composable
-fun PreviewPostCardPopularLongText(@PreviewParameter(PostPreviewParameterProvider::class, limit = 1) post: Post) {
-    val loremIpsum =
-        """
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ullamcorper pharetra massa,
-        sed suscipit nunc mollis in. Sed tincidunt orci lacus, vel ullamcorper nibh congue quis.
-        Etiam imperdiet facilisis ligula id facilisis. Suspendisse potenti. Cras vehicula neque sed
-        nulla auctor scelerisque. Vestibulum at congue risus, vel aliquet eros. In arcu mauris,
-        facilisis eget magna quis, rhoncus volutpat mi. Phasellus vel sollicitudin quam, eu
-        consectetur dolor. Proin lobortis venenatis sem, in vestibulum est. Duis ac nibh interdum,
-        """.trimIndent()
-    JetnewsTheme {
-        Surface {
-            PostCardPopular(
-                post.copy(
-                    title = "Title$loremIpsum",
-                    metadata = post.metadata.copy(
-                        author = PostAuthor("Author: $loremIpsum"),
-                        readTimeMinutes = Int.MAX_VALUE,
-                    ),
-                ),
-                {},
-            )
-        }
-    }
-}
+//@Preview("Regular colors, long text")
+//@Composable
+//fun PreviewPostCardPopularLongText(@PreviewParameter(PostPreviewParameterProvider::class, limit = 1) post: Post) {
+//    val loremIpsum =
+//        """
+//        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ullamcorper pharetra massa,
+//        sed suscipit nunc mollis in. Sed tincidunt orci lacus, vel ullamcorper nibh congue quis.
+//        Etiam imperdiet facilisis ligula id facilisis. Suspendisse potenti. Cras vehicula neque sed
+//        nulla auctor scelerisque. Vestibulum at congue risus, vel aliquet eros. In arcu mauris,
+//        facilisis eget magna quis, rhoncus volutpat mi. Phasellus vel sollicitudin quam, eu
+//        consectetur dolor. Proin lobortis venenatis sem, in vestibulum est. Duis ac nibh interdum,
+//        """.trimIndent()
+//    JetnewsTheme {
+//        Surface {
+//            PostCardPopular(
+//                post.copy(
+//                    title = "Title$loremIpsum",
+//                    metadata = post.metadata.copy(
+//                        author = Author("Author: $loremIpsum"),
+//                        readTimeMinutes = Int.MAX_VALUE,
+//                    ),
+//                ),
+//                {},
+//            )
+//        }
+//    }
+//}
 
 /**
  * Provides sample [Post] instances for Composable Previews.
@@ -153,8 +150,8 @@ fun PreviewPostCardPopularLongText(@PreviewParameter(PostPreviewParameterProvide
  * would be more complex - e.g. retrieving the posts from a server - this would
  * be the right place to instantiate dummy instances.
  */
-class PostPreviewParameterProvider : PreviewParameterProvider<Post> {
-    override val values = sequenceOf(
-        post1, post2, post3, post4, post5,
-    )
-}
+//class PostPreviewParameterProvider : PreviewParameterProvider<Post> {
+//    override val values = sequenceOf(
+//        post1, post2, post3, post4, post5,
+//    )
+//}

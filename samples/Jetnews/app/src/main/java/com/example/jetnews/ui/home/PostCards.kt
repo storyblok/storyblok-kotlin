@@ -36,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CustomAccessibilityAction
@@ -46,10 +47,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
-import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.ui.utils.BookmarkButton
+import com.storyblok.cdn.schema.Story
 
 @Composable
 fun AuthorAndReadTime(post: Post, modifier: Modifier = Modifier) {
@@ -57,8 +58,8 @@ fun AuthorAndReadTime(post: Post, modifier: Modifier = Modifier) {
         Text(
             text = stringResource(
                 id = R.string.home_post_min_read,
-                post.metadata.author.name,
-                post.metadata.readTimeMinutes,
+                post.author.name,
+                post.readTimeMinutes,
             ),
             style = MaterialTheme.typography.bodyMedium,
         )
@@ -68,7 +69,7 @@ fun AuthorAndReadTime(post: Post, modifier: Modifier = Modifier) {
 @Composable
 fun PostImage(post: Post, modifier: Modifier = Modifier) {
     Image(
-        painter = painterResource(post.imageThumbId),
+        painter = painterResource(LocalContext.current.resources.getIdentifier(post.imageThumbId, "drawable", LocalContext.current.packageName)),
         contentDescription = null, // decorative
         modifier = modifier
             .size(40.dp, 40.dp)
@@ -87,11 +88,11 @@ fun PostTitle(post: Post) {
 }
 
 @Composable
-fun PostCardSimple(post: Post, navigateToArticle: (String) -> Unit, isFavorite: Boolean, onToggleFavorite: () -> Unit) {
+fun PostCardSimple(post: Story<Post>, navigateToArticle: (Story<Post>) -> Unit, isFavorite: Boolean, onToggleFavorite: () -> Unit) {
     val bookmarkAction = stringResource(if (isFavorite) R.string.unbookmark else R.string.bookmark)
     Row(
         modifier = Modifier
-            .clickable(onClick = { navigateToArticle(post.id) })
+            .clickable(onClick = { navigateToArticle(post) })
             .semantics {
                 // By defining a custom action, we tell accessibility services that this whole
                 // composable has an action attached to it. The accessibility service can choose
@@ -107,14 +108,14 @@ fun PostCardSimple(post: Post, navigateToArticle: (String) -> Unit, isFavorite: 
                 )
             },
     ) {
-        PostImage(post, Modifier.padding(16.dp))
+        PostImage(post.content, Modifier.padding(16.dp))
         Column(
             modifier = Modifier
                 .weight(1f)
                 .padding(vertical = 10.dp),
         ) {
-            PostTitle(post)
-            AuthorAndReadTime(post)
+            PostTitle(post.content)
+            AuthorAndReadTime(post.content)
         }
         BookmarkButton(
             isBookmarked = isFavorite,
@@ -128,15 +129,15 @@ fun PostCardSimple(post: Post, navigateToArticle: (String) -> Unit, isFavorite: 
 }
 
 @Composable
-fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
+fun PostCardHistory(post: Story<Post>, strapline: String, navigateToArticle: (Story<Post>) -> Unit) {
     var openDialog by remember { mutableStateOf(false) }
 
     Row(
         Modifier
-            .clickable(onClick = { navigateToArticle(post.id) }),
+            .clickable(onClick = { navigateToArticle(post) }),
     ) {
         PostImage(
-            post = post,
+            post = post.content,
             modifier = Modifier.padding(16.dp),
         )
         Column(
@@ -145,12 +146,12 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
                 .padding(vertical = 12.dp),
         ) {
             Text(
-                text = stringResource(id = R.string.home_post_based_on_history),
+                text = strapline,
                 style = MaterialTheme.typography.labelMedium,
             )
-            PostTitle(post = post)
+            PostTitle(post = post.content)
             AuthorAndReadTime(
-                post = post,
+                post = post.content,
                 modifier = Modifier.padding(top = 4.dp),
             )
         }
@@ -211,23 +212,23 @@ fun BookmarkButtonBookmarkedPreview() {
     }
 }
 
-@Preview("Simple post card")
-@Preview("Simple post card (dark)", uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun SimplePostPreview() {
-    JetnewsTheme {
-        Surface {
-            PostCardSimple(post3, {}, false, {})
-        }
-    }
-}
+//@Preview("Simple post card")
+//@Preview("Simple post card (dark)", uiMode = UI_MODE_NIGHT_YES)
+//@Composable
+//fun SimplePostPreview() {
+//    JetnewsTheme {
+//        Surface {
+//            PostCardSimple(post3, {}, false, {})
+//        }
+//    }
+//}
 
-@Preview("Post History card")
-@Composable
-fun HistoryPostPreview() {
-    JetnewsTheme {
-        Surface {
-            PostCardHistory(post3, {})
-        }
-    }
-}
+//@Preview("Post History card")
+//@Composable
+//fun HistoryPostPreview() {
+//    JetnewsTheme {
+//        Surface {
+//            PostCardHistory(post3, "", {})
+//        }
+//    }
+//}

@@ -48,6 +48,7 @@ import com.example.jetnews.R
 import com.example.jetnews.glance.ui.theme.JetnewsGlanceTextStyles
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.MainActivity
+import com.storyblok.cdn.schema.Story
 
 enum class PostLayout { HORIZONTAL_SMALL, HORIZONTAL_LARGE, VERTICAL }
 
@@ -62,12 +63,12 @@ fun DpSize.toPostLayout(): PostLayout {
 private fun Context.authorReadTimeString(author: String, readTimeMinutes: Int) = getString(R.string.home_post_min_read)
     .format(author, readTimeMinutes)
 
-private fun openPostDetails(context: Context, post: Post): Action {
+private fun openPostDetails(context: Context, post: Story<Post>): Action {
     // actionStartActivity is the preferred way to start activities.
     return actionStartActivity(
         Intent(
             Intent.ACTION_VIEW,
-            "$JETNEWS_APP_URI/home?postId=${post.id}".toUri(),
+            "$JETNEWS_APP_URI/home?postId=${post.slug}".toUri(),
             context,
             MainActivity::class.java,
         ),
@@ -75,7 +76,7 @@ private fun openPostDetails(context: Context, post: Post): Action {
 }
 
 @Composable
-fun Post(post: Post, bookmarks: Set<String>, onToggleBookmark: (String) -> Unit, modifier: GlanceModifier, postLayout: PostLayout) {
+fun Post(post: Story<Post>, bookmarks: Set<String>, onToggleBookmark: (String) -> Unit, modifier: GlanceModifier, postLayout: PostLayout) {
     when (postLayout) {
         PostLayout.HORIZONTAL_SMALL -> HorizontalPost(
             post = post,
@@ -103,7 +104,7 @@ fun Post(post: Post, bookmarks: Set<String>, onToggleBookmark: (String) -> Unit,
 
 @Composable
 fun HorizontalPost(
-    post: Post,
+    post: Story<Post>,
     bookmarks: Set<String>,
     onToggleBookmark: (String) -> Unit,
     modifier: GlanceModifier,
@@ -116,55 +117,55 @@ fun HorizontalPost(
     ) {
         if (showImageThumbnail) {
             PostImage(
-                imageId = post.imageThumbId,
+                imageId = context.resources.getIdentifier(post.content.imageThumbId, "drawable", context.packageName),
                 contentScale = ContentScale.Fit,
                 modifier = GlanceModifier.size(80.dp),
             )
         } else {
             PostImage(
-                imageId = post.imageId,
+                imageId = context.resources.getIdentifier(post.content.imageId, "drawable", context.packageName),
                 contentScale = ContentScale.Crop,
                 modifier = GlanceModifier.width(250.dp),
             )
         }
         PostDescription(
-            title = post.title,
+            title = post.content.title,
             metadata = context.authorReadTimeString(
-                author = post.metadata.author.name,
-                readTimeMinutes = post.metadata.readTimeMinutes,
+                author = post.content.author.name,
+                readTimeMinutes = post.content.readTimeMinutes,
             ),
             modifier = GlanceModifier.defaultWeight().padding(horizontal = 20.dp),
         )
         BookmarkButton(
-            id = post.id,
-            isBookmarked = bookmarks.contains(post.id),
+            id = post.slug,
+            isBookmarked = bookmarks.contains(post.slug),
             onToggleBookmark = onToggleBookmark,
         )
     }
 }
 
 @Composable
-fun VerticalPost(post: Post, bookmarks: Set<String>, onToggleBookmark: (String) -> Unit, modifier: GlanceModifier) {
+fun VerticalPost(post: Story<Post>, bookmarks: Set<String>, onToggleBookmark: (String) -> Unit, modifier: GlanceModifier) {
     val context = LocalContext.current
     Column(
         verticalAlignment = Alignment.Vertical.CenterVertically,
         modifier = modifier.clickable(onClick = openPostDetails(context, post)),
     ) {
-        PostImage(imageId = post.imageId, modifier = GlanceModifier.fillMaxWidth())
+        PostImage(imageId = context.resources.getIdentifier(post.content.imageId, "drawable", context.packageName), modifier = GlanceModifier.fillMaxWidth())
         Spacer(modifier = GlanceModifier.height(4.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             PostDescription(
-                title = post.title,
+                title = post.content.title,
                 metadata = context.authorReadTimeString(
-                    author = post.metadata.author.name,
-                    readTimeMinutes = post.metadata.readTimeMinutes,
+                    author = post.content.author.name,
+                    readTimeMinutes = post.content.readTimeMinutes,
                 ),
                 modifier = GlanceModifier.defaultWeight(),
             )
             Spacer(modifier = GlanceModifier.width(10.dp))
             BookmarkButton(
-                id = post.id,
-                isBookmarked = bookmarks.contains(post.id),
+                id = post.slug,
+                isBookmarked = bookmarks.contains(post.slug),
                 onToggleBookmark = onToggleBookmark,
             )
         }

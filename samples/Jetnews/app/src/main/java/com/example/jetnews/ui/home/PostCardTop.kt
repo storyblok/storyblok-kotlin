@@ -34,11 +34,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
 import com.example.jetnews.R
-import com.example.jetnews.data.posts.impl.posts
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.CompletePreviews
+import kotlinx.datetime.format
+import java.util.Locale
 
 @Composable
 fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
@@ -54,7 +56,7 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
             .fillMaxWidth()
             .clip(shape = MaterialTheme.shapes.large)
         Image(
-            painter = painterResource(post.imageId),
+            painter = painterResource(LocalContext.current.resources.getIdentifier(post.imageId, "drawable", LocalContext.current.packageName)),
             contentDescription = null, // decorative
             modifier = imageModifier,
             contentScale = ContentScale.Crop,
@@ -67,15 +69,15 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
             modifier = Modifier.padding(bottom = 8.dp),
         )
         Text(
-            text = post.metadata.author.name,
+            text = post.author!!.name,
             style = typography.labelLarge,
             modifier = Modifier.padding(bottom = 4.dp),
         )
         Text(
             text = stringResource(
                 id = R.string.home_post_min_read,
-                post.metadata.date,
-                post.metadata.readTimeMinutes,
+                "${post.date.month.name.run { first() + drop(1).lowercase()}} ${post.date.day}",
+                post.readTimeMinutes,
             ),
             style = typography.bodySmall,
         )
@@ -83,33 +85,33 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
 }
 // TUTORIAL CONTENT ENDS HERE
 
-/**
- * Preview of the [PostCardTop] composable. Fake data is passed into the composable.
- *
- * Learn more about Preview features in the [documentation](https://d.android.com/jetpack/compose/tooling#preview)
- */
-@Preview
-@Composable
-fun PostCardTopPreview() {
-    JetnewsTheme {
-        Surface {
-            PostCardTop(posts.highlightedPost)
-        }
-    }
-}
-
-/*
- * These previews will only show up on Android Studio Dolphin and later.
- * They showcase a feature called Multipreview Annotations.
- *
- * Read more in the [documentation](https://d.android.com/jetpack/compose/tooling#preview-multipreview)
-*/
-@CompletePreviews
-@Composable
-fun PostCardTopPreviews() {
-    JetnewsTheme {
-        Surface {
-            PostCardTop(posts.highlightedPost)
-        }
-    }
-}
+///**
+// * Preview of the [PostCardTop] composable. Fake data is passed into the composable.
+// *
+// * Learn more about Preview features in the [documentation](https://d.android.com/jetpack/compose/tooling#preview)
+// */
+//@Preview
+//@Composable
+//fun PostCardTopPreview() {
+//    JetnewsTheme {
+//        Surface {
+//            PostCardTop(posts.highlightedPost)
+//        }
+//    }
+//}
+//
+///*
+// * These previews will only show up on Android Studio Dolphin and later.
+// * They showcase a feature called Multipreview Annotations.
+// *
+// * Read more in the [documentation](https://d.android.com/jetpack/compose/tooling#preview-multipreview)
+//*/
+//@CompletePreviews
+//@Composable
+//fun PostCardTopPreviews() {
+//    JetnewsTheme {
+//        Surface {
+//            PostCardTop(posts.highlightedPost)
+//        }
+//    }
+//}

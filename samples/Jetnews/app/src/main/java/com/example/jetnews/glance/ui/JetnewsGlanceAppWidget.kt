@@ -52,6 +52,7 @@ import com.example.jetnews.R
 import com.example.jetnews.data.successOr
 import com.example.jetnews.glance.ui.theme.JetnewsGlanceColorScheme
 import com.example.jetnews.model.Post
+import com.storyblok.cdn.schema.Story
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -69,7 +70,7 @@ class JetnewsGlanceAppWidget : GlanceAppWidget() {
         // configuration, and during each refresh, the data is loaded here.
         // The repository can internally return cached results here if it already has fresh data.
         val initialPostsFeed = withContext(Dispatchers.IO) {
-            postsRepository.getPostsFeed().successOr(null)
+            null
         }
         val initialBookmarks: Set<String> = withContext(Dispatchers.IO) {
             postsRepository.observeFavorites().first()
@@ -78,9 +79,6 @@ class JetnewsGlanceAppWidget : GlanceAppWidget() {
         provideContent {
             val scope = rememberCoroutineScope()
             val bookmarks by postsRepository.observeFavorites().collectAsState(initialBookmarks)
-            val postsFeed by postsRepository.observePostsFeed().collectAsState(initialPostsFeed)
-            val recommendedTopPosts =
-                postsFeed?.let { listOf(it.highlightedPost) + it.recommendedPosts } ?: emptyList()
 
             // Provide a custom color scheme if the SDK version doesn't support dynamic colors.
             GlanceTheme(
@@ -91,7 +89,7 @@ class JetnewsGlanceAppWidget : GlanceAppWidget() {
                 },
             ) {
                 JetnewsContent(
-                    posts = recommendedTopPosts,
+                    posts = emptyList(),
                     bookmarks = bookmarks,
                     onToggleBookmark = { scope.launch { postsRepository.toggleFavorite(it) } },
                 )
@@ -100,7 +98,7 @@ class JetnewsGlanceAppWidget : GlanceAppWidget() {
     }
 
     @Composable
-    private fun JetnewsContent(posts: List<Post>, bookmarks: Set<String>?, onToggleBookmark: (String) -> Unit) {
+    private fun JetnewsContent(posts: List<Story<Post>>, bookmarks: Set<String>?, onToggleBookmark: (String) -> Unit) {
         Column(
             modifier = GlanceModifier
                 .background(GlanceTheme.colors.surface)
@@ -144,7 +142,7 @@ class JetnewsGlanceAppWidget : GlanceAppWidget() {
     }
 
     @Composable
-    fun Body(modifier: GlanceModifier, posts: List<Post>, bookmarks: Set<String>, onToggleBookmark: (String) -> Unit) {
+    fun Body(modifier: GlanceModifier, posts: List<Story<Post>>, bookmarks: Set<String>, onToggleBookmark: (String) -> Unit) {
         val postLayout = LocalSize.current.toPostLayout()
         LazyColumn(modifier = modifier.background(GlanceTheme.colors.background)) {
             itemsIndexed(posts) { index, post ->

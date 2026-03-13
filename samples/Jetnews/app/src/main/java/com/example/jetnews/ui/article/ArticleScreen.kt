@@ -57,13 +57,14 @@ import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
-import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.ui.utils.BookmarkButton
 import com.example.jetnews.ui.utils.FavoriteButton
 import com.example.jetnews.ui.utils.ShareButton
 import com.example.jetnews.ui.utils.TextSettingsButton
+import com.storyblok.cdn.schema.Story
+import com.storyblok.compose.BlokScope
 import kotlinx.coroutines.runBlocking
 
 /**
@@ -78,8 +79,8 @@ import kotlinx.coroutines.runBlocking
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ArticleScreen(
-    post: Post,
+fun BlokScope.ArticleScreen(
+    post: Story<Post>,
     isExpandedScreen: Boolean,
     onBack: () -> Unit,
     isFavorite: Boolean,
@@ -115,7 +116,7 @@ fun ArticleScreen(
                         actions = {
                             FavoriteButton(onClick = { showUnimplementedActionDialog = true })
                             BookmarkButton(isBookmarked = isFavorite, onClick = onToggleFavorite)
-                            ShareButton(onClick = { sharePost(post, context) })
+                            ShareButton(onClick = { sharePost(post.content, context) })
                             TextSettingsButton(onClick = { showUnimplementedActionDialog = true })
                         },
                     )
@@ -135,8 +136,8 @@ fun ArticleScreen(
  */
 @ExperimentalMaterial3Api
 @Composable
-private fun ArticleScreenContent(
-    post: Post,
+private fun BlokScope.ArticleScreenContent(
+    post: Story<Post>,
     navigationIconContent: @Composable () -> Unit = { },
     bottomBarContent: @Composable () -> Unit = { },
     lazyListState: LazyListState = rememberLazyListState(),
@@ -146,7 +147,7 @@ private fun ArticleScreenContent(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = post.publication?.name.orEmpty(),
+                title = "Android Developers",
                 navigationIconContent = navigationIconContent,
                 scrollBehavior = scrollBehavior,
             )
@@ -154,7 +155,7 @@ private fun ArticleScreenContent(
         bottomBar = bottomBarContent,
     ) { innerPadding ->
         PostContent(
-            post = post,
+            post = post.content,
             contentPadding = innerPadding,
             modifier = Modifier
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -227,7 +228,7 @@ fun sharePost(post: Post, context: Context) {
     val intent = Intent(Intent.ACTION_SEND).apply {
         type = "text/plain"
         putExtra(Intent.EXTRA_TITLE, post.title)
-        putExtra(Intent.EXTRA_TEXT, post.url)
+        putExtra(Intent.EXTRA_TEXT, post.url.url)
     }
     context.startActivity(
         Intent.createChooser(
@@ -237,32 +238,32 @@ fun sharePost(post: Post, context: Context) {
     )
 }
 
-@Preview("Article screen")
-@Preview("Article screen (dark)", uiMode = UI_MODE_NIGHT_YES)
-@Preview("Article screen (big font)", fontScale = 1.5f)
-@Composable
-fun PreviewArticleDrawer() {
-    JetnewsTheme {
-        val post = runBlocking {
-            (BlockingFakePostsRepository().getPost(post3.id) as Result.Success).data
-        }
-        ArticleScreen(post, false, {}, false, {})
-    }
-}
-
-@Preview("Article screen navrail", device = Devices.PIXEL_C)
-@Preview(
-    "Article screen navrail (dark)",
-    uiMode = UI_MODE_NIGHT_YES,
-    device = Devices.PIXEL_C,
-)
-@Preview("Article screen navrail (big font)", fontScale = 1.5f, device = Devices.PIXEL_C)
-@Composable
-fun PreviewArticleNavRail() {
-    JetnewsTheme {
-        val post = runBlocking {
-            (BlockingFakePostsRepository().getPost(post3.id) as Result.Success).data
-        }
-        ArticleScreen(post, true, {}, false, {})
-    }
-}
+//@Preview("Article screen")
+//@Preview("Article screen (dark)", uiMode = UI_MODE_NIGHT_YES)
+//@Preview("Article screen (big font)", fontScale = 1.5f)
+//@Composable
+//fun PreviewArticleDrawer() {
+//    JetnewsTheme {
+//        val post = runBlocking {
+//            (BlockingFakePostsRepository().getPost(post3.id) as Result.Success).data
+//        }
+//        ArticleScreen(post, false, {}, false, {})
+//    }
+//}
+//
+//@Preview("Article screen navrail", device = Devices.PIXEL_C)
+//@Preview(
+//    "Article screen navrail (dark)",
+//    uiMode = UI_MODE_NIGHT_YES,
+//    device = Devices.PIXEL_C,
+//)
+//@Preview("Article screen navrail (big font)", fontScale = 1.5f, device = Devices.PIXEL_C)
+//@Composable
+//fun PreviewArticleNavRail() {
+//    JetnewsTheme {
+//        val post = runBlocking {
+//            (BlockingFakePostsRepository().getPost(post3.id) as Result.Success).data
+//        }
+//        ArticleScreen(post, true, {}, false, {})
+//    }
+//}

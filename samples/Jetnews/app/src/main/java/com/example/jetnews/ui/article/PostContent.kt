@@ -49,6 +49,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.FirstBaseline
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -67,19 +68,17 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jetnews.R
-import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Markup
 import com.example.jetnews.model.MarkupType
-import com.example.jetnews.model.Metadata
 import com.example.jetnews.model.Paragraph
 import com.example.jetnews.model.ParagraphType
 import com.example.jetnews.model.Post
-import com.example.jetnews.ui.theme.JetnewsTheme
+import com.storyblok.compose.BlokScope
 
-private val defaultSpacerSize = 16.dp
+val defaultSpacerSize = 16.dp
 
 @Composable
-fun PostContent(
+fun BlokScope.PostContent(
     post: Post,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
@@ -90,33 +89,18 @@ fun PostContent(
         modifier = modifier.padding(horizontal = defaultSpacerSize),
         state = state,
     ) {
-        postContentItems(post)
+        items(post.body) { Blok(it, post) }
     }
-}
-
-fun LazyListScope.postContentItems(post: Post) {
-    item {
-        PostHeaderImage(post)
-        Spacer(Modifier.height(defaultSpacerSize))
-        Text(post.title, style = MaterialTheme.typography.headlineLarge)
-        Spacer(Modifier.height(8.dp))
-        if (post.subtitle != null) {
-            Text(post.subtitle, style = MaterialTheme.typography.bodyMedium)
-            Spacer(Modifier.height(defaultSpacerSize))
-        }
-    }
-    item { PostMetadata(post.metadata, Modifier.padding(bottom = 24.dp)) }
-    items(post.paragraphs) { Paragraph(paragraph = it) }
 }
 
 @Composable
-private fun PostHeaderImage(post: Post) {
+fun PostHeaderImage(post: Post) {
     val imageModifier = Modifier
         .heightIn(min = 180.dp)
         .fillMaxWidth()
         .clip(shape = MaterialTheme.shapes.large)
     Image(
-        painter = painterResource(post.imageId),
+        painter = painterResource(LocalContext.current.resources.getIdentifier(post.imageId, "drawable", LocalContext.current.packageName)),
         contentDescription = null, // decorative
         modifier = imageModifier,
         contentScale = ContentScale.Crop,
@@ -124,7 +108,7 @@ private fun PostHeaderImage(post: Post) {
 }
 
 @Composable
-private fun PostMetadata(metadata: Metadata, modifier: Modifier = Modifier) {
+fun PostMetadata(post: Post, modifier: Modifier = Modifier) {
     Row(
         // Merge semantics so accessibility services consider this row a single element
         modifier = modifier.semantics(mergeDescendants = true) {},
@@ -139,7 +123,7 @@ private fun PostMetadata(metadata: Metadata, modifier: Modifier = Modifier) {
         Spacer(Modifier.width(8.dp))
         Column {
             Text(
-                text = metadata.author.name,
+                text = post.author.name,
                 style = MaterialTheme.typography.labelLarge,
                 modifier = Modifier.padding(top = 4.dp),
             )
@@ -147,7 +131,8 @@ private fun PostMetadata(metadata: Metadata, modifier: Modifier = Modifier) {
             Text(
                 text = stringResource(
                     id = R.string.article_post_min_read,
-                    metadata.date, metadata.readTimeMinutes,
+                    "${post.date.month.name.run { first() + drop(1).lowercase()}} ${post.date.day}",
+                    post.readTimeMinutes,
                 ),
                 style = MaterialTheme.typography.bodySmall,
             )
@@ -329,13 +314,13 @@ fun Markup.toAnnotatedStringItem(typography: Typography, codeBlockBackground: Co
 private val ColorScheme.codeBlockBackground: Color
     get() = onSurface.copy(alpha = .15f)
 
-@Preview("Post content")
-@Preview("Post content (dark)", uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun PreviewPost() {
-    JetnewsTheme {
-        Surface {
-            PostContent(post = post3)
-        }
-    }
-}
+//@Preview("Post content")
+//@Preview("Post content (dark)", uiMode = UI_MODE_NIGHT_YES)
+//@Composable
+//fun PreviewPost() {
+//    JetnewsTheme {
+//        Surface {
+//            PostContent(post = post3)
+//        }
+//    }
+//}
