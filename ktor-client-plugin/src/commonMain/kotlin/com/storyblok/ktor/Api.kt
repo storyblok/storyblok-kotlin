@@ -5,15 +5,22 @@ import com.storyblok.ktor.Api.Config.Management
 import com.storyblok.ktor.Api.Config.Region.EU
 import com.storyblok.ktor.Api.Config.Version.Published
 import io.ktor.client.HttpClientConfig
+import io.ktor.client.call.replaceResponse
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.api.ClientPluginBuilder
 import io.ktor.client.plugins.cache.HttpCache
+import io.ktor.client.statement.DefaultHttpResponse
+import io.ktor.client.statement.HttpReceivePipeline
+import io.ktor.client.statement.content
+import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.Url
+import io.ktor.http.parseHeaderValue
 import io.ktor.http.takeFrom
 import io.ktor.util.logging.KtorSimpleLogger
 import io.ktor.util.logging.Logger
+import io.ktor.utils.io.InternalAPI
 import kotlin.time.TimeSource
 
 private val LOGGER: Logger = KtorSimpleLogger("com.storyblok.ktor.Api")
@@ -50,9 +57,7 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
     public object CDN : Api<Content>(::Content) {
 
         override fun HttpClientConfig<*>.configure(config: () -> Content?) {
-            install(HttpCache) {
-                isShared = true
-            }
+            install(HttpCache)
             install(DefaultRequest) {
                 url {
                     with(config() ?: return@url) {
@@ -67,7 +72,23 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
             }
         }
 
+        @OptIn(InternalAPI::class)
         override fun ClientPluginBuilder<*>.configure(config: Content) {
+            client.receivePipeline.intercept(HttpReceivePipeline.Before) { response ->
+                val modifiedHeaders = Headers.build {
+                    appendAll(response.headers)
+                    remove(HttpHeaders.CacheControl)
+                    val headers = parseHeaderValue(response.headers[HttpHeaders.CacheControl])
+                        .map { it.value }
+                        .filter { it  != "no-cache" && it != "must-revalidate" && !it.startsWith("max-age=") }
+                    val maxAge = headers
+                        .find { it.startsWith("s-maxage") }
+                        ?.substringAfter('=')
+                        ?: "1"
+                    append(HttpHeaders.CacheControl, headers.plus("max-age=$maxAge").sorted().joinToString(", "))
+                }
+                proceedWith(response.call.replaceResponse(modifiedHeaders) { response.content }.response)
+            }
             onResponse { response ->
                 when(response.status) {
                     HttpStatusCode.MovedPermanently -> {

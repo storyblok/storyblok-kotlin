@@ -10,14 +10,18 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.http.HttpHeaders.Location
 import io.ktor.http.HttpStatusCode.Companion.MovedPermanently
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.testTimeSource
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.JsonObject
 import kotlin.test.*
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 class CapiTest {
 
@@ -90,20 +94,41 @@ class CapiTest {
     }
 
     @Test
-    fun `subsequent requests for the same resource will be served from the cache`() = runTest {
+    fun `subsequent requests for the same draft resource will not be served from the cache`() = runTest {
         val client = HttpClient(MockEngine.create {
             reuseHandlers = false
             addHandler {
                 respond("""{"story": { "content": {}}}""", headers = headersOf(
                     HttpHeaders.ContentType to listOf("${ContentType.Application.Json}"),
-                    HttpHeaders.CacheControl to listOf("max-age=0, public, s-maxage=604800")
+                    //draft cache control headers
+                    HttpHeaders.CacheControl to listOf("max-age=0, private, must-revalidate")
                 ))
             }
         }) { install(Storyblok(CDN)) { accessToken = "mock-api-key" } }
 
-        repeat(2) {
+        assertFailsWith<IllegalStateException>("Unhandled https://api.storyblok.com/v2/cdn/stories/mock-slug?token=mock-api-key&version=published") {
+            assertContains(client.get("stories/mock-slug").body<JsonObject>(), "story")
+            withContext(Dispatchers.Default) { delay(1.seconds) }
             assertContains(client.get("stories/mock-slug").body<JsonObject>(), "story")
         }
+    }
+
+    @Test
+    fun `subsequent requests for the same published resource will be served from the cache`() = runTest {
+        val client = HttpClient(MockEngine.create {
+            reuseHandlers = false
+            addHandler {
+                respond("""{"story": { "content": {}}}""", headers = headersOf(
+                    HttpHeaders.ContentType to listOf("${ContentType.Application.Json}"),
+                    //published cache control headers
+                    HttpHeaders.CacheControl to listOf("max-age=0, public, s-maxage=604800, stale-if-error=3600")
+                ))
+            }
+        }) { install(Storyblok(CDN)) { accessToken = "mock-api-key" } }
+
+        assertContains(client.get("stories/mock-slug").body<JsonObject>(), "story")
+        withContext(Dispatchers.Default) { delay(1.seconds) }
+        assertContains(client.get("stories/mock-slug").body<JsonObject>(), "story")
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

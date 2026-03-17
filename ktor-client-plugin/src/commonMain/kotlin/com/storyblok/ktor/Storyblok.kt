@@ -5,6 +5,7 @@ import io.ktor.client.plugins.*
 import io.ktor.client.plugins.api.*
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.HttpSendPipeline
+import io.ktor.client.utils.CacheControl
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.util.logging.KtorSimpleLogger
@@ -62,8 +63,9 @@ public fun <T: Api.Config> HttpClientConfig<*>.Storyblok(api: Api<T>): ClientPlu
     // Installs retry logic with backoff for transient errors
     install(HttpRequestRetry) {
         retryOnExceptionIf { request, cause -> request.method == HttpMethod.Get && cause !is CancellationException }
-        retryIf(5) { _, response ->
-            response.status == HttpStatusCode.TooManyRequests || response.status.value in 500..599
+        retryIf(5) { request, response ->
+            (response.status == HttpStatusCode.TooManyRequests || response.status.value in 500..599)
+                    && CacheControl.ONLY_IF_CACHED !in request.headers[HttpHeaders.CacheControl].orEmpty()
         }
         delay { delay ->
             //delay is applied in sendPipeline instead of here
