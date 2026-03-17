@@ -18,7 +18,7 @@ public fun blokProviderWithoutRichText(
     fallback: @Composable (unknownComponent: Component, Modifier) -> Unit = { it, _ -> throw IllegalStateException("Unknown component ${it.component}") },
     builder: BlokProviderScope.() -> Unit,
 ): BlokProvider {
-    val providers = mutableMapOf<KClass<*>, Provider>(Component.Unknown::class to Provider.Blok(fallback))
+    val providers = mutableMapOf<Any, Provider>(Component.Unknown::class to Provider.Blok(fallback))
     val blokScope = BlokScopeImpl(providers)
     return BlokProvider(
         blokScope,
