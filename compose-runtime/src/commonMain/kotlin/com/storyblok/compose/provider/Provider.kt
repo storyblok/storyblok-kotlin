@@ -4,6 +4,7 @@ package com.storyblok.compose.provider
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.AnnotatedString
 import com.storyblok.cdn.schema.Component
 import kotlin.jvm.JvmInline
 
@@ -16,11 +17,10 @@ internal sealed interface Provider {
     operator fun <T> invoke(content: Component, context: T, modifier: Modifier): Unit =
         error("${content.component} was registered as Blok(content: Component, modifier: Modifier) but invoked as Blok(content: Component, context: T, modifier: Modifier)")
     @Composable
-    operator fun invoke(richText: com.storyblok.cdn.schema.RichText, modifier: Modifier): Unit =
-        error("${richText.type} was registered as RichText(content: RichText, context: T, modifier: Modifier) but invoked as RichText(content: Component, modifier: Modifier)")
+    operator fun invoke(richText: com.storyblok.cdn.schema.RichText, modifier: Modifier): Unit = TODO()
+
     @Composable
-    operator fun <T> invoke(richText: com.storyblok.cdn.schema.RichText, context: T, modifier: Modifier): Unit =
-        error("${richText.type} was registered as RichText(content: RichText, modifier: Modifier) but invoked as RichText(content: Component, context: T, modifier: Modifier)")
+    operator fun AnnotatedString.Builder.invoke(richText: com.storyblok.cdn.schema.RichText): Unit = TODO()
 
     @JvmInline
     value class Blok<T : Component>(private val composable: @Composable (T, Modifier) -> Unit) : Provider {
@@ -38,8 +38,8 @@ internal sealed interface Provider {
         override fun invoke(richText: com.storyblok.cdn.schema.RichText, modifier: Modifier) = composable(richText as T, modifier)
     }
     @JvmInline
-    value class RichTextWithContext<T : com.storyblok.cdn.schema.RichText, S>(private val composable: @Composable (T, S, Modifier) -> Unit) : Provider {
+    value class RichTextWithAnnotatedString<T : com.storyblok.cdn.schema.RichText>(private val composable: @Composable AnnotatedString.Builder.(T) -> Unit) : Provider {
         @Composable
-        override fun <Context> invoke(richText: com.storyblok.cdn.schema.RichText, context: Context, modifier: Modifier) = composable(richText as T, context as S, modifier)
+        override fun AnnotatedString.Builder.invoke(richText: com.storyblok.cdn.schema.RichText) = composable(richText as T)
     }
 }
