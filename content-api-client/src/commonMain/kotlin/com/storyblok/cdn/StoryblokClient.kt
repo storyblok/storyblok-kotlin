@@ -10,19 +10,27 @@ import com.storyblok.ktor.Api.Config.Version
 import com.storyblok.ktor.Storyblok
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.request.parameter
-import io.ktor.http.isSuccess
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.util.reflect.TypeInfo
 import io.ktor.util.reflect.serializer
 import io.ktor.util.reflect.typeInfo
 import io.ktor.utils.io.InternalAPI
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -45,13 +53,12 @@ import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlinx.serialization.modules.SerializersModuleCollector
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.serializer
-import kotlin.collections.component1
-import kotlin.collections.component2
-import kotlin.collections.map
-import kotlin.collections.orEmpty
 import kotlin.reflect.KClass
 
-public open class StoryblokClientException(message: String) : Exception(message)
+public open class StoryblokClientException(message: String?, cause: Throwable?) : Exception(message, cause) {
+    public constructor(message: String?) : this(message, null)
+    public constructor(cause: Throwable?) : this(null, cause)
+}
 
 public class RelationLimitExceededException(
     public val story: Story<Component>,
@@ -134,14 +141,6 @@ public class StoryblokClient constructor(
     private val ktor = HttpClient {
         install(ContentNegotiation) { json(json) }
         install(Storyblok(Api.CDN), apiBuilder)
-        install(Logging) {
-            level = LogLevel.BODY
-            logger = object : io.ktor.client.plugins.logging.Logger {
-                override fun log(message: String) {
-                    println(message)
-                }
-            }
-        }
     }
 
     public fun close(): Unit = ktor.close()
@@ -149,35 +148,54 @@ public class StoryblokClient constructor(
     public inline fun <reified T : Component> story(slug: String): Flow<Story<T>> =
         story(slug, typeInfo<Story<T>>())
 
-    public fun <T : Component> story(slug: String, typeInfo: TypeInfo): Flow<Story<T>> = flow {
+    public fun <T : Component> story(slug: String, typeInfo: TypeInfo): Flow<Story<T>> =
+        flow {
 
-        val response = ktor.get("stories/$slug") {
-            parameter(
-                "resolve_relations",
-                relations.ifEmpty { return@get }
-                    .entries
-                    .joinToString(",") { (component, keys) -> keys.joinToString(",") { "$component.$it" } }
+            val resolveRelations = relations.entries
+                .joinToString(",") { (component, keys) -> keys.joinToString(",") { "$component.$it" } }
+
+            try {
+                val cached = ktor.get("stories/$slug") {
+                    header(HttpHeaders.CacheControl, "only-if-cached, max-stale=${Int.MAX_VALUE}")
+                    parameter("resolve_relations", resolveRelations.ifEmpty { return@get })
+                }
+                emit(cached.body<String>())
+            } catch (e: ServerResponseException) {
+                if(e.response.status != HttpStatusCode.GatewayTimeout) throw e
+            }
+
+            val response = ktor.get("stories/$slug") {
+                parameter("resolve_relations", resolveRelations.ifEmpty { return@get })
+            }
+
+            emit(response.body<String>())
+        }
+        .distinctUntilChanged()
+        .map { response ->
+            val body = json.parseToJsonElement(response)
+
+            val story = body.jsonObject["story"]!!.jsonObject
+
+            val rels = body.jsonObject["rels"]
+                ?.jsonArray
+                .orEmpty()
+                .map { it.jsonObject }
+                .associateBy { it["uuid"]!!.jsonPrimitive.content }
+
+            json.decodeFromJsonElement(
+                typeInfo.serializer() as KSerializer<Story<T>>,
+                JsonObject(story + ("content" to story["content"]!!.jsonObject.resolve(rels)))
             )
         }
+        .catch {
+            if (it is CancellationException) {
+                currentCoroutineContext().ensureActive()
+                throw it
+            }
+            val message = (it as? ServerResponseException)?.response?.bodyAsText() ?: it.message
+            throw StoryblokClientException(message, it)
+        }
 
-        val body = json.parseToJsonElement(response.body<String>())
-
-        if(!response.status.isSuccess()) throw StoryblokClientException(body.jsonArray.joinToString())
-
-        val story = body.jsonObject["story"]!!.jsonObject
-
-        val rels = body.jsonObject["rels"]
-            ?.jsonArray
-            .orEmpty()
-            .map { it.jsonObject }
-            .associateBy { it["uuid"]!!.jsonPrimitive.content }
-
-        emit(json.decodeFromJsonElement(
-            typeInfo.serializer() as KSerializer<Story<T>>,
-            JsonObject(story + ("content" to story["content"]!!.jsonObject.resolve(rels)))
-        ))
-
-    }
     private fun JsonObject.resolve(rels: Map<String, JsonElement?>): JsonObject {
         val relations = relations[get("component")?.jsonPrimitive?.content].orEmpty()
         val replacements = entries.mapNotNull { (key, value) ->
