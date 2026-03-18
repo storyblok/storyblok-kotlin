@@ -11,7 +11,7 @@ import kotlinx.serialization.json.JsonObject
 @Serializable
 @JsonClassDiscriminator("fieldtype")
 public sealed class Field {
-    public val id: String = ""
+    public val id: String? = null
     @SerialName("fieldtype")
     public val fieldType: String = ""
 }

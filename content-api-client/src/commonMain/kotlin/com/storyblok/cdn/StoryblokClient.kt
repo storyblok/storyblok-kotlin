@@ -105,6 +105,7 @@ public class StoryblokClient constructor(
     )
 
     private val json = Json {
+        isLenient = true
         decodeEnumsCaseInsensitive = true
         classDiscriminator = "component"
         serializersModule = SerializersModule {
