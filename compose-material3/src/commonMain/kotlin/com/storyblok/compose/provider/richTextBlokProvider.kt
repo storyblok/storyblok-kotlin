@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
 import com.storyblok.cdn.schema.Component
 import com.storyblok.cdn.schema.RichText
 
@@ -97,6 +98,13 @@ public fun blokProvider(
     defaultRichText<RichText.HorizontalRule> { _, modifier -> HorizontalDivider(modifier) }
 
     defaultRichText<RichText.Emoji> { append(it.emoji) }
+
+    defaultRichText<RichText.Image> {
+        AsyncImage(
+            model = it.src,
+            contentDescription = it.alt,
+        )
+    }
 
     defaultRichText<RichText.Blockquote> { quote, _  ->
         Text(
