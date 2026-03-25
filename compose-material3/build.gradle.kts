@@ -64,6 +64,7 @@ kotlin {
             api(libs.compose.material3)
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor3)
+            implementation(libs.coil.svg)
             api(project(":compose-runtime"))
         }
 
