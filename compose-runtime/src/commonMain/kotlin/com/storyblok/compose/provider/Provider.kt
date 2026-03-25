@@ -19,7 +19,6 @@ internal sealed interface Provider {
     @Composable
     operator fun invoke(richText: com.storyblok.cdn.schema.RichText, modifier: Modifier): Unit = TODO()
 
-    @Composable
     operator fun AnnotatedString.Builder.invoke(richText: com.storyblok.cdn.schema.RichText): Unit = TODO()
 
     @JvmInline
@@ -38,8 +37,7 @@ internal sealed interface Provider {
         override fun invoke(richText: com.storyblok.cdn.schema.RichText, modifier: Modifier) = composable(richText as T, modifier)
     }
     @JvmInline
-    value class RichTextWithAnnotatedString<T : com.storyblok.cdn.schema.RichText>(private val composable: @Composable AnnotatedString.Builder.(T) -> Unit) : Provider {
-        @Composable
-        override fun AnnotatedString.Builder.invoke(richText: com.storyblok.cdn.schema.RichText) = composable(richText as T)
+    value class RichTextWithAnnotatedString<T : com.storyblok.cdn.schema.RichText>(private val builder: AnnotatedString.Builder.(T) -> Unit) : Provider {
+        override fun AnnotatedString.Builder.invoke(richText: com.storyblok.cdn.schema.RichText) = builder(richText as T)
     }
 }
