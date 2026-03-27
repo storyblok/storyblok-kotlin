@@ -14,12 +14,12 @@ plugins {
 }
 
 dokka {
-    moduleName.set("Storyblok Compose SDK")
+    moduleName.set("Storyblok Rich Text Provider")
     dokkaSourceSets.configureEach {
 //        includes.from("Module.md")
         sourceLink {
             localDirectory.set(file("src/main/kotlin"))
-            remoteUrl("https://github.com/storyblok/storyblok-kotlin/compose-sdk/")
+            remoteUrl("https://github.com/storyblok/storyblok-kotlin/richtext-provider/")
             remoteLineSuffix.set("#L")
         }
     }
@@ -37,7 +37,7 @@ kotlin {
         nodejs()
     }
     androidLibrary {
-        namespace = "com.storyblok.composeSdk"
+        namespace = "com.storyblok.richtextProvider"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
         withHostTest {}
@@ -60,17 +60,16 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            api(project(":content-api-client"))
-            api(libs.compose.runtime)
-            api(libs.compose.ui)
-            implementation(libs.androidx.lifecycle.runtime.compose)
+            api(libs.compose.foundation)
+            api(libs.compose.material3)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor3)
+            implementation(libs.coil.svg)
+            api(project(":compose-sdk"))
         }
 
         commonTest.dependencies {
             implementation(libs.kotlin.test)
-            implementation(libs.kotlinx.coroutines.test)
-            implementation(libs.ktor.client.logging)
-            implementation(libs.ktor.client.mock)
         }
 
         jvmTest.dependencies {
@@ -93,11 +92,11 @@ tasks.withType<KotlinNativeSimulatorTest>().configureEach {
 mavenPublishing {
     publishToMavenCentral()
     signAllPublications()
-    coordinates("com.storyblok", "storyblok-compose-sdk", libs.versions.storyblok.kotlin.get())
+    coordinates("com.storyblok", "richtext-provider", libs.versions.storyblok.kotlin.get())
 
     pom {
-        name = "storyblok-compose-sdk"
-        description = "An SDK to integrate Storyblok with Compose"
+        name = "richtext-provider"
+        description = "The default Storyblok rich text provider"
         inceptionYear = "2026"
         url = "https://github.com/storyblok/storyblok-kotlin"
         licenses {
