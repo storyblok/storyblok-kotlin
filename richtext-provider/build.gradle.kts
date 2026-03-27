@@ -14,12 +14,12 @@ plugins {
 }
 
 dokka {
-    moduleName.set("Storyblok Compose Material 3")
+    moduleName.set("Storyblok Rich Text Provider")
     dokkaSourceSets.configureEach {
 //        includes.from("Module.md")
         sourceLink {
             localDirectory.set(file("src/main/kotlin"))
-            remoteUrl("https://github.com/storyblok/storyblok-kotlin/compose-material3/")
+            remoteUrl("https://github.com/storyblok/storyblok-kotlin/richtext-provider/")
             remoteLineSuffix.set("#L")
         }
     }
@@ -37,7 +37,7 @@ kotlin {
         nodejs()
     }
     androidLibrary {
-        namespace = "com.storyblok.composeMaterial3"
+        namespace = "com.storyblok.richtextProvider"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
         withHostTest {}
@@ -65,7 +65,7 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor3)
             implementation(libs.coil.svg)
-            api(project(":compose-runtime"))
+            api(project(":compose-sdk"))
         }
 
         commonTest.dependencies {
@@ -92,11 +92,11 @@ tasks.withType<KotlinNativeSimulatorTest>().configureEach {
 mavenPublishing {
     publishToMavenCentral()
     signAllPublications()
-    coordinates("com.storyblok", "storyblok-compose-material3", libs.versions.storyblok.kotlin.get())
+    coordinates("com.storyblok", "richtext-provider", libs.versions.storyblok.kotlin.get())
 
     pom {
-        name = "storyblok-compose-material3"
-        description = "An SDK to integrate Storyblok with Compose Material 3"
+        name = "richtext-provider"
+        description = "The default Storyblok rich text provider"
         inceptionYear = "2026"
         url = "https://github.com/storyblok/storyblok-kotlin"
         licenses {
