@@ -93,10 +93,10 @@ tasks.withType<KotlinNativeSimulatorTest>().configureEach {
 mavenPublishing {
     publishToMavenCentral()
     signAllPublications()
-    coordinates("com.storyblok", "compose-sdk", libs.versions.storyblok.kotlin.get())
+    coordinates("com.storyblok", "storyblok-compose-sdk", libs.versions.storyblok.kotlin.get())
 
     pom {
-        name = "compose-sdk"
+        name = "storyblok-compose-sdk"
         description = "An SDK to integrate Storyblok with Compose"
         inceptionYear = "2026"
         url = "https://github.com/storyblok/storyblok-kotlin"
