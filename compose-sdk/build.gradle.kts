@@ -14,12 +14,12 @@ plugins {
 }
 
 dokka {
-    moduleName.set("Storyblok Compose Runtime")
+    moduleName.set("Storyblok Compose SDK")
     dokkaSourceSets.configureEach {
 //        includes.from("Module.md")
         sourceLink {
             localDirectory.set(file("src/main/kotlin"))
-            remoteUrl("https://github.com/storyblok/storyblok-kotlin/compose-runtime/")
+            remoteUrl("https://github.com/storyblok/storyblok-kotlin/compose-sdk/")
             remoteLineSuffix.set("#L")
         }
     }
@@ -37,7 +37,7 @@ kotlin {
         nodejs()
     }
     androidLibrary {
-        namespace = "com.storyblok.composeRuntime"
+        namespace = "com.storyblok.composeSdk"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
         withHostTest {}
@@ -93,10 +93,10 @@ tasks.withType<KotlinNativeSimulatorTest>().configureEach {
 mavenPublishing {
     publishToMavenCentral()
     signAllPublications()
-    coordinates("com.storyblok", "storyblok-compose-runtime", libs.versions.storyblok.kotlin.get())
+    coordinates("com.storyblok", "compose-sdk", libs.versions.storyblok.kotlin.get())
 
     pom {
-        name = "storyblok-compose-runtime"
+        name = "compose-sdk"
         description = "An SDK to integrate Storyblok with Compose"
         inceptionYear = "2026"
         url = "https://github.com/storyblok/storyblok-kotlin"
