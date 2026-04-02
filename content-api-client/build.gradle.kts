@@ -73,6 +73,7 @@ kotlin {
         commonMain.dependencies {
             api(project(":ktor-client-storyblok"))
             api(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.datetime)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktor.client.logging)
