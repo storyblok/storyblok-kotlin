@@ -10,6 +10,7 @@ activityCompose = "1.13.0"
 kotlin = "2.2.10"
 composeBom = "2024.09.00"
 kotlin-datetime = "0.7.1"
+coil = "3.4.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -29,6 +30,8 @@ androidx-compose-material3 = { group = "androidx.compose.material3", name = "mat
 storyblok-compose-android = { group = "com.storyblok", name = "storyblok-compose-android", version.ref = "storyblok" }
 storyblok-material3-android = { group = "com.storyblok", name = "storyblok-material3-android", version.ref = "storyblok" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlin-datetime" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+coil-network-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
