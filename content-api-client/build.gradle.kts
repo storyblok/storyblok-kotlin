@@ -35,7 +35,7 @@ kotlin {
         browser()
         nodejs()
     }
-    androidLibrary {
+    android {
         namespace = "com.storyblok.contentApiClient"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
@@ -58,11 +58,9 @@ kotlin {
     linuxArm64()
     linuxX64()
     macosArm64()
-    macosX64()
     mingwX64()
     tvosArm64()
     tvosSimulatorArm64()
-    tvosX64()
     wasmJs {
         nodejs()
     }
@@ -70,7 +68,6 @@ kotlin {
     watchosArm64()
     watchosDeviceArm64()
     watchosSimulatorArm64()
-    watchosX64()
 
     sourceSets {
         commonMain.dependencies {
@@ -90,10 +87,6 @@ kotlin {
 
         jvmTest.dependencies {
             implementation(libs.logback.classic)
-        }
-
-        all {
-            languageSettings.enableLanguageFeature("ContextParameters")
         }
     }
 }
