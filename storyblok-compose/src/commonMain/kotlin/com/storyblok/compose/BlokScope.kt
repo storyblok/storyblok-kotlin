@@ -14,6 +14,7 @@ public interface BlokScope {
     public fun Blok(content: Component, modifier: Modifier = Modifier)
     @Composable
     public fun RichText(content: RichText, modifier: Modifier = Modifier)
+    @Composable
     public fun AnnotatedString.Builder.RichText(content: RichText)
 }
 
@@ -30,8 +31,9 @@ internal value class BlokScopeImpl internal constructor(val providers: Map<Any, 
         providers.getOrElse(content::class) { error("No rich text blok registered for ${content.type} accepting a Modifier") }
             .invoke(content, modifier)
 
+    @Composable
     override fun AnnotatedString.Builder.RichText(content: RichText) =
-        with(providers.getOrElse(content::class to AnnotatedString::class) { error("No rich text blok registered for ${content.type} accepting an AnnotatedString.Builder") }) {
+        with(providers.getOrElse(content::class to AnnotatedString::class) { error("No rich text blok registered for ${content.type} receiving AnnotatedString.Builder") }) {
             invoke(content)
         }
 }
