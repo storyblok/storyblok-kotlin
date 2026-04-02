@@ -34,10 +34,12 @@ public class Asset(
     public val name: String? = null,
     public val source: String? = null,
     public val alt: String?,
-    public val focus: Nothing?,
+    public val focus: String?,
     @SerialName("meta_data")
-    public val metadata: JsonObject? = null,
+    public val metadata: Map<String, String>? = null,
     public val title: String?,
     public val filename: String,
     public val copyright: String?,
+    @SerialName("is_external_url")
+    public val isExternalUrl: Boolean = false
 ) : Field()

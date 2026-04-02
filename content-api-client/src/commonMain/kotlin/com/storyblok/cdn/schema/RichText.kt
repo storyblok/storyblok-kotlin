@@ -6,7 +6,6 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonClassDiscriminator
-import kotlinx.serialization.json.JsonObject
 
 @Serializable
 @JsonClassDiscriminator("type")
@@ -77,7 +76,7 @@ public sealed class RichText {
         public val title: String? get() = attributes.title
         public val source: String? get() = attributes.source
         public val copyright: String? get() = attributes.copyright
-        public val metadata: JsonObject? get() = attributes.metadata
+        public val metadata: Map<String, String>? get() = attributes.metadata
 
         @Serializable
         internal class Attributes(
@@ -88,7 +87,7 @@ public sealed class RichText {
             val source: String? = null,
             val copyright: String? = null,
             @SerialName("meta_data")
-            val metadata: JsonObject? = null,
+            val metadata: Map<String, String>? = null,
         )
     }
 
@@ -218,7 +217,7 @@ public sealed class RichText {
             public val href: String get() = attributes.href
             public val uuid: String? get() = attributes.uuid
             public val anchor: String? get() = attributes.anchor
-            public val custom: JsonObject? get() = attributes.custom
+            public val custom: Map<String, String>? get() = attributes.custom
             public val target: String? get() = attributes.target
             public val linktype: String get() = attributes.linktype
 
@@ -227,7 +226,7 @@ public sealed class RichText {
                 val href: String,
                 val uuid: String? = null,
                 val anchor: String? = null,
-                val custom: JsonObject? = null,
+                val custom: Map<String, String>? = null,
                 val target: String? = null,
                 val linktype: String
             )
