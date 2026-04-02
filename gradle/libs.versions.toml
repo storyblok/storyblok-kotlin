@@ -12,12 +12,13 @@ android-compileSdk = "36"
 vanniktechMavenPublish = "0.36.0"
 logback = "1.5.32"
 dokka = "2.2.0"
-compose-multiplatform = "1.10.1"
+compose-multiplatform = "1.10.3"
 material3 = "1.10.0-alpha05"
-androidx-lifecycle = "2.9.6"
+androidx-lifecycle = "2.10.0"
 
 [libraries]
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+coil-gif = { module = "io.coil-kt.coil3:coil-gif", version.ref = "coil" }
 coil-network-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
 coil-svg = { module = "io.coil-kt.coil3:coil-svg", version.ref = "coil" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
