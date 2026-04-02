@@ -1,15 +1,15 @@
 [versions]
 storyblok-kotlin = "0.1.0"
-agp = "9.0.0"
-kotlin = "2.3.0"
+agp = "9.1.0"
+kotlin = "2.3.20"
 kotlin-corountines = "1.10.2"
 kotlin-serialization = "1.10.0"
-ktor-client = "3.4.0"
+ktor-client = "3.4.2"
 android-minSdk = "30"
 android-compileSdk = "36"
 vanniktechMavenPublish = "0.36.0"
-logback = "1.5.26"
-dokka = "2.1.0"
+logback = "1.5.32"
+dokka = "2.2.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
