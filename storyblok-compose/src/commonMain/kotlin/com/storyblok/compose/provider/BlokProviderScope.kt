@@ -31,12 +31,6 @@ public class BlokProviderScope internal constructor(
         polymorphicModuleBuilder.subclass(type, serializer)
     }
 
-    public fun <T : Component, S> blok(type: KClass<T>, serializer: KSerializer<T>, composable: @Composable (T, S, Modifier) -> Unit) {
-        require(type !in providers) { "A blok for ${type.simpleName} has already been registered" }
-        providers[type] = Provider.BlokWithContext(composable)
-        polymorphicModuleBuilder.subclass(type, serializer)
-    }
-
     public fun <T : RichText> richText(type: KClass<T>, composable: @Composable (T, Modifier) -> Unit) {
         require(type !in providers) { "A rich text blok for ${type.simpleName} has already been registered" }
         providers[type] = Provider.RichText(composable)
@@ -61,9 +55,6 @@ public class BlokProviderScope internal constructor(
         blok(T::class, serializer<T>())
 
     public inline fun <reified T : Component> blok(noinline composable: @Composable (T, Modifier) -> Unit): Unit =
-        blok(T::class, serializer<T>(), composable)
-
-    public inline fun <reified T : Component, S> blok(noinline composable: @Composable (T, S, Modifier) -> Unit): Unit =
         blok(T::class, serializer<T>(), composable)
 
     public inline fun <reified T : RichText> richText(noinline composable: @Composable (T, Modifier) -> Unit): Unit =
