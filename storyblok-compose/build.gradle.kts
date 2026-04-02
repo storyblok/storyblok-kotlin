@@ -36,7 +36,7 @@ kotlin {
         browser()
         nodejs()
     }
-    androidLibrary {
+    android {
         namespace = "com.storyblok.compose"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
@@ -53,7 +53,6 @@ kotlin {
     iosSimulatorArm64()
     iosX64()
     macosArm64()
-    macosX64()
     wasmJs {
         nodejs()
     }
@@ -76,10 +75,10 @@ kotlin {
         jvmTest.dependencies {
             implementation(libs.logback.classic)
         }
+    }
 
-        all {
-            languageSettings.enableLanguageFeature("ContextParameters")
-        }
+    compilerOptions {
+        freeCompilerArgs.add("-Xcontext-parameters")
     }
 }
 
