@@ -94,8 +94,12 @@ tasks.withType<KotlinNativeSimulatorTest>().configureEach {
 
 mavenPublishing {
     publishToMavenCentral()
-    //signAllPublications()
     coordinates("com.storyblok", "storyblok-material3", libs.versions.storyblok.kotlin.get())
+
+    // Only sign when not publishing to maven local
+    if (!gradle.startParameter.taskNames.any { it.contains("MavenLocal", ignoreCase = true) }) {
+        signAllPublications()
+    }
 
     pom {
         name = "storyblok-material3"
