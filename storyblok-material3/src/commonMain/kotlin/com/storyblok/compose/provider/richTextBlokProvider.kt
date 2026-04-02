@@ -1,8 +1,9 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package com.storyblok.compose.provider
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,24 +17,20 @@ import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.Bullet
-import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.LinkAnnotation.Clickable
 import androidx.compose.ui.text.LinkAnnotation.Url
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily.Companion.Monospace
 import androidx.compose.ui.text.font.FontStyle.Companion.Italic
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
@@ -42,25 +39,30 @@ import androidx.compose.ui.text.style.BaselineShift.Companion.Superscript
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration.Companion.LineThrough
 import androidx.compose.ui.text.style.TextDecoration.Companion.Underline
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import coil3.compose.AsyncImage
 import com.storyblok.cdn.schema.Component
 import com.storyblok.cdn.schema.RichText
+import com.storyblok.material3.richtext.CssColorParser
+import com.storyblok.material3.richtext.buildAnnotatedString
+import com.storyblok.material3.richtext.withList
+import com.storyblok.material3.richtext.withListItem
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 public fun blokProvider(
     fallback: @Composable (unknownComponent: Component, Modifier) -> Unit = { it, _ -> throw IllegalStateException("Unknown component ${it.component}") },
-    storyLinkListener: (uuid: String, anchor: String?) -> Unit = { _, _ -> TODO("No storyLinkListener provided to blokProvider()") },
+    storyLinkListener: (uuid: Uuid, anchor: String?) -> Unit = { _, _ -> TODO("No storyLinkListener provided to blokProvider()") },
     builder: BlokProviderScope.() -> Unit,
 ): BlokProvider = blokProviderWithoutRichText(fallback) {
     builder()
 
     defaultRichText<RichText.Document> { document, modifier ->
-        LazyColumn(modifier, verticalArrangement = spacedBy(16.dp)) {
-            items(document.content, key = { it.hashCode() }) { RichText(it, Modifier.fillMaxWidth()) }
+        LazyColumn(modifier) {
+            items(document.content, key = { it.hashCode() }) {
+                RichText(it, Modifier.fillMaxWidth().padding(bottom = 16.dp))
+            }
         }
     }
 
@@ -83,33 +85,25 @@ public fun blokProvider(
     }
 
     defaultRichText<RichText.BulletList> { list, modifier ->
-        Text(
-            buildAnnotatedString { RichText(list) },
-            modifier,
-            inlineContent = list.inlineContent()
-        )
+        Text(buildAnnotatedString { RichText(list) }, modifier, inlineContent = list.inlineContent())
     }
 
     defaultRichText<RichText.BulletList> { list ->
-        withBulletList {
+        withList(bullet = Bullet.Default) {
             list.content.forEach { item ->
-                withBulletListItem { item.content.forEach { RichText(it) } }
+                withListItem { item.content.forEach { RichText(it) } }
             }
         }
     }
 
     defaultRichText<RichText.OrderedList> { list, modifier ->
-        Text(
-            buildAnnotatedString { RichText(list) },
-            modifier,
-            inlineContent = list.inlineContent()
-        )
+        Text(buildAnnotatedString { RichText(list) }, modifier, inlineContent = list.inlineContent())
     }
 
     defaultRichText<RichText.OrderedList> { list ->
-        withBulletList(bullet = Bullet.None) {
+        withList {
             list.content.forEachIndexed { index, item ->
-                withBulletListItem {
+                withListItem {
                     append("${index+1}. ")
                     item.content.forEach { RichText(it) }
                 }
@@ -160,14 +154,18 @@ public fun blokProvider(
                 is RichText.Mark.Italic -> pushStyle(SpanStyle(fontStyle = Italic))
                 is RichText.Mark.Underline -> pushStyle(SpanStyle(textDecoration = Underline))
                 is RichText.Mark.Strike -> pushStyle(SpanStyle(textDecoration = LineThrough))
-                is RichText.Mark.Code -> pushStyle(SpanStyle(fontFamily = Monospace, background = Color.LightGray.copy(alpha = .15f)))
+                is RichText.Mark.Code -> pushStyle(
+                    SpanStyle(fontFamily = Monospace, background = colorScheme.onSurface.copy(alpha = .15f))
+                )
                 is RichText.Mark.Link -> when(mark.linktype) {
                     "url", "asset" -> pushLink(Url(mark.href))
                     "email" -> pushLink(Url("mailto:${mark.href}"))
-                    "story" -> pushLink(LinkAnnotation.Clickable(mark.uuid!!, null) { storyLinkListener(mark.uuid!!, mark.anchor) })
+                    "story" -> pushLink(Clickable(mark.uuid!!, null) { storyLinkListener(Uuid.parse(mark.uuid!!), mark.anchor) })
                     else -> TODO("Unknown linktype: ${mark.linktype}")
                 }
-                is RichText.Mark.Highlight -> pushStyle(SpanStyle(background = CssColorParser.parse(mark.color) ?: Color.Yellow))
+                is RichText.Mark.Highlight -> pushStyle(
+                    SpanStyle(background = CssColorParser.parse(mark.color) ?: colorScheme.secondary)
+                )
                 is RichText.Mark.Subscript -> pushStyle(SpanStyle(baselineShift = Subscript))
                 is RichText.Mark.Superscript -> pushStyle(SpanStyle(baselineShift = Superscript))
                 is RichText.Mark.TextStyle -> pushStyle(SpanStyle(color = CssColorParser.parse(mark.color) ?: Color.Unspecified))
@@ -179,13 +177,14 @@ public fun blokProvider(
 
     defaultRichText<RichText.CodeBlock> { code, modifier ->
         Surface(
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = .15f),
+            color = colorScheme.onSurface.copy(alpha = .15f),
             shape = MaterialTheme.shapes.small,
             modifier = modifier,
         ) {
             Text(
-                modifier = Modifier.padding(16.dp),
                 text = buildAnnotatedString { code.content.forEach { RichText(it) } },
+                modifier = Modifier.padding(16.dp),
+                color = colorScheme.onSurface,
                 style = TextStyle(fontFamily = Monospace),
                 inlineContent = code.inlineContent()
             )
@@ -209,8 +208,8 @@ public fun blokProvider(
             modifier.fillMaxHeight()
                 .background(CssColorParser.parse(cell.backgroundColor) ?: Color.Transparent)
                 .border(0.5.dp, Color.DarkGray)
-                .padding(8.dp))
-        { cell.content.forEach { RichText(it) } }
+                .padding(8.dp)
+        ) { cell.content.forEach { RichText(it) } }
     }
 
     defaultRichText<RichText.TableHeader> { header, modifier ->
@@ -227,11 +226,6 @@ public fun blokProvider(
     }
 }
 
-private val Bullet.Companion.None: Bullet
-    get() = Bullet(object : Shape {
-        override fun createOutline(size: Size, layoutDirection: LayoutDirection, density: Density) =
-            Outline.Generic(Path())
-    }, 0.em, 0.em, -Bullet.DefaultIndentation)
 
 @Composable
 private fun RichText.Composite.inlineContent(fontSize: TextUnit = LocalTextStyle.current.fontSize) = flatten()
