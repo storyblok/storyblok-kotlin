@@ -27,6 +27,6 @@ public fun Storyblok(
 }
 
 public class StoryblokScope(
-    @PublishedApi internal val client: StoryblokClient,
-    @PublishedApi internal val blokScope: BlokScope
-)
+    public val client: StoryblokClient,
+    blokScope: BlokScope
+) : BlokScope by blokScope, StoryblokClient by client
