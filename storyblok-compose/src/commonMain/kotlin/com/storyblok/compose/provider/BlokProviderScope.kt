@@ -36,23 +36,22 @@ public class BlokProviderScope internal constructor(
         providers[type] = Provider.RichText(composable)
     }
 
-    @JvmName("richTextWithAnnotatedStringBuilder")
-    public fun <T : RichText> richText(type: KClass<out T>, builder: AnnotatedString.Builder.(T) -> Unit) {
+    @JvmName("richTextWithinAnnotatedStringBuilder")
+    public fun <T : RichText> richText(type: KClass<out T>, builder: @Composable AnnotatedString.Builder.(T) -> Unit) {
         require((type to AnnotatedString::class) !in providers) { "A rich text blok for ${type.simpleName} has already been registered" }
-        providers[type to AnnotatedString::class] = Provider.RichTextWithAnnotatedString(builder)
+        providers[type to AnnotatedString::class] = Provider.RichTextWithinAnnotatedStringBuilder(builder)
     }
 
     public fun <T : RichText> defaultRichText(type: KClass<out T>, composable: @Composable (T, Modifier) -> Unit) {
         providers.getOrPut(type) { Provider.RichText(composable) }
     }
 
-    @JvmName("defaultRichTextWithAnnotatedStringBuilder")
-    public fun <T : RichText> defaultRichText(type: KClass<out T>, builder: AnnotatedString.Builder.(T) -> Unit) {
-        providers.getOrPut(type to AnnotatedString::class) { Provider.RichTextWithAnnotatedString(builder) }
+    @JvmName("defaultRichTextWithinAnnotatedStringBuilder")
+    public fun <T : RichText> defaultRichText(type: KClass<out T>, builder: @Composable AnnotatedString.Builder.(T) -> Unit) {
+        providers.getOrPut(type to AnnotatedString::class) { Provider.RichTextWithinAnnotatedStringBuilder(builder) }
     }
 
-    public inline fun <reified T : Component> blok(): Unit =
-        blok(T::class, serializer<T>())
+    public inline fun <reified T : Component> blok(): Unit = blok(T::class, serializer<T>())
 
     public inline fun <reified T : Component> blok(noinline composable: @Composable (T, Modifier) -> Unit): Unit =
         blok(T::class, serializer<T>(), composable)
@@ -61,14 +60,14 @@ public class BlokProviderScope internal constructor(
         richText(T::class, composable)
 
     @JvmName("richTextWithAnnotatedStringBuilder")
-    public inline fun <reified T : RichText> richText(noinline builder: AnnotatedString.Builder.(T) -> Unit): Unit =
+    public inline fun <reified T : RichText> richText(noinline builder: @Composable AnnotatedString.Builder.(T) -> Unit): Unit =
         richText(T::class, builder)
 
     public inline fun <reified T : RichText> defaultRichText(noinline composable: @Composable (T, Modifier) -> Unit): Unit =
         defaultRichText(T::class, composable)
 
     @JvmName("defaultRichTextWithAnnotatedStringBuilder")
-    public inline fun <reified T : RichText> defaultRichText(noinline builder: AnnotatedString.Builder.(T) -> Unit): Unit =
+    public inline fun <reified T : RichText> defaultRichText(noinline builder: @Composable AnnotatedString.Builder.(T) -> Unit): Unit =
         defaultRichText(T::class, builder)
 
 
