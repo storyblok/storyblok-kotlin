@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
 
 public class BlokProvider internal constructor(
     internal val blokScope: BlokScope,
-    internal val serializersModule: SerializersModule
+    public val serializersModule: SerializersModule
 )
 
 public fun blokProviderWithoutRichText(
