@@ -1,0 +1,863 @@
+public final class com/storyblok/cdn/RelationLimitExceededException : com/storyblok/cdn/StoryblokClientException {
+	public fun <init> (Lcom/storyblok/cdn/schema/Story;Ljava/util/List;)V
+	public final fun getStory ()Lcom/storyblok/cdn/schema/Story;
+	public final fun getUuids ()Ljava/util/List;
+}
+
+public abstract interface class com/storyblok/cdn/StoryblokClient {
+	public static final field Companion Lcom/storyblok/cdn/StoryblokClient$Companion;
+	public abstract fun close ()V
+	public abstract fun story (Ljava/lang/String;)Lkotlinx/coroutines/flow/Flow;
+	public abstract fun story (Ljava/lang/String;Lio/ktor/util/reflect/TypeInfo;)Lkotlinx/coroutines/flow/Flow;
+	public abstract fun story (Lkotlin/uuid/Uuid;)Lkotlinx/coroutines/flow/Flow;
+	public abstract fun story (Lkotlin/uuid/Uuid;Lio/ktor/util/reflect/TypeInfo;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class com/storyblok/cdn/StoryblokClient$Companion {
+	public final fun invoke (Ljava/lang/String;Lcom/storyblok/ktor/Api$Config$Version;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlinx/serialization/modules/SerializersModule;)Lcom/storyblok/cdn/StoryblokClient;
+	public final fun invoke (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Lcom/storyblok/cdn/StoryblokClient;
+	public final fun invoke (ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Lcom/storyblok/cdn/StoryblokClient;
+	public static synthetic fun invoke$default (Lcom/storyblok/cdn/StoryblokClient$Companion;Ljava/lang/String;Lcom/storyblok/ktor/Api$Config$Version;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlinx/serialization/modules/SerializersModule;ILjava/lang/Object;)Lcom/storyblok/cdn/StoryblokClient;
+	public static synthetic fun invoke$default (Lcom/storyblok/cdn/StoryblokClient$Companion;ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/storyblok/cdn/StoryblokClient;
+}
+
+public class com/storyblok/cdn/StoryblokClientException : java/lang/Exception {
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Throwable;)V
+}
+
+public final class com/storyblok/cdn/schema/Asset : com/storyblok/cdn/schema/Field {
+	public static final field Companion Lcom/storyblok/cdn/schema/Asset$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Z)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getAlt ()Ljava/lang/String;
+	public final fun getCopyright ()Ljava/lang/String;
+	public final fun getFilename ()Ljava/lang/String;
+	public final fun getFocus ()Ljava/lang/String;
+	public final fun getMetadata ()Ljava/util/Map;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getSource ()Ljava/lang/String;
+	public final fun getTitle ()Ljava/lang/String;
+	public final fun isExternalUrl ()Z
+}
+
+public final synthetic class com/storyblok/cdn/schema/Asset$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/Asset$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/Asset;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/Asset;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/Asset$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract class com/storyblok/cdn/schema/Component {
+	public static final field Companion Lcom/storyblok/cdn/schema/Component$Companion;
+	public fun <init> ()V
+	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public final fun getComponent ()Ljava/lang/String;
+	public final fun getUid ()Ljava/lang/String;
+	public static final synthetic fun write$Self (Lcom/storyblok/cdn/schema/Component;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class com/storyblok/cdn/schema/Component$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/Component$Unknown : com/storyblok/cdn/schema/Component {
+	public static final field Companion Lcom/storyblok/cdn/schema/Component$Unknown$Companion;
+	public fun <init> ()V
+}
+
+public final synthetic class com/storyblok/cdn/schema/Component$Unknown$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/Component$Unknown$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/Component$Unknown;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/Component$Unknown;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/Component$Unknown$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract class com/storyblok/cdn/schema/Field {
+	public static final field Companion Lcom/storyblok/cdn/schema/Field$Companion;
+	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/String;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public final fun getFieldType ()Ljava/lang/String;
+	public final fun getId ()Ljava/lang/String;
+	public static final synthetic fun write$Self (Lcom/storyblok/cdn/schema/Field;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class com/storyblok/cdn/schema/Field$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/Link : com/storyblok/cdn/schema/Field {
+	public static final field Companion Lcom/storyblok/cdn/schema/Link$Companion;
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getCachedUrl ()Ljava/lang/String;
+	public final fun getEmail ()Ljava/lang/String;
+	public final fun getLinkType ()Ljava/lang/String;
+	public final fun getTarget ()Ljava/lang/String;
+	public final fun getUrl ()Ljava/lang/String;
+}
+
+public final synthetic class com/storyblok/cdn/schema/Link$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/Link$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/Link;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/Link;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/Link$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract class com/storyblok/cdn/schema/RichText {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$Companion;
+	public synthetic fun <init> (ILjava/lang/String;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public final fun getType ()Ljava/lang/String;
+	public static final synthetic fun write$Self (Lcom/storyblok/cdn/schema/RichText;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class com/storyblok/cdn/schema/RichText$Blockquote : com/storyblok/cdn/schema/RichText, com/storyblok/cdn/schema/RichText$Composite {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$Blockquote$Companion;
+	public fun flatten ()Lkotlin/sequences/Sequence;
+	public fun getContent ()Ljava/util/List;
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$Blockquote$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$Blockquote$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$Blockquote;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$Blockquote;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Blockquote$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Blok : com/storyblok/cdn/schema/RichText {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$Blok$Companion;
+	public final fun getBody ()Ljava/util/List;
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$Blok$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$Blok$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$Blok;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$Blok;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Blok$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$BulletList : com/storyblok/cdn/schema/RichText, com/storyblok/cdn/schema/RichText$Composite {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$BulletList$Companion;
+	public fun flatten ()Lkotlin/sequences/Sequence;
+	public fun getContent ()Ljava/util/List;
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$BulletList$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$BulletList$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$BulletList;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$BulletList;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$BulletList$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$CodeBlock : com/storyblok/cdn/schema/RichText, com/storyblok/cdn/schema/RichText$Composite {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$CodeBlock$Companion;
+	public fun flatten ()Lkotlin/sequences/Sequence;
+	public final fun getClazz ()Ljava/lang/String;
+	public fun getContent ()Ljava/util/List;
+	public final fun getLanguage ()Ljava/lang/String;
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$CodeBlock$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$CodeBlock$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$CodeBlock;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$CodeBlock;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$CodeBlock$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract interface class com/storyblok/cdn/schema/RichText$Composite {
+	public fun flatten ()Lkotlin/sequences/Sequence;
+	public abstract fun getContent ()Ljava/util/List;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Composite$DefaultImpls {
+	public static fun flatten (Lcom/storyblok/cdn/schema/RichText$Composite;)Lkotlin/sequences/Sequence;
+}
+
+public class com/storyblok/cdn/schema/RichText$Document : com/storyblok/cdn/schema/RichText, com/storyblok/cdn/schema/RichText$Composite {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$Document$Companion;
+	public synthetic fun <init> (ILjava/lang/String;Ljava/util/List;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun flatten ()Lkotlin/sequences/Sequence;
+	public fun getContent ()Ljava/util/List;
+	public static final synthetic fun write$Self (Lcom/storyblok/cdn/schema/RichText$Document;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$Document$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$Document$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$Document;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$Document;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Document$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Emoji : com/storyblok/cdn/schema/RichText {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$Emoji$Companion;
+	public final fun getEmoji ()Ljava/lang/String;
+	public final fun getFallbackImage ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$Emoji$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$Emoji$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$Emoji;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$Emoji;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Emoji$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$HardBreak : com/storyblok/cdn/schema/RichText {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$HardBreak$Companion;
+	public fun <init> ()V
+	public fun <init> (Ljava/util/List;)V
+	public synthetic fun <init> (Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getMarks ()Ljava/util/List;
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$HardBreak$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$HardBreak$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$HardBreak;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$HardBreak;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$HardBreak$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Heading : com/storyblok/cdn/schema/RichText, com/storyblok/cdn/schema/RichText$Composite {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$Heading$Companion;
+	public fun flatten ()Lkotlin/sequences/Sequence;
+	public fun getContent ()Ljava/util/List;
+	public final fun getLevel ()I
+	public final fun getTextAlign ()Lcom/storyblok/cdn/schema/RichText$TextAlign;
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$Heading$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$Heading$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$Heading;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$Heading;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Heading$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$HorizontalRule : com/storyblok/cdn/schema/RichText {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$HorizontalRule$Companion;
+	public fun <init> ()V
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$HorizontalRule$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$HorizontalRule$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$HorizontalRule;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$HorizontalRule;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$HorizontalRule$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Image : com/storyblok/cdn/schema/RichText {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$Image$Companion;
+	public final fun getAlt ()Ljava/lang/String;
+	public final fun getCopyright ()Ljava/lang/String;
+	public final fun getId ()Ljava/lang/String;
+	public final fun getMetadata ()Ljava/util/Map;
+	public final fun getSource ()Ljava/lang/String;
+	public final fun getSrc ()Ljava/lang/String;
+	public final fun getTitle ()Ljava/lang/String;
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$Image$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$Image$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$Image;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$Image;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Image$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$ListItem : com/storyblok/cdn/schema/RichText, com/storyblok/cdn/schema/RichText$Composite {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$ListItem$Companion;
+	public fun flatten ()Lkotlin/sequences/Sequence;
+	public fun getContent ()Ljava/util/List;
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$ListItem$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$ListItem$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$ListItem;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$ListItem;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$ListItem$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract class com/storyblok/cdn/schema/RichText$Mark : com/storyblok/cdn/schema/RichText {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$Mark$Companion;
+	public synthetic fun <init> (ILjava/lang/String;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public static final synthetic fun write$Self (Lcom/storyblok/cdn/schema/RichText$Mark;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class com/storyblok/cdn/schema/RichText$Mark$Bold : com/storyblok/cdn/schema/RichText$Mark {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$Mark$Bold$Companion;
+	public fun <init> ()V
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$Mark$Bold$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$Mark$Bold$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$Mark$Bold;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$Mark$Bold;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Mark$Bold$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Mark$Code : com/storyblok/cdn/schema/RichText$Mark {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$Mark$Code$Companion;
+	public fun <init> ()V
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$Mark$Code$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$Mark$Code$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$Mark$Code;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$Mark$Code;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Mark$Code$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Mark$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Mark$Highlight : com/storyblok/cdn/schema/RichText$Mark {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$Mark$Highlight$Companion;
+	public final fun getColor ()Ljava/lang/String;
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$Mark$Highlight$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$Mark$Highlight$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$Mark$Highlight;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$Mark$Highlight;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Mark$Highlight$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Mark$Italic : com/storyblok/cdn/schema/RichText$Mark {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$Mark$Italic$Companion;
+	public fun <init> ()V
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$Mark$Italic$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$Mark$Italic$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$Mark$Italic;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$Mark$Italic;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Mark$Italic$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Mark$Link : com/storyblok/cdn/schema/RichText$Mark {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$Mark$Link$Companion;
+	public final fun getAnchor ()Ljava/lang/String;
+	public final fun getCustom ()Ljava/util/Map;
+	public final fun getHref ()Ljava/lang/String;
+	public final fun getLinktype ()Ljava/lang/String;
+	public final fun getTarget ()Ljava/lang/String;
+	public final fun getUuid ()Ljava/lang/String;
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$Mark$Link$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$Mark$Link$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$Mark$Link;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$Mark$Link;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Mark$Link$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Mark$Strike : com/storyblok/cdn/schema/RichText$Mark {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$Mark$Strike$Companion;
+	public fun <init> ()V
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$Mark$Strike$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$Mark$Strike$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$Mark$Strike;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$Mark$Strike;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Mark$Strike$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Mark$Subscript : com/storyblok/cdn/schema/RichText$Mark {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$Mark$Subscript$Companion;
+	public fun <init> ()V
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$Mark$Subscript$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$Mark$Subscript$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$Mark$Subscript;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$Mark$Subscript;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Mark$Subscript$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Mark$Superscript : com/storyblok/cdn/schema/RichText$Mark {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$Mark$Superscript$Companion;
+	public fun <init> ()V
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$Mark$Superscript$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$Mark$Superscript$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$Mark$Superscript;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$Mark$Superscript;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Mark$Superscript$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Mark$TextStyle : com/storyblok/cdn/schema/RichText$Mark {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$Mark$TextStyle$Companion;
+	public final fun getColor ()Ljava/lang/String;
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$Mark$TextStyle$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$Mark$TextStyle$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$Mark$TextStyle;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$Mark$TextStyle;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Mark$TextStyle$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Mark$Underline : com/storyblok/cdn/schema/RichText$Mark {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$Mark$Underline$Companion;
+	public fun <init> ()V
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$Mark$Underline$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$Mark$Underline$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$Mark$Underline;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$Mark$Underline;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Mark$Underline$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$OrderedList : com/storyblok/cdn/schema/RichText, com/storyblok/cdn/schema/RichText$Composite {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$OrderedList$Companion;
+	public fun flatten ()Lkotlin/sequences/Sequence;
+	public fun getContent ()Ljava/util/List;
+	public final fun getOrder ()Ljava/lang/Integer;
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$OrderedList$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$OrderedList$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$OrderedList;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$OrderedList;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$OrderedList$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Paragraph : com/storyblok/cdn/schema/RichText, com/storyblok/cdn/schema/RichText$Composite {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$Paragraph$Companion;
+	public fun <init> ()V
+	public fun flatten ()Lkotlin/sequences/Sequence;
+	public fun getContent ()Ljava/util/List;
+	public final fun getTextAlign ()Lcom/storyblok/cdn/schema/RichText$TextAlign;
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$Paragraph$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$Paragraph$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$Paragraph;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$Paragraph;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Paragraph$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Table : com/storyblok/cdn/schema/RichText, com/storyblok/cdn/schema/RichText$Composite {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$Table$Companion;
+	public fun flatten ()Lkotlin/sequences/Sequence;
+	public fun getContent ()Ljava/util/List;
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$Table$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$Table$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$Table;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$Table;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Table$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$TableCell : com/storyblok/cdn/schema/RichText$TableElement {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$TableCell$Companion;
+	public fun <init> ()V
+	public synthetic fun getAttributes$content_api_client ()Lcom/storyblok/cdn/schema/RichText$TableElement$Attributes;
+	public final fun getBackgroundColor ()Ljava/lang/String;
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$TableCell$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$TableCell$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$TableCell;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$TableCell;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$TableCell$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract class com/storyblok/cdn/schema/RichText$TableElement : com/storyblok/cdn/schema/RichText, com/storyblok/cdn/schema/RichText$Composite {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$TableElement$Companion;
+	public synthetic fun <init> (ILjava/lang/String;Ljava/util/List;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun flatten ()Lkotlin/sequences/Sequence;
+	public final fun getColumnSpan ()Ljava/lang/Integer;
+	public final fun getColumnWidth ()Ljava/util/List;
+	public fun getContent ()Ljava/util/List;
+	public final fun getRowSpan ()Ljava/lang/Integer;
+	public static final synthetic fun write$Self (Lcom/storyblok/cdn/schema/RichText$TableElement;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class com/storyblok/cdn/schema/RichText$TableElement$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$TableHeader : com/storyblok/cdn/schema/RichText$TableElement {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$TableHeader$Companion;
+	public fun <init> ()V
+	public synthetic fun getAttributes$content_api_client ()Lcom/storyblok/cdn/schema/RichText$TableElement$Attributes;
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$TableHeader$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$TableHeader$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$TableHeader;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$TableHeader;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$TableHeader$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$TableRow : com/storyblok/cdn/schema/RichText, com/storyblok/cdn/schema/RichText$Composite {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$TableRow$Companion;
+	public fun flatten ()Lkotlin/sequences/Sequence;
+	public fun getContent ()Ljava/util/List;
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$TableRow$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$TableRow$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$TableRow;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$TableRow;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$TableRow$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Text : com/storyblok/cdn/schema/RichText {
+	public static final field Companion Lcom/storyblok/cdn/schema/RichText$Text$Companion;
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Ljava/util/List;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getMarks ()Ljava/util/List;
+	public final fun getText ()Ljava/lang/String;
+}
+
+public final synthetic class com/storyblok/cdn/schema/RichText$Text$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/RichText$Text$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/RichText$Text;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/RichText$Text;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$Text$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/RichText$TextAlign : java/lang/Enum {
+	public static final field Center Lcom/storyblok/cdn/schema/RichText$TextAlign;
+	public static final field Left Lcom/storyblok/cdn/schema/RichText$TextAlign;
+	public static final field Right Lcom/storyblok/cdn/schema/RichText$TextAlign;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/storyblok/cdn/schema/RichText$TextAlign;
+	public static fun values ()[Lcom/storyblok/cdn/schema/RichText$TextAlign;
+}
+
+public final class com/storyblok/cdn/schema/Story {
+	public static final field Companion Lcom/storyblok/cdn/schema/Story$Companion;
+	public fun <init> (JLkotlin/uuid/Uuid;Ljava/lang/String;Lcom/storyblok/cdn/schema/Component;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/util/List;ZLjava/lang/Long;Ljava/util/List;Lkotlin/uuid/Uuid;Lkotlin/uuid/Uuid;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/util/List;)V
+	public synthetic fun <init> (JLkotlin/uuid/Uuid;Ljava/lang/String;Lcom/storyblok/cdn/schema/Component;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/util/List;ZLjava/lang/Long;Ljava/util/List;Lkotlin/uuid/Uuid;Lkotlin/uuid/Uuid;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()J
+	public final fun component10 ()Ljava/lang/String;
+	public final fun component11 ()Ljava/lang/String;
+	public final fun component12 ()I
+	public final fun component13 ()Ljava/util/List;
+	public final fun component14 ()Z
+	public final fun component15 ()Ljava/lang/Long;
+	public final fun component16 ()Ljava/util/List;
+	public final fun component17 ()Lkotlin/uuid/Uuid;
+	public final fun component18 ()Lkotlin/uuid/Uuid;
+	public final fun component19 ()Ljava/lang/String;
+	public final fun component2 ()Lkotlin/uuid/Uuid;
+	public final fun component20 ()Ljava/lang/String;
+	public final fun component21 ()Ljava/util/List;
+	public final fun component22 ()Ljava/lang/String;
+	public final fun component23 ()Ljava/util/List;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Lcom/storyblok/cdn/schema/Component;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun component7 ()Ljava/lang/String;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun component9 ()Ljava/lang/String;
+	public final fun copy (JLkotlin/uuid/Uuid;Ljava/lang/String;Lcom/storyblok/cdn/schema/Component;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/util/List;ZLjava/lang/Long;Ljava/util/List;Lkotlin/uuid/Uuid;Lkotlin/uuid/Uuid;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/util/List;)Lcom/storyblok/cdn/schema/Story;
+	public static synthetic fun copy$default (Lcom/storyblok/cdn/schema/Story;JLkotlin/uuid/Uuid;Ljava/lang/String;Lcom/storyblok/cdn/schema/Component;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/util/List;ZLjava/lang/Long;Ljava/util/List;Lkotlin/uuid/Uuid;Lkotlin/uuid/Uuid;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lcom/storyblok/cdn/schema/Story;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAlternates ()Ljava/util/List;
+	public final fun getContent ()Lcom/storyblok/cdn/schema/Component;
+	public final fun getCreatedAt ()Ljava/lang/String;
+	public final fun getDefaultFullSlug ()Ljava/lang/String;
+	public final fun getFirstPublishedAt ()Ljava/lang/String;
+	public final fun getFullSlug ()Ljava/lang/String;
+	public final fun getGroupId ()Lkotlin/uuid/Uuid;
+	public final fun getId ()J
+	public final fun getLanguage ()Ljava/lang/String;
+	public final fun getMetadata ()Ljava/util/List;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getParentId ()Ljava/lang/Long;
+	public final fun getPath ()Ljava/lang/String;
+	public final fun getPosition ()I
+	public final fun getPublishedAt ()Ljava/lang/String;
+	public final fun getReleaseId ()Lkotlin/uuid/Uuid;
+	public final fun getSlug ()Ljava/lang/String;
+	public final fun getSortByDate ()Ljava/lang/String;
+	public final fun getTagList ()Ljava/util/List;
+	public final fun getTranslatedSlugs ()Ljava/util/List;
+	public final fun getUpdatedAt ()Ljava/lang/String;
+	public final fun getUuid ()Lkotlin/uuid/Uuid;
+	public fun hashCode ()I
+	public final fun isStartPage ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class com/storyblok/cdn/schema/Story$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public fun <init> (Lkotlinx/serialization/KSerializer;)V
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/Story;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/Story;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/Story$Companion {
+	public final fun serializer (Lkotlinx/serialization/KSerializer;)Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/serializers/StoryblokDateTimeSerializer : kotlinx/datetime/serializers/FormattedLocalDateTimeSerializer {
+	public static final field INSTANCE Lcom/storyblok/serializers/StoryblokDateTimeSerializer;
+}
+
