@@ -74,7 +74,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            api(project(":ktor-client-plugin"))
+            api(project(":ktor-client-storyblok"))
             api(libs.kotlinx.serialization.json)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
@@ -108,10 +108,10 @@ tasks.withType<KotlinNativeSimulatorTest>().configureEach {
 mavenPublishing {
     publishToMavenCentral()
     signAllPublications()
-    coordinates("com.storyblok", "storyblok-content-api", libs.versions.storyblok.kotlin.get())
+    coordinates("com.storyblok", "content-api-client", libs.versions.storyblok.kotlin.get())
 
     pom {
-        name = "storyblok-content-api"
+        name = "content-api-client"
         description = "A client for Storyblok's Content Delivery API"
         inceptionYear = "2026"
         url = "https://github.com/storyblok/storyblok-kotlin"
