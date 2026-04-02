@@ -1,0 +1,9 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, macosArm64, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <storyblok-kotlin:storyblok-material3>
+final fun com.storyblok.compose.provider/blokProvider(kotlin/Function4<com.storyblok.cdn.schema/Component, androidx.compose.ui/Modifier, androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit> = ..., kotlin/Function2<kotlin.uuid/Uuid, kotlin/String?, kotlin/Unit> = ..., kotlin/Function1<com.storyblok.compose.provider/BlokProviderScope, kotlin/Unit>): com.storyblok.compose.provider/BlokProvider // com.storyblok.compose.provider/blokProvider|blokProvider(kotlin.Function4<com.storyblok.cdn.schema.Component,androidx.compose.ui.Modifier,androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>;kotlin.Function2<kotlin.uuid.Uuid,kotlin.String?,kotlin.Unit>;kotlin.Function1<com.storyblok.compose.provider.BlokProviderScope,kotlin.Unit>){}[0]

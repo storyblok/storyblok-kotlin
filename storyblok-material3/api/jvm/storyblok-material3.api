@@ -1,0 +1,16 @@
+public final class com/storyblok/compose/provider/ComposableSingletons$RichTextBlokProviderKt {
+	public static final field INSTANCE Lcom/storyblok/compose/provider/ComposableSingletons$RichTextBlokProviderKt;
+	public fun <init> ()V
+	public final fun getLambda$-295639331$storyblok_material3 ()Lkotlin/jvm/functions/Function4;
+	public final fun getLambda$-963163738$storyblok_material3 ()Lkotlin/jvm/functions/Function4;
+	public final fun getLambda$1890065993$storyblok_material3 ()Lkotlin/jvm/functions/Function4;
+	public final fun getLambda$1925816842$storyblok_material3 ()Lkotlin/jvm/functions/Function4;
+	public final fun getLambda$199812071$storyblok_material3 ()Lkotlin/jvm/functions/Function4;
+	public final fun getLambda$2051683923$storyblok_material3 ()Lkotlin/jvm/functions/Function4;
+}
+
+public final class com/storyblok/compose/provider/RichTextBlokProviderKt {
+	public static final fun blokProvider (Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;)Lcom/storyblok/compose/provider/BlokProvider;
+	public static synthetic fun blokProvider$default (Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/storyblok/compose/provider/BlokProvider;
+}
+
