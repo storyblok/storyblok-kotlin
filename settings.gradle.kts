@@ -21,7 +21,7 @@ rootProject.name = "storyblok-kotlin"
 include(
     ":ktor-client-storyblok",
     ":content-api-client",
-    ":richtext-provider",
-    ":compose-sdk",
+    ":storyblok-compose",
+    ":storyblok-material3",
     ":examples"
 )
