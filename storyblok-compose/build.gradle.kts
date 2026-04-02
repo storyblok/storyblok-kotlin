@@ -37,7 +37,7 @@ kotlin {
         nodejs()
     }
     androidLibrary {
-        namespace = "com.storyblok.composeSdk"
+        namespace = "com.storyblok.compose"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
         withHostTest {}
@@ -93,10 +93,10 @@ tasks.withType<KotlinNativeSimulatorTest>().configureEach {
 mavenPublishing {
     publishToMavenCentral()
     signAllPublications()
-    coordinates("com.storyblok", "compose-sdk", libs.versions.storyblok.kotlin.get())
+    coordinates("com.storyblok", "storyblok-compose", libs.versions.storyblok.kotlin.get())
 
     pom {
-        name = "compose-sdk"
+        name = "storyblok-compose"
         description = "An SDK to integrate Storyblok with Compose"
         inceptionYear = "2026"
         url = "https://github.com/storyblok/storyblok-kotlin"
