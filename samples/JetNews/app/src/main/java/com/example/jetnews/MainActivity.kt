@@ -23,19 +23,20 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
 import com.example.jetnews.model.Header
 import com.example.jetnews.model.HighlightedPost
 import com.example.jetnews.model.Metadata
@@ -70,7 +71,7 @@ class MainActivity : ComponentActivity() {
             JetNewsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
-                    val backStack = remember { mutableStateListOf<Any>() }
+                    val backStack = rememberNavBackStack(HomeKey)
                     var favorites by remember { mutableStateOf(emptySet<String>()) }
 
                     Storyblok(
@@ -184,6 +185,38 @@ class MainActivity : ComponentActivity() {
                         }
                     ) {
 
+                        NavDisplay(
+                            backStack,
+                            Modifier.padding(innerPadding),
+                            entryProvider = entryProvider {
+                                entry<StoryKey> { key ->
+
+                                    var isRefreshing: Boolean by remember { mutableStateOf(true) }
+
+                                    val story by
+                                        remember {
+                                            snapshotFlow { isRefreshing }
+                                                .filter { it }
+                                                .flatMapLatest {
+                                                    val story = when(key.uuid) {
+                                                        null -> story(slug = key.slug!!)
+                                                        else -> story(uuid = key.uuid)
+                                                    }
+                                                    story.onCompletion { isRefreshing = false }
+                                                }
+                                        }
+                                        .collectAsStateWithLifecycle(key.story)
+
+                                    PullToRefreshBox(
+                                        isRefreshing = isRefreshing,
+                                        onRefresh = { isRefreshing = true },
+                                        modifier = Modifier.fillMaxSize()
+                                    ) {
+                                        Blok(story?.content ?: return@PullToRefreshBox)
+                                    }
+                                }
+                            }
+                        )
                     }
                 }
             }

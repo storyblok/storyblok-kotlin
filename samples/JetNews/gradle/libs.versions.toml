@@ -10,6 +10,7 @@ activityCompose = "1.13.0"
 kotlin = "2.2.10"
 composeBom = "2024.09.00"
 kotlin-datetime = "0.7.1"
+nav3Core = "1.0.1"
 coil = "3.4.0"
 
 [libraries]
@@ -32,6 +33,8 @@ storyblok-material3-android = { group = "com.storyblok", name = "storyblok-mater
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlin-datetime" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-network-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
+androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "nav3Core" }
+androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "nav3Core" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
