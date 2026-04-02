@@ -5,14 +5,14 @@ on:
     branches: [ "main" ]
     paths:
       - '*gradle**'
-      - 'ktor-client-plugin/**'
-      - '.github/workflows/ktor-client-plugin.yml'
+      - 'ktor-client-storyblok/**'
+      - '.github/workflows/ktor-client-storyblok.yml'
   pull_request:
     branches: [ "main" ]
     paths:
       - '*gradle**'
-      - 'ktor-client-plugin/**'
-      - '.github/workflows/ktor-client-plugin.yml'
+      - 'ktor-client-storyblok/**'
+      - '.github/workflows/ktor-client-storyblok.yml'
   workflow_call:
 concurrency:
   # Limit concurrency to 1 for PRs. 'main' concurrency isn't limited.
@@ -27,25 +27,25 @@ jobs:
     strategy:
       matrix:
         include:
-          - target: :ktor-client-plugin:jvmTest
+          - target: :ktor-client-storyblok:jvmTest
             os: ubuntu-latest
-          - target: :ktor-client-plugin:linuxX64Test
+          - target: :ktor-client-storyblok:linuxX64Test
             os: ubuntu-latest
-          - target: :ktor-client-plugin:testAndroidHostTest
+          - target: :ktor-client-storyblok:testAndroidHostTest
             os: ubuntu-latest
-          - target: :ktor-client-plugin:jsTest
+          - target: :ktor-client-storyblok:jsTest
             os: ubuntu-latest
-          - target: :ktor-client-plugin:wasmJsTest
+          - target: :ktor-client-storyblok:wasmJsTest
             os: ubuntu-latest
-          - target: :ktor-client-plugin:mingwX64Test
+          - target: :ktor-client-storyblok:mingwX64Test
             os: windows-latest
-          - target: :ktor-client-plugin:macosArm64Test
+          - target: :ktor-client-storyblok:macosArm64Test
             os: macos-latest
-          - target: :ktor-client-plugin:iosSimulatorArm64Test
+          - target: :ktor-client-storyblok:iosSimulatorArm64Test
             os: macos-latest
-          - target: :ktor-client-plugin:tvosSimulatorArm64Test
+          - target: :ktor-client-storyblok:tvosSimulatorArm64Test
             os: macos-latest
-          - target: :ktor-client-plugin:watchosSimulatorArm64Test
+          - target: :ktor-client-storyblok:watchosSimulatorArm64Test
             os: macos-latest
     runs-on: ${{ matrix.os }}
 

@@ -56,18 +56,18 @@ val response = client.get("stories") {
 # Plugin Guide
 ## Installation
 
-To install the plugin invoke [`Storyblok(api: Api)`](https://storyblok.github.io/storyblok-kotlin/ktor-client-plugin/com.storyblok.ktor/-storyblok.html) and pass it to the [`install`](https://api.ktor.io/ktor-client-core/io.ktor.client/-http-client-config/install.html) function inside your [client configuration block](https://ktor.io/docs/client-create-and-configure.html#configure-client).
-The [`Api`](https://storyblok.github.io/storyblok-kotlin/ktor-client-plugin/com.storyblok.ktor/-api/index.html) argument [configures](#client-configuration) the `HttpClient` for calling either the [Content Delivery API](https://www.storyblok.com/docs/api/content-delivery/v2) ([`Api.CDN`](https://storyblok.github.io/storyblok-kotlin/ktor-client-plugin/com.storyblok.ktor/-api/-c-d-n/index.html)) or the [Management API](https://www.storyblok.com/docs/api/management) ([`Api.MAPI`](https://storyblok.github.io/storyblok-kotlin/ktor-client-plugin/com.storyblok.ktor/-api/-m-a-p-i/index.html)). 
+To install the plugin invoke [`Storyblok(api: Api)`](https://storyblok.github.io/storyblok-kotlin/ktor-client-storyblok/com.storyblok.ktor/-storyblok.html) and pass it to the [`install`](https://api.ktor.io/ktor-client-core/io.ktor.client/-http-client-config/install.html) function inside your [client configuration block](https://ktor.io/docs/client-create-and-configure.html#configure-client).
+The [`Api`](https://storyblok.github.io/storyblok-kotlin/ktor-client-storyblok/com.storyblok.ktor/-api/index.html) argument [configures](#client-configuration) the `HttpClient` for calling either the [Content Delivery API](https://www.storyblok.com/docs/api/content-delivery/v2) ([`Api.CDN`](https://storyblok.github.io/storyblok-kotlin/ktor-client-storyblok/com.storyblok.ktor/-api/-c-d-n/index.html)) or the [Management API](https://www.storyblok.com/docs/api/management) ([`Api.MAPI`](https://storyblok.github.io/storyblok-kotlin/ktor-client-storyblok/com.storyblok.ktor/-api/-m-a-p-i/index.html)). 
 > [!NOTE]
 > Only a single Storyblok plugin can be installed in any one `HttpClient` instance.
 
 ## Plugin configuration
 
-The [`install`](https://api.ktor.io/ktor-client-core/io.ktor.client/-http-client-config/install.html) function also takes the [plugin configuration block](https://storyblok.github.io/storyblok-kotlin/ktor-client-plugin/com.storyblok.ktor/-api/-config/index.html) as the second argument, in the block you can customize the plugin configuration further:
+The [`install`](https://api.ktor.io/ktor-client-core/io.ktor.client/-http-client-config/install.html) function also takes the [plugin configuration block](https://storyblok.github.io/storyblok-kotlin/ktor-client-storyblok/com.storyblok.ktor/-api/-config/index.html) as the second argument, in the block you can customize the plugin configuration further:
 
 ### Authentication
 
-As API requests must be authenticated, you'll need to provide an access token in the configuration block. The Content Delivery API requires a read-only access token, whilst the Management API requires either an [OAuth](https://storyblok.github.io/storyblok-kotlin/ktor-client-plugin/com.storyblok.ktor/-api/-config/-management/-access-token/-o-auth/index.html) or [personal](https://storyblok.github.io/storyblok-kotlin/ktor-client-plugin/com.storyblok.ktor/-api/-config/-management/-access-token/-personal/index.html) access token. You can learn more about authentication in the [Access Tokens concept](https://www.storyblok.com/docs/concepts/access-tokens).
+As API requests must be authenticated, you'll need to provide an access token in the configuration block. The Content Delivery API requires a read-only access token, whilst the Management API requires either an [OAuth](https://storyblok.github.io/storyblok-kotlin/ktor-client-storyblok/com.storyblok.ktor/-api/-config/-management/-access-token/-o-auth/index.html) or [personal](https://storyblok.github.io/storyblok-kotlin/ktor-client-storyblok/com.storyblok.ktor/-api/-config/-management/-access-token/-personal/index.html) access token. You can learn more about authentication in the [Access Tokens concept](https://www.storyblok.com/docs/concepts/access-tokens).
 
 #### Content Delivery API
 
@@ -91,7 +91,7 @@ val client = HttpClient {
 ```
 ### Specifying a region
 
-By default, the plugin uses the [EU](https://storyblok.github.io/storyblok-kotlin/ktor-client-plugin/com.storyblok.ktor/-api/-config/-region/-e-u/index.html) region, if your space is located in a [different region](https://storyblok.github.io/storyblok-kotlin/ktor-client-plugin/com.storyblok.ktor/-api/-config/-region/index.html) you can set it in the configuration block:
+By default, the plugin uses the [EU](https://storyblok.github.io/storyblok-kotlin/ktor-client-storyblok/com.storyblok.ktor/-api/-config/-region/-e-u/index.html) region, if your space is located in a [different region](https://storyblok.github.io/storyblok-kotlin/ktor-client-storyblok/com.storyblok.ktor/-api/-config/-region/index.html) you can set it in the configuration block:
 
 ```kotlin
 val client = HttpClient {
@@ -103,7 +103,7 @@ val client = HttpClient {
 ```
 #### Custom region
 
-You can also specify a [custom region](https://storyblok.github.io/storyblok-kotlin/ktor-client-plugin/com.storyblok.ktor/-api/-config/-region/-custom/index.html) by providing a custom base URL:
+You can also specify a [custom region](https://storyblok.github.io/storyblok-kotlin/ktor-client-storyblok/com.storyblok.ktor/-api/-config/-region/-custom/index.html) by providing a custom base URL:
 
 ```kotlin
 val client = HttpClient {
@@ -117,7 +117,7 @@ val client = HttpClient {
 
 The Content Delivery and Management APIs have different rate limits depending on the [type of request](https://www.storyblok.com/docs/api/content-delivery/v2/getting-started/rate-limit) and your [pricing plan](https://www.storyblok.com/pricing/technical-limits), these are expressed in requests per second.
 
-The plugin implements *API throttling* to slow down the API requests by introducing intermediate delays. You can specify the [maximum number of requests per second allowed](https://storyblok.github.io/storyblok-kotlin/ktor-client-plugin/com.storyblok.ktor/-api/-config/requests-per-second.html) in the configuration block:
+The plugin implements *API throttling* to slow down the API requests by introducing intermediate delays. You can specify the [maximum number of requests per second allowed](https://storyblok.github.io/storyblok-kotlin/ktor-client-storyblok/com.storyblok.ktor/-api/-config/requests-per-second.html) in the configuration block:
 
 ```kotlin
 val client = HttpClient {
@@ -128,7 +128,7 @@ val client = HttpClient {
 ```
 
 > [!NOTE] 
-> The value of [`requestsPerSecond`](https://storyblok.github.io/storyblok-kotlin/ktor-client-plugin/com.storyblok.ktor/-api/-config/requests-per-second.html) defaults to `1000` for the Content Delivery API and `6` for the Management API.
+> The value of [`requestsPerSecond`](https://storyblok.github.io/storyblok-kotlin/ktor-client-storyblok/com.storyblok.ktor/-api/-config/requests-per-second.html) defaults to `1000` for the Content Delivery API and `6` for the Management API.
 
 > [!TIP]
 > As the rate limit can differ on the type of request, and you can only configure `requestsPerSecond` per `HttpClient` instance, use [HttpClient.config](https://api.ktor.io/ktor-client-core/io.ktor.client/-http-client/config.html) to clone your client when you need to make requests with a different rate limit: 
@@ -149,7 +149,7 @@ The plugin also implements a [retry mechanism](#retrying-failed-requests) along 
 > [!IMPORTANT]
 > Default parameters are only available for the Content Delivery API.
 
-You can optionally [configure](https://storyblok.github.io/storyblok-kotlin/ktor-client-plugin/com.storyblok.ktor/-api/-config/-content/index.html) default parameters that are applied to all requests:
+You can optionally [configure](https://storyblok.github.io/storyblok-kotlin/ktor-client-storyblok/com.storyblok.ktor/-api/-config/-content/index.html) default parameters that are applied to all requests:
 
 ```kotlin
 val client = HttpClient {
@@ -249,4 +249,4 @@ println("Story ${response.body<Body>().story.name} created")
 
 ## Other resources
 
-You can find the full plugin reference at https://storyblok.github.io/storyblok-kotlin/ktor-client-plugin/index.html
+You can find the full plugin reference at https://storyblok.github.io/storyblok-kotlin/ktor-client-storyblok/index.html

@@ -63,7 +63,7 @@ kotlin {
     sourceSets {
 
         commonTest.dependencies {
-            implementation(project(":ktor-client-plugin"))
+            implementation(project(":ktor-client-storyblok"))
             implementation(libs.kotlin.test)
             implementation(libs.kotlinx.coroutines.test)
         }

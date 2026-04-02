@@ -4,7 +4,7 @@ public abstract class com/storyblok/ktor/Api {
 
 public final class com/storyblok/ktor/Api$CDN : com/storyblok/ktor/Api {
 	public static final field INSTANCE Lcom/storyblok/ktor/Api$CDN;
-	public synthetic fun configure$ktor_client_plugin (Lio/ktor/client/plugins/api/ClientPluginBuilder;Lcom/storyblok/ktor/Api$Config;)V
+	public synthetic fun configure$ktor_client_storyblok (Lio/ktor/client/plugins/api/ClientPluginBuilder;Lcom/storyblok/ktor/Api$Config;)V
 }
 
 public abstract class com/storyblok/ktor/Api$Config {

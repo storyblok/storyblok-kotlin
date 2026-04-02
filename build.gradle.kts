@@ -6,7 +6,7 @@ plugins {
 }
 
 dependencies {
-    dokka(project(":ktor-client-plugin"))
+    dokka(project(":ktor-client-storyblok"))
 }
 
 dokka {

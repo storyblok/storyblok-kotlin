@@ -47,4 +47,4 @@ println(response.body<JsonElement>())
 
 ## Other resources
 
-You can find the full guide to the Storyblok Ktor Client Plugin inside [README.md](https://github.com/storyblok/storyblok-kotlin/tree/main/ktor-client-plugin#plugin-guide).
+You can find the full guide to the Storyblok Ktor Client Plugin inside [README.md](https://github.com/storyblok/storyblok-kotlin/tree/main/ktor-client-storyblok#plugin-guide).
