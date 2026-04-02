@@ -10,7 +10,7 @@ With out-of-the-box support for authentication, regions, cache invalidation, err
 
 ```kotlin
 dependencies {
-    implementation("com.storyblok:ktor-client-storyblok:0.1.0")
+    implementation("com.storyblok:ktor-client-storyblok:0.2.0")
 }
 ```
 #### Then create a HttpClient, install the plugin, and start making requests to the Content Delivery API:

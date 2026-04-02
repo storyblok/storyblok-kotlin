@@ -23,7 +23,7 @@ dokka {
             customAssets.from("images/logo-icon.svg")
         }
         versioning {
-            version.set("0.1.0")
+            version.set(libs.versions.android.compileSdk.get())
 //            olderVersionsDir.set(projectDir.resolve("dokka-docs"))
         }
     }

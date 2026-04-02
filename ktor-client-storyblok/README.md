@@ -12,7 +12,7 @@ The Storyblok plugin requires adding the `ktor-client-storyblok` artifact in you
 
 ```kotlin
 dependencies {
-    implementation("com.storyblok:ktor-client-storyblok:0.1.0")
+    implementation("com.storyblok:ktor-client-storyblok:0.2.0")
 }
 ```
 
@@ -20,7 +20,7 @@ dependencies {
 > The plugin ships with the Ktor CIO engine (`io.ktor:ktor-client-cio`) as a dependency so it works out of the box with JVM and Android. If you want to use a different engine, you can exclude CIO in your `build.gradle.kts`:
 > ```kotlin
 > dependencies {
->     implementation("com.storyblok:ktor-client-storyblok:0.1.0") {
+>     implementation("com.storyblok:ktor-client-storyblok:0.2.0") {
 >         exclude(group = "io.ktor", module = "ktor-client-cio")
 >     }
 > }

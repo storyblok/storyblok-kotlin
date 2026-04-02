@@ -91,7 +91,7 @@ tasks.withType<KotlinNativeSimulatorTest>().configureEach {
 
 mavenPublishing {
     publishToMavenCentral()
-    signAllPublications()
+    //signAllPublications()
     coordinates("com.storyblok", "storyblok-compose", libs.versions.storyblok.kotlin.get())
 
     pom {
