@@ -1,0 +1,58 @@
+public abstract interface class com/storyblok/compose/BlokScope {
+	public abstract fun Blok (Lcom/storyblok/cdn/schema/Component;Landroidx/compose/ui/Modifier;Landroidx/compose/runtime/Composer;I)V
+	public abstract fun RichText (Landroidx/compose/ui/text/AnnotatedString$Builder;Lcom/storyblok/cdn/schema/RichText;Landroidx/compose/runtime/Composer;I)V
+	public abstract fun RichText (Lcom/storyblok/cdn/schema/RichText;Landroidx/compose/ui/Modifier;Landroidx/compose/runtime/Composer;I)V
+}
+
+public final class com/storyblok/compose/BlokScope$ComposeDefaultImpls {
+	public static final fun Blok$default (Lcom/storyblok/cdn/schema/Component;Landroidx/compose/ui/Modifier;Lcom/storyblok/compose/BlokScope;Landroidx/compose/runtime/Composer;II)V
+	public static final fun RichText$default (Lcom/storyblok/cdn/schema/RichText;Landroidx/compose/ui/Modifier;Lcom/storyblok/compose/BlokScope;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/storyblok/compose/StoryblokKt {
+	public static final fun Storyblok (Ljava/lang/String;Lcom/storyblok/ktor/Api$Config$Version;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/storyblok/compose/provider/BlokProvider;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/storyblok/compose/StoryblokScope : com/storyblok/cdn/StoryblokClient, com/storyblok/compose/BlokScope {
+	public static final field $stable I
+	public fun <init> (Lcom/storyblok/cdn/StoryblokClient;Lcom/storyblok/compose/BlokScope;)V
+	public fun Blok (Lcom/storyblok/cdn/schema/Component;Landroidx/compose/ui/Modifier;Landroidx/compose/runtime/Composer;I)V
+	public fun RichText (Landroidx/compose/ui/text/AnnotatedString$Builder;Lcom/storyblok/cdn/schema/RichText;Landroidx/compose/runtime/Composer;I)V
+	public fun RichText (Lcom/storyblok/cdn/schema/RichText;Landroidx/compose/ui/Modifier;Landroidx/compose/runtime/Composer;I)V
+	public fun close ()V
+	public final fun getClient ()Lcom/storyblok/cdn/StoryblokClient;
+	public fun story (Ljava/lang/String;)Lkotlinx/coroutines/flow/Flow;
+	public fun story (Ljava/lang/String;Lio/ktor/util/reflect/TypeInfo;)Lkotlinx/coroutines/flow/Flow;
+	public fun story (Lkotlin/uuid/Uuid;)Lkotlinx/coroutines/flow/Flow;
+	public fun story (Lkotlin/uuid/Uuid;Lio/ktor/util/reflect/TypeInfo;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class com/storyblok/compose/provider/BlokProvider {
+	public static final field $stable I
+	public final fun getSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
+}
+
+public final class com/storyblok/compose/provider/BlokProviderKt {
+	public static final fun blokProviderWithoutRichText (Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function1;)Lcom/storyblok/compose/provider/BlokProvider;
+	public static synthetic fun blokProviderWithoutRichText$default (Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/storyblok/compose/provider/BlokProvider;
+}
+
+public final class com/storyblok/compose/provider/BlokProviderScope : com/storyblok/compose/BlokScope {
+	public static final field $stable I
+	public fun Blok (Lcom/storyblok/cdn/schema/Component;Landroidx/compose/ui/Modifier;Landroidx/compose/runtime/Composer;I)V
+	public fun RichText (Landroidx/compose/ui/text/AnnotatedString$Builder;Lcom/storyblok/cdn/schema/RichText;Landroidx/compose/runtime/Composer;I)V
+	public fun RichText (Lcom/storyblok/cdn/schema/RichText;Landroidx/compose/ui/Modifier;Landroidx/compose/runtime/Composer;I)V
+	public final fun blok (Lkotlin/reflect/KClass;Lkotlinx/serialization/KSerializer;)V
+	public final fun blok (Lkotlin/reflect/KClass;Lkotlinx/serialization/KSerializer;Lkotlin/jvm/functions/Function4;)V
+	public final fun defaultRichText (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function4;)V
+	public final fun defaultRichTextWithinAnnotatedStringBuilder (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function4;)V
+	public final fun richText (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function4;)V
+	public final fun richTextWithinAnnotatedStringBuilder (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function4;)V
+}
+
+public final class com/storyblok/compose/provider/ComposableSingletons$BlokProviderKt {
+	public static final field INSTANCE Lcom/storyblok/compose/provider/ComposableSingletons$BlokProviderKt;
+	public fun <init> ()V
+	public final fun getLambda$1092333645$storyblok_compose ()Lkotlin/jvm/functions/Function4;
+}
+
