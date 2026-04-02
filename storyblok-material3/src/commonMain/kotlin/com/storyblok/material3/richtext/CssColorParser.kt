@@ -1,4 +1,4 @@
-package com.storyblok.compose.provider
+package com.storyblok.material3.richtext
 
 import androidx.compose.ui.graphics.Color
 import kotlin.math.roundToInt

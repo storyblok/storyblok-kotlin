@@ -65,7 +65,7 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor3)
             implementation(libs.coil.svg)
-            api(project(":compose-sdk"))
+            api(project(":storyblok-compose"))
         }
 
         commonTest.dependencies {
@@ -92,10 +92,10 @@ tasks.withType<KotlinNativeSimulatorTest>().configureEach {
 mavenPublishing {
     publishToMavenCentral()
     signAllPublications()
-    coordinates("com.storyblok", "richtext-provider", libs.versions.storyblok.kotlin.get())
+    coordinates("com.storyblok", "storyblok-material3", libs.versions.storyblok.kotlin.get())
 
     pom {
-        name = "richtext-provider"
+        name = "storyblok-material3"
         description = "The default Storyblok rich text provider"
         inceptionYear = "2026"
         url = "https://github.com/storyblok/storyblok-kotlin"
