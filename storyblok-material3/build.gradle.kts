@@ -18,8 +18,8 @@ dokka {
     dokkaSourceSets.configureEach {
 //        includes.from("Module.md")
         sourceLink {
-            localDirectory.set(file("src/main/kotlin"))
-            remoteUrl("https://github.com/storyblok/storyblok-kotlin/richtext-provider/")
+            localDirectory.set(file("src/commmonnMain/kotlin"))
+            remoteUrl("https://github.com/storyblok/storyblok-kotlin/blob/main/storyblok-material3/")
             remoteLineSuffix.set("#L")
         }
     }
