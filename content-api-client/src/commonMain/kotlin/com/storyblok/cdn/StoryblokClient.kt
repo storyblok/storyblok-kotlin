@@ -63,10 +63,10 @@ public open class StoryblokClientException(message: String?, cause: Throwable?) 
     public constructor(cause: Throwable?) : this(null, cause)
 }
 
-public class RelationLimitExceededException(
-    public val story: Story<Component>,
-    public val uuids: List<String>
-) : StoryblokClientException("A maximum of 50 stories can be resolved.")
+//public class RelationLimitExceededException(
+//    public val story: Story<Component>,
+//    public val uuids: List<String>
+//) : StoryblokClientException("A maximum of 50 stories can be resolved.")
 
 public inline fun <reified T : Component> StoryblokClient.story(slug: String): Flow<Story<T>> =
     story(slug, typeInfo<Story<T>>())
@@ -88,7 +88,7 @@ public interface StoryblokClient {
             apiBuilder: Api.Config.Content.() -> Unit,
             serializersModuleBuilder: SerializersModuleBuilder.() -> Unit,
             jsonBuilder: JsonBuilder.() -> Unit,
-        ): StoryblokClient = Impl(apiBuilder, serializersModuleBuilder, jsonBuilder)
+        ): StoryblokClient = StoryblokClientImpl(apiBuilder, serializersModuleBuilder, jsonBuilder)
 
         public operator fun invoke(
             lenientJsonParsing: Boolean = false,
@@ -123,90 +123,90 @@ public interface StoryblokClient {
             }
         )
     }
+}
+internal class StoryblokClientImpl constructor(
+    apiBuilder: Api.Config.Content.() -> Unit,
+    serializersModuleBuilder: SerializersModuleBuilder.() -> Unit,
+    jsonBuilder: JsonBuilder.() -> Unit,
+) : StoryblokClient {
 
-    private class Impl constructor(
-        apiBuilder: Api.Config.Content.() -> Unit,
-        serializersModuleBuilder: SerializersModuleBuilder.() -> Unit,
-        jsonBuilder: JsonBuilder.() -> Unit,
-    ) : StoryblokClient {
-
-        private val json = Json {
-            isLenient = true
-            decodeEnumsCaseInsensitive = true
-            classDiscriminator = "component"
-            serializersModule = SerializersModule {
-                polymorphic(Component::class) {
-                    defaultDeserializer { serializer<Component.Unknown>() }
-                }
-                serializersModuleBuilder()
+    private val json = Json {
+        isLenient = true
+        decodeEnumsCaseInsensitive = true
+        classDiscriminator = "component"
+        serializersModule = SerializersModule {
+            polymorphic(Component::class) {
+                defaultDeserializer { serializer<Component.Unknown>() }
             }
-            jsonBuilder()
+            serializersModuleBuilder()
+        }
+        jsonBuilder()
+    }
+
+    val relations: Map<String, Set<String>> =
+        buildMap {
+            json.serializersModule.dumpTo(object : SerializersModuleCollector {
+                override fun <T : Any> contextual(kClass: KClass<T>, provider: (typeArgumentsSerializers: List<KSerializer<*>>) -> KSerializer<*>) = Unit
+                override fun <Base : Any> polymorphicDefaultSerializer(baseClass: KClass<Base>, defaultSerializerProvider: (value: Base) -> SerializationStrategy<Base>?) = Unit
+                override fun <Base : Any> polymorphicDefaultDeserializer(baseClass: KClass<Base>, defaultDeserializerProvider: (className: String?) -> DeserializationStrategy<Base>?) = Unit
+
+                override fun <Base : Any, Sub : Base> polymorphic(
+                    baseClass: KClass<Base>,
+                    actualClass: KClass<Sub>,
+                    actualSerializer: KSerializer<Sub>
+                ): Unit = with(actualSerializer.descriptor) {
+                    elementNames
+                        .filterIndexed { index, _ ->
+                            generateSequence(getElementDescriptor(index)) { it.elementDescriptors.singleOrNull() }
+                                .any { "com.storyblok.cdn.schema.Story" in it.serialName }
+                        }
+                        .let { put(serialName, it.ifEmpty { return@let }.toSet())}
+                }
+            })
         }
 
-        val relations: Map<String, Set<String>> =
-            buildMap {
-                json.serializersModule.dumpTo(object : SerializersModuleCollector {
-                    override fun <T : Any> contextual(kClass: KClass<T>, provider: (typeArgumentsSerializers: List<KSerializer<*>>) -> KSerializer<*>) = Unit
-                    override fun <Base : Any> polymorphicDefaultSerializer(baseClass: KClass<Base>, defaultSerializerProvider: (value: Base) -> SerializationStrategy<Base>?) = Unit
-                    override fun <Base : Any> polymorphicDefaultDeserializer(baseClass: KClass<Base>, defaultDeserializerProvider: (className: String?) -> DeserializationStrategy<Base>?) = Unit
+    private val ktor = HttpClient {
+        install(ContentNegotiation) { json(json) }
+        install(Storyblok(Api.CDN), apiBuilder)
+    }
 
-                    override fun <Base : Any, Sub : Base> polymorphic(
-                        baseClass: KClass<Base>,
-                        actualClass: KClass<Sub>,
-                        actualSerializer: KSerializer<Sub>
-                    ): Unit = with(actualSerializer.descriptor) {
-                        elementNames
-                            .filterIndexed { index, _ ->
-                                generateSequence(getElementDescriptor(index)) { it.elementDescriptors.singleOrNull() }
-                                    .any { "com.storyblok.cdn.schema.Story" in it.serialName }
-                            }
-                            .let { put(serialName, it.ifEmpty { return@let }.toSet())}
-                    }
-                })
-            }
+    override fun close(): Unit = ktor.close()
 
-        private val ktor = HttpClient {
-            install(ContentNegotiation) { json(json) }
-            install(Storyblok(Api.CDN), apiBuilder)
-        }
+    override fun story(slug: String): Flow<Story<Component>> =
+        story(slug, typeInfo<Story<Component>>())
 
-        override fun close(): Unit = ktor.close()
+    override fun story(uuid: Uuid): Flow<Story<Component>> =
+        story(uuid, typeInfo<Story<Component>>())
 
-        override fun story(slug: String): Flow<Story<Component>> =
-            story(slug, typeInfo<Story<Component>>())
+    override fun <T : Component> story(uuid: Uuid, typeInfo: TypeInfo): Flow<Story<T>> =
+        story(uriString = "stories/$uuid", typeInfo) { parameter("find_by", "uuid") }
+    override fun <T : Component> story(slug: String, typeInfo: TypeInfo): Flow<Story<T>> =
+        story(uriString = "stories/$slug", typeInfo)
 
-        override fun story(uuid: Uuid): Flow<Story<Component>> =
-            story(uuid, typeInfo<Story<Component>>())
+    private fun <T : Component> story(uriString: String, typeInfo: TypeInfo, block: HttpRequestBuilder.() -> Unit = {}) =
+        flow {
 
-        override fun <T : Component> story(uuid: Uuid, typeInfo: TypeInfo): Flow<Story<T>> =
-            story(uriString = "stories/$uuid", typeInfo) { parameter("find_by", "uuid") }
-        override fun <T : Component> story(slug: String, typeInfo: TypeInfo): Flow<Story<T>> =
-            story(uriString = "stories/$slug", typeInfo)
+            val resolveRelations = relations.entries
+                .joinToString(",") { (component, keys) -> keys.joinToString(",") { "$component.$it" } }
 
-        private fun <T : Component> story(uriString: String, typeInfo: TypeInfo, block: HttpRequestBuilder.() -> Unit = {}) =
-            flow {
-
-                val resolveRelations = relations.entries
-                    .joinToString(",") { (component, keys) -> keys.joinToString(",") { "$component.$it" } }
-
-                try {
-                    val cached = ktor.get(uriString) {
-                        header(HttpHeaders.CacheControl, "only-if-cached, max-stale=${Int.MAX_VALUE}")
-                        parameter("resolve_relations", resolveRelations.ifEmpty { return@get })
-                        block()
-                    }
-                    emit(cached.body<String>())
-                } catch (e: ServerResponseException) {
-                    if(e.response.status != HttpStatusCode.GatewayTimeout) throw e
-                }
-
-                val response = ktor.get(uriString) {
+            try {
+                val cached = ktor.get(uriString) {
+                    header(HttpHeaders.CacheControl, "only-if-cached, max-stale=${Int.MAX_VALUE}")
                     parameter("resolve_relations", resolveRelations.ifEmpty { return@get })
                     block()
                 }
-
-                emit(response.body<String>())
+                emit(cached.body<String>())
+            } catch (e: ServerResponseException) {
+                if(e.response.status != HttpStatusCode.GatewayTimeout) throw e
             }
+
+            val response = ktor.get(uriString) {
+                parameter("resolve_relations", resolveRelations.ifEmpty { return@get })
+                block()
+            }
+
+            emit(response.body<String>())
+        }
             .distinctUntilChanged()
             .map { response ->
                 val body = json.parseToJsonElement(response)
@@ -233,25 +233,24 @@ public interface StoryblokClient {
                 throw StoryblokClientException(message, it)
             }
 
-        private fun JsonObject.resolve(rels: Map<String, JsonElement?>): JsonObject {
-            val relations = relations[get("component")?.jsonPrimitive?.content].orEmpty()
-            val replacements = entries.mapNotNull { (key, value) ->
-                key to when(value) {
-                    is JsonObject if "component" in value -> value.resolve(rels)
-                    is JsonPrimitive if value.isString && key in relations ->
-                        rels[value.content]?.jsonObject?.resolve(rels) ?: JsonNull
-                    is JsonArray -> when(val element = value.firstOrNull()) {
-                        is JsonObject if "component" in element ->
-                            JsonArray(value.map { it.jsonObject.resolve(rels) })
-                        is JsonPrimitive if element.isString && key in relations -> value
-                            .map { rels[it.jsonPrimitive.content]?.jsonObject?.resolve(rels) ?: JsonNull }
-                            .let { JsonArray(it) }
-                        else -> return@mapNotNull null
-                    }
+    private fun JsonObject.resolve(rels: Map<String, JsonElement?>): JsonObject {
+        val relations = relations[get("component")?.jsonPrimitive?.content].orEmpty()
+        val replacements = entries.mapNotNull { (key, value) ->
+            key to when(value) {
+                is JsonObject if "component" in value -> value.resolve(rels)
+                is JsonPrimitive if value.isString && key in relations ->
+                    rels[value.content]?.jsonObject?.resolve(rels) ?: JsonNull
+                is JsonArray -> when(val element = value.firstOrNull()) {
+                    is JsonObject if "component" in element ->
+                        JsonArray(value.map { it.jsonObject.resolve(rels) })
+                    is JsonPrimitive if element.isString && key in relations -> value
+                        .map { rels[it.jsonPrimitive.content]?.jsonObject?.resolve(rels) ?: JsonNull }
+                        .let { JsonArray(it) }
                     else -> return@mapNotNull null
                 }
+                else -> return@mapNotNull null
             }
-            return JsonObject(this + replacements.ifEmpty { return this })
         }
+        return JsonObject(this + replacements.ifEmpty { return this })
     }
 }
