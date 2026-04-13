@@ -45,13 +45,13 @@ public data class Story<T : Component>(
 
     /** The last update date of the story in ISO 8601 format. */
     @SerialName("updated_at")
-    val updatedAt: String,
+    val updatedAt: String? = null,
 
     /** The last update date of the story in ISO 8601 format. */
     @SerialName("sort_by_date")
-    val sortByDate: String?,
+    val sortByDate: String? = null,
 
-    val position: Int,
+    val position: Int = 0,
 
     @SerialName("tag_list")
     val tagList: List<String>,
@@ -63,20 +63,35 @@ public data class Story<T : Component>(
     val parentId: Long? = null,
 
     @SerialName("meta_data")
-    val metadata: List<String>?,
+    val metadata: Map<String, String>?,
 
     @SerialName("group_id")
-    val groupId: Uuid,
+    val groupId: Uuid? = null,
 
     @SerialName("release_id")
-    val releaseId: Uuid?,
+    val releaseId: Long?,
 
     @SerialName("lang")
-    val language: String,
+    val language: String? = null,
     val path: String?,
-    val alternates: List<Uuid>,
+    val alternates: List<Alternate>,
     @SerialName("default_full_slug")
     val defaultFullSlug : String?,
     @SerialName("translated_slugs")
     val translatedSlugs: List<String>?
-)
+) {
+    @Serializable
+    public data class Alternate(
+        val id: Long,
+        val name: String,
+        val slug: String,
+        val published: Boolean,
+        @SerialName("full_slug")
+        val fullSlug: String,
+        @SerialName("is_folder")
+        val isFolder: String,
+        @SerialName("parent_id")
+        val parentId: Long
+    )
+
+}
