@@ -37,10 +37,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import com.example.jetnews.model.Feed
 import com.example.jetnews.model.Header
 import com.example.jetnews.model.HighlightedPost
 import com.example.jetnews.model.Metadata
-import com.example.jetnews.model.Feed
 import com.example.jetnews.model.PopularPosts
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.RecentPosts
@@ -56,7 +56,7 @@ import com.example.jetnews.ui.defaultSpacerSize
 import com.example.jetnews.ui.theme.JetNewsTheme
 import com.storyblok.compose.Storyblok
 import com.storyblok.compose.provider.blokProvider
-import com.storyblok.ktor.Api
+import com.storyblok.ktor.Api.Config.Version.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
@@ -76,7 +76,7 @@ class MainActivity : ComponentActivity() {
 
                     Storyblok(
                         accessToken = "t56rE6UQJVErhMrkKvAe8Att",
-                        version = Api.Config.Version.Draft,
+                        version = if (BuildConfig.DEBUG) Draft else Published,
                         blokProvider = blokProvider(
                             fallback = { _, _ -> /* TODO: Show some kind of error UI */ },
                             storyLinkListener = { uuid, _ -> backStack.add(StoryKey(uuid = uuid)) }
