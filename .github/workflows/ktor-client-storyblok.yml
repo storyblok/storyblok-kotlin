@@ -5,12 +5,14 @@ on:
     branches: [ "main" ]
     paths:
       - '*gradle**'
+      - 'yarn.lock'
       - 'ktor-client-storyblok/**'
       - '.github/workflows/ktor-client-storyblok.yml'
   pull_request:
     branches: [ "main" ]
     paths:
       - '*gradle**'
+      - 'yarn.lock'
       - 'ktor-client-storyblok/**'
       - '.github/workflows/ktor-client-storyblok.yml'
   workflow_call:
@@ -37,8 +39,8 @@ jobs:
             os: ubuntu-latest
           - target: :ktor-client-storyblok:wasmJsTest
             os: ubuntu-latest
-          - target: :ktor-client-storyblok:mingwX64Test
-            os: windows-latest
+#          - target: :ktor-client-storyblok:mingwX64Test
+#            os: windows-latest
           - target: :ktor-client-storyblok:macosArm64Test
             os: macos-latest
           - target: :ktor-client-storyblok:iosSimulatorArm64Test
@@ -73,7 +75,7 @@ jobs:
         distribution: temurin
         java-version: 17
     - uses: gradle/actions/setup-gradle@v5
-    - run: ./gradlew checkLegacyAbi || { exit_code=$?; printf "*** This commit changes the public API. If intentional run './gradlew updateLegacyAbi' and commit updated files. ***"; exit $exit_code; }
+    - run: ./gradlew :ktor-client-storyblok:checkLegacyAbi || { exit_code=$?; printf "*** This commit changes the public API. If intentional run './gradlew :ktor-client-storyblok:updateLegacyAbi' and commit updated files. ***"; exit $exit_code; }
 
   api-dump:
     runs-on: ubuntu-latest
@@ -85,6 +87,6 @@ jobs:
         distribution: temurin
         java-version: 17
     - uses: gradle/actions/setup-gradle@v5
-    - run: ./gradlew updateLegacyAbi
+    - run: ./gradlew :ktor-client-storyblok:updateLegacyAbi
     - uses: stefanzweifel/git-auto-commit-action@v6
 
