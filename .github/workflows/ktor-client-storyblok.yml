@@ -5,14 +5,16 @@ on:
     branches: [ "main" ]
     paths:
       - '*gradle**'
-      - 'yarn.lock'
+      - 'kotlin-js-store/yarn.lock'
+      - 'kotlin-js-store/wasm/yarn.lock'
       - 'ktor-client-storyblok/**'
       - '.github/workflows/ktor-client-storyblok.yml'
   pull_request:
     branches: [ "main" ]
     paths:
       - '*gradle**'
-      - 'yarn.lock'
+      - 'kotlin-js-store/yarn.lock'
+      - 'kotlin-js-store/wasm/yarn.lock'
       - 'ktor-client-storyblok/**'
       - '.github/workflows/ktor-client-storyblok.yml'
   workflow_call:

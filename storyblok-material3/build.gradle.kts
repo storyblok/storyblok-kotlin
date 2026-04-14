@@ -36,6 +36,7 @@ kotlin {
         browser()
         nodejs()
     }
+
     android {
         namespace = "com.storyblok.richtextProvider"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
@@ -56,6 +57,13 @@ kotlin {
     wasmJs {
         nodejs()
     }
+
+    // Coil 3.4.0's coil-network-ktor3 bundles ws@8.18.0, force to 8.18.3 to match Ktor 3.4.2
+    sourceSets.jsMain.dependencies { implementation(npm("ws", "8.18.3")) }
+    sourceSets.jsTest.dependencies { implementation(npm("ws", "8.18.3")) }
+    sourceSets.wasmJsMain.dependencies { implementation(npm("ws", "8.18.3")) }
+    sourceSets.wasmJsTest.dependencies { implementation(npm("ws", "8.18.3")) }
+
 
     sourceSets {
         commonMain.dependencies {
