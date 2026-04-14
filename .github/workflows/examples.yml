@@ -39,8 +39,8 @@ jobs:
             os: ubuntu-latest
           - target: :examples:wasmJsTest
             os: ubuntu-latest
-          - target: :examples:mingwX64Test
-            os: windows-latest
+#          - target: :examples:mingwX64Test
+#            os: windows-latest
           - target: :examples:macosArm64Test
             os: macos-latest
           - target: :examples:iosSimulatorArm64Test

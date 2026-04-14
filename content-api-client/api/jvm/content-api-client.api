@@ -1,9 +1,3 @@
-public final class com/storyblok/cdn/RelationLimitExceededException : com/storyblok/cdn/StoryblokClientException {
-	public fun <init> (Lcom/storyblok/cdn/schema/Story;Ljava/util/List;)V
-	public final fun getStory ()Lcom/storyblok/cdn/schema/Story;
-	public final fun getUuids ()Ljava/util/List;
-}
-
 public abstract interface class com/storyblok/cdn/StoryblokClient {
 	public static final field Companion Lcom/storyblok/cdn/StoryblokClient$Companion;
 	public abstract fun close ()V
@@ -787,18 +781,18 @@ public final class com/storyblok/cdn/schema/RichText$TextAlign : java/lang/Enum 
 
 public final class com/storyblok/cdn/schema/Story {
 	public static final field Companion Lcom/storyblok/cdn/schema/Story$Companion;
-	public fun <init> (JLkotlin/uuid/Uuid;Ljava/lang/String;Lcom/storyblok/cdn/schema/Component;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/util/List;ZLjava/lang/Long;Ljava/util/List;Lkotlin/uuid/Uuid;Lkotlin/uuid/Uuid;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/util/List;)V
-	public synthetic fun <init> (JLkotlin/uuid/Uuid;Ljava/lang/String;Lcom/storyblok/cdn/schema/Component;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/util/List;ZLjava/lang/Long;Ljava/util/List;Lkotlin/uuid/Uuid;Lkotlin/uuid/Uuid;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (JLkotlin/uuid/Uuid;Ljava/lang/String;Lcom/storyblok/cdn/schema/Component;Ljava/lang/String;Ljava/lang/String;Lkotlin/time/Instant;Lkotlin/time/Instant;Lkotlin/time/Instant;Lkotlin/time/Instant;Lkotlinx/datetime/LocalDate;ILjava/util/List;ZLjava/lang/Long;Ljava/util/Map;Lkotlin/uuid/Uuid;Ljava/lang/Long;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/util/List;)V
+	public synthetic fun <init> (JLkotlin/uuid/Uuid;Ljava/lang/String;Lcom/storyblok/cdn/schema/Component;Ljava/lang/String;Ljava/lang/String;Lkotlin/time/Instant;Lkotlin/time/Instant;Lkotlin/time/Instant;Lkotlin/time/Instant;Lkotlinx/datetime/LocalDate;ILjava/util/List;ZLjava/lang/Long;Ljava/util/Map;Lkotlin/uuid/Uuid;Ljava/lang/Long;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()J
-	public final fun component10 ()Ljava/lang/String;
-	public final fun component11 ()Ljava/lang/String;
+	public final fun component10 ()Lkotlin/time/Instant;
+	public final fun component11 ()Lkotlinx/datetime/LocalDate;
 	public final fun component12 ()I
 	public final fun component13 ()Ljava/util/List;
 	public final fun component14 ()Z
 	public final fun component15 ()Ljava/lang/Long;
-	public final fun component16 ()Ljava/util/List;
+	public final fun component16 ()Ljava/util/Map;
 	public final fun component17 ()Lkotlin/uuid/Uuid;
-	public final fun component18 ()Lkotlin/uuid/Uuid;
+	public final fun component18 ()Ljava/lang/Long;
 	public final fun component19 ()Ljava/lang/String;
 	public final fun component2 ()Lkotlin/uuid/Uuid;
 	public final fun component20 ()Ljava/lang/String;
@@ -809,33 +803,33 @@ public final class com/storyblok/cdn/schema/Story {
 	public final fun component4 ()Lcom/storyblok/cdn/schema/Component;
 	public final fun component5 ()Ljava/lang/String;
 	public final fun component6 ()Ljava/lang/String;
-	public final fun component7 ()Ljava/lang/String;
-	public final fun component8 ()Ljava/lang/String;
-	public final fun component9 ()Ljava/lang/String;
-	public final fun copy (JLkotlin/uuid/Uuid;Ljava/lang/String;Lcom/storyblok/cdn/schema/Component;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/util/List;ZLjava/lang/Long;Ljava/util/List;Lkotlin/uuid/Uuid;Lkotlin/uuid/Uuid;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/util/List;)Lcom/storyblok/cdn/schema/Story;
-	public static synthetic fun copy$default (Lcom/storyblok/cdn/schema/Story;JLkotlin/uuid/Uuid;Ljava/lang/String;Lcom/storyblok/cdn/schema/Component;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/util/List;ZLjava/lang/Long;Ljava/util/List;Lkotlin/uuid/Uuid;Lkotlin/uuid/Uuid;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lcom/storyblok/cdn/schema/Story;
+	public final fun component7 ()Lkotlin/time/Instant;
+	public final fun component8 ()Lkotlin/time/Instant;
+	public final fun component9 ()Lkotlin/time/Instant;
+	public final fun copy (JLkotlin/uuid/Uuid;Ljava/lang/String;Lcom/storyblok/cdn/schema/Component;Ljava/lang/String;Ljava/lang/String;Lkotlin/time/Instant;Lkotlin/time/Instant;Lkotlin/time/Instant;Lkotlin/time/Instant;Lkotlinx/datetime/LocalDate;ILjava/util/List;ZLjava/lang/Long;Ljava/util/Map;Lkotlin/uuid/Uuid;Ljava/lang/Long;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/util/List;)Lcom/storyblok/cdn/schema/Story;
+	public static synthetic fun copy$default (Lcom/storyblok/cdn/schema/Story;JLkotlin/uuid/Uuid;Ljava/lang/String;Lcom/storyblok/cdn/schema/Component;Ljava/lang/String;Ljava/lang/String;Lkotlin/time/Instant;Lkotlin/time/Instant;Lkotlin/time/Instant;Lkotlin/time/Instant;Lkotlinx/datetime/LocalDate;ILjava/util/List;ZLjava/lang/Long;Ljava/util/Map;Lkotlin/uuid/Uuid;Ljava/lang/Long;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lcom/storyblok/cdn/schema/Story;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAlternates ()Ljava/util/List;
 	public final fun getContent ()Lcom/storyblok/cdn/schema/Component;
-	public final fun getCreatedAt ()Ljava/lang/String;
+	public final fun getCreatedAt ()Lkotlin/time/Instant;
 	public final fun getDefaultFullSlug ()Ljava/lang/String;
-	public final fun getFirstPublishedAt ()Ljava/lang/String;
+	public final fun getFirstPublishedAt ()Lkotlin/time/Instant;
 	public final fun getFullSlug ()Ljava/lang/String;
 	public final fun getGroupId ()Lkotlin/uuid/Uuid;
 	public final fun getId ()J
 	public final fun getLanguage ()Ljava/lang/String;
-	public final fun getMetadata ()Ljava/util/List;
+	public final fun getMetadata ()Ljava/util/Map;
 	public final fun getName ()Ljava/lang/String;
 	public final fun getParentId ()Ljava/lang/Long;
 	public final fun getPath ()Ljava/lang/String;
 	public final fun getPosition ()I
-	public final fun getPublishedAt ()Ljava/lang/String;
-	public final fun getReleaseId ()Lkotlin/uuid/Uuid;
+	public final fun getPublishedAt ()Lkotlin/time/Instant;
+	public final fun getReleaseId ()Ljava/lang/Long;
 	public final fun getSlug ()Ljava/lang/String;
-	public final fun getSortByDate ()Ljava/lang/String;
+	public final fun getSortByDate ()Lkotlinx/datetime/LocalDate;
 	public final fun getTagList ()Ljava/util/List;
 	public final fun getTranslatedSlugs ()Ljava/util/List;
-	public final fun getUpdatedAt ()Ljava/lang/String;
+	public final fun getUpdatedAt ()Lkotlin/time/Instant;
 	public final fun getUuid ()Lkotlin/uuid/Uuid;
 	public fun hashCode ()I
 	public final fun isStartPage ()Z
@@ -853,8 +847,80 @@ public final synthetic class com/storyblok/cdn/schema/Story$$serializer : kotlin
 	public final fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
+public final class com/storyblok/cdn/schema/Story$Alternate {
+	public static final field Companion Lcom/storyblok/cdn/schema/Story$Alternate$Companion;
+	public fun <init> (JLjava/lang/String;Ljava/lang/String;ZLjava/lang/String;ZJ)V
+	public final fun component1 ()J
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Z
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Z
+	public final fun component7 ()J
+	public final fun copy (JLjava/lang/String;Ljava/lang/String;ZLjava/lang/String;ZJ)Lcom/storyblok/cdn/schema/Story$Alternate;
+	public static synthetic fun copy$default (Lcom/storyblok/cdn/schema/Story$Alternate;JLjava/lang/String;Ljava/lang/String;ZLjava/lang/String;ZJILjava/lang/Object;)Lcom/storyblok/cdn/schema/Story$Alternate;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFullSlug ()Ljava/lang/String;
+	public final fun getId ()J
+	public final fun getName ()Ljava/lang/String;
+	public final fun getParentId ()J
+	public final fun getPublished ()Z
+	public final fun getSlug ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun isFolder ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class com/storyblok/cdn/schema/Story$Alternate$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/Story$Alternate$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/Story$Alternate;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/Story$Alternate;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/Story$Alternate$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public final class com/storyblok/cdn/schema/Story$Companion {
 	public final fun serializer (Lkotlinx/serialization/KSerializer;)Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/Story$TranslatedSlug {
+	public static final field Companion Lcom/storyblok/cdn/schema/Story$TranslatedSlug$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/Boolean;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;)Lcom/storyblok/cdn/schema/Story$TranslatedSlug;
+	public static synthetic fun copy$default (Lcom/storyblok/cdn/schema/Story$TranslatedSlug;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;ILjava/lang/Object;)Lcom/storyblok/cdn/schema/Story$TranslatedSlug;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLanguage ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getPath ()Ljava/lang/String;
+	public final fun getPublished ()Ljava/lang/Boolean;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class com/storyblok/cdn/schema/Story$TranslatedSlug$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/storyblok/cdn/schema/Story$TranslatedSlug$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/storyblok/cdn/schema/Story$TranslatedSlug;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/storyblok/cdn/schema/Story$TranslatedSlug;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/storyblok/cdn/schema/Story$TranslatedSlug$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/storyblok/serializers/StoryblokDateTimeSerializer : kotlinx/datetime/serializers/FormattedLocalDateTimeSerializer {

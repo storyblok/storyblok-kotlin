@@ -64,7 +64,6 @@ kotlin {
     sourceSets.wasmJsMain.dependencies { implementation(npm("ws", "8.18.3")) }
     sourceSets.wasmJsTest.dependencies { implementation(npm("ws", "8.18.3")) }
 
-
     sourceSets {
         commonMain.dependencies {
             api(libs.compose.foundation)
