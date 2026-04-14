@@ -2,6 +2,8 @@
 
 package com.storyblok.cdn.schema
 
+import kotlinx.datetime.LocalDate
+import kotlin.time.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.uuid.ExperimentalUuidApi
@@ -12,86 +14,122 @@ import kotlin.uuid.Uuid
  */
 @Serializable
 public data class Story<T : Component>(
-    /** Story ID */
+    /** Story ID. */
     val id: Long,
 
-    /** The unique identifier of the story. */
+    /** Story UUID. */
     val uuid: Uuid,
 
-    /** The name of the story. */
+    /** Story name. */
     val name: String,
 
-    /** The dynamic content of the story. This structure can handle various types of content blocks dynamically. */
+    /** An object containing the field data associated with a content type's specific structure. Also includes a component property with the content type's technical name. */
     val content: T,
 
-    /** The slug of the story, representing its relative path. */
+    /** Story slug. */
     val slug: String,
 
-    /** The full slug (absolute path) of the story. */
+    /** Story full slug, combining the parent folder(s) and the story slug. */
     @SerialName("full_slug")
     val fullSlug: String,
 
-    /** The creation date of the story in ISO 8601 format. */
+    /** Creation timestamp (Timestamps follow the ISO 8601 standard in UTC). */
     @SerialName("created_at")
-    val createdAt: String,
+    val createdAt: Instant,
 
     /** Latest publication timestamp (Timestamps follow the ISO 8601 standard in UTC). */
     @SerialName("published_at")
-    val publishedAt: String? = null,
+    val publishedAt: Instant?,
 
     /** First publication timestamp (Timestamps follow the ISO 8601 standard in UTC). */
     @SerialName("first_published_at")
-    val firstPublishedAt: String? = null,
+    val firstPublishedAt: Instant?,
 
-    /** The last update date of the story in ISO 8601 format. */
+    /** Latest update timestamp (Timestamps follow the ISO 8601 standard in UTC). */
     @SerialName("updated_at")
-    val updatedAt: String? = null,
+    val updatedAt: Instant?,
 
-    /** The last update date of the story in ISO 8601 format. */
+    /** Date defined in the story's entry configuration (Format: YYYY-mm-dd). */
     @SerialName("sort_by_date")
-    val sortByDate: String? = null,
+    val sortByDate: LocalDate?,
 
-    val position: Int = 0,
+    /** Numeric representation of the story's position in the folder. Users can change this property in the Content tab. */
+    val position: Int,
 
+    /** Array of tag names. */
     @SerialName("tag_list")
     val tagList: List<String>,
 
+    /** True if the story is defined as folder root. */
     @SerialName("is_startpage")
     val isStartPage: Boolean,
 
+    /** Parent folder ID. */
     @SerialName("parent_id")
-    val parentId: Long? = null,
+    val parentId: Long?,
 
+    /** Object to store non-editable data that is exclusively maintained with the Management API. */
     @SerialName("meta_data")
     val metadata: Map<String, String>?,
 
+    /** Group ID (UUID string), shared between stories defined as alternates. */
     @SerialName("group_id")
-    val groupId: Uuid? = null,
+    val groupId: Uuid,
 
+    /** Current release ID (if requested via the from_release parameter). */
     @SerialName("release_id")
-    val releaseId: Long?,
+    val releaseId: Long? = null,
 
+    /** Language code of the current language version (if requested via the language parameter). */
     @SerialName("lang")
-    val language: String? = null,
+    val language: String,
+
+    /** Real path defined in the story's entry configuration (see Visual Editor). */
     val path: String?,
+
+    /** An array containing objects that provide basic data of the stories defined as alternates of the current story. */
     val alternates: List<Alternate>,
+
+    /** Contains the complete slug of the default language (if the Translatable Slugs app is installed). */
     @SerialName("default_full_slug")
-    val defaultFullSlug : String?,
+    val defaultFullSlug: String?,
+
+    /** Array of translated slug objects (if the Translatable Slugs app is installed). */
     @SerialName("translated_slugs")
-    val translatedSlugs: List<String>?
+    val translatedSlugs: List<TranslatedSlug>?
 ) {
     @Serializable
     public data class Alternate(
+        /** Story ID. */
         val id: Long,
+        /** Story name. */
         val name: String,
+        /** Story slug. */
         val slug: String,
+        /** True if the story is currently published. */
         val published: Boolean,
+        /** Story full slug, combining the parent folder(s) and the story slug. */
         @SerialName("full_slug")
         val fullSlug: String,
+        /** True if the instance constitutes a folder. */
         @SerialName("is_folder")
-        val isFolder: String,
+        val isFolder: Boolean,
+        /** ID of the parent folder. */
         @SerialName("parent_id")
-        val parentId: Long
+        val parentId: Long,
+    )
+
+    @Serializable
+    public data class TranslatedSlug(
+        /** Translated slug. */
+        val path: String,
+        /** Translated name. */
+        val name: String?,
+        /** Language code of story variant. */
+        @SerialName("lang")
+        val language: String,
+        /** True if story variant is currently published. */
+        val published: Boolean?,
     )
 
 }

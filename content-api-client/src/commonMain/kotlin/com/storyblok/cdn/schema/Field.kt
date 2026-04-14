@@ -33,13 +33,13 @@ public class Link(
 public class Asset(
     public val name: String? = null,
     public val source: String? = null,
-    public val alt: String?,
+    public val alt: String? = null,
     public val focus: String?,
     @SerialName("meta_data")
     public val metadata: Map<String, String>? = null,
-    public val title: String?,
+    public val title: String? = null,
     public val filename: String,
-    public val copyright: String?,
+    public val copyright: String? = null,
     @SerialName("is_external_url")
     public val isExternalUrl: Boolean = false
 ) : Field()
