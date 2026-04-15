@@ -8,6 +8,9 @@ plugins {
 
 dependencies {
     dokka(project(":ktor-client-storyblok"))
+    dokka(project(":content-api-client"))
+    dokka(project(":storyblok-compose"))
+    dokka(project(":storyblok-material3"))
 }
 
 dokka {

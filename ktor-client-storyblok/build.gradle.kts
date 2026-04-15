@@ -12,7 +12,7 @@ plugins {
 }
 
 dokka {
-    moduleName.set("Storyblok Ktor Client Plugin")
+    moduleName.set("Ktor Client Plugin")
     dokkaSourceSets.configureEach {
         includes.from("Module.md")
         sourceLink {

@@ -1,4 +1,4 @@
-# <ins>Storyblok Ktor Client Plugin</ins>
+# Storyblok Ktor Client Plugin
 
 A custom client plugin to simplify calling Storyblok's Content Delivery and Management APIs with the Ktor HTTP client.
 
