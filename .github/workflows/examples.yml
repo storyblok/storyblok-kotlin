@@ -47,10 +47,10 @@ jobs:
             simulator: iPhone 17
             os: macos-latest
           - target: :examples:tvosSimulatorArm64Test
-            simulator: Apple Watch SE 3 (40mm)
+            simulator: Apple TV
             os: macos-latest
           - target: :examples:watchosSimulatorArm64Test
-            simulator: Apple TV
+            simulator: Apple Watch SE 3 (40mm)
             os: macos-latest
     runs-on: ${{ matrix.os }}
 
