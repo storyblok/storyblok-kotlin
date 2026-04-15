@@ -51,7 +51,6 @@ kotlin {
     }
     iosArm64()
     iosSimulatorArm64()
-    iosX64()
     macosArm64()
     wasmJs {
         nodejs()
