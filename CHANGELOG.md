@@ -1,13 +1,13 @@
 ### Changelog
 
-**0.2.0-SNAPSHOT**
-*Unpublished*
+**0.2.0**
 
-Added the following modules:
-- [Storyblok Content Delivery API Client](https://github.com/storyblok/storyblok-kotlin/content-api-client)
-- [Storyblok Compose](https://github.com/storyblok/storyblok-kotlin/storyblok-compose)
-- [Storyblok Material 3](https://github.com/storyblok/storyblok-kotlin/storyblok-material2)
+- Added JetNews sample app
+- Initial release of the Compose SDK
+- Initial release of the Material 3 Rich Text Provider
+- Initial release of the Content Delivery Client
+- Add `only-if-cached` support to the Storyblok Ktor Client Plugin
 
 **0.1.0**
 
-Initial release of the Storyblok Ktor Client Plugin
+- Initial release of the Storyblok Ktor Client Plugin

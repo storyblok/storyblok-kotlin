@@ -1,4 +1,4 @@
-# Module Storyblok Ktor Client Plugin
+# Module Ktor Client Plugin
 
 A custom client plugin to simplify calling Storyblok's [Content Delivery](https://www.storyblok.com/docs/api/content-delivery/v2) and [Management](https://www.storyblok.com/docs/api/management) APIs with the Ktor HTTP client.
 

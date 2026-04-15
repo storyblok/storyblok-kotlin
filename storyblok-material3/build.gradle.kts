@@ -14,11 +14,11 @@ plugins {
 }
 
 dokka {
-    moduleName.set("Storyblok Rich Text Provider")
+    moduleName.set("Material 3 Rich Text Provider")
     dokkaSourceSets.configureEach {
-//        includes.from("Module.md")
+        includes.from("Module.md")
         sourceLink {
-            localDirectory.set(file("src/commmonnMain/kotlin"))
+            localDirectory.set(file("src/commonMain/kotlin"))
             remoteUrl("https://github.com/storyblok/storyblok-kotlin/blob/main/storyblok-material3/")
             remoteLineSuffix.set("#L")
         }

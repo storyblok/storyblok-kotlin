@@ -14,9 +14,9 @@ plugins {
 }
 
 dokka {
-    moduleName.set("Storyblok Compose SDK")
+    moduleName.set("Compose SDK")
     dokkaSourceSets.configureEach {
-//        includes.from("Module.md")
+        includes.from("Module.md")
         sourceLink {
             localDirectory.set(file("src/commonMain/kotlin"))
             remoteUrl("https://github.com/storyblok/storyblok-kotlin/blob/main/storyblok-compose/")

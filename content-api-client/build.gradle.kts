@@ -13,9 +13,9 @@ plugins {
 }
 
 dokka {
-    moduleName.set("Storyblok Content Delivery API Client")
+    moduleName.set("Content Delivery API Client")
     dokkaSourceSets.configureEach {
-//        includes.from("Module.md")
+        includes.from("Module.md")
         sourceLink {
             localDirectory.set(file("src/commonMain/kotlin"))
             remoteUrl("https://github.com/storyblok/storyblok-kotlin/blob/main/content-api-client/")

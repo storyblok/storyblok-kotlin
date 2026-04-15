@@ -28,10 +28,13 @@
 
 This monorepo consists of the following modules:
 
-| Module                     | Description                                                        |
-|----------------------------|--------------------------------------------------------------------|
+| Module                                         | Description                                                        |
+|------------------------------------------------|--------------------------------------------------------------------|
 | [ktor-client-storyblok](ktor-client-storyblok) | A plugin to simplify calling Storyblok's APIs with the Ktor Client |
-| [examples](examples)       | Example Kotlin code snippets from Storyblok's docs site            |
+| [content-api-client](content-api-client)       | A client for Storyblok's Content Delivery API                      |
+| [storyblok-compose](storyblok-compose)         | An SDK to integrate Storyblok with Compose                         |
+| [storyblok-material3](storyblok-material3)     | The default Storyblok rich text provider                           |
+| [examples](examples)                           | Example Kotlin code snippets from Storyblok's docs site            |
 
 ## 📄 Contributing
 
