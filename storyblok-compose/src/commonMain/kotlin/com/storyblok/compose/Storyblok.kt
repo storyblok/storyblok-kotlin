@@ -5,6 +5,8 @@ package com.storyblok.compose
 import androidx.compose.runtime.Composable
 import com.storyblok.cdn.StoryblokClient
 import com.storyblok.compose.provider.BlokProvider
+import com.storyblok.ktor.Api.Config.Region
+import com.storyblok.ktor.Api.Config.Region.EU
 import com.storyblok.ktor.Api.Config.Version
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -18,6 +20,7 @@ private val clients = mutableMapOf<List<Any?>, StoryblokClient>()
  *
  * @param accessToken The API access token for authentication.
  * @param version The content [version][Version] to retrieve (draft or published).
+ * @param region The [region][Region] depending on the server location of your space. Defaults to [EU].
  * @param language Optional language code for localized content.
  * @param fallbackLanguage Optional fallback language for untranslated fields.
  * @param cv Optional cache version timestamp.
@@ -28,14 +31,15 @@ private val clients = mutableMapOf<List<Any?>, StoryblokClient>()
 public fun Storyblok(
     accessToken: String,
     version: Version,
+    region: Region = EU,
     language: String? = null,
     fallbackLanguage: String? = null,
     cv: String? = null,
     blokProvider: BlokProvider,
     content: @Composable StoryblokScope.() -> Unit,
 ) {
-    val client = clients.getOrPut(listOf(accessToken, version, language, fallbackLanguage, cv)) {
-        StoryblokClient(accessToken, version, language, fallbackLanguage, cv, blokProvider.serializersModule)
+    val client = clients.getOrPut(listOf(accessToken, version, region, language, fallbackLanguage, cv)) {
+        StoryblokClient(accessToken, version, region, language, fallbackLanguage, cv, blokProvider.serializersModule)
     }
     content(StoryblokScope(client, blokProvider.blokScope))
 }

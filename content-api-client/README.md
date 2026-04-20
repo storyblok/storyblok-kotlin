@@ -59,6 +59,7 @@ Configuring default parameters for all requests is as simple as passing them to 
 val client = StoryblokClient(
     accessToken = "YOUR_ACCESS_TOKEN",
     version = Draft,
+    region = Region.USA,
     language = "en",
     fallbackLanguage = "de",
     cv = "1706094649"
