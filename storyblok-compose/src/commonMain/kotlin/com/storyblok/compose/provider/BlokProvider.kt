@@ -15,7 +15,7 @@ import kotlin.reflect.KClass
  * Create instances using [blokProvider][com.storyblok.compose.provider.blokProvider] or [blokProviderWithoutRichText].
  */
 public class BlokProvider internal constructor(
-    internal val blokScope: BlokScope,
+    public val blokScope: BlokScope,
     /** The [SerializersModule] containing serializers for all registered [Component] types. */
     public val serializersModule: SerializersModule
 )
