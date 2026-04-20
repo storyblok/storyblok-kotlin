@@ -1,0 +1,173 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Content Delivery API Client</title>
+<link href="../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+      if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      } else {
+        const savedDarkMode = JSON.parse(storage)
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      }
+    </script>
+<script type="text/javascript" src="../scripts/sourceset_dependencies.js" async></script>
+<link href="../styles/style.css" rel="Stylesheet">
+<link href="../styles/main.css" rel="Stylesheet">
+<link href="../styles/prism.css" rel="Stylesheet">
+<link href="../styles/logo-styles.css" rel="Stylesheet">
+<link href="../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../scripts/safe-local-storage_blocking.js"></script>
+<script type="text/javascript" src="../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../scripts/main.js" defer></script>
+<script type="text/javascript" src="../scripts/prism.js" async></script>
+<script type="text/javascript" src="../ui-kit/ui-kit.min.js" defer></script></head>
+<body>
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+<a class="library-name--link" href="../index.html" tabindex="1">
+                    Storyblok Kotlin
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+        </div>
+        <div class="navigation-controls">
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true" data-filter=":content-api-client/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":content-api-client/commonMain" data-filter=":content-api-client/commonMain">
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </ul>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config="{&quot;defaultSize&quot;: 280, &quot;minSize&quot;: 200, &quot;maxSize&quot;: 400}">
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
+                            <span>
+                                    Storyblok Kotlin
+                            </span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" id="content" pageids="Content Delivery API Client::////PointingToDeclaration//706928317">
+  <div class="breadcrumbs"></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Content</span></span> <span><span>Delivery</span></span> <span><span>API</span></span> <span><span>Client</span></span></h1>
+    <div class="platform-hinted UnderCoverText" data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><p class="paragraph">A Kotlin Multiplatform client for Storyblok's <a href="https://www.storyblok.com/docs/api/content-delivery/v2">Content Delivery API</a> built on the <a href="https://github.com/storyblok/storyblok-kotlin/tree/main/ktor-client-plugin">Ktor Client Plugin</a>.</p><p class="paragraph">With automatic relation resolution and custom component deserialization.</p><h2 class="">Quick start</h2><h4 class="">First, add the dependency to your project:</h4><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">dependencies {<br>    implementation("com.storyblok:content-api-client:0.2.0")<br>}</code></pre><span class="copy-tooltip"><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div><span class="copy-icon"></span></span></div><h4 class="">Then create a client and fetch a story:</h4><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">val client = StoryblokClient(<br>    accessToken = "YOUR_ACCESS_TOKEN",<br>    version = Draft<br>)<br><br>// client.story(...) returns a Flow that emits up-to two values:<br>// - the cached version (if available) <br>// - the latest version from the API (if different from the cached version)<br>val myStory = client.story("home").first()</code></pre><span class="copy-tooltip"><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div><span class="copy-icon"></span></span></div><h4 class="">Define custom components for deserialization:</h4><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">@Serializable<br>@SerialName("page")<br>class Page(<br>    val title: String,<br>    val body: List&lt;Component&gt;<br>) : Component()<br><br>val client = StoryblokClient(<br>    accessToken = "YOUR_ACCESS_TOKEN",<br>    version = Draft,<br>    serializersModule = SerializersModule {<br>        polymorphic(Component::class, Page::class, Page.serializer())<br>    }<br>)<br><br>client.story&lt;Page&gt;("home")<br>    .collect { story -&gt; println(story.content.title) }</code></pre><span class="copy-tooltip"><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div><span class="copy-icon"></span></span></div><h2 class="">Other resources</h2><p class="paragraph">You can find the full guide to the Content Delivery API Client inside <a href="https://github.com/storyblok/storyblok-kotlin/tree/main/content-api-client#client-guide">README.md</a>.</p></div></div>
+  </div>
+  <h2 class="">Packages</h2>
+  <div class="table"><a data-name="1268554447%2FPackages%2F706928317" anchor-label="com.storyblok.cdn" id="1268554447%2FPackages%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+    <div class="table-row table-row_platform-tagged" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="com.storyblok.cdn/index.html">com.storyblok.cdn</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1268554447%2FPackages%2F706928317"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right platform-tags--wrapper">
+            <div class="platform-tags no-gutters">
+              <div class="platform-tag common-like">common</div>
+            </div>
+          </div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="151013604%2FPackages%2F706928317" anchor-label="com.storyblok.cdn.schema" id="151013604%2FPackages%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+    <div class="table-row table-row_platform-tagged" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="com.storyblok.cdn.schema/index.html">com.storyblok.cdn.schema</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="151013604%2FPackages%2F706928317"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right platform-tags--wrapper">
+            <div class="platform-tags no-gutters">
+              <div class="platform-tag common-like">common</div>
+            </div>
+          </div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="-177254717%2FPackages%2F706928317" anchor-label="com.storyblok.serializers" id="-177254717%2FPackages%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+    <div class="table-row table-row_platform-tagged" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="com.storyblok.serializers/index.html">com.storyblok.serializers</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-177254717%2FPackages%2F706928317"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right platform-tags--wrapper">
+            <div class="platform-tags no-gutters">
+              <div class="platform-tag common-like">common</div>
+            </div>
+          </div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2026 Copyright</div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

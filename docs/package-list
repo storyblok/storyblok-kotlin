@@ -1,5 +1,14 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
 
-module:Storyblok Ktor Client Plugin
+module:Content Delivery API Client
+com.storyblok.cdn
+com.storyblok.cdn.schema
+com.storyblok.serializers
+module:Ktor Client Plugin
 com.storyblok.ktor
+module:Compose SDK
+com.storyblok.compose
+com.storyblok.compose.provider
+module:Material 3 Rich Text Provider
+com.storyblok.compose.provider

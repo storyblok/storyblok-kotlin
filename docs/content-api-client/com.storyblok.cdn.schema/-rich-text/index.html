@@ -1,0 +1,475 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>RichText</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+      if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      } else {
+        const savedDarkMode = JSON.parse(storage)
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/safe-local-storage_blocking.js"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../ui-kit/ui-kit.min.js" defer></script></head>
+<body>
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+<a class="library-name--link" href="../../../index.html" tabindex="1">
+                    Storyblok Kotlin
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+        </div>
+        <div class="navigation-controls">
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true" data-filter=":content-api-client/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":content-api-client/commonMain" data-filter=":content-api-client/commonMain">
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </ul>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config="{&quot;defaultSize&quot;: 280, &quot;minSize&quot;: 200, &quot;maxSize&quot;: 400}">
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
+                            <span>
+                                    Storyblok Kotlin
+                            </span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="Content Delivery API Client::com.storyblok.cdn.schema/RichText///PointingToDeclaration//706928317">
+  <div class="breadcrumbs"><a href="../../index.html">Content Delivery API Client</a><span class="delimiter">/</span><a href="../index.html">com.storyblok.cdn.schema</a><span class="delimiter">/</span><span class="current">RichText</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Rich</span><wbr><span><span>Text</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="index.html">RichText</a><span class="source-link-wrapper"><span class="source-link" data-element-type="source-link">(<a href="https://github.com/storyblok/storyblok-kotlin/blob/main/content-api-client//com/storyblok/cdn/schema/RichText.kt#L17">source</a>)</span></span></div><p class="paragraph">Base class for Storyblok rich text nodes.</p><p class="paragraph">Represents the hierarchical structure of rich text content from the Storyblok editor.</p><h4 class="tableheader">Inheritors</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-document/index.html">Document</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-heading/index.html">Heading</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-bullet-list/index.html">BulletList</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-ordered-list/index.html">OrderedList</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-image/index.html">Image</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-code-block/index.html">CodeBlock</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-blockquote/index.html">Blockquote</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-horizontal-rule/index.html">HorizontalRule</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-table/index.html">Table</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-table-row/index.html">TableRow</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-table-element/index.html">TableElement</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-paragraph/index.html">Paragraph</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-text/index.html">Text</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-mark/index.html">Mark</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-blok/index.html">Blok</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-list-item/index.html">ListItem</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-emoji/index.html">Emoji</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-hard-break/index.html">HardBreak</a></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="tableheader">Types</h2>
+        <div class="table"><a data-name="-683864534%2FClasslikes%2F706928317" anchor-label="Blockquote" id="-683864534%2FClasslikes%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-blockquote/index.html"><span><span>Blockquote</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-683864534%2FClasslikes%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/SerialName///PointingToDeclaration/"><span class="token annotation builtin">SerialName</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"blockquote"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-blockquote/index.html">Blockquote</a> : <a href="index.html">RichText</a>, <a href="-composite/index.html">RichText.Composite</a></div><div class="brief "><p class="paragraph">Block quote node.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-690270605%2FClasslikes%2F706928317" anchor-label="Blok" id="-690270605%2FClasslikes%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-blok/index.html"><span><span>Blok</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-690270605%2FClasslikes%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/SerialName///PointingToDeclaration/"><span class="token annotation builtin">SerialName</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"blok"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-blok/index.html">Blok</a> : <a href="index.html">RichText</a></div><div class="brief "><p class="paragraph">Embedded component block within rich text.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1909479577%2FClasslikes%2F706928317" anchor-label="BulletList" id="1909479577%2FClasslikes%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-bullet-list/index.html"><span>Bullet</span><wbr><span><span>List</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1909479577%2FClasslikes%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/SerialName///PointingToDeclaration/"><span class="token annotation builtin">SerialName</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"bullet_list"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-bullet-list/index.html">BulletList</a> : <a href="index.html">RichText</a>, <a href="-composite/index.html">RichText.Composite</a></div><div class="brief "><p class="paragraph">Unordered (bullet) list node.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="429772649%2FClasslikes%2F706928317" anchor-label="CodeBlock" id="429772649%2FClasslikes%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-code-block/index.html"><span>Code</span><wbr><span><span>Block</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="429772649%2FClasslikes%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/SerialName///PointingToDeclaration/"><span class="token annotation builtin">SerialName</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"code_block"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-code-block/index.html">CodeBlock</a> : <a href="index.html">RichText</a>, <a href="-composite/index.html">RichText.Composite</a></div><div class="brief "><p class="paragraph">Code block node with optional language hint.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="658379106%2FClasslikes%2F706928317" anchor-label="Composite" id="658379106%2FClasslikes%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-composite/index.html"><span><span>Composite</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="658379106%2FClasslikes%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">interface </span><a href="-composite/index.html">Composite</a></div><div class="brief "><p class="paragraph">Interface for rich text nodes that contain child nodes.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="975304350%2FClasslikes%2F706928317" anchor-label="Document" id="975304350%2FClasslikes%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-document/index.html"><span><span>Document</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="975304350%2FClasslikes%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/SerialName///PointingToDeclaration/"><span class="token annotation builtin">SerialName</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"doc"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">open </span><span class="token keyword">class </span><a href="-document/index.html">Document</a> : <a href="index.html">RichText</a>, <a href="-composite/index.html">RichText.Composite</a></div><div class="brief "><p class="paragraph">Root document node containing all rich text content.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-549432189%2FClasslikes%2F706928317" anchor-label="Emoji" id="-549432189%2FClasslikes%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-emoji/index.html"><span><span>Emoji</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-549432189%2FClasslikes%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/SerialName///PointingToDeclaration/"><span class="token annotation builtin">SerialName</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"emoji"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-emoji/index.html">Emoji</a> : <a href="index.html">RichText</a></div><div class="brief "><p class="paragraph">Emoji node with fallback image support.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-465698379%2FClasslikes%2F706928317" anchor-label="HardBreak" id="-465698379%2FClasslikes%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-hard-break/index.html"><span>Hard</span><wbr><span><span>Break</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-465698379%2FClasslikes%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/SerialName///PointingToDeclaration/"><span class="token annotation builtin">SerialName</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"hard_break"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-hard-break/index.html">HardBreak</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>marks<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-mark/index.html">RichText.Mark</a><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()</span></span><span class="token punctuation">)</span> : <a href="index.html">RichText</a></div><div class="brief "><p class="paragraph">Hard line break node.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="821652551%2FClasslikes%2F706928317" anchor-label="Heading" id="821652551%2FClasslikes%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-heading/index.html"><span><span>Heading</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="821652551%2FClasslikes%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/SerialName///PointingToDeclaration/"><span class="token annotation builtin">SerialName</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"heading"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-heading/index.html">Heading</a> : <a href="index.html">RichText</a>, <a href="-composite/index.html">RichText.Composite</a></div><div class="brief "><p class="paragraph">Heading node with configurable level (1-6).</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1026549785%2FClasslikes%2F706928317" anchor-label="HorizontalRule" id="1026549785%2FClasslikes%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-horizontal-rule/index.html"><span>Horizontal</span><wbr><span><span>Rule</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1026549785%2FClasslikes%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/SerialName///PointingToDeclaration/"><span class="token annotation builtin">SerialName</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"horizontal_rule"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-horizontal-rule/index.html">HorizontalRule</a> : <a href="index.html">RichText</a></div><div class="brief "><p class="paragraph">Horizontal rule (divider) node.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="53222670%2FClasslikes%2F706928317" anchor-label="Image" id="53222670%2FClasslikes%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-image/index.html"><span><span>Image</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="53222670%2FClasslikes%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/SerialName///PointingToDeclaration/"><span class="token annotation builtin">SerialName</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"image"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-image/index.html">Image</a> : <a href="index.html">RichText</a></div><div class="brief "><p class="paragraph">Image node with source and metadata.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2116640856%2FClasslikes%2F706928317" anchor-label="ListItem" id="-2116640856%2FClasslikes%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-list-item/index.html"><span>List</span><wbr><span><span>Item</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2116640856%2FClasslikes%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/SerialName///PointingToDeclaration/"><span class="token annotation builtin">SerialName</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"list_item"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-list-item/index.html">ListItem</a> : <a href="index.html">RichText</a>, <a href="-composite/index.html">RichText.Composite</a></div><div class="brief "><p class="paragraph">List item node.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-264109780%2FClasslikes%2F706928317" anchor-label="Mark" id="-264109780%2FClasslikes%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-mark/index.html"><span><span>Mark</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-264109780%2FClasslikes%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-mark/index.html">Mark</a> : <a href="index.html">RichText</a></div><div class="brief "><p class="paragraph">Base class for text formatting marks.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1887633474%2FClasslikes%2F706928317" anchor-label="OrderedList" id="-1887633474%2FClasslikes%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ordered-list/index.html"><span>Ordered</span><wbr><span><span>List</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1887633474%2FClasslikes%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/SerialName///PointingToDeclaration/"><span class="token annotation builtin">SerialName</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"ordered_list"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-ordered-list/index.html">OrderedList</a> : <a href="index.html">RichText</a>, <a href="-composite/index.html">RichText.Composite</a></div><div class="brief "><p class="paragraph">Ordered (numbered) list node.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="979795035%2FClasslikes%2F706928317" anchor-label="Paragraph" id="979795035%2FClasslikes%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-paragraph/index.html"><span><span>Paragraph</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="979795035%2FClasslikes%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/SerialName///PointingToDeclaration/"><span class="token annotation builtin">SerialName</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"paragraph"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-paragraph/index.html">Paragraph</a> : <a href="index.html">RichText</a>, <a href="-composite/index.html">RichText.Composite</a></div><div class="brief "><p class="paragraph">Paragraph node with optional text alignment.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="708780539%2FClasslikes%2F706928317" anchor-label="Table" id="708780539%2FClasslikes%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-table/index.html"><span><span>Table</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="708780539%2FClasslikes%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/SerialName///PointingToDeclaration/"><span class="token annotation builtin">SerialName</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"table"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-table/index.html">Table</a> : <a href="index.html">RichText</a>, <a href="-composite/index.html">RichText.Composite</a></div><div class="brief "><p class="paragraph">Table container node.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-532478535%2FClasslikes%2F706928317" anchor-label="TableCell" id="-532478535%2FClasslikes%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-table-cell/index.html"><span>Table</span><wbr><span><span>Cell</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-532478535%2FClasslikes%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/SerialName///PointingToDeclaration/"><span class="token annotation builtin">SerialName</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"tableCell"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-table-cell/index.html">TableCell</a> : <a href="-table-element/index.html">RichText.TableElement</a></div><div class="brief "><p class="paragraph">Table data cell.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1433996235%2FClasslikes%2F706928317" anchor-label="TableElement" id="1433996235%2FClasslikes%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-table-element/index.html"><span>Table</span><wbr><span><span>Element</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1433996235%2FClasslikes%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-table-element/index.html">TableElement</a> : <a href="index.html">RichText</a>, <a href="-composite/index.html">RichText.Composite</a></div><div class="brief "><p class="paragraph">Base class for table cells (header and data cells).</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="942456942%2FClasslikes%2F706928317" anchor-label="TableHeader" id="942456942%2FClasslikes%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-table-header/index.html"><span>Table</span><wbr><span><span>Header</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="942456942%2FClasslikes%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/SerialName///PointingToDeclaration/"><span class="token annotation builtin">SerialName</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"tableHeader"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-table-header/index.html">TableHeader</a> : <a href="-table-element/index.html">RichText.TableElement</a></div><div class="brief "><p class="paragraph">Table header cell.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1629896275%2FClasslikes%2F706928317" anchor-label="TableRow" id="-1629896275%2FClasslikes%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-table-row/index.html"><span>Table</span><wbr><span><span>Row</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1629896275%2FClasslikes%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/SerialName///PointingToDeclaration/"><span class="token annotation builtin">SerialName</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"table_row"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-table-row/index.html">TableRow</a> : <a href="index.html">RichText</a>, <a href="-composite/index.html">RichText.Composite</a></div><div class="brief "><p class="paragraph">Table row node.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1027583692%2FClasslikes%2F706928317" anchor-label="Text" id="1027583692%2FClasslikes%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-text/index.html"><span><span>Text</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1027583692%2FClasslikes%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/SerialName///PointingToDeclaration/"><span class="token annotation builtin">SerialName</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"text"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-text/index.html">Text</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>text<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">""</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>marks<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-mark/index.html">RichText.Mark</a><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()</span></span><span class="token punctuation">)</span> : <a href="index.html">RichText</a></div><div class="brief "><p class="paragraph">Text node containing plain text with optional marks (formatting).</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1626512177%2FClasslikes%2F706928317" anchor-label="TextAlign" id="1626512177%2FClasslikes%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-text-align/index.html"><span>Text</span><wbr><span><span>Align</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1626512177%2FClasslikes%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-text-align/index.html">TextAlign</a> : <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><a href="-text-align/index.html">RichText.TextAlign</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Text alignment options for paragraph and heading nodes.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="tableheader">Properties</h2>
+        <div class="table"><a data-name="-2115606870%2FProperties%2F706928317" anchor-label="type" id="-2115606870%2FProperties%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="type.html"><span><span>type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2115606870%2FProperties%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="type.html">type</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">Technical name of the node type.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2026 Copyright</div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
