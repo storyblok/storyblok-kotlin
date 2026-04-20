@@ -9,11 +9,33 @@ import com.storyblok.compose.provider.Provider
 import kotlin.jvm.JvmInline
 import kotlin.reflect.KClass
 
+/**
+ * Scope providing composable functions for rendering Storyblok [Component] and [RichText] content.
+ */
 public interface BlokScope {
+    /**
+     * Renders a Storyblok [Component] using its registered composable.
+     *
+     * @param content The component to render.
+     * @param modifier Optional [Modifier] applied to the rendered content.
+     */
     @Composable
     public fun Blok(content: Component, modifier: Modifier = Modifier)
+
+    /**
+     * Renders a [RichText] node using its registered composable.
+     *
+     * @param content The rich text node to render.
+     * @param modifier Optional [Modifier] applied to the rendered content.
+     */
     @Composable
     public fun RichText(content: RichText, modifier: Modifier = Modifier)
+
+    /**
+     * Appends a [RichText] node to an [AnnotatedString.Builder] using its registered builder.
+     *
+     * @param content The rich text node to append.
+     */
     @Composable
     public fun AnnotatedString.Builder.RichText(content: RichText)
 }
@@ -28,7 +50,7 @@ internal value class BlokScopeImpl internal constructor(val providers: Map<Any, 
 
     @Composable
     override fun RichText(content: RichText, modifier: Modifier) =
-        providers.getOrElse(content::class) { error("No rich text blok registered for ${content.type} accepting a Modifier") }
+        providers.getOrElse(content::class) { error("No rich text blok registered for ${content.type} accepting Modifier") }
             .invoke(content, modifier)
 
     @Composable

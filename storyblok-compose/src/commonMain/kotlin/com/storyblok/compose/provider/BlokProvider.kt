@@ -9,11 +9,23 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlin.reflect.KClass
 
+/**
+ * Container for registered component composables and their serializers.
+ *
+ * Create instances using [blokProvider][com.storyblok.compose.provider.blokProvider] or [blokProviderWithoutRichText].
+ */
 public class BlokProvider internal constructor(
     internal val blokScope: BlokScope,
+    /** The [SerializersModule] containing serializers for all registered [Component] types. */
     public val serializersModule: SerializersModule
 )
 
+/**
+ * Creates a [BlokProvider] by registering component composables and serializers.
+ *
+ * @param fallback Composable rendered for unknown or unregistered components.
+ * @param builder Configuration block for registering blok composables via [BlokProviderScope].
+ */
 public fun blokProviderWithoutRichText(
     fallback: @Composable (unknownComponent: Component, Modifier) -> Unit = { it, _ -> throw IllegalStateException("Unknown component ${it.component}") },
     builder: BlokProviderScope.() -> Unit,

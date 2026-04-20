@@ -11,7 +11,8 @@ With out-of-the-box support for component mapping, rich text rendering, and reac
 ```kotlin
 dependencies {
     implementation("com.storyblok:storyblok-compose:0.2.0")
-}
+    // Optional, for Material 3 rich text renderers
+    implementation("com.storyblok:storyblok-material3:0.2.0")
 ```
 
 #### Define your components and create a blok provider:
@@ -21,7 +22,7 @@ dependencies {
 @SerialName("page")
 class Page(val title: String, val body: List<Component>) : Component()
 
-val myBlokProvider = blokProviderWithoutRichText {
+val myBlokProvider = blokProvider {
     blok<Page> { page, modifier ->
         Column(modifier) {
             Text(page.title, style = MaterialTheme.typography.headlineLarge)
