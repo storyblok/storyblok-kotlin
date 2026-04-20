@@ -58,6 +58,12 @@ import kotlin.reflect.KClass
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
+/**
+ * Exception thrown on errors occurring during [StoryblokClient] operations.
+ *
+ * @param message The error message, typically from the API response.
+ * @param cause The underlying exception, if any.
+ */
 public open class StoryblokClientException(message: String?, cause: Throwable?) : Exception(message, cause) {
     public constructor(message: String?) : this(message, null)
     public constructor(cause: Throwable?) : this(null, cause)
@@ -68,28 +74,94 @@ public open class StoryblokClientException(message: String?, cause: Throwable?) 
 //    public val uuids: List<String>
 //) : StoryblokClientException("A maximum of 50 stories can be resolved.")
 
+/**
+ * Retrieves a [Story] by its slug with automatic relation resolution.
+ *
+ * @param T The [Component] type of the story content.
+ * @param slug The URL path segment identifying the story.
+ * @return A [Flow] emitting the story, with potential cached and fresh values.
+ */
 public inline fun <reified T : Component> StoryblokClient.story(slug: String): Flow<Story<T>> =
     story(slug, typeInfo<Story<T>>())
 
+/**
+ * Retrieves a [Story] by its UUID with automatic relation resolution.
+ *
+ * @param T The [Component] type of the story content.
+ * @param uuid The unique identifier of the story.
+ * @return A [Flow] emitting the story, with potential cached and fresh values.
+ */
 public inline fun <reified T : Component> StoryblokClient.story(uuid: Uuid): Flow<Story<T>> =
     story(uuid, typeInfo<Story<T>>())
 
+/**
+ * Client for the Storyblok [Content Delivery API](https://www.storyblok.com/docs/api/content-delivery/v2).
+ *
+ * Provides type-safe access to stories with automatic JSON deserialization and relation resolution.
+ */
 public interface StoryblokClient {
 
+    /** Closes the underlying HTTP client and releases resources. */
     public fun close()
+
+    /**
+     * Retrieves a [Story] by its slug.
+     *
+     * @param slug The URL path segment identifying the story.
+     * @return A [Flow] emitting the story with [Component] content, with potential cached and fresh values..
+     */
     public fun story(slug: String): Flow<Story<Component>>
+
+    /**
+     * Retrieves a [Story] by its UUID.
+     *
+     * @param uuid The unique identifier of the story.
+     * @return A [Flow] emitting the story with [Component] content, with potential cached and fresh values..
+     */
     public fun story(uuid: Uuid): Flow<Story<Component>>
+
+    /**
+     * Retrieves a [Story] by its slug with explicit type information.
+     *
+     * @param T The [Component] type of the story content.
+     * @param slug The URL path segment identifying the story.
+     * @param typeInfo Type information for deserialization.
+     * @return A [Flow] emitting the story, with potential cached and fresh values..
+     */
     public fun <T : Component> story(slug: String, typeInfo: TypeInfo): Flow<Story<T>>
+
+    /**
+     * Retrieves a [Story] by its UUID with explicit type information.
+     *
+     * @param T The [Component] type of the story content.
+     * @param uuid The unique identifier of the story.
+     * @param typeInfo Type information for deserialization.
+     * @return A [Flow] emitting the story, with potential cached and fresh values..
+     */
     public fun <T : Component> story(uuid: Uuid, typeInfo: TypeInfo): Flow<Story<T>>
 
     public companion object {
 
+        /**
+         * Creates a [StoryblokClient] with full configuration control.
+         *
+         * @param apiBuilder Configuration block for the [Content Delivery API][Api.Config.Content].
+         * @param serializersModuleBuilder Configuration block for registering custom [Component] serializers.
+         * @param jsonBuilder Configuration block for JSON parsing settings.
+         */
         public operator fun invoke(
             apiBuilder: Api.Config.Content.() -> Unit,
             serializersModuleBuilder: SerializersModuleBuilder.() -> Unit,
             jsonBuilder: JsonBuilder.() -> Unit,
         ): StoryblokClient = StoryblokClientImpl(apiBuilder, serializersModuleBuilder, jsonBuilder)
 
+        /**
+         * Creates a [StoryblokClient] with simplified configuration.
+         *
+         * @param lenientJsonParsing When `true`, enables lenient JSON parsing (ignores unknown keys, coerces nulls).
+         * @param serializersModuleBuilder Configuration block for registering custom [Component] serializers.
+         * @param apiBuilder Configuration block for the [Content Delivery API][Api.Config.Content].
+         */
         public operator fun invoke(
             lenientJsonParsing: Boolean = false,
             serializersModuleBuilder: SerializersModuleBuilder.() -> Unit,
@@ -104,6 +176,16 @@ public interface StoryblokClient {
             }
         )
 
+        /**
+         * Creates a [StoryblokClient] with minimal configuration.
+         *
+         * @param accessToken The API access token for authentication.
+         * @param version The content [version][Api.Config.Version] to retrieve (draft or published).
+         * @param language Optional language code for localized content.
+         * @param fallbackLanguage Optional fallback language for untranslated fields.
+         * @param cv Optional cache version timestamp.
+         * @param serializersModule Optional serializers module with custom [Component] serializers.
+         */
         public operator fun invoke(
             accessToken: String,
             version: Version,

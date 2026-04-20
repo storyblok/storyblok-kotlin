@@ -22,11 +22,13 @@ val client = StoryblokClient(
     version = Draft
 )
 
-client.story("home")
-    .collect { story -> println(story.name) }
+// client.story(...) returns a Flow that emits up-to two values:
+// - the cached version (if available) 
+// - the latest version from the API (if different from the cached version)
+val myStory = client.story("home").first()
 ```
 
-#### Define custom components for type-safe deserialization:
+#### Define custom components for deserialization:
 
 ```kotlin
 @Serializable
