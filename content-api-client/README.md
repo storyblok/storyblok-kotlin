@@ -270,5 +270,5 @@ client.close()
 
 ## Other resources
 
-You can find the full client reference at https://storyblok.github.io/storyblok-kotlin/content-api-client/index.html
-
+- You can find the full client reference at https://storyblok.github.io/storyblok-kotlin/content-api-client/index.html
+- For details on the Ktor plugin, see the [Storyblok Ktor Client Plugin Guide](/../ktor-client-storyblok/README.md#plugin-guide).

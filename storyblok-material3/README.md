@@ -63,7 +63,7 @@ fun App() {
 }
 ```
 
-# Provider Guide
+# User Guide
 ## The blokProvider function
 
 The [`blokProvider`](https://storyblok.github.io/storyblok-kotlin/storyblok-material3/com.storyblok.compose.provider/blok-provider.html) function extends `blokProviderWithoutRichText` by adding default renderers for all Storyblok rich text node types:
@@ -222,5 +222,6 @@ Images in rich text are loaded using [Coil 3](https://coil-kt.github.io/coil/). 
 
 ## Other resources
 
-You can find the full module reference at https://storyblok.github.io/storyblok-kotlin/storyblok-material3/index.html
+- You can find the full module reference at https://storyblok.github.io/storyblok-kotlin/storyblok-material3/index.html
+- For general guidance on using the Storyblok Compose SDK, see the [SDK guide](../storyblok-compose/README.md#sdk-guide).
 
