@@ -190,9 +190,19 @@ The plugin installs the [`HttpRequestRetry`](https://ktor.io/docs/client-request
 > [!IMPORTANT]
 > Caching is only implemented for the Content Delivery API.
 
-Responses from the Content Delivery API contain the `Cache-Control` and `ETag` headers, to respect these, the plugin installs the [`HttpCache`](https://ktor.io/docs/client-caching.html) plugin and configures a shared in-memory cache.
+Responses from the Content Delivery API contain the `Cache-Control` and `ETag` headers, to respect these, the plugin installs the [`HttpCache`](https://ktor.io/docs/client-caching.html) plugin and configures an in-memory cache.
 
 This means subsequent requests for the same resource made with the same `HttpClient` instance will be served from the cache instead of performing a network request.
+
+You can also force a request to be served from cache by adding the `Cache-Control: only-if-cached` header:
+
+```kotlin
+val response = client.get("stories/posts/my-third-post") {
+    headers {
+        append(HttpHeaders.CacheControl, "only-if-cached")
+    }
+}
+```
 
 ### Content negotiation and serialization
 
