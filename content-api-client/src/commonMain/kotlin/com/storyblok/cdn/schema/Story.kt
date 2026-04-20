@@ -98,6 +98,11 @@ public data class Story<T : Component>(
     @SerialName("translated_slugs")
     val translatedSlugs: List<TranslatedSlug>?
 ) {
+    /**
+     * Basic data for a story defined as an alternate of the current story.
+     *
+     * Alternates are different language versions or variants of the same content.
+     */
     @Serializable
     public data class Alternate(
         /** Story ID. */
@@ -119,6 +124,11 @@ public data class Story<T : Component>(
         val parentId: Long,
     )
 
+    /**
+     * Translated slug information for localized story variants.
+     *
+     * Available when the Translatable Slugs app is installed.
+     */
     @Serializable
     public data class TranslatedSlug(
         /** Translated slug. */
