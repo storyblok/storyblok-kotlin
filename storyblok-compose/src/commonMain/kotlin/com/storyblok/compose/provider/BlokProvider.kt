@@ -21,7 +21,7 @@ public class BlokProvider internal constructor(
 )
 
 /**
- * Creates a [BlokProvider] by registering component composables and serializers.
+ * Creates a [BlokProvider] by registering component composables and serializers (without rich text support).
  *
  * @param fallback Composable rendered for unknown or unregistered components.
  * @param builder Configuration block for registering blok composables via [BlokProviderScope].
