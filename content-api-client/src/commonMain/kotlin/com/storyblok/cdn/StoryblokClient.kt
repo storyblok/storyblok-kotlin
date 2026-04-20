@@ -75,7 +75,7 @@ public open class StoryblokClientException(message: String?, cause: Throwable?) 
 //) : StoryblokClientException("A maximum of 50 stories can be resolved.")
 
 /**
- * Retrieves a [Story] by its slug with automatic relation resolution.
+ * Retrieves a [Story] by its slug using reified type information for the [Component] type.
  *
  * @param T The [Component] type of the story content.
  * @param slug The URL path segment identifying the story.
@@ -85,7 +85,7 @@ public inline fun <reified T : Component> StoryblokClient.story(slug: String): F
     story(slug, typeInfo<Story<T>>())
 
 /**
- * Retrieves a [Story] by its UUID with automatic relation resolution.
+ * Retrieves a [Story] by its UUID using reified type information for the [Component] type.
  *
  * @param T The [Component] type of the story content.
  * @param uuid The unique identifier of the story.
@@ -108,7 +108,7 @@ public interface StoryblokClient {
      * Retrieves a [Story] by its slug.
      *
      * @param slug The URL path segment identifying the story.
-     * @return A [Flow] emitting the story with [Component] content, with potential cached and fresh values..
+     * @return A [Flow] emitting the story with [Component] content, with potential cached and fresh values.
      */
     public fun story(slug: String): Flow<Story<Component>>
 
@@ -116,27 +116,27 @@ public interface StoryblokClient {
      * Retrieves a [Story] by its UUID.
      *
      * @param uuid The unique identifier of the story.
-     * @return A [Flow] emitting the story with [Component] content, with potential cached and fresh values..
+     * @return A [Flow] emitting the story with [Component] content, with potential cached and fresh values.
      */
     public fun story(uuid: Uuid): Flow<Story<Component>>
 
     /**
-     * Retrieves a [Story] by its slug with explicit type information.
+     * Retrieves a [Story] by its slug with explicit type information for the [Component] type.
      *
      * @param T The [Component] type of the story content.
      * @param slug The URL path segment identifying the story.
      * @param typeInfo Type information for deserialization.
-     * @return A [Flow] emitting the story, with potential cached and fresh values..
+     * @return A [Flow] emitting the story, with potential cached and fresh values.
      */
     public fun <T : Component> story(slug: String, typeInfo: TypeInfo): Flow<Story<T>>
 
     /**
-     * Retrieves a [Story] by its UUID with explicit type information.
+     * Retrieves a [Story] by its UUID with explicit type information for the [Component] type.
      *
      * @param T The [Component] type of the story content.
      * @param uuid The unique identifier of the story.
      * @param typeInfo Type information for deserialization.
-     * @return A [Flow] emitting the story, with potential cached and fresh values..
+     * @return A [Flow] emitting the story, with potential cached and fresh values.
      */
     public fun <T : Component> story(uuid: Uuid, typeInfo: TypeInfo): Flow<Story<T>>
 
