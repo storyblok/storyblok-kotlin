@@ -13,6 +13,7 @@ dependencies {
     implementation("com.storyblok:storyblok-compose:0.2.0")
     // Optional, for Material 3 rich text renderers
     implementation("com.storyblok:storyblok-material3:0.2.0")
+}
 ```
 
 #### Define your components and create a blok provider:

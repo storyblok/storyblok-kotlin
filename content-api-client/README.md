@@ -16,8 +16,8 @@ dependencies {
 ```
 
 > [!NOTE]
-> The Content Delivery API Client uses Ktor under hood and depends on `ktor-client-storyblok` you can learn more in the [Storyblok Ktor Client Plugin
-Guide](/../ktor-client-storyblok#add-plugin-dependency).
+> The Content Delivery API Client uses Ktor under hood and depends on `ktor-client-storyblok`, you can learn more in the [Storyblok Ktor Client Plugin
+Guide](/../ktor-client-storyblok/README.md#add-plugin-dependency).
 
 ## Create the client
 
@@ -65,7 +65,7 @@ val client = StoryblokClient(
 )
 ```
 > [!TIP]
-> Learn more about these parameters in the [Storyblok Ktor Client Plugin Guide](/../ktor-client-storyblok#configuring-default-parameters-for-all-requests).
+> Learn more about these parameters in the [Storyblok Ktor Client Plugin Guide](/../ktor-client-storyblok/README.md#configuring-default-parameters-for-all-requests).
 
 ### Advanced configuration
 
@@ -87,7 +87,7 @@ val client = StoryblokClient(
 )
 ```
 > [!TIP]
-> Learn more about the `apiBuilder` parameters in the [Storyblok Ktor Client Plugin Guide](/../ktor-client-storyblok#plugin-configuration).
+> Learn more about the `apiBuilder` parameters in the [Storyblok Ktor Client Plugin Guide](/../ktor-client-storyblok/README.md#plugin-configuration).
 
 ## Registering custom components
 
@@ -240,7 +240,7 @@ println(page.image.alt)
 
 ## Caching
 
-The client leverages the underlying [ktor-client-storyblok](../ktor-client-storyblok) plugin's caching mechanism. When fetching stories:
+The client leverages the underlying [ktor-client-storyblok](../ktor-client-storyblok/README.md) plugin's caching mechanism. When fetching stories:
 
 1. The client first attempts to retrieve from cache (with `only-if-cached` header)
 2. Then makes a network request to get the latest version
