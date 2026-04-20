@@ -1,6 +1,7 @@
 public abstract interface class com/storyblok/cdn/StoryblokClient {
 	public static final field Companion Lcom/storyblok/cdn/StoryblokClient$Companion;
 	public abstract fun close ()V
+	public abstract fun getHttp ()Lio/ktor/client/HttpClient;
 	public abstract fun story (Ljava/lang/String;)Lkotlinx/coroutines/flow/Flow;
 	public abstract fun story (Ljava/lang/String;Lio/ktor/util/reflect/TypeInfo;)Lkotlinx/coroutines/flow/Flow;
 	public abstract fun story (Lkotlin/uuid/Uuid;)Lkotlinx/coroutines/flow/Flow;
@@ -8,10 +9,10 @@ public abstract interface class com/storyblok/cdn/StoryblokClient {
 }
 
 public final class com/storyblok/cdn/StoryblokClient$Companion {
-	public final fun invoke (Ljava/lang/String;Lcom/storyblok/ktor/Api$Config$Version;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlinx/serialization/modules/SerializersModule;)Lcom/storyblok/cdn/StoryblokClient;
+	public final fun invoke (Ljava/lang/String;Lcom/storyblok/ktor/Api$Config$Version;Lcom/storyblok/ktor/Api$Config$Region;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlinx/serialization/modules/SerializersModule;)Lcom/storyblok/cdn/StoryblokClient;
 	public final fun invoke (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Lcom/storyblok/cdn/StoryblokClient;
 	public final fun invoke (ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Lcom/storyblok/cdn/StoryblokClient;
-	public static synthetic fun invoke$default (Lcom/storyblok/cdn/StoryblokClient$Companion;Ljava/lang/String;Lcom/storyblok/ktor/Api$Config$Version;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlinx/serialization/modules/SerializersModule;ILjava/lang/Object;)Lcom/storyblok/cdn/StoryblokClient;
+	public static synthetic fun invoke$default (Lcom/storyblok/cdn/StoryblokClient$Companion;Ljava/lang/String;Lcom/storyblok/ktor/Api$Config$Version;Lcom/storyblok/ktor/Api$Config$Region;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlinx/serialization/modules/SerializersModule;ILjava/lang/Object;)Lcom/storyblok/cdn/StoryblokClient;
 	public static synthetic fun invoke$default (Lcom/storyblok/cdn/StoryblokClient$Companion;ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/storyblok/cdn/StoryblokClient;
 }
 
@@ -19,6 +20,19 @@ public class com/storyblok/cdn/StoryblokClientException : java/lang/Exception {
 	public fun <init> (Ljava/lang/String;)V
 	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
 	public fun <init> (Ljava/lang/Throwable;)V
+}
+
+public final class com/storyblok/cdn/StoryblokClientImpl : com/storyblok/cdn/StoryblokClient {
+	public fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlinx/serialization/json/Json;Lio/ktor/client/HttpClient;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlinx/serialization/json/Json;Lio/ktor/client/HttpClient;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun close ()V
+	public fun getHttp ()Lio/ktor/client/HttpClient;
+	public final fun getJson ()Lkotlinx/serialization/json/Json;
+	public final fun getRelations ()Ljava/util/Map;
+	public fun story (Ljava/lang/String;)Lkotlinx/coroutines/flow/Flow;
+	public fun story (Ljava/lang/String;Lio/ktor/util/reflect/TypeInfo;)Lkotlinx/coroutines/flow/Flow;
+	public fun story (Lkotlin/uuid/Uuid;)Lkotlinx/coroutines/flow/Flow;
+	public fun story (Lkotlin/uuid/Uuid;Lio/ktor/util/reflect/TypeInfo;)Lkotlinx/coroutines/flow/Flow;
 }
 
 public final class com/storyblok/cdn/schema/Asset : com/storyblok/cdn/schema/Field {

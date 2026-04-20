@@ -10,7 +10,7 @@ public final class com/storyblok/compose/BlokScope$ComposeDefaultImpls {
 }
 
 public final class com/storyblok/compose/StoryblokKt {
-	public static final fun Storyblok (Ljava/lang/String;Lcom/storyblok/ktor/Api$Config$Version;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/storyblok/compose/provider/BlokProvider;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun Storyblok (Ljava/lang/String;Lcom/storyblok/ktor/Api$Config$Version;Lcom/storyblok/ktor/Api$Config$Region;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/storyblok/compose/provider/BlokProvider;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
 }
 
 public final class com/storyblok/compose/StoryblokScope : com/storyblok/cdn/StoryblokClient, com/storyblok/compose/BlokScope {
@@ -21,6 +21,7 @@ public final class com/storyblok/compose/StoryblokScope : com/storyblok/cdn/Stor
 	public fun RichText (Lcom/storyblok/cdn/schema/RichText;Landroidx/compose/ui/Modifier;Landroidx/compose/runtime/Composer;I)V
 	public fun close ()V
 	public final fun getClient ()Lcom/storyblok/cdn/StoryblokClient;
+	public fun getHttp ()Lio/ktor/client/HttpClient;
 	public fun story (Ljava/lang/String;)Lkotlinx/coroutines/flow/Flow;
 	public fun story (Ljava/lang/String;Lio/ktor/util/reflect/TypeInfo;)Lkotlinx/coroutines/flow/Flow;
 	public fun story (Lkotlin/uuid/Uuid;)Lkotlinx/coroutines/flow/Flow;
@@ -29,6 +30,7 @@ public final class com/storyblok/compose/StoryblokScope : com/storyblok/cdn/Stor
 
 public final class com/storyblok/compose/provider/BlokProvider {
 	public static final field $stable I
+	public final fun getBlokScope ()Lcom/storyblok/compose/BlokScope;
 	public final fun getSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
 }
 
