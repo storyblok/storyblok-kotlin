@@ -5,6 +5,7 @@ import com.storyblok.cdn.StoryblokClientImpl
 import com.storyblok.cdn.schema.Component
 import com.storyblok.cdn.schema.Story
 import com.storyblok.ktor.Api.Config.Version.Draft
+import io.ktor.utils.io.InternalAPI
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -12,6 +13,7 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@OptIn(InternalAPI::class)
 class StoryblokClientTest {
 
     @Serializable @SerialName("page")
