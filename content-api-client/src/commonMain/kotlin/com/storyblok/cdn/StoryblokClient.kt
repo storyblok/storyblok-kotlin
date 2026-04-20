@@ -101,6 +101,9 @@ public inline fun <reified T : Component> StoryblokClient.story(uuid: Uuid): Flo
  */
 public interface StoryblokClient {
 
+    /** The underlying Ktor HTTP client. */
+    public val http: HttpClient
+
     /** Closes the underlying HTTP client and releases resources. */
     public fun close()
 
@@ -209,13 +212,13 @@ public interface StoryblokClient {
         )
     }
 }
-internal class StoryblokClientImpl constructor(
+
+@InternalAPI
+public class StoryblokClientImpl constructor(
     apiBuilder: Api.Config.Content.() -> Unit,
     serializersModuleBuilder: SerializersModuleBuilder.() -> Unit,
     jsonBuilder: JsonBuilder.() -> Unit,
-) : StoryblokClient {
-
-    private val json = Json {
+    public val json: Json = Json {
         isLenient = true
         decodeEnumsCaseInsensitive = true
         classDiscriminator = "component"
@@ -226,9 +229,14 @@ internal class StoryblokClientImpl constructor(
             serializersModuleBuilder()
         }
         jsonBuilder()
+    },
+    override val http: HttpClient = HttpClient {
+        install(ContentNegotiation) { json(json) }
+        install(Storyblok(Api.CDN), apiBuilder)
     }
+) : StoryblokClient {
 
-    val relations: Map<String, Set<String>> =
+    public val relations: Map<String, Set<String>> =
         buildMap {
             json.serializersModule.dumpTo(object : SerializersModuleCollector {
                 override fun <T : Any> contextual(kClass: KClass<T>, provider: (typeArgumentsSerializers: List<KSerializer<*>>) -> KSerializer<*>) = Unit
@@ -250,12 +258,7 @@ internal class StoryblokClientImpl constructor(
             })
         }
 
-    private val ktor = HttpClient {
-        install(ContentNegotiation) { json(json) }
-        install(Storyblok(Api.CDN), apiBuilder)
-    }
-
-    override fun close(): Unit = ktor.close()
+    override fun close(): Unit = http.close()
 
     override fun story(slug: String): Flow<Story<Component>> =
         story(slug, typeInfo<Story<Component>>())
@@ -275,7 +278,7 @@ internal class StoryblokClientImpl constructor(
                 .joinToString(",") { (component, keys) -> keys.joinToString(",") { "$component.$it" } }
 
             try {
-                val cached = ktor.get(uriString) {
+                val cached = http.get(uriString) {
                     header(HttpHeaders.CacheControl, "only-if-cached, max-stale=${Int.MAX_VALUE}")
                     parameter("resolve_relations", resolveRelations.ifEmpty { return@get })
                     block()
@@ -285,7 +288,7 @@ internal class StoryblokClientImpl constructor(
                 if(e.response.status != HttpStatusCode.GatewayTimeout) throw e
             }
 
-            val response = ktor.get(uriString) {
+            val response = http.get(uriString) {
                 parameter("resolve_relations", resolveRelations.ifEmpty { return@get })
                 block()
             }
