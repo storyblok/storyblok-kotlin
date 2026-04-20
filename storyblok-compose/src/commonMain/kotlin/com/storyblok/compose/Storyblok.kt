@@ -3,13 +3,20 @@
 package com.storyblok.compose
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import com.storyblok.cdn.StoryblokClient
 import com.storyblok.compose.provider.BlokProvider
 import com.storyblok.ktor.Api.Config.Region
 import com.storyblok.ktor.Api.Config.Region.EU
 import com.storyblok.ktor.Api.Config.Version
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
+private val clientKeys = mutableSetOf<List<Any?>>()
 private val clients = mutableMapOf<List<Any?>, StoryblokClient>()
 
 /**
@@ -27,6 +34,7 @@ private val clients = mutableMapOf<List<Any?>, StoryblokClient>()
  * @param blokProvider The [BlokProvider] containing registered component composables and serializers.
  * @param content The composable content rendered within the [StoryblokScope].
  */
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
 public fun Storyblok(
     accessToken: String,
@@ -38,9 +46,25 @@ public fun Storyblok(
     blokProvider: BlokProvider,
     content: @Composable StoryblokScope.() -> Unit,
 ) {
-    val client = clients.getOrPut(listOf(accessToken, version, region, language, fallbackLanguage, cv)) {
+
+    val clientKey = listOf(accessToken, version, region, language, fallbackLanguage, cv)
+    clientKeys.add(clientKey)
+
+    DisposableEffect(Unit) {
+        onDispose {
+            clientKeys.remove(clientKey)
+            GlobalScope.launch {
+                delay(5.seconds)
+                if(clientKey in clientKeys) return@launch
+                clients.remove(clientKey)?.close()
+            }
+        }
+    }
+
+    val client = clients.getOrPut(clientKey) {
         StoryblokClient(accessToken, version, region, language, fallbackLanguage, cv, blokProvider.serializersModule)
     }
+
     content(StoryblokScope(client, blokProvider.blokScope))
 }
 
