@@ -50,7 +50,7 @@ public fun Storyblok(
     val clientKey = listOf(accessToken, version, region, language, fallbackLanguage, cv)
     clientKeys.add(clientKey)
 
-    DisposableEffect(Unit) {
+    DisposableEffect(clientKey) {
         onDispose {
             clientKeys.remove(clientKey)
             GlobalScope.launch {
