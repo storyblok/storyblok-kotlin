@@ -294,5 +294,6 @@ Storyblok(
 
 ## Other resources
 
-You can find the full SDK reference at https://storyblok.github.io/storyblok-kotlin/storyblok-compose/index.html
-
+- You can find the full SDK reference at https://storyblok.github.io/storyblok-kotlin/storyblok-compose/index.html
+- For details on the API client, see the [Content Delivery API Client Guide](../content-api-client/README.md#client-guide).
+- Check out the [JetNews sample app](../samples/JetNews/README.md) for a complete example of the SDK in action 
