@@ -1,6 +1,6 @@
 # Storyblok Content Delivery API Client
 
-A type-safe Kotlin Multiplatform client for Storyblok's [Content Delivery API](https://www.storyblok.com/docs/api/content-delivery/v2).
+A Kotlin Multiplatform client for Storyblok's [Content Delivery API](https://www.storyblok.com/docs/api/content-delivery/v2) built on the [Ktor Client Plugin](https://github.com/storyblok/storyblok-kotlin/tree/main/ktor-client-plugin).
 
 With out-of-the-box support for reactive story fetching, automatic relation resolution, rich text parsing, and custom component serialization.
 
@@ -15,9 +15,13 @@ dependencies {
 }
 ```
 
+> [!NOTE]
+> The Content Delivery API Client uses Ktor under hood and depends on `ktor-client-storyblok` you can learn more in the [Storyblok Ktor Client Plugin
+Guide](/../ktor-client-storyblok#add-plugin-dependency).
+
 ## Create the client
 
-To create a client, invoke the [`StoryblokClient`](https://storyblok.github.io/storyblok-kotlin/content-api-client/com.storyblok.cdn/-storyblok-client/index.html) factory and provide your access token and preferred content version:
+To create a client, invoke the [`StoryblokClient`](https://storyblok.github.io/storyblok-kotlin/content-api-client/com.storyblok.cdn/-storyblok-client/index.html) factory method and provide your access token and preferred content version:
 
 ```kotlin
 val client = StoryblokClient(
@@ -49,6 +53,8 @@ The [`StoryblokClient`](https://storyblok.github.io/storyblok-kotlin/content-api
 
 ### Simple configuration
 
+Configuring default parameters for all requests is as simple as passing them to the factory function:
+
 ```kotlin
 val client = StoryblokClient(
     accessToken = "YOUR_ACCESS_TOKEN",
@@ -58,17 +64,19 @@ val client = StoryblokClient(
     cv = "1706094649"
 )
 ```
+> [!TIP]
+> Learn more about these parameters in the [Storyblok Ktor Client Plugin Guide](/../ktor-client-storyblok#configuring-default-parameters-for-all-requests).
 
 ### Advanced configuration
 
-For more control, you can provide custom builders for the API configuration, serialization, and JSON parsing:
+For more control, you can provide custom builders for API configuration, serialization, and JSON parsing:
 
 ```kotlin
 val client = StoryblokClient(
     apiBuilder = {
         accessToken = "YOUR_ACCESS_TOKEN"
         version = Published
-        language = "en"
+        region = Region.USA
     },
     serializersModuleBuilder = {
         // Register custom component serializers
@@ -78,6 +86,8 @@ val client = StoryblokClient(
     }
 )
 ```
+> [!TIP]
+> Learn more about the `apiBuilder` parameters in the [Storyblok Ktor Client Plugin Guide](/../ktor-client-storyblok#plugin-configuration).
 
 ## Registering custom components
 
@@ -114,13 +124,11 @@ val client = StoryblokClient(
 
 ### Fetching typed stories
 
-Once components are registered, you can fetch stories with type safety using the reified extension function:
+Once components are registered, if you know the type of `Component` your story contains you can fetch stories using the reified extension function:
 
 ```kotlin
 client.story<Page>("home")
-    .collect { story: Story<Page> -> 
-        println(story.content.title)
-    }
+    .collect { story -> println(story.content.title) }
 ```
 
 ### Unknown components
@@ -129,7 +137,7 @@ Components that are not registered will be deserialized as [`Component.Unknown`]
 
 ## Story relations
 
-The client automatically resolves [story relations](https://www.storyblok.com/docs/api/content-delivery/v2/getting-started/resolve-relations) based on your component definitions. When a component has a property of type `Story<T>`, the client will:
+The client automatically resolves [story relations](https://www.storyblok.com/docs/api/content-delivery/v2/stories/examples/retrieving-stories-with-resolved-relations) based on your component definitions. When a component has a property of type `Story<T>`, the client will:
 
 1. Detect the relation field from the serializers module
 2. Include the appropriate `resolve_relations` parameter in API requests  
