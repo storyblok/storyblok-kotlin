@@ -181,6 +181,7 @@ public interface StoryblokClient {
          *
          * @param accessToken The API access token for authentication.
          * @param version The content [version][Api.Config.Version] to retrieve (draft or published).
+         * @param region Optional [region][Api.Config.Region] depending on the server location of your space. Defaults to [EU][Api.Config.Region.EU].
          * @param language Optional language code for localized content.
          * @param fallbackLanguage Optional fallback language for untranslated fields.
          * @param cv Optional cache version timestamp.
@@ -189,6 +190,7 @@ public interface StoryblokClient {
         public operator fun invoke(
             accessToken: String,
             version: Version,
+            region: Api.Config.Region = Api.Config.Region.EU,
             language: String? = null,
             fallbackLanguage: String? = null,
             cv: String? = null,
@@ -197,6 +199,7 @@ public interface StoryblokClient {
             lenientJsonParsing = version == Version.Published,
             serializersModuleBuilder = { include(serializersModule) },
             apiBuilder = {
+                this.region = region
                 this.accessToken = accessToken
                 this.version = version
                 this.language = language
