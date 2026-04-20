@@ -51,6 +51,18 @@ import com.storyblok.material3.richtext.withListItem
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
+/**
+ * Creates a [BlokProvider] with default Material 3 composables for all [RichText] node types.
+ *
+ * Registers sensible defaults for rendering headings, paragraphs, lists, tables, code blocks,
+ * images, and inline text marks using Material 3 typography and color scheme.
+ *
+ * Custom component composables and overrides can be registered via the [builder] block.
+ *
+ * @param fallback Composable rendered for unknown or unregistered components.
+ * @param storyLinkListener Callback invoked when a story link is clicked, receiving the story UUID and optional anchor.
+ * @param builder Configuration block for registering blok composables via [BlokProviderScope].
+ */
 public fun blokProvider(
     fallback: @Composable (unknownComponent: Component, Modifier) -> Unit = { it, _ -> throw IllegalStateException("Unknown component ${it.component}") },
     storyLinkListener: (uuid: Uuid, anchor: String?) -> Unit = { _, _ -> TODO("No storyLinkListener provided to blokProvider()") },
