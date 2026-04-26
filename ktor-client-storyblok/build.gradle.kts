@@ -102,6 +102,10 @@ kotlin {
             api(libs.ktor.client.js)
         }
 
+        mingwX64Main.dependencies {
+            api(libs.ktor.client.winhttp)
+        }
+
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.kotlinx.coroutines.test)
