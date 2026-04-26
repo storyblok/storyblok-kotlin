@@ -41,8 +41,8 @@ jobs:
             os: ubuntu-latest
           - target: :content-api-client:wasmJsTest
             os: ubuntu-latest
-#          - target: :content-api-client:mingwX64Test
-#            os: windows-latest
+          - target: :content-api-client:mingwX64Test
+            os: windows-latest
           - target: :content-api-client:macosArm64Test
             os: macos-latest
           - target: :content-api-client:iosSimulatorArm64Test
