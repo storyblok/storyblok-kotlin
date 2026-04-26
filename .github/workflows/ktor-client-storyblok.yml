@@ -41,8 +41,8 @@ jobs:
             os: ubuntu-latest
           - target: :ktor-client-storyblok:wasmJsTest
             os: ubuntu-latest
-#          - target: :ktor-client-storyblok:mingwX64Test
-#            os: windows-latest
+          - target: :ktor-client-storyblok:mingwX64Test
+            os: windows-latest
           - target: :ktor-client-storyblok:macosArm64Test
             os: macos-latest
           - target: :ktor-client-storyblok:iosSimulatorArm64Test
