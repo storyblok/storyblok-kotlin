@@ -274,6 +274,7 @@ The `Storyblok` composable accepts the following configuration:
 |-----------|-------------|
 | `accessToken` | Your Storyblok access token |
 | `version` | Content version (`Draft` or `Published`) |
+| `region` | Server location of your space (`EU`, `USA`, `CAN`, `AUS`, `CHN`, or `Custom`). Defaults to `EU` |
 | `language` | Language code for content retrieval |
 | `fallbackLanguage` | Fallback language for untranslated fields |
 | `cv` | Cache version timestamp |
@@ -283,6 +284,7 @@ The `Storyblok` composable accepts the following configuration:
 Storyblok(
     accessToken = "YOUR_ACCESS_TOKEN",
     version = Published,
+    region = USA,
     language = "en",
     fallbackLanguage = "de",
     cv = "1706094649",
