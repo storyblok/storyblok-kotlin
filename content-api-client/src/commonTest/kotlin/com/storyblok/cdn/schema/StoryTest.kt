@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalUuidApi::class)
-
 package com.storyblok.cdn.schema
 
 import kotlinx.datetime.LocalDate
@@ -9,7 +7,6 @@ import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Instant
-import kotlin.uuid.ExperimentalUuidApi
 
 class StoryTest {
 

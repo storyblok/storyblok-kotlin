@@ -1,4 +1,3 @@
-@file:OptIn(InternalAPI::class, ExperimentalSerializationApi::class, ExperimentalUuidApi::class)
 @file:Suppress("UNCHECKED_CAST")
 
 package com.storyblok.cdn
@@ -33,7 +32,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.DeserializationStrategy
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.descriptors.elementDescriptors
@@ -55,7 +53,6 @@ import kotlinx.serialization.modules.SerializersModuleCollector
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.serializer
 import kotlin.reflect.KClass
-import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 /**
@@ -213,7 +210,6 @@ public interface StoryblokClient {
     }
 }
 
-@InternalAPI
 public class StoryblokClientImpl constructor(
     apiBuilder: Api.Config.Content.() -> Unit,
     serializersModuleBuilder: SerializersModuleBuilder.() -> Unit,
@@ -308,7 +304,7 @@ public class StoryblokClientImpl constructor(
                     .associateBy { it["uuid"]!!.jsonPrimitive.content }
 
                 json.decodeFromJsonElement(
-                    typeInfo.serializer() as KSerializer<Story<T>>,
+                    @OptIn(InternalAPI::class) typeInfo.serializer() as KSerializer<Story<T>>,
                     JsonObject(story + ("content" to story["content"]!!.jsonObject.resolve(rels)))
                 )
             }
