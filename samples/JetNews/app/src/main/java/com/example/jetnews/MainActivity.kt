@@ -53,7 +53,7 @@ import com.example.jetnews.ui.PostMetadata
 import com.example.jetnews.ui.defaultSpacerSize
 import com.example.jetnews.ui.theme.JetNewsTheme
 import com.storyblok.compose.Storyblok
-import com.storyblok.compose.provider.blokProvider
+import com.storyblok.compose.provider.blockProvider
 import com.storyblok.ktor.Api.Config.Version.*
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
@@ -73,7 +73,7 @@ class MainActivity : ComponentActivity() {
                     Storyblok(
                         accessToken = "t56rE6UQJVErhMrkKvAe8Att",
                         version = if (BuildConfig.DEBUG) Draft else Published,
-                        blokProvider = blokProvider(
+                        blockProvider = blockProvider(
                             fallback = { _, _ -> /* TODO: Show some kind of error UI */ },
                             storyLinkListener = { uuid, _ -> backStack.add(StoryKey(uuid = uuid)) }
                         ) {
@@ -82,22 +82,22 @@ class MainActivity : ComponentActivity() {
 
                             //Content Types
 
-                            blok<Post> { post, modifier ->
+                            block<Post> { post, modifier ->
                                 remember(post.uid) { post }
                                 CompositionLocalProvider(LocalPost provides post) {
                                     RichText(post.body, modifier.padding(16.dp))
                                 }
                             }
 
-                            blok<Feed> { page, modifier ->
+                            block<Feed> { page, modifier ->
                                 LazyColumn(modifier) {
-                                    items(page.body, key = { it.uid }) { Blok(it, Modifier.fillMaxWidth()) }
+                                    items(page.body, key = { it.uid }) { Block(it, Modifier.fillMaxWidth()) }
                                 }
                             }
 
                             // Nestables - Post
 
-                            blok<Header> { header, _ ->
+                            block<Header> { header, _ ->
                                 val post = LocalPost.current
                                 PostHeaderImage(post)
                                 Spacer(Modifier.height(defaultSpacerSize))
@@ -110,11 +110,11 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
 
-                            blok<Metadata> { _, modifier -> PostMetadata(LocalPost.current, modifier) }
+                            block<Metadata> { _, modifier -> PostMetadata(LocalPost.current, modifier) }
 
                             // Nestables - Feed
 
-                            blok<HighlightedPost> { highlighted, _ ->
+                            block<HighlightedPost> { highlighted, _ ->
                                 Text(
                                     modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
                                     text = highlighted.title,
@@ -127,7 +127,7 @@ class MainActivity : ComponentActivity() {
                                 PostListDivider()
                             }
 
-                            blok<RecommendedPosts> { recommended, modifier ->
+                            block<RecommendedPosts> { recommended, modifier ->
                                 Column(modifier) {
                                     recommended.posts.forEach { post ->
                                         PostCardHistory(post, recommended.strapline.uppercase(), { backStack.add(StoryKey(post)) })
@@ -136,7 +136,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
 
-                            blok<PopularPosts> { popular, modifier ->
+                            block<PopularPosts> { popular, modifier ->
                                 Column(modifier) {
                                     Text(
                                         modifier = Modifier.padding(16.dp),
@@ -159,7 +159,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
 
-                            blok<RecentPosts> { recent, modifier ->
+                            block<RecentPosts> { recent, modifier ->
                                 Column(modifier) {
                                     recent.posts.forEach { post ->
                                         PostCardSimple(
@@ -208,7 +208,7 @@ class MainActivity : ComponentActivity() {
                                         onRefresh = { isRefreshing = true },
                                         modifier = Modifier.fillMaxSize()
                                     ) {
-                                        Blok(story?.content ?: return@PullToRefreshBox)
+                                        Block(story?.content ?: return@PullToRefreshBox)
                                     }
                                 }
                             }
