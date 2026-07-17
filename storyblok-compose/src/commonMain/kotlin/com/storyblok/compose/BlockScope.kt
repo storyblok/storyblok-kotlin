@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
 /**
  * Scope providing composable functions for rendering Storyblok [Component] and [RichText] content.
  */
-public interface BlokScope {
+public interface BlockScope {
     /**
      * Renders a Storyblok [Component] using its registered composable.
      *
@@ -20,7 +20,7 @@ public interface BlokScope {
      * @param modifier Optional [Modifier] applied to the rendered content.
      */
     @Composable
-    public fun Blok(content: Component, modifier: Modifier = Modifier)
+    public fun Block(content: Component, modifier: Modifier = Modifier)
 
     /**
      * Renders a [RichText] node using its registered composable.
@@ -38,24 +38,41 @@ public interface BlokScope {
      */
     @Composable
     public fun AnnotatedString.Builder.RichText(content: RichText)
+
+    /** @suppress */
+    @Deprecated(
+        message = "Renamed to Block.",
+        replaceWith = ReplaceWith("Block(content, modifier)"),
+        level = DeprecationLevel.WARNING,
+    )
+    @Composable
+    public fun Blok(content: Component, modifier: Modifier = Modifier): Unit = Block(content, modifier)
 }
 
 @JvmInline
-internal value class BlokScopeImpl internal constructor(val providers: Map<Any, Provider>) : BlokScope {
+internal value class BlockScopeImpl internal constructor(val providers: Map<Any, Provider>) : BlockScope {
 
     @Composable
-    override fun Blok(content: Component, modifier: Modifier) =
-        providers.getOrElse(content::class) { error("No blok registered for ${content.component}") }
+    override fun Block(content: Component, modifier: Modifier) =
+        providers.getOrElse(content::class) { error("No block registered for ${content.component}") }
             .invoke(content, modifier)
 
     @Composable
     override fun RichText(content: RichText, modifier: Modifier) =
-        providers.getOrElse(content::class) { error("No rich text blok registered for ${content.type} accepting Modifier") }
+        providers.getOrElse(content::class) { error("No rich text block registered for ${content.type} accepting Modifier") }
             .invoke(content, modifier)
 
     @Composable
     override fun AnnotatedString.Builder.RichText(content: RichText) =
-        with(providers.getOrElse(content::class to AnnotatedString::class) { error("No rich text blok registered for ${content.type} receiving AnnotatedString.Builder") }) {
+        with(providers.getOrElse(content::class to AnnotatedString::class) { error("No rich text block registered for ${content.type} receiving AnnotatedString.Builder") }) {
             invoke(content)
         }
 }
+
+/** @suppress */
+@Deprecated(
+    message = "Renamed to BlockScope.",
+    replaceWith = ReplaceWith("BlockScope"),
+    level = DeprecationLevel.WARNING,
+)
+public typealias BlokScope = BlockScope
