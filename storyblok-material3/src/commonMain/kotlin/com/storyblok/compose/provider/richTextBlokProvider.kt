@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalUuidApi::class)
-
 package com.storyblok.compose.provider
 
 import androidx.compose.foundation.background
@@ -48,7 +46,6 @@ import com.storyblok.material3.richtext.CssColorParser
 import com.storyblok.material3.richtext.buildAnnotatedString
 import com.storyblok.material3.richtext.withList
 import com.storyblok.material3.richtext.withListItem
-import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 /**
