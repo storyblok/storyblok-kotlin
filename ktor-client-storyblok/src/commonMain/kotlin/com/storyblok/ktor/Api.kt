@@ -72,7 +72,6 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
             }
         }
 
-        @OptIn(InternalAPI::class)
         override fun ClientPluginBuilder<*>.configure(config: Content) {
             client.receivePipeline.intercept(HttpReceivePipeline.Before) { response ->
                 val modifiedHeaders = Headers.build {
@@ -87,7 +86,7 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
                         ?: "1"
                     append(HttpHeaders.CacheControl, headers.plus("max-age=$maxAge").sorted().joinToString(", "))
                 }
-                proceedWith(response.call.replaceResponse(modifiedHeaders) { response.content }.response)
+                proceedWith(response.call.replaceResponse(modifiedHeaders) { @OptIn(InternalAPI::class) response.content }.response)
             }
             onResponse { response ->
                 when(response.status) {

@@ -11,7 +11,6 @@ import io.ktor.http.*
 import io.ktor.http.HttpHeaders.Location
 import io.ktor.http.HttpStatusCode.Companion.MovedPermanently
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -131,7 +130,6 @@ class CapiTest {
         assertContains(client.get("stories/mock-slug").body<JsonObject>(), "story")
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `requests served from the cache are not subject to delays`() = runTest {
         val client = HttpClient(MockEngine.create {
