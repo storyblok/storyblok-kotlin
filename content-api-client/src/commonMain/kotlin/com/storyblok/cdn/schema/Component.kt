@@ -1,12 +1,8 @@
-@file:OptIn(ExperimentalUuidApi::class, ExperimentalSerializationApi::class)
-
 package com.storyblok.cdn.schema
 
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonIgnoreUnknownKeys
-import kotlin.uuid.ExperimentalUuidApi
 
 /**
  * Base class for all Storyblok components.
