@@ -331,7 +331,7 @@ public sealed class RichText {
     /** Embedded component block within rich text. */
     @Serializable
     @SerialName("blok")
-    public class Blok internal constructor(
+    public class Block internal constructor(
         @SerialName("attrs")
         internal val attributes: Attributes,
     ) : RichText() {
@@ -341,6 +341,14 @@ public sealed class RichText {
         @Serializable
         internal class Attributes(val id: String, val body: List<Component>)
     }
+
+    /** @suppress */
+    @Deprecated(
+        message = "Renamed to Block.",
+        replaceWith = ReplaceWith("Block"),
+        level = DeprecationLevel.WARNING,
+    )
+    public typealias Blok = Block
 
     /** List item node. */
     @Serializable

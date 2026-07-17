@@ -191,7 +191,7 @@ class Article(
 | Link | `RichText.Mark.Link` |
 | Horizontal Rule | `RichText.HorizontalRule` |
 | Table | `RichText.Table` |
-| Embedded Blok | `RichText.Blok` |
+| Embedded Block | `RichText.Block` |
 | Emoji | `RichText.Emoji` |
 | Hard Break | `RichText.HardBreak` |
 

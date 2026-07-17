@@ -359,6 +359,24 @@ sealed class com.storyblok.cdn.schema/RichText { // com.storyblok.cdn.schema/Ric
         open fun flatten(): kotlin.sequences/Sequence<com.storyblok.cdn.schema/RichText> // com.storyblok.cdn.schema/RichText.Composite.flatten|flatten(){}[0]
     }
 
+    final class Block : com.storyblok.cdn.schema/RichText { // com.storyblok.cdn.schema/RichText.Block|null[0]
+        final val body // com.storyblok.cdn.schema/RichText.Block.body|{}body[0]
+            final fun <get-body>(): kotlin.collections/List<com.storyblok.cdn.schema/Component> // com.storyblok.cdn.schema/RichText.Block.body.<get-body>|<get-body>(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<com.storyblok.cdn.schema/RichText.Block> { // com.storyblok.cdn.schema/RichText.Block.$serializer|null[0]
+            final val descriptor // com.storyblok.cdn.schema/RichText.Block.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // com.storyblok.cdn.schema/RichText.Block.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // com.storyblok.cdn.schema/RichText.Block.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): com.storyblok.cdn.schema/RichText.Block // com.storyblok.cdn.schema/RichText.Block.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, com.storyblok.cdn.schema/RichText.Block) // com.storyblok.cdn.schema/RichText.Block.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;com.storyblok.cdn.schema.RichText.Block){}[0]
+        }
+
+        final object Companion { // com.storyblok.cdn.schema/RichText.Block.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<com.storyblok.cdn.schema/RichText.Block> // com.storyblok.cdn.schema/RichText.Block.Companion.serializer|serializer(){}[0]
+        }
+    }
+
     final class Blockquote : com.storyblok.cdn.schema/RichText, com.storyblok.cdn.schema/RichText.Composite { // com.storyblok.cdn.schema/RichText.Blockquote|null[0]
         final val content // com.storyblok.cdn.schema/RichText.Blockquote.content|{}content[0]
             final fun <get-content>(): kotlin.collections/List<com.storyblok.cdn.schema/RichText> // com.storyblok.cdn.schema/RichText.Blockquote.content.<get-content>|<get-content>(){}[0]
@@ -376,24 +394,6 @@ sealed class com.storyblok.cdn.schema/RichText { // com.storyblok.cdn.schema/Ric
             final val $childSerializers // com.storyblok.cdn.schema/RichText.Blockquote.Companion.$childSerializers|{}$childSerializers[0]
 
             final fun serializer(): kotlinx.serialization/KSerializer<com.storyblok.cdn.schema/RichText.Blockquote> // com.storyblok.cdn.schema/RichText.Blockquote.Companion.serializer|serializer(){}[0]
-        }
-    }
-
-    final class Blok : com.storyblok.cdn.schema/RichText { // com.storyblok.cdn.schema/RichText.Blok|null[0]
-        final val body // com.storyblok.cdn.schema/RichText.Blok.body|{}body[0]
-            final fun <get-body>(): kotlin.collections/List<com.storyblok.cdn.schema/Component> // com.storyblok.cdn.schema/RichText.Blok.body.<get-body>|<get-body>(){}[0]
-
-        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<com.storyblok.cdn.schema/RichText.Blok> { // com.storyblok.cdn.schema/RichText.Blok.$serializer|null[0]
-            final val descriptor // com.storyblok.cdn.schema/RichText.Blok.$serializer.descriptor|{}descriptor[0]
-                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // com.storyblok.cdn.schema/RichText.Blok.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
-
-            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // com.storyblok.cdn.schema/RichText.Blok.$serializer.childSerializers|childSerializers(){}[0]
-            final fun deserialize(kotlinx.serialization.encoding/Decoder): com.storyblok.cdn.schema/RichText.Blok // com.storyblok.cdn.schema/RichText.Blok.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
-            final fun serialize(kotlinx.serialization.encoding/Encoder, com.storyblok.cdn.schema/RichText.Blok) // com.storyblok.cdn.schema/RichText.Blok.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;com.storyblok.cdn.schema.RichText.Blok){}[0]
-        }
-
-        final object Companion { // com.storyblok.cdn.schema/RichText.Blok.Companion|null[0]
-            final fun serializer(): kotlinx.serialization/KSerializer<com.storyblok.cdn.schema/RichText.Blok> // com.storyblok.cdn.schema/RichText.Blok.Companion.serializer|serializer(){}[0]
         }
     }
 
