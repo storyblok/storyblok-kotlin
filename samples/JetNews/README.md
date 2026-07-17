@@ -56,13 +56,13 @@ app/src/main/java/com/example/jetnews/
 
 ### Setting up the Storyblok composable
 
-The app wraps its content in the `Storyblok` composable with a `blokProvider`:
+The app wraps its content in the `Storyblok` composable with a `blockProvider`:
 
 ```kotlin
 Storyblok(
     accessToken = "YOUR_ACCESS_TOKEN",
     version = if (BuildConfig.DEBUG) Draft else Published,
-    blokProvider = blokProvider(
+    blockProvider = blockProvider(
         storyLinkListener = { uuid, _ -> backStack.add(StoryKey(uuid = uuid)) }
     ) {
         // Component registrations
@@ -89,21 +89,21 @@ data class Post(
 ) : Component()
 ```
 
-### Registering bloks
+### Registering blocks
 
 Each component is registered with a composable renderer:
 
 ```kotlin
-blok<Post> { post, modifier ->
+block<Post> { post, modifier ->
     CompositionLocalProvider(LocalPost provides post) {
         RichText(post.body, modifier.padding(16.dp))
     }
 }
 
-blok<Feed> { page, modifier ->
+block<Feed> { page, modifier ->
     LazyColumn(modifier) {
         items(page.body, key = { it.uid }) { 
-            Blok(it, Modifier.fillMaxWidth()) 
+            Block(it, Modifier.fillMaxWidth()) 
         }
     }
 }
@@ -117,7 +117,7 @@ Stories are fetched reactively using the `story()` function:
 val story by story(slug = "home").collectAsStateWithLifecycle(null)
 
 story?.let { 
-    Blok(it.content)
+    Block(it.content)
 }
 ```
 
