@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalCoroutinesApi::class, ExperimentalUuidApi::class,)
-
 package com.example.jetnews
 
 import android.os.Bundle
@@ -57,11 +55,9 @@ import com.example.jetnews.ui.theme.JetNewsTheme
 import com.storyblok.compose.Storyblok
 import com.storyblok.compose.provider.blokProvider
 import com.storyblok.ktor.Api.Config.Version.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onCompletion
-import kotlin.uuid.ExperimentalUuidApi
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
