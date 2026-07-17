@@ -14,7 +14,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
 import kotlin.concurrent.atomics.AtomicReference
-import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.concurrent.atomics.fetchAndUpdate
 import kotlin.concurrent.atomics.update
 import kotlin.time.Duration
@@ -44,7 +43,6 @@ internal expect fun HttpClientConfig<*>.configureEngine()
  * }
  *  ```
  */
-@OptIn(ExperimentalAtomicApi::class)
 public fun <T: Api.Config> HttpClientConfig<*>.Storyblok(api: Api<T>): ClientPlugin<T> {
     configureEngine()
 

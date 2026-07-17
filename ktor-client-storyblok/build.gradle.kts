@@ -28,6 +28,11 @@ dokka {
 
 kotlin {
     explicitApi()
+    compilerOptions {
+        optIn.addAll(
+            "kotlin.concurrent.atomics.ExperimentalAtomicApi",
+        )
+    }
     @OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
     abiValidation {
         enabled = true

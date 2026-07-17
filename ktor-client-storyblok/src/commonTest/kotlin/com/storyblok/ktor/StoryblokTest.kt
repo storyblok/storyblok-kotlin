@@ -15,7 +15,6 @@ import io.ktor.http.ContentType.Application.Json
 import io.ktor.http.HttpHeaders.ContentType
 import io.ktor.http.HttpMethod.Companion.Post
 import io.ktor.http.HttpMethod.Companion.Put
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -97,7 +96,6 @@ class StoryblokTest {
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `requests are throttled according to the specified value in requestsPerSecond`() = runTest {
         val client = HttpClient(MockEngine { respondOk() }) {
@@ -114,7 +112,6 @@ class StoryblokTest {
         assertEquals(1.seconds, timeAfterSubsequentRequest - timeAfterInitialRequest)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `when retying a request other requests made during the delay are also subject to the delay`() = runTest {
         val engine = MockEngine.create {
