@@ -49,7 +49,7 @@ import com.storyblok.material3.richtext.withListItem
 import kotlin.uuid.Uuid
 
 /**
- * Creates a [BlokProvider] with default Material 3 composables for all [RichText] node types.
+ * Creates a [BlockProvider] with default Material 3 composables for all [RichText] node types.
  *
  * Registers sensible defaults for rendering headings, paragraphs, lists, tables, code blocks,
  * images, and inline text marks using Material 3 typography and color scheme.
@@ -58,13 +58,13 @@ import kotlin.uuid.Uuid
  *
  * @param fallback Composable rendered for unknown or unregistered components.
  * @param storyLinkListener Callback invoked when a story link is clicked, receiving the story UUID and optional anchor.
- * @param builder Configuration block for registering blok composables via [BlokProviderScope].
+ * @param builder Configuration block for registering block composables via [BlockProviderScope].
  */
-public fun blokProvider(
+public fun blockProvider(
     fallback: @Composable (unknownComponent: Component, Modifier) -> Unit = { it, _ -> throw IllegalStateException("Unknown component ${it.component}") },
-    storyLinkListener: (uuid: Uuid, anchor: String?) -> Unit = { _, _ -> TODO("No storyLinkListener provided to blokProvider()") },
-    builder: BlokProviderScope.() -> Unit,
-): BlokProvider = blokProviderWithoutRichText(fallback) {
+    storyLinkListener: (uuid: Uuid, anchor: String?) -> Unit = { _, _ -> TODO("No storyLinkListener provided to blockProvider()") },
+    builder: BlockProviderScope.() -> Unit,
+): BlockProvider = blockProviderWithoutRichText(fallback) {
     builder()
 
     defaultRichText<RichText.Document> { document, modifier ->
@@ -230,8 +230,8 @@ public fun blokProvider(
         ) { header.content.forEach { RichText(it) } }
     }
 
-    defaultRichText<RichText.Blok> { blok, modifier ->
-        blok.body.forEach { Blok(it, modifier) }
+    defaultRichText<RichText.Block> { block, modifier ->
+        block.body.forEach { Block(it, modifier) }
     }
 }
 
@@ -243,3 +243,15 @@ private fun RichText.Composite.inlineContent(fontSize: TextUnit = LocalTextStyle
         val placeholder = Placeholder(fontSize, fontSize, PlaceholderVerticalAlign.TextCenter)
         image.id to InlineTextContent(placeholder) { AsyncImage(image.src, it) }
     }
+
+/** @suppress */
+@Deprecated(
+    message = "Renamed to blockProvider.",
+    replaceWith = ReplaceWith("blockProvider(fallback, storyLinkListener, builder)"),
+    level = DeprecationLevel.WARNING,
+)
+public fun blokProvider(
+    fallback: @Composable (unknownComponent: Component, Modifier) -> Unit = { it, _ -> throw IllegalStateException("Unknown component ${it.component}") },
+    storyLinkListener: (uuid: Uuid, anchor: String?) -> Unit = { _, _ -> TODO("No storyLinkListener provided to blockProvider()") },
+    builder: BlockProviderScope.() -> Unit,
+): BlockProvider = blockProvider(fallback, storyLinkListener, builder)
