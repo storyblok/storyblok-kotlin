@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalCoroutinesApi::class)
-
 package com.storyblok.compose
 
 import androidx.compose.runtime.Composable
@@ -10,7 +8,6 @@ import com.storyblok.ktor.Api.Config.Region
 import com.storyblok.ktor.Api.Config.Region.EU
 import com.storyblok.ktor.Api.Config.Version
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -34,7 +31,6 @@ private val clients = mutableMapOf<List<Any?>, StoryblokClient>()
  * @param blokProvider The [BlokProvider] containing registered component composables and serializers.
  * @param content The composable content rendered within the [StoryblokScope].
  */
-@OptIn(DelicateCoroutinesApi::class)
 @Composable
 public fun Storyblok(
     accessToken: String,
@@ -53,6 +49,7 @@ public fun Storyblok(
     DisposableEffect(clientKey) {
         onDispose {
             clientKeys.remove(clientKey)
+            @OptIn(DelicateCoroutinesApi::class)
             GlobalScope.launch {
                 delay(5.seconds)
                 if(clientKey in clientKeys) return@launch
