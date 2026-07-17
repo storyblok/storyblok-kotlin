@@ -20,7 +20,7 @@ internal sealed interface Provider {
     operator fun AnnotatedString.Builder.invoke(richText: com.storyblok.cdn.schema.RichText): Unit = TODO()
 
     @JvmInline
-    value class Blok<T : Component>(private val composable: @Composable (T, Modifier) -> Unit) : Provider {
+    value class Block<T : Component>(private val composable: @Composable (T, Modifier) -> Unit) : Provider {
         @Composable
         override fun invoke(content: Component, modifier: Modifier) = composable(content as T, modifier)
     }

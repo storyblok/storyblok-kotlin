@@ -3,7 +3,7 @@ package com.storyblok.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import com.storyblok.cdn.StoryblokClient
-import com.storyblok.compose.provider.BlokProvider
+import com.storyblok.compose.provider.BlockProvider
 import com.storyblok.ktor.Api.Config.Region
 import com.storyblok.ktor.Api.Config.Region.EU
 import com.storyblok.ktor.Api.Config.Version
@@ -20,7 +20,7 @@ private val clients = mutableMapOf<List<Any?>, StoryblokClient>()
  * Entry point composable for rendering Storyblok content.
  *
  * Creates a [StoryblokClient] and provides a [StoryblokScope] with access to both
- * the client and registered blok composables.
+ * the client and registered block composables.
  *
  * @param accessToken The API access token for authentication.
  * @param version The content [version][Version] to retrieve (draft or published).
@@ -28,7 +28,7 @@ private val clients = mutableMapOf<List<Any?>, StoryblokClient>()
  * @param language Optional language code for localized content.
  * @param fallbackLanguage Optional fallback language for untranslated fields.
  * @param cv Optional cache version timestamp.
- * @param blokProvider The [BlokProvider] containing registered component composables and serializers.
+ * @param blockProvider The [BlockProvider] containing registered component composables and serializers.
  * @param content The composable content rendered within the [StoryblokScope].
  */
 @Composable
@@ -39,7 +39,7 @@ public fun Storyblok(
     language: String? = null,
     fallbackLanguage: String? = null,
     cv: String? = null,
-    blokProvider: BlokProvider,
+    blockProvider: BlockProvider,
     content: @Composable StoryblokScope.() -> Unit,
 ) {
 
@@ -59,19 +59,19 @@ public fun Storyblok(
     }
 
     val client = clients.getOrPut(clientKey) {
-        StoryblokClient(accessToken, version, region, language, fallbackLanguage, cv, blokProvider.serializersModule)
+        StoryblokClient(accessToken, version, region, language, fallbackLanguage, cv, blockProvider.serializersModule)
     }
 
-    content(StoryblokScope(client, blokProvider.blokScope))
+    content(StoryblokScope(client, blockProvider.blockScope))
 }
 
 /**
- * Scope combining [StoryblokClient] and [BlokScope] capabilities.
+ * Scope combining [StoryblokClient] and [BlockScope] capabilities.
  *
- * Provides access to story fetching via [StoryblokClient] and component rendering via [BlokScope].
+ * Provides access to story fetching via [StoryblokClient] and component rendering via [BlockScope].
  */
 public class StoryblokScope(
     /** The underlying [StoryblokClient] used to fetch stories. */
     public val client: StoryblokClient,
-    blokScope: BlokScope
-) : BlokScope by blokScope, StoryblokClient by client
+    blockScope: BlockScope
+) : BlockScope by blockScope, StoryblokClient by client

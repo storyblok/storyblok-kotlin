@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import com.storyblok.cdn.schema.Component
 import com.storyblok.cdn.schema.RichText
-import com.storyblok.compose.BlokScope
+import com.storyblok.compose.BlockScope
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.modules.PolymorphicModuleBuilder
 import kotlinx.serialization.serializer
@@ -13,15 +13,15 @@ import kotlin.jvm.JvmName
 import kotlin.reflect.KClass
 
 /**
- * Scope for registering [Component] and [RichText] composables within a [BlokProvider].
+ * Scope for registering [Component] and [RichText] composables within a [BlockProvider].
  *
- * Also implements [BlokScope], allowing nested component rendering during registration.
+ * Also implements [BlockScope], allowing nested component rendering during registration.
  */
-public class BlokProviderScope internal constructor(
-    blokScope: BlokScope,
+public class BlockProviderScope internal constructor(
+    blockScope: BlockScope,
     private val providers: MutableMap<Any, Provider>,
     private val polymorphicModuleBuilder: PolymorphicModuleBuilder<Component>
-) : BlokScope by blokScope {
+) : BlockScope by blockScope {
 
     /**
      * Registers a headless component (serializer only, no composable).
@@ -30,7 +30,7 @@ public class BlokProviderScope internal constructor(
      * @param type The class of the component.
      * @param serializer The serializer for the component.
      */
-    public fun <T : Component> blok(type: KClass<T>, serializer: KSerializer<T>) {
+    public fun <T : Component> block(type: KClass<T>, serializer: KSerializer<T>) {
         polymorphicModuleBuilder.subclass(type, serializer)
     }
 
@@ -42,9 +42,9 @@ public class BlokProviderScope internal constructor(
      * @param serializer The serializer for the component.
      * @param composable The composable used to render the component.
      */
-    public fun <T : Component> blok(type: KClass<T>, serializer: KSerializer<T>, composable: @Composable (T, Modifier) -> Unit) {
-        require(type !in providers) { "A blok for ${type.simpleName} has already been registered" }
-        providers[type] = Provider.Blok(composable)
+    public fun <T : Component> block(type: KClass<T>, serializer: KSerializer<T>, composable: @Composable (T, Modifier) -> Unit) {
+        require(type !in providers) { "A block for ${type.simpleName} has already been registered" }
+        providers[type] = Provider.Block(composable)
         polymorphicModuleBuilder.subclass(type, serializer)
     }
 
@@ -56,7 +56,7 @@ public class BlokProviderScope internal constructor(
      * @param composable The composable used to render the node.
      */
     public fun <T : RichText> richText(type: KClass<T>, composable: @Composable (T, Modifier) -> Unit) {
-        require(type !in providers) { "A rich text blok for ${type.simpleName} has already been registered" }
+        require(type !in providers) { "A rich text block for ${type.simpleName} has already been registered" }
         providers[type] = Provider.RichText(composable)
     }
 
@@ -69,7 +69,7 @@ public class BlokProviderScope internal constructor(
      */
     @JvmName("richTextWithinAnnotatedStringBuilder")
     public fun <T : RichText> richText(type: KClass<out T>, builder: @Composable AnnotatedString.Builder.(T) -> Unit) {
-        require((type to AnnotatedString::class) !in providers) { "A rich text blok for ${type.simpleName} has already been registered" }
+        require((type to AnnotatedString::class) !in providers) { "A rich text block for ${type.simpleName} has already been registered" }
         providers[type to AnnotatedString::class] = Provider.RichTextWithinAnnotatedStringBuilder(builder)
     }
 
@@ -101,7 +101,7 @@ public class BlokProviderScope internal constructor(
      *
      * @param T The [Component] type to register.
      */
-    public inline fun <reified T : Component> blok(): Unit = blok(T::class, serializer<T>())
+    public inline fun <reified T : Component> block(): Unit = block(T::class, serializer<T>())
 
     /**
      * Registers a component with its composable using reified type information.
@@ -109,8 +109,8 @@ public class BlokProviderScope internal constructor(
      * @param T The [Component] type to register.
      * @param composable The composable used to render the component.
      */
-    public inline fun <reified T : Component> blok(noinline composable: @Composable (T, Modifier) -> Unit): Unit =
-        blok(T::class, serializer<T>(), composable)
+    public inline fun <reified T : Component> block(noinline composable: @Composable (T, Modifier) -> Unit): Unit =
+        block(T::class, serializer<T>(), composable)
 
     /**
      * Registers a rich text composable using reified type information.
@@ -150,5 +150,47 @@ public class BlokProviderScope internal constructor(
     public inline fun <reified T : RichText> defaultRichText(noinline builder: @Composable AnnotatedString.Builder.(T) -> Unit): Unit =
         defaultRichText(T::class, builder)
 
+    /** @suppress */
+    @Deprecated(
+        message = "Renamed to block.",
+        replaceWith = ReplaceWith("block(type, serializer)"),
+        level = DeprecationLevel.WARNING,
+    )
+    public fun <T : Component> blok(type: KClass<T>, serializer: KSerializer<T>): Unit =
+        block(type, serializer)
+
+    /** @suppress */
+    @Deprecated(
+        message = "Renamed to block.",
+        replaceWith = ReplaceWith("block(type, serializer, composable)"),
+        level = DeprecationLevel.WARNING,
+    )
+    public fun <T : Component> blok(type: KClass<T>, serializer: KSerializer<T>, composable: @Composable (T, Modifier) -> Unit): Unit =
+        block(type, serializer, composable)
+
+    /** @suppress */
+    @Deprecated(
+        message = "Renamed to block.",
+        replaceWith = ReplaceWith("block<T>()"),
+        level = DeprecationLevel.WARNING,
+    )
+    public inline fun <reified T : Component> blok(): Unit = block(T::class, serializer<T>())
+
+    /** @suppress */
+    @Deprecated(
+        message = "Renamed to block.",
+        replaceWith = ReplaceWith("block(composable)"),
+        level = DeprecationLevel.WARNING,
+    )
+    public inline fun <reified T : Component> blok(noinline composable: @Composable (T, Modifier) -> Unit): Unit =
+        block(T::class, serializer<T>(), composable)
 
 }
+
+/** @suppress */
+@Deprecated(
+    message = "Renamed to BlockProviderScope.",
+    replaceWith = ReplaceWith("BlockProviderScope"),
+    level = DeprecationLevel.WARNING,
+)
+public typealias BlokProviderScope = BlockProviderScope
