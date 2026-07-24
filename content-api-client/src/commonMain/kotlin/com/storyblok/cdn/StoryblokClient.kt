@@ -291,37 +291,39 @@ public class StoryblokClientImpl constructor(
 
             emit(response.body<String>())
         }
-            .distinctUntilChanged()
-            .map { response ->
-                val body = json.parseToJsonElement(response)
+        .distinctUntilChanged()
+        .map { response ->
+            val body = json.parseToJsonElement(response)
 
-                val story = body.jsonObject["story"]!!.jsonObject
+            val story = body.jsonObject["story"]!!.jsonObject
 
-                val rels = body.jsonObject["rels"]
-                    ?.jsonArray
-                    .orEmpty()
-                    .map { it.jsonObject }
-                    .associateBy { it["uuid"]!!.jsonPrimitive.content }
+            val rels = body.jsonObject["rels"]
+                ?.jsonArray
+                .orEmpty()
+                .map { it.jsonObject }
+                .associateBy { it["uuid"]!!.jsonPrimitive.content }
 
-                json.decodeFromJsonElement(
-                    @OptIn(InternalAPI::class) typeInfo.serializer() as KSerializer<Story<T>>,
-                    JsonObject(story + ("content" to story["content"]!!.jsonObject.resolve(rels)))
-                )
+            json.decodeFromJsonElement(
+                @OptIn(InternalAPI::class) typeInfo.serializer() as KSerializer<Story<T>>,
+                JsonObject(story + ("content" to story["content"]!!.jsonObject.resolve(rels)))
+            )
+        }
+        .catch {
+            if (it is CancellationException) {
+                currentCoroutineContext().ensureActive()
+                throw it
             }
-            .catch {
-                if (it is CancellationException) {
-                    currentCoroutineContext().ensureActive()
-                    throw it
-                }
-                val message = (it as? ServerResponseException)?.response?.bodyAsText() ?: it.message
-                throw StoryblokClientException(message, it)
-            }
+            val message = (it as? ServerResponseException)?.response?.bodyAsText() ?: it.message
+            throw StoryblokClientException(message, it)
+        }
 
     private fun JsonObject.resolve(rels: Map<String, JsonElement?>): JsonObject {
         val relations = relations[get("component")?.jsonPrimitive?.content].orEmpty()
         val replacements = entries.mapNotNull { (key, value) ->
             key to when(value) {
                 is JsonObject if "component" in value -> value.resolve(rels)
+                is JsonObject if (value["type"] as? JsonPrimitive)?.content == "doc" ->
+                    value.resolveRichText(rels)
                 is JsonPrimitive if value.isString && key in relations ->
                     rels[value.content]?.jsonObject?.resolve(rels) ?: JsonNull
                 is JsonArray -> when(val element = value.firstOrNull()) {
@@ -331,6 +333,25 @@ public class StoryblokClientImpl constructor(
                         .map { rels[it.jsonPrimitive.content]?.jsonObject?.resolve(rels) ?: JsonNull }
                         .let { JsonArray(it) }
                     else -> return@mapNotNull null
+                }
+                else -> return@mapNotNull null
+            }
+        }
+        return JsonObject(this + replacements.ifEmpty { return this })
+    }
+
+    /**
+     * Resolves relations of components embedded in a rich text node: `blok` nodes carry their components in
+     * `attrs.body`, all other nodes are traversed through their `content` arrays.
+     */
+    private fun JsonObject.resolveRichText(rels: Map<String, JsonElement?>): JsonObject {
+        val replacements = entries.mapNotNull { (key, value) ->
+            key to when(value) {
+                is JsonArray if key == "content" ->
+                    JsonArray(value.map { (it as? JsonObject)?.resolveRichText(rels) ?: it })
+                is JsonObject if key == "attrs" && (get("type") as? JsonPrimitive)?.content == "blok" -> {
+                    val body = value["body"] as? JsonArray ?: return@mapNotNull null
+                    JsonObject(value + ("body" to JsonArray(body.map { it.jsonObject.resolve(rels) })))
                 }
                 else -> return@mapNotNull null
             }
