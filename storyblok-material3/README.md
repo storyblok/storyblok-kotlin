@@ -11,7 +11,7 @@ The Material 3 provider requires adding the `storyblok-material3` artifact in yo
 
 ```kotlin
 dependencies {
-    implementation("com.storyblok:storyblok-material3:0.2.0")
+    implementation("com.storyblok:storyblok-material3:0.3.0")
 }
 ```
 
