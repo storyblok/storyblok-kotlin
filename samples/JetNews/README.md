@@ -147,8 +147,8 @@ And the following nestable components:
 The sample uses the following Storyblok dependencies:
 
 ```kotlin
-implementation("com.storyblok:storyblok-compose-android:0.2.0")
-implementation("com.storyblok:storyblok-material3-android:0.2.0")
+implementation("com.storyblok:storyblok-compose-android:0.3.0")
+implementation("com.storyblok:storyblok-material3-android:0.3.0")
 ```
 
 ## Learn More
