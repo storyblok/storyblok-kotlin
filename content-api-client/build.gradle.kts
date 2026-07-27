@@ -30,6 +30,7 @@ kotlin {
         optIn.addAll(
             "kotlinx.serialization.ExperimentalSerializationApi",
             "kotlin.uuid.ExperimentalUuidApi",
+            "com.storyblok.InternalAPI",
         )
     }
     @OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)

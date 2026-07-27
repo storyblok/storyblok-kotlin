@@ -65,7 +65,7 @@ class StoryblokClientTest {
             polymorphic(Component::class, Article::class, Article.serializer())
         }) as StoryblokClientImpl
 
-        assertEquals(mapOf("article" to setOf("author")), client.relations)
+        assertEquals(mapOf("article" to mapOf("author" to false)), client.relations)
     }
 
     @Test
@@ -77,7 +77,7 @@ class StoryblokClientTest {
         })  as StoryblokClientImpl
 
         assertEquals(
-            mapOf("featured" to setOf("article"), "article" to setOf("author")),
+            mapOf("featured" to mapOf("article" to false), "article" to mapOf("author" to false)),
             client.relations
         )
     }
@@ -89,7 +89,7 @@ class StoryblokClientTest {
             polymorphic(Component::class, PopularArticles::class, PopularArticles.serializer())
         }) as StoryblokClientImpl
 
-        assertEquals(mapOf("popular" to setOf("articles")), client.relations)
+        assertEquals(mapOf("popular" to mapOf("articles" to false)), client.relations)
     }
 
     @Test
@@ -366,3 +366,4 @@ class StoryblokClientTest {
         """
     }
 }
+             

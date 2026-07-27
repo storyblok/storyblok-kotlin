@@ -2,6 +2,7 @@
 
 package com.storyblok.cdn
 
+import com.storyblok.InternalAPI
 import com.storyblok.cdn.schema.Component
 import com.storyblok.cdn.schema.Story
 import com.storyblok.ktor.Api
@@ -22,7 +23,6 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.util.reflect.TypeInfo
 import io.ktor.util.reflect.serializer
 import io.ktor.util.reflect.typeInfo
-import io.ktor.utils.io.InternalAPI
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
@@ -241,6 +241,11 @@ public interface StoryblokClient {
     }
 }
 
+/**
+ * Default [StoryblokClient] implementation. Create clients through the [StoryblokClient] factory functions instead of
+ * instantiating this class directly.
+ */
+@InternalAPI
 public class StoryblokClientImpl constructor(
     apiBuilder: Api.Config.Content.() -> Unit,
     serializersModuleBuilder: SerializersModuleBuilder.() -> Unit,
@@ -267,7 +272,7 @@ public class StoryblokClientImpl constructor(
      * Relation fields per component, mapping each field name to whether its [Story] type is nullable (for list
      * relations, whether the list's element type is nullable).
      */
-    private val relationFields: Map<String, Map<String, Boolean>> =
+    public val relations: Map<String, Map<String, Boolean>> =
         buildMap {
             json.serializersModule.dumpTo(object : SerializersModuleCollector {
                 override fun <T : Any> contextual(kClass: KClass<T>, provider: (typeArgumentsSerializers: List<KSerializer<*>>) -> KSerializer<*>) = Unit
@@ -291,8 +296,6 @@ public class StoryblokClientImpl constructor(
             })
         }
 
-    public val relations: Map<String, Set<String>> = relationFields.mapValues { (_, fields) -> fields.keys }
-
     override fun close(): Unit = http.close()
 
     override fun story(slug: String, resolveLevel: Int): Flow<Story<Component>> =
@@ -315,11 +318,13 @@ public class StoryblokClientImpl constructor(
         flow {
 
             val resolveRelations = relations.entries
-                .joinToString(",") { (component, keys) -> keys.joinToString(",") { "$component.$it" } }
+                .joinToString(",") { (component, fields) -> fields.keys.joinToString(",") { "$component.$it" } }
 
             val parameters: HttpRequestBuilder.() -> Unit = {
-                if (resolveLevel > 0 && resolveRelations.isNotEmpty()) parameter("resolve_relations", resolveRelations)
-                if (resolveLevel >= 2) parameter("resolve_level", resolveLevel)
+                if(resolveRelations.isNotEmpty()) {
+                    if (resolveLevel > 0) parameter("resolve_relations", resolveRelations)
+                    if (resolveLevel >= 2) parameter("resolve_level", resolveLevel)
+                }
                 block()
             }
 
@@ -333,9 +338,7 @@ public class StoryblokClientImpl constructor(
                 if(e.response.status != HttpStatusCode.GatewayTimeout) throw e
             }
 
-            val response = http.get(uriString) {
-                parameters()
-            }
+            val response = http.get(uriString, parameters)
 
             emit(response.body<String>())
         }
@@ -352,7 +355,7 @@ public class StoryblokClientImpl constructor(
                 .associateBy { it["uuid"]!!.jsonPrimitive.content }
 
             json.decodeFromJsonElement(
-                @OptIn(InternalAPI::class) typeInfo.serializer() as KSerializer<Story<T>>,
+                @OptIn(io.ktor.utils.io.InternalAPI::class) typeInfo.serializer() as KSerializer<Story<T>>,
                 JsonObject(story + ("content" to story["content"]!!.jsonObject.resolve(rels, resolveLevel)))
             )
         }
@@ -370,7 +373,7 @@ public class StoryblokClientImpl constructor(
         resolveLevel: Int = 1,
         resolving: Map<String, Int> = emptyMap(),
     ): JsonObject {
-        val relations = relationFields[get("component")?.jsonPrimitive?.content].orEmpty()
+        val relations = relations[get("component")?.jsonPrimitive?.content].orEmpty()
         val replacements = entries.mapNotNull { (key, value) ->
             key to when(value) {
                 is JsonObject if "component" in value -> value.resolve(rels, resolveLevel, resolving)
@@ -406,8 +409,8 @@ public class StoryblokClientImpl constructor(
     ): JsonElement {
         val depth = resolving[uuid] ?: 0
         val circular = depth >= resolveLevel
-        val resolved = if (circular) null else rels[uuid]?.jsonObject?.resolve(rels, resolveLevel, resolving + (uuid to depth + 1))
-        if (resolved != null) return resolved
+        rels[uuid]?.takeUnless { circular }
+            ?.run { return jsonObject.resolve(rels, resolveLevel, resolving + (uuid to depth + 1)) }
         if (nullable) return JsonNull
         throw SerializationException(
             if (circular && resolveLevel > 0) "Circular story relation: $uuid (model the field as a nullable story)"
