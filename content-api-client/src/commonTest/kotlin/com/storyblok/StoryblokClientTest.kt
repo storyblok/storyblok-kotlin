@@ -19,6 +19,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.uuid.Uuid
 
 class StoryblokClientTest {
@@ -35,6 +37,8 @@ class StoryblokClientTest {
     class RichPage(val body: RichText.Document) : Component()
     @Serializable @SerialName("teaser")
     class Teaser(val headline: String) : Component()
+    @Serializable @SerialName("related")
+    class Related(val story: Story<Component>?) : Component()
 
     @Test
     fun `a relation is not added for a class without a story property`() = runTest {
@@ -109,6 +113,31 @@ class StoryblokClientTest {
         assertEquals("Hello", (article.content as Teaser).headline)
     }
 
+    @Test
+    fun `a circular relation resolves to null instead of recursing infinitely`() = runTest {
+        val client = StoryblokClientImpl(
+            apiBuilder = {},
+            serializersModuleBuilder = {
+                polymorphic(Component::class, Related::class, Related.serializer())
+            },
+            jsonBuilder = {
+                explicitNulls = false
+                ignoreUnknownKeys = true
+            },
+            http = HttpClient(MockEngine {
+                respond(CIRCULAR_RELATION_RESPONSE, headers = headersOf(HttpHeaders.ContentType, "application/json"))
+            }),
+        )
+
+        val story = client.story<Related>("first").first()
+
+        val second = assertNotNull(story.content.story)
+        val third = assertNotNull((second.content as Related).story)
+        assertEquals(Uuid.parse("b599571b-df7e-4c85-97d9-0b0798d8b23f"), second.uuid)
+        assertEquals(Uuid.parse("c2b7fd7a-3adf-45f4-9e40-5b8ba18cbb15"), third.uuid)
+        assertNull((third.content as Related).story)
+    }
+
     private companion object {
 
         /**
@@ -177,6 +206,43 @@ class StoryblokClientTest {
                     "headline": "Hello"
                   }
                 }
+              ]
+            }
+        """
+
+        /** Builds a minimal story JSON object whose `related` content references [relation]. */
+        fun relatedStory(id: Int, uuid: String, slug: String, relation: String) = """
+            {
+              "id": $id,
+              "uuid": "$uuid",
+              "name": "Related $id",
+              "slug": "$slug",
+              "full_slug": "$slug",
+              "created_at": "2026-01-01T00:00:00.000Z",
+              "position": 0,
+              "tag_list": [],
+              "is_startpage": false,
+              "group_id": "941f4176-cbe4-4c15-9dd4-4384e136ac53",
+              "lang": "default",
+              "alternates": [],
+              "content": {
+                "component": "related",
+                "_uid": "0a1e0a90-0000-0000-0000-00000000000$id",
+                "story": "$relation"
+              }
+            }
+        """
+
+        /**
+         * A `stories/first` response whose two rels reference each other (`related.story`): the second story points to
+         * the third and the third back to the second, so resolution must cut the cycle instead of recursing forever.
+         */
+        val CIRCULAR_RELATION_RESPONSE = """
+            {
+              "story": ${relatedStory(1, "a51df0b5-6d29-4d0c-bd28-a54f47cf46bf", "first", "b599571b-df7e-4c85-97d9-0b0798d8b23f")},
+              "rels": [
+                ${relatedStory(2, "b599571b-df7e-4c85-97d9-0b0798d8b23f", "second", "c2b7fd7a-3adf-45f4-9e40-5b8ba18cbb15")},
+                ${relatedStory(3, "c2b7fd7a-3adf-45f4-9e40-5b8ba18cbb15", "third", "b599571b-df7e-4c85-97d9-0b0798d8b23f")}
               ]
             }
         """

@@ -317,20 +317,20 @@ public class StoryblokClientImpl constructor(
             throw StoryblokClientException(message, it)
         }
 
-    private fun JsonObject.resolve(rels: Map<String, JsonElement?>): JsonObject {
+    private fun JsonObject.resolve(rels: Map<String, JsonElement?>, resolving: Set<String> = emptySet()): JsonObject {
         val relations = relations[get("component")?.jsonPrimitive?.content].orEmpty()
         val replacements = entries.mapNotNull { (key, value) ->
             key to when(value) {
-                is JsonObject if "component" in value -> value.resolve(rels)
+                is JsonObject if "component" in value -> value.resolve(rels, resolving)
                 is JsonObject if (value["type"] as? JsonPrimitive)?.content == "doc" ->
-                    value.resolveRichText(rels)
+                    value.resolveRichText(rels, resolving)
                 is JsonPrimitive if value.isString && key in relations ->
-                    rels[value.content]?.jsonObject?.resolve(rels) ?: JsonNull
+                    resolveRelation(value.content, rels, resolving)
                 is JsonArray -> when(val element = value.firstOrNull()) {
                     is JsonObject if "component" in element ->
-                        JsonArray(value.map { it.jsonObject.resolve(rels) })
+                        JsonArray(value.map { it.jsonObject.resolve(rels, resolving) })
                     is JsonPrimitive if element.isString && key in relations -> value
-                        .map { rels[it.jsonPrimitive.content]?.jsonObject?.resolve(rels) ?: JsonNull }
+                        .map { resolveRelation(it.jsonPrimitive.content, rels, resolving) }
                         .let { JsonArray(it) }
                     else -> return@mapNotNull null
                 }
@@ -341,17 +341,26 @@ public class StoryblokClientImpl constructor(
     }
 
     /**
+     * Substitutes a relation [uuid] with its story from [rels]. A uuid that is missing from [rels], or already being
+     * resolved further up the call stack (a circular relation, which should be modelled as a nullable story),
+     * resolves to [JsonNull].
+     */
+    private fun resolveRelation(uuid: String, rels: Map<String, JsonElement?>, resolving: Set<String>): JsonElement =
+        if (uuid in resolving) JsonNull
+        else rels[uuid]?.jsonObject?.resolve(rels, resolving + uuid) ?: JsonNull
+
+    /**
      * Resolves relations of components embedded in a rich text node: `blok` nodes carry their components in
      * `attrs.body`, all other nodes are traversed through their `content` arrays.
      */
-    private fun JsonObject.resolveRichText(rels: Map<String, JsonElement?>): JsonObject {
+    private fun JsonObject.resolveRichText(rels: Map<String, JsonElement?>, resolving: Set<String>): JsonObject {
         val replacements = entries.mapNotNull { (key, value) ->
             key to when(value) {
                 is JsonArray if key == "content" ->
-                    JsonArray(value.map { (it as? JsonObject)?.resolveRichText(rels) ?: it })
+                    JsonArray(value.map { (it as? JsonObject)?.resolveRichText(rels, resolving) ?: it })
                 is JsonObject if key == "attrs" && (get("type") as? JsonPrimitive)?.content == "blok" -> {
                     val body = value["body"] as? JsonArray ?: return@mapNotNull null
-                    JsonObject(value + ("body" to JsonArray(body.map { it.jsonObject.resolve(rels) })))
+                    JsonObject(value + ("body" to JsonArray(body.map { it.jsonObject.resolve(rels, resolving) })))
                 }
                 else -> return@mapNotNull null
             }
