@@ -10,11 +10,11 @@ abstract interface com.storyblok.cdn/StoryblokClient { // com.storyblok.cdn/Stor
     abstract val http // com.storyblok.cdn/StoryblokClient.http|{}http[0]
         abstract fun <get-http>(): io.ktor.client/HttpClient // com.storyblok.cdn/StoryblokClient.http.<get-http>|<get-http>(){}[0]
 
-    abstract fun <#A1: com.storyblok.cdn.schema/Component> story(kotlin.uuid/Uuid, io.ktor.util.reflect/TypeInfo): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A1>> // com.storyblok.cdn/StoryblokClient.story|story(kotlin.uuid.Uuid;io.ktor.util.reflect.TypeInfo){0§<com.storyblok.cdn.schema.Component>}[0]
-    abstract fun <#A1: com.storyblok.cdn.schema/Component> story(kotlin/String, io.ktor.util.reflect/TypeInfo): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A1>> // com.storyblok.cdn/StoryblokClient.story|story(kotlin.String;io.ktor.util.reflect.TypeInfo){0§<com.storyblok.cdn.schema.Component>}[0]
+    abstract fun <#A1: com.storyblok.cdn.schema/Component> story(kotlin.uuid/Uuid, io.ktor.util.reflect/TypeInfo, kotlin/Int = ...): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A1>> // com.storyblok.cdn/StoryblokClient.story|story(kotlin.uuid.Uuid;io.ktor.util.reflect.TypeInfo;kotlin.Int){0§<com.storyblok.cdn.schema.Component>}[0]
+    abstract fun <#A1: com.storyblok.cdn.schema/Component> story(kotlin/String, io.ktor.util.reflect/TypeInfo, kotlin/Int = ...): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A1>> // com.storyblok.cdn/StoryblokClient.story|story(kotlin.String;io.ktor.util.reflect.TypeInfo;kotlin.Int){0§<com.storyblok.cdn.schema.Component>}[0]
     abstract fun close() // com.storyblok.cdn/StoryblokClient.close|close(){}[0]
-    abstract fun story(kotlin.uuid/Uuid): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<com.storyblok.cdn.schema/Component>> // com.storyblok.cdn/StoryblokClient.story|story(kotlin.uuid.Uuid){}[0]
-    abstract fun story(kotlin/String): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<com.storyblok.cdn.schema/Component>> // com.storyblok.cdn/StoryblokClient.story|story(kotlin.String){}[0]
+    abstract fun story(kotlin.uuid/Uuid, kotlin/Int = ...): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<com.storyblok.cdn.schema/Component>> // com.storyblok.cdn/StoryblokClient.story|story(kotlin.uuid.Uuid;kotlin.Int){}[0]
+    abstract fun story(kotlin/String, kotlin/Int = ...): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<com.storyblok.cdn.schema/Component>> // com.storyblok.cdn/StoryblokClient.story|story(kotlin.String;kotlin.Int){}[0]
 
     final object Companion { // com.storyblok.cdn/StoryblokClient.Companion|null[0]
         final fun invoke(kotlin/Boolean = ..., kotlin/Function1<kotlinx.serialization.modules/SerializersModuleBuilder, kotlin/Unit>, kotlin/Function1<com.storyblok.ktor/Api.Config.Content, kotlin/Unit>): com.storyblok.cdn/StoryblokClient // com.storyblok.cdn/StoryblokClient.Companion.invoke|invoke(kotlin.Boolean;kotlin.Function1<kotlinx.serialization.modules.SerializersModuleBuilder,kotlin.Unit>;kotlin.Function1<com.storyblok.ktor.Api.Config.Content,kotlin.Unit>){}[0]
@@ -311,11 +311,11 @@ final class com.storyblok.cdn/StoryblokClientImpl : com.storyblok.cdn/StoryblokC
     final val relations // com.storyblok.cdn/StoryblokClientImpl.relations|{}relations[0]
         final fun <get-relations>(): kotlin.collections/Map<kotlin/String, kotlin.collections/Set<kotlin/String>> // com.storyblok.cdn/StoryblokClientImpl.relations.<get-relations>|<get-relations>(){}[0]
 
-    final fun <#A1: com.storyblok.cdn.schema/Component> story(kotlin.uuid/Uuid, io.ktor.util.reflect/TypeInfo): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A1>> // com.storyblok.cdn/StoryblokClientImpl.story|story(kotlin.uuid.Uuid;io.ktor.util.reflect.TypeInfo){0§<com.storyblok.cdn.schema.Component>}[0]
-    final fun <#A1: com.storyblok.cdn.schema/Component> story(kotlin/String, io.ktor.util.reflect/TypeInfo): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A1>> // com.storyblok.cdn/StoryblokClientImpl.story|story(kotlin.String;io.ktor.util.reflect.TypeInfo){0§<com.storyblok.cdn.schema.Component>}[0]
+    final fun <#A1: com.storyblok.cdn.schema/Component> story(kotlin.uuid/Uuid, io.ktor.util.reflect/TypeInfo, kotlin/Int): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A1>> // com.storyblok.cdn/StoryblokClientImpl.story|story(kotlin.uuid.Uuid;io.ktor.util.reflect.TypeInfo;kotlin.Int){0§<com.storyblok.cdn.schema.Component>}[0]
+    final fun <#A1: com.storyblok.cdn.schema/Component> story(kotlin/String, io.ktor.util.reflect/TypeInfo, kotlin/Int): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A1>> // com.storyblok.cdn/StoryblokClientImpl.story|story(kotlin.String;io.ktor.util.reflect.TypeInfo;kotlin.Int){0§<com.storyblok.cdn.schema.Component>}[0]
     final fun close() // com.storyblok.cdn/StoryblokClientImpl.close|close(){}[0]
-    final fun story(kotlin.uuid/Uuid): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<com.storyblok.cdn.schema/Component>> // com.storyblok.cdn/StoryblokClientImpl.story|story(kotlin.uuid.Uuid){}[0]
-    final fun story(kotlin/String): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<com.storyblok.cdn.schema/Component>> // com.storyblok.cdn/StoryblokClientImpl.story|story(kotlin.String){}[0]
+    final fun story(kotlin.uuid/Uuid, kotlin/Int): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<com.storyblok.cdn.schema/Component>> // com.storyblok.cdn/StoryblokClientImpl.story|story(kotlin.uuid.Uuid;kotlin.Int){}[0]
+    final fun story(kotlin/String, kotlin/Int): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<com.storyblok.cdn.schema/Component>> // com.storyblok.cdn/StoryblokClientImpl.story|story(kotlin.String;kotlin.Int){}[0]
 }
 
 open class com.storyblok.cdn/StoryblokClientException : kotlin/Exception { // com.storyblok.cdn/StoryblokClientException|null[0]
@@ -959,5 +959,5 @@ sealed class com.storyblok.cdn.schema/RichText { // com.storyblok.cdn.schema/Ric
 
 final object com.storyblok.serializers/StoryblokDateTimeSerializer : kotlinx.datetime.serializers/FormattedLocalDateTimeSerializer // com.storyblok.serializers/StoryblokDateTimeSerializer|null[0]
 
-final inline fun <#A: reified com.storyblok.cdn.schema/Component> (com.storyblok.cdn/StoryblokClient).com.storyblok.cdn/story(kotlin.uuid/Uuid): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A>> // com.storyblok.cdn/story|story@com.storyblok.cdn.StoryblokClient(kotlin.uuid.Uuid){0§<com.storyblok.cdn.schema.Component>}[0]
-final inline fun <#A: reified com.storyblok.cdn.schema/Component> (com.storyblok.cdn/StoryblokClient).com.storyblok.cdn/story(kotlin/String): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A>> // com.storyblok.cdn/story|story@com.storyblok.cdn.StoryblokClient(kotlin.String){0§<com.storyblok.cdn.schema.Component>}[0]
+final inline fun <#A: reified com.storyblok.cdn.schema/Component> (com.storyblok.cdn/StoryblokClient).com.storyblok.cdn/story(kotlin.uuid/Uuid, kotlin/Int = ...): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A>> // com.storyblok.cdn/story|story@com.storyblok.cdn.StoryblokClient(kotlin.uuid.Uuid;kotlin.Int){0§<com.storyblok.cdn.schema.Component>}[0]
+final inline fun <#A: reified com.storyblok.cdn.schema/Component> (com.storyblok.cdn/StoryblokClient).com.storyblok.cdn/story(kotlin/String, kotlin/Int = ...): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A>> // com.storyblok.cdn/story|story@com.storyblok.cdn.StoryblokClient(kotlin.String;kotlin.Int){0§<com.storyblok.cdn.schema.Component>}[0]
