@@ -39,6 +39,8 @@ class StoryblokClientTest {
     class Teaser(val headline: String) : Component()
     @Serializable @SerialName("related")
     class Related(val story: Story<Component>?) : Component()
+    @Serializable @SerialName("related")
+    class RelatedRaw(val story: String) : Component()
 
     @Test
     fun `a relation is not added for a class without a story property`() = runTest {
@@ -136,6 +138,61 @@ class StoryblokClientTest {
         assertEquals(Uuid.parse("b599571b-df7e-4c85-97d9-0b0798d8b23f"), second.uuid)
         assertEquals(Uuid.parse("c2b7fd7a-3adf-45f4-9e40-5b8ba18cbb15"), third.uuid)
         assertNull((third.content as Related).story)
+    }
+
+    @Test
+    fun `resolveLevel 2 resolves a circular relation one level deeper`() = runTest {
+        var resolveLevel: String? = null
+        val client = StoryblokClientImpl(
+            apiBuilder = {},
+            serializersModuleBuilder = {
+                polymorphic(Component::class, Related::class, Related.serializer())
+            },
+            jsonBuilder = {
+                explicitNulls = false
+                ignoreUnknownKeys = true
+            },
+            http = HttpClient(MockEngine { request ->
+                resolveLevel = request.url.parameters["resolve_level"]
+                respond(CIRCULAR_RELATION_RESPONSE, headers = headersOf(HttpHeaders.ContentType, "application/json"))
+            }),
+        )
+
+        val story = client.story<Related>("first", resolveLevel = 2).first()
+
+        assertEquals("2", resolveLevel)
+        val second = assertNotNull(story.content.story)
+        val third = assertNotNull((second.content as Related).story)
+        val fourth = assertNotNull((third.content as Related).story)
+        val fifth = assertNotNull((fourth.content as Related).story)
+        assertEquals(second.uuid, fourth.uuid)
+        assertEquals(third.uuid, fifth.uuid)
+        assertNull((fifth.content as Related).story)
+    }
+
+    @Test
+    fun `resolveLevel 0 disables relation resolution`() = runTest {
+        var resolveRelations: String? = null
+        val client = StoryblokClientImpl(
+            apiBuilder = {},
+            serializersModuleBuilder = {
+                polymorphic(Component::class, RelatedRaw::class, RelatedRaw.serializer())
+                polymorphic(Component::class, Article::class, Article.serializer())
+            },
+            jsonBuilder = {
+                explicitNulls = false
+                ignoreUnknownKeys = true
+            },
+            http = HttpClient(MockEngine { request ->
+                resolveRelations = request.url.parameters["resolve_relations"]
+                respond(CIRCULAR_RELATION_RESPONSE, headers = headersOf(HttpHeaders.ContentType, "application/json"))
+            }),
+        )
+
+        val story = client.story<RelatedRaw>("first", resolveLevel = 0).first()
+
+        assertNull(resolveRelations)
+        assertEquals("b599571b-df7e-4c85-97d9-0b0798d8b23f", story.content.story)
     }
 
     private companion object {

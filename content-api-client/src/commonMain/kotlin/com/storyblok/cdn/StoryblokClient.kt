@@ -76,20 +76,28 @@ public open class StoryblokClientException(message: String?, cause: Throwable?) 
  *
  * @param T The [Component] type of the story content.
  * @param slug The URL path segment identifying the story.
+ * @param resolveLevel How deeply nested [Story] relations are resolved. `1` (the default) resolves direct relations;
+ * higher values resolve relations of relations; `0` disables relation resolution entirely — model relation fields as
+ * [String] to receive the raw uuids. Relations that cannot be resolved within the level (including circular
+ * relations) resolve to `null` and should be modelled as nullable stories.
  * @return A [Flow] emitting the story, with potential cached and fresh values.
  */
-public inline fun <reified T : Component> StoryblokClient.story(slug: String): Flow<Story<T>> =
-    story(slug, typeInfo<Story<T>>())
+public inline fun <reified T : Component> StoryblokClient.story(slug: String, resolveLevel: Int = 1): Flow<Story<T>> =
+    story(slug, typeInfo<Story<T>>(), resolveLevel)
 
 /**
  * Retrieves a [Story] by its UUID using reified type information for the [Component] type.
  *
  * @param T The [Component] type of the story content.
  * @param uuid The unique identifier of the story.
+ * @param resolveLevel How deeply nested [Story] relations are resolved. `1` (the default) resolves direct relations;
+ * higher values resolve relations of relations; `0` disables relation resolution entirely — model relation fields as
+ * [String] to receive the raw uuids. Relations that cannot be resolved within the level (including circular
+ * relations) resolve to `null` and should be modelled as nullable stories.
  * @return A [Flow] emitting the story, with potential cached and fresh values.
  */
-public inline fun <reified T : Component> StoryblokClient.story(uuid: Uuid): Flow<Story<T>> =
-    story(uuid, typeInfo<Story<T>>())
+public inline fun <reified T : Component> StoryblokClient.story(uuid: Uuid, resolveLevel: Int = 1): Flow<Story<T>> =
+    story(uuid, typeInfo<Story<T>>(), resolveLevel)
 
 /**
  * Client for the Storyblok [Content Delivery API](https://www.storyblok.com/docs/api/content-delivery/v2).
@@ -108,17 +116,25 @@ public interface StoryblokClient {
      * Retrieves a [Story] by its slug.
      *
      * @param slug The URL path segment identifying the story.
+     * @param resolveLevel How deeply nested [Story] relations are resolved. `1` (the default) resolves direct
+     * relations; higher values resolve relations of relations; `0` disables relation resolution entirely — model
+     * relation fields as [String] to receive the raw uuids. Relations that cannot be resolved within the level
+     * (including circular relations) resolve to `null` and should be modelled as nullable stories.
      * @return A [Flow] emitting the story with [Component] content, with potential cached and fresh values.
      */
-    public fun story(slug: String): Flow<Story<Component>>
+    public fun story(slug: String, resolveLevel: Int = 1): Flow<Story<Component>>
 
     /**
      * Retrieves a [Story] by its UUID.
      *
      * @param uuid The unique identifier of the story.
+     * @param resolveLevel How deeply nested [Story] relations are resolved. `1` (the default) resolves direct
+     * relations; higher values resolve relations of relations; `0` disables relation resolution entirely — model
+     * relation fields as [String] to receive the raw uuids. Relations that cannot be resolved within the level
+     * (including circular relations) resolve to `null` and should be modelled as nullable stories.
      * @return A [Flow] emitting the story with [Component] content, with potential cached and fresh values.
      */
-    public fun story(uuid: Uuid): Flow<Story<Component>>
+    public fun story(uuid: Uuid, resolveLevel: Int = 1): Flow<Story<Component>>
 
     /**
      * Retrieves a [Story] by its slug with explicit type information for the [Component] type.
@@ -126,9 +142,13 @@ public interface StoryblokClient {
      * @param T The [Component] type of the story content.
      * @param slug The URL path segment identifying the story.
      * @param typeInfo Type information for deserialization.
+     * @param resolveLevel How deeply nested [Story] relations are resolved. `1` (the default) resolves direct
+     * relations; higher values resolve relations of relations; `0` disables relation resolution entirely — model
+     * relation fields as [String] to receive the raw uuids. Relations that cannot be resolved within the level
+     * (including circular relations) resolve to `null` and should be modelled as nullable stories.
      * @return A [Flow] emitting the story, with potential cached and fresh values.
      */
-    public fun <T : Component> story(slug: String, typeInfo: TypeInfo): Flow<Story<T>>
+    public fun <T : Component> story(slug: String, typeInfo: TypeInfo, resolveLevel: Int = 1): Flow<Story<T>>
 
     /**
      * Retrieves a [Story] by its UUID with explicit type information for the [Component] type.
@@ -136,9 +156,13 @@ public interface StoryblokClient {
      * @param T The [Component] type of the story content.
      * @param uuid The unique identifier of the story.
      * @param typeInfo Type information for deserialization.
+     * @param resolveLevel How deeply nested [Story] relations are resolved. `1` (the default) resolves direct
+     * relations; higher values resolve relations of relations; `0` disables relation resolution entirely — model
+     * relation fields as [String] to receive the raw uuids. Relations that cannot be resolved within the level
+     * (including circular relations) resolve to `null` and should be modelled as nullable stories.
      * @return A [Flow] emitting the story, with potential cached and fresh values.
      */
-    public fun <T : Component> story(uuid: Uuid, typeInfo: TypeInfo): Flow<Story<T>>
+    public fun <T : Component> story(uuid: Uuid, typeInfo: TypeInfo, resolveLevel: Int = 1): Flow<Story<T>>
 
     public companion object {
 
@@ -256,28 +280,38 @@ public class StoryblokClientImpl constructor(
 
     override fun close(): Unit = http.close()
 
-    override fun story(slug: String): Flow<Story<Component>> =
-        story(slug, typeInfo<Story<Component>>())
+    override fun story(slug: String, resolveLevel: Int): Flow<Story<Component>> =
+        story(slug, typeInfo<Story<Component>>(), resolveLevel)
 
-    override fun story(uuid: Uuid): Flow<Story<Component>> =
-        story(uuid, typeInfo<Story<Component>>())
+    override fun story(uuid: Uuid, resolveLevel: Int): Flow<Story<Component>> =
+        story(uuid, typeInfo<Story<Component>>(), resolveLevel)
 
-    override fun <T : Component> story(uuid: Uuid, typeInfo: TypeInfo): Flow<Story<T>> =
-        story(uriString = "stories/$uuid", typeInfo) { parameter("find_by", "uuid") }
-    override fun <T : Component> story(slug: String, typeInfo: TypeInfo): Flow<Story<T>> =
-        story(uriString = "stories/$slug", typeInfo)
+    override fun <T : Component> story(uuid: Uuid, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>> =
+        story(uriString = "stories/$uuid", typeInfo, resolveLevel) { parameter("find_by", "uuid") }
+    override fun <T : Component> story(slug: String, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>> =
+        story(uriString = "stories/$slug", typeInfo, resolveLevel)
 
-    private fun <T : Component> story(uriString: String, typeInfo: TypeInfo, block: HttpRequestBuilder.() -> Unit = {}) =
+    private fun <T : Component> story(
+        uriString: String,
+        typeInfo: TypeInfo,
+        resolveLevel: Int,
+        block: HttpRequestBuilder.() -> Unit = {},
+    ) =
         flow {
 
             val resolveRelations = relations.entries
                 .joinToString(",") { (component, keys) -> keys.joinToString(",") { "$component.$it" } }
 
+            val parameters: HttpRequestBuilder.() -> Unit = {
+                if (resolveLevel > 0 && resolveRelations.isNotEmpty()) parameter("resolve_relations", resolveRelations)
+                if (resolveLevel >= 2) parameter("resolve_level", resolveLevel)
+                block()
+            }
+
             try {
                 val cached = http.get(uriString) {
                     header(HttpHeaders.CacheControl, "only-if-cached, max-stale=${Int.MAX_VALUE}")
-                    parameter("resolve_relations", resolveRelations.ifEmpty { return@get })
-                    block()
+                    parameters()
                 }
                 emit(cached.body<String>())
             } catch (e: ServerResponseException) {
@@ -285,8 +319,7 @@ public class StoryblokClientImpl constructor(
             }
 
             val response = http.get(uriString) {
-                parameter("resolve_relations", resolveRelations.ifEmpty { return@get })
-                block()
+                parameters()
             }
 
             emit(response.body<String>())
@@ -303,9 +336,10 @@ public class StoryblokClientImpl constructor(
                 .map { it.jsonObject }
                 .associateBy { it["uuid"]!!.jsonPrimitive.content }
 
+            val content = story["content"]!!.jsonObject
             json.decodeFromJsonElement(
                 @OptIn(InternalAPI::class) typeInfo.serializer() as KSerializer<Story<T>>,
-                JsonObject(story + ("content" to story["content"]!!.jsonObject.resolve(rels)))
+                JsonObject(story + ("content" to if (resolveLevel > 0) content.resolve(rels, resolveLevel) else content))
             )
         }
         .catch {
@@ -317,20 +351,24 @@ public class StoryblokClientImpl constructor(
             throw StoryblokClientException(message, it)
         }
 
-    private fun JsonObject.resolve(rels: Map<String, JsonElement?>, resolving: Set<String> = emptySet()): JsonObject {
+    private fun JsonObject.resolve(
+        rels: Map<String, JsonElement?>,
+        resolveLevel: Int = 1,
+        resolving: Map<String, Int> = emptyMap(),
+    ): JsonObject {
         val relations = relations[get("component")?.jsonPrimitive?.content].orEmpty()
         val replacements = entries.mapNotNull { (key, value) ->
             key to when(value) {
-                is JsonObject if "component" in value -> value.resolve(rels, resolving)
+                is JsonObject if "component" in value -> value.resolve(rels, resolveLevel, resolving)
                 is JsonObject if (value["type"] as? JsonPrimitive)?.content == "doc" ->
-                    value.resolveRichText(rels, resolving)
+                    value.resolveRichText(rels, resolveLevel, resolving)
                 is JsonPrimitive if value.isString && key in relations ->
-                    resolveRelation(value.content, rels, resolving)
+                    resolveRelation(value.content, rels, resolveLevel, resolving)
                 is JsonArray -> when(val element = value.firstOrNull()) {
                     is JsonObject if "component" in element ->
-                        JsonArray(value.map { it.jsonObject.resolve(rels, resolving) })
+                        JsonArray(value.map { it.jsonObject.resolve(rels, resolveLevel, resolving) })
                     is JsonPrimitive if element.isString && key in relations -> value
-                        .map { resolveRelation(it.jsonPrimitive.content, rels, resolving) }
+                        .map { resolveRelation(it.jsonPrimitive.content, rels, resolveLevel, resolving) }
                         .let { JsonArray(it) }
                     else -> return@mapNotNull null
                 }
@@ -342,25 +380,36 @@ public class StoryblokClientImpl constructor(
 
     /**
      * Substitutes a relation [uuid] with its story from [rels]. A uuid that is missing from [rels], or already being
-     * resolved further up the call stack (a circular relation, which should be modelled as a nullable story),
-     * resolves to [JsonNull].
+     * resolved [resolveLevel] times further up the call stack (a circular relation, which should be modelled as a
+     * nullable story), resolves to [JsonNull].
      */
-    private fun resolveRelation(uuid: String, rels: Map<String, JsonElement?>, resolving: Set<String>): JsonElement =
-        if (uuid in resolving) JsonNull
-        else rels[uuid]?.jsonObject?.resolve(rels, resolving + uuid) ?: JsonNull
+    private fun resolveRelation(
+        uuid: String,
+        rels: Map<String, JsonElement?>,
+        resolveLevel: Int,
+        resolving: Map<String, Int>,
+    ): JsonElement {
+        val depth = resolving[uuid] ?: 0
+        return if (depth >= resolveLevel) JsonNull
+        else rels[uuid]?.jsonObject?.resolve(rels, resolveLevel, resolving + (uuid to depth + 1)) ?: JsonNull
+    }
 
     /**
      * Resolves relations of components embedded in a rich text node: `blok` nodes carry their components in
      * `attrs.body`, all other nodes are traversed through their `content` arrays.
      */
-    private fun JsonObject.resolveRichText(rels: Map<String, JsonElement?>, resolving: Set<String>): JsonObject {
+    private fun JsonObject.resolveRichText(
+        rels: Map<String, JsonElement?>,
+        resolveLevel: Int,
+        resolving: Map<String, Int>,
+    ): JsonObject {
         val replacements = entries.mapNotNull { (key, value) ->
             key to when(value) {
                 is JsonArray if key == "content" ->
-                    JsonArray(value.map { (it as? JsonObject)?.resolveRichText(rels, resolving) ?: it })
+                    JsonArray(value.map { (it as? JsonObject)?.resolveRichText(rels, resolveLevel, resolving) ?: it })
                 is JsonObject if key == "attrs" && (get("type") as? JsonPrimitive)?.content == "blok" -> {
                     val body = value["body"] as? JsonArray ?: return@mapNotNull null
-                    JsonObject(value + ("body" to JsonArray(body.map { it.jsonObject.resolve(rels, resolving) })))
+                    JsonObject(value + ("body" to JsonArray(body.map { it.jsonObject.resolve(rels, resolveLevel, resolving) })))
                 }
                 else -> return@mapNotNull null
             }
