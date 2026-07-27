@@ -87,12 +87,18 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        ref: ${{ github.head_ref }}
+        # Fork branches cannot be checked out by name from the base repository, so fall back to the merge commit.
+        ref: ${{ github.event.pull_request.head.repo.full_name == github.repository && github.head_ref || '' }}
     - uses: actions/setup-java@v4
       with:
         distribution: temurin
         java-version: 17
     - uses: gradle/actions/setup-gradle@v5
     - run: ./gradlew :ktor-client-storyblok:updateLegacyAbi
+    # The workflow token cannot push to fork branches, so auto-commit only same-repository changes and
+    # fail fork pull requests that have stale dumps with instructions instead.
     - uses: stefanzweifel/git-auto-commit-action@v6
+      if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    - if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
+      run: git diff --exit-code || { exit_code=$?; printf "*** This pull request changes the public API. Run './gradlew :ktor-client-storyblok:updateLegacyAbi' and commit the updated files. ***"; exit $exit_code; }
 
