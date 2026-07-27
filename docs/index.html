@@ -84,6 +84,59 @@
       <h3 class="">What is Storyblok?</h3>
       <p class="paragraph"><a href="https://www.storyblok.com">Storyblok</a> is a headless content management system (CMS) that empowers developers and content creators. It provides a visual editor for content teams while giving developers the flexibility to build with their preferred tech stack and deliver content through APIs to any platform or device.</p>
       <h3 class="">Changelog</h3>
+      <p class="paragraph"><strong>0.3.0</strong></p>
+      <ul>
+        <li>
+          <p class="paragraph">BREAKING CHANGE: the <code class="lang-kotlin">Storyblok(...)</code> composable's parameter is renamed   <code class="lang-kotlin">blokProvider</code> → <code class="lang-kotlin">blockProvider</code> so <strong>named-argument</strong> callers   must update the label. Positional callers are unaffected.</p>
+        </li>
+      </ul>
+      <div class="table--container">
+        <table>
+          <thead>
+            <tr>
+              <th>Old</th>
+              <th>New</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">RichText.Blok</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">RichText.Block</code></td>
+            </tr>
+            <tr>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">BlokScope</code> / <code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">.Blok()</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">BlockScope</code> / <code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">.Block()</code></td>
+            </tr>
+            <tr>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">BlokProvider</code> / <code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">.blokScope</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">BlockProvider</code> / <code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">.blockScope</code></td>
+            </tr>
+            <tr>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">BlokProviderScope</code> / <code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">blok(){}</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">BlockProviderScope</code> / <code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">block(){}</code></td>
+            </tr>
+            <tr>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">blokProvider()</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">blockProvider()</code></td>
+            </tr>
+            <tr>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">blokProviderWithoutRichText()</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">blockProviderWithoutRichText()</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ul>
+        <li>
+          <p class="paragraph">Fixed resolving relations for blocks embedded in rich text (com.storyblok.cdn.StoryblokClientException: Expected JsonObject, but had JsonLiteral) </p>
+        </li>
+        <li>
+          <p class="paragraph">Added a <code class="lang-kotlin">resolveLevel</code> parameter to the <code class="lang-kotlin">story()</code> functions to control how deeply story relations are resolved.</p>
+        </li>
+        <li>
+          <p class="paragraph">Fixed a <code class="lang-kotlin">StackOverflowError</code> when resolving circular story relations</p>
+        </li>
+      </ul>
       <p class="paragraph"><strong>0.2.0</strong></p>
       <ul>
         <li>
