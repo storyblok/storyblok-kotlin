@@ -6,6 +6,10 @@
 // - Show declarations: true
 
 // Library unique name: <storyblok-kotlin:content-api-client>
+open annotation class com.storyblok/InternalAPI : kotlin/Annotation { // com.storyblok/InternalAPI|null[0]
+    constructor <init>() // com.storyblok/InternalAPI.<init>|<init>(){}[0]
+}
+
 abstract interface com.storyblok.cdn/StoryblokClient { // com.storyblok.cdn/StoryblokClient|null[0]
     abstract val http // com.storyblok.cdn/StoryblokClient.http|{}http[0]
         abstract fun <get-http>(): io.ktor.client/HttpClient // com.storyblok.cdn/StoryblokClient.http.<get-http>|<get-http>(){}[0]
@@ -309,7 +313,7 @@ final class com.storyblok.cdn/StoryblokClientImpl : com.storyblok.cdn/StoryblokC
     final val json // com.storyblok.cdn/StoryblokClientImpl.json|{}json[0]
         final fun <get-json>(): kotlinx.serialization.json/Json // com.storyblok.cdn/StoryblokClientImpl.json.<get-json>|<get-json>(){}[0]
     final val relations // com.storyblok.cdn/StoryblokClientImpl.relations|{}relations[0]
-        final fun <get-relations>(): kotlin.collections/Map<kotlin/String, kotlin.collections/Set<kotlin/String>> // com.storyblok.cdn/StoryblokClientImpl.relations.<get-relations>|<get-relations>(){}[0]
+        final fun <get-relations>(): kotlin.collections/Map<kotlin/String, kotlin.collections/Map<kotlin/String, kotlin/Boolean>> // com.storyblok.cdn/StoryblokClientImpl.relations.<get-relations>|<get-relations>(){}[0]
 
     final fun <#A1: com.storyblok.cdn.schema/Component> story(kotlin.uuid/Uuid, io.ktor.util.reflect/TypeInfo, kotlin/Int): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A1>> // com.storyblok.cdn/StoryblokClientImpl.story|story(kotlin.uuid.Uuid;io.ktor.util.reflect.TypeInfo;kotlin.Int){0§<com.storyblok.cdn.schema.Component>}[0]
     final fun <#A1: com.storyblok.cdn.schema/Component> story(kotlin/String, io.ktor.util.reflect/TypeInfo, kotlin/Int): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A1>> // com.storyblok.cdn/StoryblokClientImpl.story|story(kotlin.String;io.ktor.util.reflect.TypeInfo;kotlin.Int){0§<com.storyblok.cdn.schema.Component>}[0]

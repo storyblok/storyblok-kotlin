@@ -1,3 +1,6 @@
+public abstract interface annotation class com/storyblok/InternalAPI : java/lang/annotation/Annotation {
+}
+
 public abstract interface class com/storyblok/cdn/StoryblokClient {
 	public static final field Companion Lcom/storyblok/cdn/StoryblokClient$Companion;
 	public abstract fun close ()V
