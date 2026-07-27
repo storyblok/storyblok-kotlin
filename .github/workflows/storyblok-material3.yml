@@ -74,8 +74,12 @@ jobs:
   api-dump:
     runs-on: ubuntu-latest
     if: github.repository != 'storyblok/storyblok-kotlin' || github.ref != 'refs/heads/main'
+    permissions:
+      contents: write
     steps:
     - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.head_ref }}
     - uses: actions/setup-java@v4
       with:
         distribution: temurin
