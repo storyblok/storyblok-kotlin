@@ -161,6 +161,38 @@ class PopularArticles(
 > [!TIP]
 > The maximum number of relations that can be resolved is 50 stories per request. This is a Storyblok API limitation.
 
+### Resolution depth
+
+How deeply relations are resolved can be controlled per request with the `resolveLevel` parameter of the `story()` functions:
+
+```kotlin
+// Resolve direct relations (the default)
+client.story<Page>("home")
+
+// Also resolve the relations of the resolved stories
+client.story<Page>("home", resolveLevel = 2)
+
+// Disable relation resolution entirely
+client.story<Page>("home", resolveLevel = 0)
+```
+
+- With `resolveLevel = 2` or higher, the [`resolve_level`](https://www.storyblok.com/docs/api/content-delivery/v2/stories/retrieve-a-single-story) parameter is included in API requests so that relations of the resolved stories are resolved as well.
+- With `resolveLevel = 0`, no relations are resolved and no `resolve_relations` parameter is sent — model relation fields as `Uuid` (or `String`) to receive the raw UUIDs.
+
+### Circular and unresolved relations
+
+Relations that cannot be resolved within the configured level resolve to `null`, so such fields must be modelled as nullable stories:
+
+```kotlin
+@Serializable
+@SerialName("article")
+class Article(
+    val relatedArticle: Story<Article>?  // may reference this article back
+) : Component()
+```
+
+This includes circular relations — stories referencing each other directly or indirectly — which are cut once the level is exhausted. If an unresolvable relation field is not nullable, decoding fails with an error naming the unresolved story's UUID.
+
 ## Rich text fields
 
 Rich text content from Storyblok is deserialized into a structured [`RichText`](https://storyblok.github.io/storyblok-kotlin/content-api-client/com.storyblok.cdn.schema/-rich-text/index.html) sealed class hierarchy. This allows you to render rich text content in a type-safe manner:

@@ -16,6 +16,8 @@
 | `blokProviderWithoutRichText()` | `blockProviderWithoutRichText()` |
 
 - Fixed resolving relations for blocks embedded in rich text (com.storyblok.cdn.StoryblokClientException: Expected JsonObject, but had JsonLiteral) 
+- Added a `resolveLevel` parameter to the `story()` functions to control how deeply story relations are resolved.
+- Fixed a `StackOverflowError` when resolving circular story relations
 
 **0.2.0**
 
