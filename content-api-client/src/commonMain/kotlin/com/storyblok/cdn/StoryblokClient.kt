@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.descriptors.elementDescriptors
 import kotlinx.serialization.descriptors.elementNames
@@ -79,7 +80,8 @@ public open class StoryblokClientException(message: String?, cause: Throwable?) 
  * @param resolveLevel How deeply nested [Story] relations are resolved. `1` (the default) resolves direct relations;
  * higher values resolve relations of relations; `0` disables relation resolution entirely — model relation fields as
  * [String] to receive the raw uuids. Relations that cannot be resolved within the level (including circular
- * relations) resolve to `null` and should be modelled as nullable stories.
+ * relations) resolve to `null` for nullable story fields, and fail with a [StoryblokClientException] naming the
+ * uuid for non-nullable ones.
  * @return A [Flow] emitting the story, with potential cached and fresh values.
  */
 public inline fun <reified T : Component> StoryblokClient.story(slug: String, resolveLevel: Int = 1): Flow<Story<T>> =
@@ -93,7 +95,8 @@ public inline fun <reified T : Component> StoryblokClient.story(slug: String, re
  * @param resolveLevel How deeply nested [Story] relations are resolved. `1` (the default) resolves direct relations;
  * higher values resolve relations of relations; `0` disables relation resolution entirely — model relation fields as
  * [String] to receive the raw uuids. Relations that cannot be resolved within the level (including circular
- * relations) resolve to `null` and should be modelled as nullable stories.
+ * relations) resolve to `null` for nullable story fields, and fail with a [StoryblokClientException] naming the
+ * uuid for non-nullable ones.
  * @return A [Flow] emitting the story, with potential cached and fresh values.
  */
 public inline fun <reified T : Component> StoryblokClient.story(uuid: Uuid, resolveLevel: Int = 1): Flow<Story<T>> =
@@ -119,7 +122,8 @@ public interface StoryblokClient {
      * @param resolveLevel How deeply nested [Story] relations are resolved. `1` (the default) resolves direct
      * relations; higher values resolve relations of relations; `0` disables relation resolution entirely — model
      * relation fields as [String] to receive the raw uuids. Relations that cannot be resolved within the level
-     * (including circular relations) resolve to `null` and should be modelled as nullable stories.
+     * (including circular relations) resolve to `null` for nullable story fields, and fail with a
+     * [StoryblokClientException] naming the uuid for non-nullable ones.
      * @return A [Flow] emitting the story with [Component] content, with potential cached and fresh values.
      */
     public fun story(slug: String, resolveLevel: Int = 1): Flow<Story<Component>>
@@ -131,7 +135,8 @@ public interface StoryblokClient {
      * @param resolveLevel How deeply nested [Story] relations are resolved. `1` (the default) resolves direct
      * relations; higher values resolve relations of relations; `0` disables relation resolution entirely — model
      * relation fields as [String] to receive the raw uuids. Relations that cannot be resolved within the level
-     * (including circular relations) resolve to `null` and should be modelled as nullable stories.
+     * (including circular relations) resolve to `null` for nullable story fields, and fail with a
+     * [StoryblokClientException] naming the uuid for non-nullable ones.
      * @return A [Flow] emitting the story with [Component] content, with potential cached and fresh values.
      */
     public fun story(uuid: Uuid, resolveLevel: Int = 1): Flow<Story<Component>>
@@ -145,7 +150,8 @@ public interface StoryblokClient {
      * @param resolveLevel How deeply nested [Story] relations are resolved. `1` (the default) resolves direct
      * relations; higher values resolve relations of relations; `0` disables relation resolution entirely — model
      * relation fields as [String] to receive the raw uuids. Relations that cannot be resolved within the level
-     * (including circular relations) resolve to `null` and should be modelled as nullable stories.
+     * (including circular relations) resolve to `null` for nullable story fields, and fail with a
+     * [StoryblokClientException] naming the uuid for non-nullable ones.
      * @return A [Flow] emitting the story, with potential cached and fresh values.
      */
     public fun <T : Component> story(slug: String, typeInfo: TypeInfo, resolveLevel: Int = 1): Flow<Story<T>>
@@ -159,7 +165,8 @@ public interface StoryblokClient {
      * @param resolveLevel How deeply nested [Story] relations are resolved. `1` (the default) resolves direct
      * relations; higher values resolve relations of relations; `0` disables relation resolution entirely — model
      * relation fields as [String] to receive the raw uuids. Relations that cannot be resolved within the level
-     * (including circular relations) resolve to `null` and should be modelled as nullable stories.
+     * (including circular relations) resolve to `null` for nullable story fields, and fail with a
+     * [StoryblokClientException] naming the uuid for non-nullable ones.
      * @return A [Flow] emitting the story, with potential cached and fresh values.
      */
     public fun <T : Component> story(uuid: Uuid, typeInfo: TypeInfo, resolveLevel: Int = 1): Flow<Story<T>>
@@ -256,7 +263,11 @@ public class StoryblokClientImpl constructor(
     }
 ) : StoryblokClient {
 
-    public val relations: Map<String, Set<String>> =
+    /**
+     * Relation fields per component, mapping each field name to whether its [Story] type is nullable (for list
+     * relations, whether the list's element type is nullable).
+     */
+    private val relationFields: Map<String, Map<String, Boolean>> =
         buildMap {
             json.serializersModule.dumpTo(object : SerializersModuleCollector {
                 override fun <T : Any> contextual(kClass: KClass<T>, provider: (typeArgumentsSerializers: List<KSerializer<*>>) -> KSerializer<*>) = Unit
@@ -269,14 +280,18 @@ public class StoryblokClientImpl constructor(
                     actualSerializer: KSerializer<Sub>
                 ): Unit = with(actualSerializer.descriptor) {
                     elementNames
-                        .filterIndexed { index, _ ->
+                        .withIndex()
+                        .mapNotNull { (index, name) ->
                             generateSequence(getElementDescriptor(index)) { it.elementDescriptors.singleOrNull() }
-                                .any { "com.storyblok.cdn.schema.Story" in it.serialName }
+                                .firstOrNull { "com.storyblok.cdn.schema.Story" in it.serialName }
+                                ?.let { name to it.isNullable }
                         }
-                        .let { put(serialName, it.ifEmpty { return@let }.toSet())}
+                        .let { put(serialName, it.ifEmpty { return@let }.toMap()) }
                 }
             })
         }
+
+    public val relations: Map<String, Set<String>> = relationFields.mapValues { (_, fields) -> fields.keys }
 
     override fun close(): Unit = http.close()
 
@@ -336,10 +351,9 @@ public class StoryblokClientImpl constructor(
                 .map { it.jsonObject }
                 .associateBy { it["uuid"]!!.jsonPrimitive.content }
 
-            val content = story["content"]!!.jsonObject
             json.decodeFromJsonElement(
                 @OptIn(InternalAPI::class) typeInfo.serializer() as KSerializer<Story<T>>,
-                JsonObject(story + ("content" to if (resolveLevel > 0) content.resolve(rels, resolveLevel) else content))
+                JsonObject(story + ("content" to story["content"]!!.jsonObject.resolve(rels, resolveLevel)))
             )
         }
         .catch {
@@ -356,19 +370,19 @@ public class StoryblokClientImpl constructor(
         resolveLevel: Int = 1,
         resolving: Map<String, Int> = emptyMap(),
     ): JsonObject {
-        val relations = relations[get("component")?.jsonPrimitive?.content].orEmpty()
+        val relations = relationFields[get("component")?.jsonPrimitive?.content].orEmpty()
         val replacements = entries.mapNotNull { (key, value) ->
             key to when(value) {
                 is JsonObject if "component" in value -> value.resolve(rels, resolveLevel, resolving)
                 is JsonObject if (value["type"] as? JsonPrimitive)?.content == "doc" ->
                     value.resolveRichText(rels, resolveLevel, resolving)
                 is JsonPrimitive if value.isString && key in relations ->
-                    resolveRelation(value.content, rels, resolveLevel, resolving)
+                    resolveRelation(value.content, rels, resolveLevel, resolving, nullable = relations.getValue(key))
                 is JsonArray -> when(val element = value.firstOrNull()) {
                     is JsonObject if "component" in element ->
                         JsonArray(value.map { it.jsonObject.resolve(rels, resolveLevel, resolving) })
                     is JsonPrimitive if element.isString && key in relations -> value
-                        .map { resolveRelation(it.jsonPrimitive.content, rels, resolveLevel, resolving) }
+                        .map { resolveRelation(it.jsonPrimitive.content, rels, resolveLevel, resolving, nullable = relations.getValue(key)) }
                         .let { JsonArray(it) }
                     else -> return@mapNotNull null
                 }
@@ -380,18 +394,25 @@ public class StoryblokClientImpl constructor(
 
     /**
      * Substitutes a relation [uuid] with its story from [rels]. A uuid that is missing from [rels], or already being
-     * resolved [resolveLevel] times further up the call stack (a circular relation, which should be modelled as a
-     * nullable story), resolves to [JsonNull].
+     * resolved [resolveLevel] times further up the call stack (a circular relation), resolves to [JsonNull] when the
+     * story field is [nullable], and fails with a [SerializationException] naming the uuid otherwise.
      */
     private fun resolveRelation(
         uuid: String,
         rels: Map<String, JsonElement?>,
         resolveLevel: Int,
         resolving: Map<String, Int>,
+        nullable: Boolean,
     ): JsonElement {
         val depth = resolving[uuid] ?: 0
-        return if (depth >= resolveLevel) JsonNull
-        else rels[uuid]?.jsonObject?.resolve(rels, resolveLevel, resolving + (uuid to depth + 1)) ?: JsonNull
+        val circular = depth >= resolveLevel
+        val resolved = if (circular) null else rels[uuid]?.jsonObject?.resolve(rels, resolveLevel, resolving + (uuid to depth + 1))
+        if (resolved != null) return resolved
+        if (nullable) return JsonNull
+        throw SerializationException(
+            if (circular && resolveLevel > 0) "Circular story relation: $uuid (model the field as a nullable story)"
+            else "Unresolved story relation: $uuid (model the field as a nullable story, or as a String to receive the raw uuid)"
+        )
     }
 
     /**

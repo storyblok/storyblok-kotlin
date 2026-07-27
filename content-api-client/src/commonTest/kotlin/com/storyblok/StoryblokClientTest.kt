@@ -1,6 +1,7 @@
 package com.storyblok
 
 import com.storyblok.cdn.StoryblokClient
+import com.storyblok.cdn.StoryblokClientException
 import com.storyblok.cdn.StoryblokClientImpl
 import com.storyblok.cdn.story
 import com.storyblok.cdn.schema.Component
@@ -16,9 +17,13 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.modules.SerializersModule
 import kotlin.test.Test
+import kotlin.test.assertContains
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.uuid.Uuid
@@ -41,6 +46,8 @@ class StoryblokClientTest {
     class Related(val story: Story<Component>?) : Component()
     @Serializable @SerialName("related")
     class RelatedRaw(val story: String) : Component()
+    @Serializable @SerialName("related")
+    class RelatedRequired(val story: Story<Component>) : Component()
 
     @Test
     fun `a relation is not added for a class without a story property`() = runTest {
@@ -171,6 +178,50 @@ class StoryblokClientTest {
     }
 
     @Test
+    fun `an unresolved non-nullable relation fails with the uuid in the message`() = runTest {
+        val client = StoryblokClientImpl(
+            apiBuilder = {},
+            serializersModuleBuilder = {
+                polymorphic(Component::class, RelatedRequired::class, RelatedRequired.serializer())
+            },
+            jsonBuilder = {
+                explicitNulls = false
+                ignoreUnknownKeys = true
+            },
+            http = HttpClient(MockEngine {
+                respond(UNRESOLVED_RELATION_RESPONSE, headers = headersOf(HttpHeaders.ContentType, "application/json"))
+            }),
+        )
+
+        val exception = assertFailsWith<StoryblokClientException> { client.story<RelatedRequired>("first").first() }
+
+        assertIs<SerializationException>(exception.cause)
+        assertContains(assertNotNull(exception.message), "Unresolved story relation: d81538cf-5f75-4a5f-a8ab-a1e8fd276949")
+    }
+
+    @Test
+    fun `a circular non-nullable relation fails with the uuid in the message`() = runTest {
+        val client = StoryblokClientImpl(
+            apiBuilder = {},
+            serializersModuleBuilder = {
+                polymorphic(Component::class, RelatedRequired::class, RelatedRequired.serializer())
+            },
+            jsonBuilder = {
+                explicitNulls = false
+                ignoreUnknownKeys = true
+            },
+            http = HttpClient(MockEngine {
+                respond(CIRCULAR_RELATION_RESPONSE, headers = headersOf(HttpHeaders.ContentType, "application/json"))
+            }),
+        )
+
+        val exception = assertFailsWith<StoryblokClientException> { client.story<RelatedRequired>("first").first() }
+
+        assertIs<SerializationException>(exception.cause)
+        assertContains(assertNotNull(exception.message), "Circular story relation: b599571b-df7e-4c85-97d9-0b0798d8b23f")
+    }
+
+    @Test
     fun `resolveLevel 0 disables relation resolution`() = runTest {
         var resolveRelations: String? = null
         val client = StoryblokClientImpl(
@@ -287,6 +338,16 @@ class StoryblokClientTest {
                 "_uid": "0a1e0a90-0000-0000-0000-00000000000$id",
                 "story": "$relation"
               }
+            }
+        """
+
+        /**
+         * A `stories/first` response whose relation (`related.story`) references a story that is not in `rels`.
+         */
+        val UNRESOLVED_RELATION_RESPONSE = """
+            {
+              "story": ${relatedStory(1, "a51df0b5-6d29-4d0c-bd28-a54f47cf46bf", "first", "d81538cf-5f75-4a5f-a8ab-a1e8fd276949")},
+              "rels": []
             }
         """
 
