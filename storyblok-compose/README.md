@@ -266,6 +266,8 @@ val homeStory by story<Page>("home").collectAsState(null)
 val articleStory by story<Article>(Uuid.parse("...")).collectAsState(null)
 ```
 
+The `story()` functions also accept a `resolveLevel` parameter to control how deeply story relations are resolved — see [Story relations](../content-api-client/README.md#story-relations) in the Content Delivery API Client guide.
+
 ## Configuration options
 
 The `Storyblok` composable accepts the following configuration:
