@@ -31,10 +31,10 @@ public final class com/storyblok/compose/StoryblokScope : com/storyblok/cdn/Stor
 	public fun close ()V
 	public final fun getClient ()Lcom/storyblok/cdn/StoryblokClient;
 	public fun getHttp ()Lio/ktor/client/HttpClient;
-	public fun story (Ljava/lang/String;)Lkotlinx/coroutines/flow/Flow;
-	public fun story (Ljava/lang/String;Lio/ktor/util/reflect/TypeInfo;)Lkotlinx/coroutines/flow/Flow;
-	public fun story (Lkotlin/uuid/Uuid;)Lkotlinx/coroutines/flow/Flow;
-	public fun story (Lkotlin/uuid/Uuid;Lio/ktor/util/reflect/TypeInfo;)Lkotlinx/coroutines/flow/Flow;
+	public fun story (Ljava/lang/String;I)Lkotlinx/coroutines/flow/Flow;
+	public fun story (Ljava/lang/String;Lio/ktor/util/reflect/TypeInfo;I)Lkotlinx/coroutines/flow/Flow;
+	public fun story (Lkotlin/uuid/Uuid;I)Lkotlinx/coroutines/flow/Flow;
+	public fun story (Lkotlin/uuid/Uuid;Lio/ktor/util/reflect/TypeInfo;I)Lkotlinx/coroutines/flow/Flow;
 }
 
 public final class com/storyblok/compose/provider/BlockProvider {
