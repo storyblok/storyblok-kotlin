@@ -1,5 +1,10 @@
 ### Changelog
 
+**0.4.0**
+
+- The Content Delivery API Client now persists its HTTP cache to disk on JVM and Android, so cached
+  responses survive a process restart. Other targets are unchanged and keep the in-memory cache.
+
 **0.3.0**
 
 - BREAKING CHANGE: the `Storyblok(...)` composable's parameter is renamed

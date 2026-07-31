@@ -3,6 +3,8 @@ package com.storyblok
 import com.storyblok.cdn.StoryblokClient
 import com.storyblok.cdn.StoryblokClientException
 import com.storyblok.cdn.StoryblokClientImpl
+import com.storyblok.cdn.fileCacheStorage
+import com.storyblok.cdn.httpCacheStorage
 import com.storyblok.cdn.story
 import com.storyblok.cdn.schema.Component
 import com.storyblok.cdn.schema.RichText
@@ -19,16 +21,25 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.modules.SerializersModule
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.uuid.Uuid
 
 class StoryblokClientTest {
+
+    // FileStorage creates its directory as soon as a client is constructed, so without this the
+    // tests would leave directories in the developer's real cache directory.
+    @BeforeTest
+    fun disableFileCache() { httpCacheStorage = { _ -> null } }
+
+    @AfterTest
+    fun restoreFileCache() { httpCacheStorage = ::fileCacheStorage }
 
     @Serializable @SerialName("page")
     class Page(val title: String) : Component()
