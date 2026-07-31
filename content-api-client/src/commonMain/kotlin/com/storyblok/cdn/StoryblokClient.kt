@@ -328,8 +328,11 @@ public class StoryblokClientImpl constructor(
     ) =
         flow {
 
+            // Sorted so the HttpCache key is not order depend
             val resolveRelations = relations.entries
-                .joinToString(",") { (component, fields) -> fields.keys.joinToString(",") { "$component.$it" } }
+                .flatMap { (component, fields) -> fields.keys.map { "$component.$it" } }
+                .sorted()
+                .joinToString(",")
 
             val parameters: HttpRequestBuilder.() -> Unit = {
                 if(resolveRelations.isNotEmpty()) {
