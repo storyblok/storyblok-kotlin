@@ -9,8 +9,10 @@ import com.storyblok.ktor.Api
 import com.storyblok.ktor.Api.Config.Version
 import com.storyblok.ktor.Storyblok
 import io.ktor.client.HttpClient
+import io.ktor.client.HttpClientConfig
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ServerResponseException
+import io.ktor.client.plugins.cache.HttpCache
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
@@ -242,6 +244,18 @@ public interface StoryblokClient {
 }
 
 /**
+ * Configures an [HttpClient] for the Content Delivery API.
+ */
+internal fun HttpClientConfig<*>.configureStoryblok(json: Json, apiBuilder: Api.Config.Content.() -> Unit) {
+    install(ContentNegotiation) { json(json) }
+    install(Storyblok(Api.CDN), apiBuilder)
+    install(HttpCache) {
+        httpCacheStorage(PUBLIC_CACHE_NAME)?.let { publicStorage(it) }
+        httpCacheStorage(PRIVATE_CACHE_NAME)?.let { privateStorage(it) }
+    }
+}
+
+/**
  * Default [StoryblokClient] implementation. Create clients through the [StoryblokClient] factory functions instead of
  * instantiating this class directly.
  */
@@ -262,10 +276,7 @@ public class StoryblokClientImpl constructor(
         }
         jsonBuilder()
     },
-    override val http: HttpClient = HttpClient {
-        install(ContentNegotiation) { json(json) }
-        install(Storyblok(Api.CDN), apiBuilder)
-    }
+    override val http: HttpClient = HttpClient { configureStoryblok(json, apiBuilder) }
 ) : StoryblokClient {
 
     /**

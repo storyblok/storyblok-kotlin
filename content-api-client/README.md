@@ -11,7 +11,7 @@ The Content Delivery API Client requires adding the `content-api-client` artifac
 
 ```kotlin
 dependencies {
-    implementation("com.storyblok:content-api-client:0.3.0")
+    implementation("com.storyblok:content-api-client:0.4.0")
 }
 ```
 
@@ -191,7 +191,7 @@ class Article(
 ) : Component()
 ```
 
-This includes circular relations — stories referencing each other directly or indirectly — which are cut once the level is exhausted. If an unresolvable relation field is not nullable, decoding fails with an error naming the unresolved story's UUID.
+This includes circular relations — stories referencing each other directly or indirectly — which are cut once the level is exhausted. If an unresolvable relation field is not nullable, decoding fails with a `SerializationException` naming the unresolved story's UUID.
 
 ## Rich text fields
 
@@ -280,6 +280,18 @@ The client leverages the underlying [ktor-client-storyblok](../ktor-client-story
 3. Emits distinct values, so cached and fresh responses are deduplicated if identical
 
 This provides a "stale-while-revalidate" pattern for optimal user experience.
+
+### Where the cache is stored
+
+The client configures the cache with file-backed storage where the platform supports it, so it survives process restarts. Only the Content Delivery API is cached to disk; the Management API is not.
+
+| Platform         | Storage                                  | Survives process restart      |
+|------------------|------------------------------------------|-------------------------------|
+| Android          | `${java.io.tmpdir}/storyblok-http-cache` | Yes                           |
+| JVM              | `${java.io.tmpdir}/storyblok-http-cache` | Until the OS clears temp files |
+| Native, JS, Wasm | In-memory, per client                    | No                            |
+
+The cache directory is derived from the `java.io.tmpdir` system property, on **Android** the platform points `java.io.tmpdir` at the app's cache directory, so this resolves to `context.cacheDir`.
 
 ## Error handling
 

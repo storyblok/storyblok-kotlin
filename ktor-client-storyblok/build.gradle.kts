@@ -1,7 +1,9 @@
-@file:OptIn(ExperimentalWasmDsl::class)
+@file:OptIn(ExperimentalWasmDsl::class, ExperimentalKotlinGradlePluginApi::class)
 
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
 
 plugins {
@@ -76,6 +78,15 @@ kotlin {
     watchosDeviceArm64()
     watchosSimulatorArm64()
 
+    applyDefaultHierarchyTemplate {
+        common {
+            group("jvmAndAndroid") {
+                withJvm()
+                withCompilations { it.target.platformType == KotlinPlatformType.androidJvm }
+            }
+        }
+    }
+
     sourceSets {
         commonMain.dependencies {
             api(libs.ktor.client)
@@ -83,12 +94,10 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
         }
 
-        jvmMain.dependencies {
-            api(libs.ktor.client.cio)
-        }
-
-        androidMain.dependencies {
-            api(libs.ktor.client.cio)
+        val jvmAndAndroidMain by getting {
+            dependencies {
+                api(libs.ktor.client.cio)
+            }
         }
 
         linuxMain.dependencies {
