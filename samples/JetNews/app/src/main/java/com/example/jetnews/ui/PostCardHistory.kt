@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +24,7 @@ import com.example.jetnews.R
 import com.example.jetnews.model.Post
 import com.storyblok.cdn.schema.Story
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PostCardHistory(post: Story<Post>, strapline: String, navigateToArticle: (Story<Post>) -> Unit) {
     var openDialog by remember { mutableStateOf(false) }
@@ -49,7 +52,7 @@ fun PostCardHistory(post: Story<Post>, strapline: String, navigateToArticle: (St
                 modifier = Modifier.padding(top = 4.dp),
             )
         }
-        IconButton(onClick = { openDialog = true }) {
+        IconButton(onClick = { openDialog = true }, shapes = IconButtonDefaults.shapes()) {
             Icon(
                 painter = painterResource(R.drawable.ic_more_vert),
                 contentDescription = stringResource(R.string.cd_more_actions),
