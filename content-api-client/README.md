@@ -305,6 +305,10 @@ client.story<Page>("non-existent")
     .collect { story -> /* handle story */ }
 ```
 
+> [!NOTE]
+> Deserialization failures are **not** wrapped: they surface as `SerializationException`, since a mismatch between your
+> component definitions and the content is a modelling error rather than a transient failure worth retrying.
+
 ## Closing the client
 
 When you're done using the client, close it to release resources:
