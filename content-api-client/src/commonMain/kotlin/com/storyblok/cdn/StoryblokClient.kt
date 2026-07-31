@@ -82,7 +82,7 @@ public open class StoryblokClientException(message: String?, cause: Throwable?) 
  * @param resolveLevel How deeply nested [Story] relations are resolved. `1` (the default) resolves direct relations;
  * higher values resolve relations of relations; `0` disables relation resolution entirely — model relation fields as
  * [String] to receive the raw uuids. Relations that cannot be resolved within the level (including circular
- * relations) resolve to `null` for nullable story fields, and fail with a [StoryblokClientException] naming the
+ * relations) resolve to `null` for nullable story fields, and fail with a [SerializationException] naming the
  * uuid for non-nullable ones.
  * @return A [Flow] emitting the story, with potential cached and fresh values.
  */
@@ -97,7 +97,7 @@ public inline fun <reified T : Component> StoryblokClient.story(slug: String, re
  * @param resolveLevel How deeply nested [Story] relations are resolved. `1` (the default) resolves direct relations;
  * higher values resolve relations of relations; `0` disables relation resolution entirely — model relation fields as
  * [String] to receive the raw uuids. Relations that cannot be resolved within the level (including circular
- * relations) resolve to `null` for nullable story fields, and fail with a [StoryblokClientException] naming the
+ * relations) resolve to `null` for nullable story fields, and fail with a [SerializationException] naming the
  * uuid for non-nullable ones.
  * @return A [Flow] emitting the story, with potential cached and fresh values.
  */
@@ -125,7 +125,7 @@ public interface StoryblokClient {
      * relations; higher values resolve relations of relations; `0` disables relation resolution entirely — model
      * relation fields as [String] to receive the raw uuids. Relations that cannot be resolved within the level
      * (including circular relations) resolve to `null` for nullable story fields, and fail with a
-     * [StoryblokClientException] naming the uuid for non-nullable ones.
+     * [SerializationException] naming the uuid for non-nullable ones.
      * @return A [Flow] emitting the story with [Component] content, with potential cached and fresh values.
      */
     public fun story(slug: String, resolveLevel: Int = 1): Flow<Story<Component>>
@@ -138,7 +138,7 @@ public interface StoryblokClient {
      * relations; higher values resolve relations of relations; `0` disables relation resolution entirely — model
      * relation fields as [String] to receive the raw uuids. Relations that cannot be resolved within the level
      * (including circular relations) resolve to `null` for nullable story fields, and fail with a
-     * [StoryblokClientException] naming the uuid for non-nullable ones.
+     * [SerializationException] naming the uuid for non-nullable ones.
      * @return A [Flow] emitting the story with [Component] content, with potential cached and fresh values.
      */
     public fun story(uuid: Uuid, resolveLevel: Int = 1): Flow<Story<Component>>
@@ -153,7 +153,7 @@ public interface StoryblokClient {
      * relations; higher values resolve relations of relations; `0` disables relation resolution entirely — model
      * relation fields as [String] to receive the raw uuids. Relations that cannot be resolved within the level
      * (including circular relations) resolve to `null` for nullable story fields, and fail with a
-     * [StoryblokClientException] naming the uuid for non-nullable ones.
+     * [SerializationException] naming the uuid for non-nullable ones.
      * @return A [Flow] emitting the story, with potential cached and fresh values.
      */
     public fun <T : Component> story(slug: String, typeInfo: TypeInfo, resolveLevel: Int = 1): Flow<Story<T>>
@@ -168,7 +168,7 @@ public interface StoryblokClient {
      * relations; higher values resolve relations of relations; `0` disables relation resolution entirely — model
      * relation fields as [String] to receive the raw uuids. Relations that cannot be resolved within the level
      * (including circular relations) resolve to `null` for nullable story fields, and fail with a
-     * [StoryblokClientException] naming the uuid for non-nullable ones.
+     * [SerializationException] naming the uuid for non-nullable ones.
      * @return A [Flow] emitting the story, with potential cached and fresh values.
      */
     public fun <T : Component> story(uuid: Uuid, typeInfo: TypeInfo, resolveLevel: Int = 1): Flow<Story<T>>
@@ -378,6 +378,9 @@ public class StoryblokClientImpl constructor(
                 currentCoroutineContext().ensureActive()
                 throw it
             }
+            // Deserialization failures are modelling errors rather than transient API failures, so they propagate
+            // unwrapped instead of being reported as a (potentially retryable) StoryblokClientException.
+            if (it is SerializationException) throw it
             val message = (it as? ServerResponseException)?.response?.bodyAsText() ?: it.message
             throw StoryblokClientException(message, it)
         }

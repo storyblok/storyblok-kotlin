@@ -1,7 +1,6 @@
 package com.storyblok
 
 import com.storyblok.cdn.StoryblokClient
-import com.storyblok.cdn.StoryblokClientException
 import com.storyblok.cdn.StoryblokClientImpl
 import com.storyblok.cdn.fileCacheStorage
 import com.storyblok.cdn.httpCacheStorage
@@ -204,9 +203,8 @@ class StoryblokClientTest {
             }),
         )
 
-        val exception = assertFailsWith<StoryblokClientException> { client.story<RelatedRequired>("first").first() }
+        val exception = assertFailsWith<SerializationException> { client.story<RelatedRequired>("first").first() }
 
-        assertIs<SerializationException>(exception.cause)
         assertContains(assertNotNull(exception.message), "Unresolved story relation: d81538cf-5f75-4a5f-a8ab-a1e8fd276949")
     }
 
@@ -226,9 +224,8 @@ class StoryblokClientTest {
             }),
         )
 
-        val exception = assertFailsWith<StoryblokClientException> { client.story<RelatedRequired>("first").first() }
+        val exception = assertFailsWith<SerializationException> { client.story<RelatedRequired>("first").first() }
 
-        assertIs<SerializationException>(exception.cause)
         assertContains(assertNotNull(exception.message), "Circular story relation: b599571b-df7e-4c85-97d9-0b0798d8b23f")
     }
 
