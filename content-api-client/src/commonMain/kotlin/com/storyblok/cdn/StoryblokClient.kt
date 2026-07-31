@@ -328,7 +328,7 @@ public class StoryblokClientImpl constructor(
     ) =
         flow {
 
-            // Sorted so the HttpCache key is not order depend
+            // Sorted so the HttpCache key is not order dependent
             val resolveRelations = relations.entries
                 .flatMap { (component, fields) -> fields.keys.map { "$component.$it" } }
                 .sorted()
