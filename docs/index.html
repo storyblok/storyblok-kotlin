@@ -84,10 +84,22 @@
       <h3 class="">What is Storyblok?</h3>
       <p class="paragraph"><a href="https://www.storyblok.com">Storyblok</a> is a headless content management system (CMS) that empowers developers and content creators. It provides a visual editor for content teams while giving developers the flexibility to build with their preferred tech stack and deliver content through APIs to any platform or device.</p>
       <h3 class="">Changelog</h3>
+      <p class="paragraph"><strong>0.4.0</strong></p>
+      <ul>
+        <li>
+          <p class="paragraph">The Content Delivery API Client now persists its HTTP cache to disk on JVM and Android, so cached   responses survive a process restart. Other targets are unchanged and keep the in-memory cache.</p>
+        </li>
+        <li>
+          <p class="paragraph">Fixed the <code class="lang-kotlin">resolve_relations</code> query parameter being built in a non-deterministic order ensuring   cache key is stable across processes.</p>
+        </li>
+        <li>
+          <p class="paragraph">Fixed <code class="lang-kotlin">SerializationException</code> getting wrongly wrapped in <code class="lang-kotlin">StoryblokClientException</code>.</p>
+        </li>
+      </ul>
       <p class="paragraph"><strong>0.3.0</strong></p>
       <ul>
         <li>
-          <p class="paragraph">BREAKING CHANGE: the <code class="lang-kotlin">Storyblok(...)</code> composable's parameter is renamed   <code class="lang-kotlin">blokProvider</code> → <code class="lang-kotlin">blockProvider</code> so <strong>named-argument</strong> callers   must update the label. Positional callers are unaffected.</p>
+          <p class="paragraph">BREAKING CHANGE: the <code class="lang-kotlin">Storyblok(...)</code> composable's parameter is renamed <code class="lang-kotlin">blokProvider</code> →   <code class="lang-kotlin">blockProvider</code> so <strong>named-argument</strong> callers must update the label. Positional callers are   unaffected.</p>
         </li>
       </ul>
       <div class="table--container">
@@ -100,38 +112,38 @@
           </thead>
           <tbody>
             <tr>
-              <td><code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">RichText.Blok</code></td>
-              <td><code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">RichText.Block</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@2de6f27f lang-kotlin">RichText.Blok</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@2de6f27f lang-kotlin">RichText.Block</code></td>
             </tr>
             <tr>
-              <td><code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">BlokScope</code> / <code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">.Blok()</code></td>
-              <td><code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">BlockScope</code> / <code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">.Block()</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@2de6f27f lang-kotlin">BlokScope</code> / <code class="org.jetbrains.dokka.pages.commenttable@2de6f27f lang-kotlin">.Blok()</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@2de6f27f lang-kotlin">BlockScope</code> / <code class="org.jetbrains.dokka.pages.commenttable@2de6f27f lang-kotlin">.Block()</code></td>
             </tr>
             <tr>
-              <td><code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">BlokProvider</code> / <code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">.blokScope</code></td>
-              <td><code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">BlockProvider</code> / <code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">.blockScope</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@2de6f27f lang-kotlin">BlokProvider</code> / <code class="org.jetbrains.dokka.pages.commenttable@2de6f27f lang-kotlin">.blokScope</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@2de6f27f lang-kotlin">BlockProvider</code> / <code class="org.jetbrains.dokka.pages.commenttable@2de6f27f lang-kotlin">.blockScope</code></td>
             </tr>
             <tr>
-              <td><code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">BlokProviderScope</code> / <code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">blok(){}</code></td>
-              <td><code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">BlockProviderScope</code> / <code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">block(){}</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@2de6f27f lang-kotlin">BlokProviderScope</code> / <code class="org.jetbrains.dokka.pages.commenttable@2de6f27f lang-kotlin">blok(){}</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@2de6f27f lang-kotlin">BlockProviderScope</code> / <code class="org.jetbrains.dokka.pages.commenttable@2de6f27f lang-kotlin">block(){}</code></td>
             </tr>
             <tr>
-              <td><code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">blokProvider()</code></td>
-              <td><code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">blockProvider()</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@2de6f27f lang-kotlin">blokProvider()</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@2de6f27f lang-kotlin">blockProvider()</code></td>
             </tr>
             <tr>
-              <td><code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">blokProviderWithoutRichText()</code></td>
-              <td><code class="org.jetbrains.dokka.pages.commenttable@2f706d30 lang-kotlin">blockProviderWithoutRichText()</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@2de6f27f lang-kotlin">blokProviderWithoutRichText()</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@2de6f27f lang-kotlin">blockProviderWithoutRichText()</code></td>
             </tr>
           </tbody>
         </table>
       </div>
       <ul>
         <li>
-          <p class="paragraph">Fixed resolving relations for blocks embedded in rich text (com.storyblok.cdn.StoryblokClientException: Expected JsonObject, but had JsonLiteral) </p>
+          <p class="paragraph">Fixed resolving relations for blocks embedded in rich text   (com.storyblok.cdn.StoryblokClientException: Expected JsonObject, but had JsonLiteral)</p>
         </li>
         <li>
-          <p class="paragraph">Added a <code class="lang-kotlin">resolveLevel</code> parameter to the <code class="lang-kotlin">story()</code> functions to control how deeply story relations are resolved.</p>
+          <p class="paragraph">Added a <code class="lang-kotlin">resolveLevel</code> parameter to the <code class="lang-kotlin">story()</code> functions to control how deeply story relations   are resolved.</p>
         </li>
         <li>
           <p class="paragraph">Fixed a <code class="lang-kotlin">StackOverflowError</code> when resolving circular story relations</p>

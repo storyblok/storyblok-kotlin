@@ -150,10 +150,7 @@
             serializersModuleBuilder()
         }
         jsonBuilder()
-    }<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>http<span class="token operator">: </span><span data-unresolved-link="io.ktor.client/HttpClient///PointingToDeclaration/">HttpClient</span><span class="token operator"> = </span>HttpClient {
-        install(ContentNegotiation) { json(json) }
-        install(Storyblok(Api.CDN), apiBuilder)
-    }</span></span><span class="token punctuation">)</span> : <a href="-storyblok-client/index.html">StoryblokClient</a></div><div class="brief "><p class="paragraph">Default <a href="-storyblok-client/index.html">StoryblokClient</a> implementation. Create clients through the <a href="-storyblok-client/index.html">StoryblokClient</a> factory functions instead of instantiating this class directly.</p></div></div></div>
+    }<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>http<span class="token operator">: </span><span data-unresolved-link="io.ktor.client/HttpClient///PointingToDeclaration/">HttpClient</span><span class="token operator"> = </span>HttpClient { configureStoryblok(json, apiBuilder) }</span></span><span class="token punctuation">)</span> : <a href="-storyblok-client/index.html">StoryblokClient</a></div><div class="brief "><p class="paragraph">Default <a href="-storyblok-client/index.html">StoryblokClient</a> implementation. Create clients through the <a href="-storyblok-client/index.html">StoryblokClient</a> factory functions instead of instantiating this class directly.</p></div></div></div>
                 </div>
               </div>
             </div>
