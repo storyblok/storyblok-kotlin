@@ -257,6 +257,36 @@ class StoryblokClientTest {
         assertEquals("b599571b-df7e-4c85-97d9-0b0798d8b23f", story.content.story)
     }
 
+    @Test
+    fun `resolve_relations is sorted so the request URL does not depend on iteration order`() = runTest {
+        var resolveRelations: String? = null
+        val client = StoryblokClientImpl(
+            apiBuilder = {},
+            // Deliberately registered out of alphabetical order: the parameter must not echo this.
+            serializersModuleBuilder = {
+                polymorphic(Component::class, Related::class, Related.serializer())
+                polymorphic(Component::class, PopularArticles::class, PopularArticles.serializer())
+                polymorphic(Component::class, Article::class, Article.serializer())
+                polymorphic(Component::class, FeaturedArticle::class, FeaturedArticle.serializer())
+            },
+            jsonBuilder = {
+                explicitNulls = false
+                ignoreUnknownKeys = true
+            },
+            http = HttpClient(MockEngine { request ->
+                resolveRelations = request.url.parameters["resolve_relations"]
+                respond(CIRCULAR_RELATION_RESPONSE, headers = headersOf(HttpHeaders.ContentType, "application/json"))
+            }),
+        )
+
+        client.story<Related>("first").first()
+
+        // `relations` iterates a KClass-keyed map, and KClass hashes by identity on JVM/Android, so its order
+        // differs between processes. Pinning the exact sorted string is what keeps the URL — and therefore the
+        // HttpCache key the `only-if-cached` read depends on — the same from one launch to the next.
+        assertEquals("article.author,featured.article,popular.articles,related.story", resolveRelations)
+    }
+
     private companion object {
 
         /**
