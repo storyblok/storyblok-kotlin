@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -29,12 +31,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import com.example.jetnews.ContentState.*
 import com.example.jetnews.model.Feed
 import com.example.jetnews.model.Header
 import com.example.jetnews.model.HighlightedPost
@@ -45,6 +49,7 @@ import com.example.jetnews.model.RecentPosts
 import com.example.jetnews.model.RecommendedPosts
 import com.example.jetnews.ui.PostCardHistory
 import com.example.jetnews.ui.PostCardPopular
+import com.example.jetnews.ui.LoadError
 import com.example.jetnews.ui.PostCardSimple
 import com.example.jetnews.ui.PostCardTop
 import com.example.jetnews.ui.PostHeaderImage
@@ -52,14 +57,19 @@ import com.example.jetnews.ui.PostListDivider
 import com.example.jetnews.ui.PostMetadata
 import com.example.jetnews.ui.defaultSpacerSize
 import com.example.jetnews.ui.theme.JetNewsTheme
+import com.storyblok.cdn.StoryblokClientException
 import com.storyblok.compose.Storyblok
 import com.storyblok.compose.provider.blockProvider
 import com.storyblok.ktor.Api.Config.Version.*
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3ExpressiveApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -187,28 +197,40 @@ class MainActivity : ComponentActivity() {
                             entryProvider = entryProvider {
                                 entry<StoryKey> { key ->
 
-                                    var isRefreshing: Boolean by remember { mutableStateOf(true) }
+                                    var state by remember { mutableStateOf(Loading) }
 
                                     val story by
                                         remember {
-                                            snapshotFlow { isRefreshing }
+                                            snapshotFlow { state }
+                                                .map { it.isFetching }
+                                                .distinctUntilChanged()
                                                 .filter { it }
                                                 .flatMapLatest {
                                                     val story = when(key.uuid) {
                                                         null -> story(slug = key.slug!!)
                                                         else -> story(uuid = key.uuid)
                                                     }
-                                                    story.onCompletion { isRefreshing = false }
+                                                    story.onCompletion { state = Loaded }
+                                                        .catch { e ->
+                                                            if(e !is StoryblokClientException) throw e
+                                                            e.printStackTrace()
+                                                            state = Failed
+                                                        }
                                                 }
                                         }
                                         .collectAsStateWithLifecycle(key.story)
 
                                     PullToRefreshBox(
-                                        isRefreshing = isRefreshing,
-                                        onRefresh = { isRefreshing = true },
-                                        modifier = Modifier.fillMaxSize()
+                                        isRefreshing = state == Refreshing,
+                                        onRefresh = { state = Refreshing },
+                                        modifier = Modifier.fillMaxSize(),
                                     ) {
-                                        Block(story?.content ?: return@PullToRefreshBox)
+                                        story?.run { return@PullToRefreshBox Block(content) }
+                                        when(state) {
+                                            Loading -> LoadingIndicator(Modifier.align(Alignment.Center))
+                                            Failed, Refreshing -> LoadError(Modifier.fillMaxSize())
+                                            Loaded -> error("Loaded without content")
+                                        }
                                     }
                                 }
                             }
