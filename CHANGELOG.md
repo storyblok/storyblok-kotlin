@@ -4,12 +4,15 @@
 
 - The Content Delivery API Client now persists its HTTP cache to disk on JVM and Android, so cached
   responses survive a process restart. Other targets are unchanged and keep the in-memory cache.
+- Fixed the `resolve_relations` query parameter being built in a non-deterministic order ensuring
+  cache key is stable across processes.
+- Fixed `SerializationException` getting wrongly wrapped in `StoryblokClientException`.
 
 **0.3.0**
 
-- BREAKING CHANGE: the `Storyblok(...)` composable's parameter is renamed
-  `blokProvider` → `blockProvider` so **named-argument** callers
-  must update the label. Positional callers are unaffected.
+- BREAKING CHANGE: the `Storyblok(...)` composable's parameter is renamed `blokProvider` →
+  `blockProvider` so **named-argument** callers must update the label. Positional callers are
+  unaffected.
 
 | Old | New |
 |-----|-----|
@@ -20,8 +23,10 @@
 | `blokProvider()` | `blockProvider()` |
 | `blokProviderWithoutRichText()` | `blockProviderWithoutRichText()` |
 
-- Fixed resolving relations for blocks embedded in rich text (com.storyblok.cdn.StoryblokClientException: Expected JsonObject, but had JsonLiteral) 
-- Added a `resolveLevel` parameter to the `story()` functions to control how deeply story relations are resolved.
+- Fixed resolving relations for blocks embedded in rich text
+  (com.storyblok.cdn.StoryblokClientException: Expected JsonObject, but had JsonLiteral)
+- Added a `resolveLevel` parameter to the `story()` functions to control how deeply story relations
+  are resolved.
 - Fixed a `StackOverflowError` when resolving circular story relations
 
 **0.2.0**
