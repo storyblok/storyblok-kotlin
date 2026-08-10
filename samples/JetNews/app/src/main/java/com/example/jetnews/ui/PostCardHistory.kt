@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -24,7 +23,6 @@ import com.example.jetnews.R
 import com.example.jetnews.model.Post
 import com.storyblok.cdn.schema.Story
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PostCardHistory(post: Story<Post>, strapline: String, navigateToArticle: (Story<Post>) -> Unit) {
     var openDialog by remember { mutableStateOf(false) }
