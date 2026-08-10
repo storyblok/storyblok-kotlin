@@ -61,6 +61,7 @@ import com.storyblok.cdn.StoryblokClientException
 import com.storyblok.compose.Storyblok
 import com.storyblok.compose.provider.blockProvider
 import com.storyblok.ktor.Api.Config.Version.*
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
@@ -210,12 +211,17 @@ class MainActivity : ComponentActivity() {
                                                         null -> story(slug = key.slug!!)
                                                         else -> story(uuid = key.uuid)
                                                     }
-                                                    story.onCompletion { state = Loaded }
-                                                        .catch { e ->
-                                                            if(e !is StoryblokClientException) throw e
-                                                            e.printStackTrace()
-                                                            state = Failed
+                                                    story.onCompletion { cause ->
+                                                        state = when(cause) {
+                                                            null -> Loaded
+                                                            is CancellationException -> Loading
+                                                            else -> Failed
                                                         }
+                                                    }
+                                                    .catch { e ->
+                                                        if(e !is StoryblokClientException) throw e
+                                                        e.printStackTrace()
+                                                    }
                                                 }
                                         }
                                         .collectAsStateWithLifecycle(key.story)
