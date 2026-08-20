@@ -18,20 +18,20 @@ dependencies {
 > [!NOTE]
 > This module depends on `storyblok-compose`, which will be included transitively.
 
-## Create a blok provider
+## Create a block provider
 
-Use the [`blokProvider`](https://storyblok.github.io/storyblok-kotlin/storyblok-material3/com.storyblok.compose.provider/blok-provider.html) function to create a provider with pre-configured Material 3 rich text renderers:
+Use the [`blockProvider`](https://storyblok.github.io/storyblok-kotlin/storyblok-material3/com.storyblok.compose.provider/block-provider.html) function to create a provider with pre-configured Material 3 rich text renderers:
 
 ```kotlin
-val myBlokProvider = blokProvider {
-    blok<Page> { page, modifier ->
+val myBlockProvider = blockProvider {
+    block<Page> { page, modifier ->
         Column(modifier) {
             Text(page.title, style = MaterialTheme.typography.headlineLarge)
-            page.body.forEach { Blok(it) }
+            page.body.forEach { Block(it) }
         }
     }
     
-    blok<Article> { article, modifier ->
+    block<Article> { article, modifier ->
         Column(modifier) {
             Text(article.headline)
             RichText(article.content, Modifier.fillMaxWidth())
@@ -51,12 +51,12 @@ fun App() {
         Storyblok(
             accessToken = "YOUR_ACCESS_TOKEN",
             version = Draft,
-            blokProvider = myBlokProvider
+            blockProvider = myBlockProvider
         ) {
             val story by story<Article>("articles/hello-world").collectAsState(null)
             
             story?.let { 
-                Blok(it.content)
+                Block(it.content)
             }
         }
     }
@@ -64,12 +64,12 @@ fun App() {
 ```
 
 # User Guide
-## The blokProvider function
+## The blockProvider function
 
-The [`blokProvider`](https://storyblok.github.io/storyblok-kotlin/storyblok-material3/com.storyblok.compose.provider/blok-provider.html) function extends `blokProviderWithoutRichText` by adding default renderers for all Storyblok rich text node types:
+The [`blockProvider`](https://storyblok.github.io/storyblok-kotlin/storyblok-material3/com.storyblok.compose.provider/block-provider.html) function extends `blockProviderWithoutRichText` by adding default renderers for all Storyblok rich text node types:
 
 ```kotlin
-val provider = blokProvider(
+val provider = blockProvider(
     fallback = { component, modifier ->
         // Handle unknown components
     },
@@ -86,7 +86,7 @@ val provider = blokProvider(
 When users click on links to other stories in rich text content, the `storyLinkListener` callback is invoked:
 
 ```kotlin
-val provider = blokProvider(
+val provider = blockProvider(
     storyLinkListener = { uuid, anchor ->
         // Navigate to the linked story
         navigator.navigate("story/$uuid")
@@ -119,7 +119,7 @@ The provider includes default renderers for all Storyblok rich text node types:
 | Table | `Column` with `Row` layout |
 | Table Cell | `Box` with border and padding |
 | Table Header | `Box` with gray background |
-| Embedded Blok | Renders nested components via `Blok()` |
+| Embedded Block | Renders nested components via `Block()` |
 | Emoji | Inline emoji text |
 | Hard Break | Line break |
 
@@ -148,7 +148,7 @@ The following text marks are supported:
 You can override any default renderer by registering your own using `richText`:
 
 ```kotlin
-val provider = blokProvider {
+val provider = blockProvider {
     // Override the heading renderer
     richText<RichText.Heading> { heading, modifier ->
         Text(
@@ -163,7 +163,7 @@ val provider = blokProvider {
     }
     
     // Your component registrations
-    blok<Page> { page, modifier -> /* ... */ }
+    block<Page> { page, modifier -> /* ... */ }
 }
 ```
 
@@ -188,7 +188,7 @@ MaterialTheme(
     Storyblok(
         accessToken = "YOUR_ACCESS_TOKEN",
         version = Draft,
-        blokProvider = myBlokProvider
+        blockProvider = myBlockProvider
     ) {
         // Rich text will use your theme
     }

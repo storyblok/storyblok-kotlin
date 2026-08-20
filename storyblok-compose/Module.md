@@ -16,18 +16,18 @@ dependencies {
 }
 ```
 
-#### Define your components and create a blok provider:
+#### Define your components and create a block provider:
 
 ```kotlin
 @Serializable
 @SerialName("page")
 class Page(val title: String, val body: List<Component>) : Component()
 
-val myBlokProvider = blokProvider {
-    blok<Page> { page, modifier ->
+val myBlockProvider = blockProvider {
+    block<Page> { page, modifier ->
         Column(modifier) {
             Text(page.title, style = MaterialTheme.typography.headlineLarge)
-            page.body.forEach { Blok(it) }
+            page.body.forEach { Block(it) }
         }
     }
 }
@@ -41,11 +41,11 @@ fun App() {
     Storyblok(
         accessToken = "YOUR_ACCESS_TOKEN",
         version = Draft,
-        blokProvider = myBlokProvider
+        blockProvider = myBlockProvider
     ) {
         val story by story<Page>("home").collectAsState(null)
         
-        story?.let { Blok(it.content) }
+        story?.let { Block(it.content) }
     }
 }
 ```
