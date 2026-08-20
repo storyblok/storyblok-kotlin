@@ -1,6 +1,6 @@
 # Module Material 3 Rich Text Provider
 
-A customizable rich text blok provider for the [Compose SDK](https://github.com/storyblok/storyblok-kotlin/tree/main/storyblok-compose) using Material 3 components and theming.
+A customizable rich text block provider for the [Compose SDK](https://github.com/storyblok/storyblok-kotlin/tree/main/storyblok-compose) using Material 3 components and theming.
 
 ## Quick start
 
@@ -12,17 +12,17 @@ dependencies {
 }
 ```
 
-#### Create a blok provider with pre-configured Material 3 rich text renderers:
+#### Create a block provider with pre-configured Material 3 rich text renderers:
 
 ```kotlin
 @Serializable
 @SerialName("article")
 class Article(val title: String, val content: RichText.Document) : Component()
 
-val myBlokProvider = blokProvider(
+val myBlockProvider = blockProvider(
     storyLinkListener = { uuid, anchor -> /* Handle story link clicks */ }
 ) {
-    blok<Article> { article, modifier ->
+    block<Article> { article, modifier ->
         Column(modifier) {
             Text(article.title, style = MaterialTheme.typography.headlineLarge)
             RichText(article.content, Modifier.fillMaxWidth())
@@ -40,11 +40,11 @@ fun App() {
         Storyblok(
             accessToken = "YOUR_ACCESS_TOKEN",
             version = Draft,
-            blokProvider = myBlokProvider
+            blockProvider = myBlockProvider
         ) {
             val story by story<Article>("articles/hello-world").collectAsState(null)
             
-            story?.let { Blok(it.content) }
+            story?.let { Block(it.content) }
         }
     }
 }

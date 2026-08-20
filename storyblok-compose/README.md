@@ -26,7 +26,7 @@ dependencies {
 
 ## Set up the Storyblok composable
 
-Wrap your content in the [`Storyblok`](https://storyblok.github.io/storyblok-kotlin/storyblok-compose/com.storyblok.compose/-storyblok.html) composable to provide access to the Storyblok client and blok rendering scope:
+Wrap your content in the [`Storyblok`](https://storyblok.github.io/storyblok-kotlin/storyblok-compose/com.storyblok.compose/-storyblok.html) composable to provide access to the Storyblok client and block rendering scope:
 
 ```kotlin
 @Composable
@@ -34,27 +34,27 @@ fun App() {
     Storyblok(
         accessToken = "YOUR_ACCESS_TOKEN",
         version = Draft,
-        blokProvider = myBlokProvider
+        blockProvider = myBlockProvider
     ) {
         // Your content here
     }
 }
 ```
 
-## Define a blok provider
+## Define a block provider
 
-A [`BlokProvider`](https://storyblok.github.io/storyblok-kotlin/storyblok-compose/com.storyblok.compose.provider/-blok-provider/index.html) maps your Storyblok components to Compose UI. Use `blokProvider` to create a provider:
+A [`BlockProvider`](https://storyblok.github.io/storyblok-kotlin/storyblok-compose/com.storyblok.compose.provider/-block-provider/index.html) maps your Storyblok components to Compose UI. Use `blockProvider` to create a provider:
 
 ```kotlin
-val myBlokProvider = blokProvider {
-    blok<Page> { page, modifier ->
+val myBlockProvider = blockProvider {
+    block<Page> { page, modifier ->
         Column(modifier) {
             Text(page.title, style = MaterialTheme.typography.headlineLarge)
-            page.body.forEach { Blok(it) }
+            page.body.forEach { Block(it) }
         }
     }
     
-    blok<Article> { article, modifier ->
+    block<Article> { article, modifier ->
         Column(modifier) {
             Text(article.headline)
             Text("By ${article.author}")
@@ -65,41 +65,41 @@ val myBlokProvider = blokProvider {
 
 ## Fetch and render stories
 
-Inside the `Storyblok` scope, you have access to both the [`StoryblokClient`](https://storyblok.github.io/storyblok-kotlin/content-api-client/com.storyblok.cdn/-storyblok-client/index.html) and [`BlokScope`](https://storyblok.github.io/storyblok-kotlin/storyblok-compose/com.storyblok.compose/-blok-scope/index.html):
+Inside the `Storyblok` scope, you have access to both the [`StoryblokClient`](https://storyblok.github.io/storyblok-kotlin/content-api-client/com.storyblok.cdn/-storyblok-client/index.html) and [`BlockScope`](https://storyblok.github.io/storyblok-kotlin/storyblok-compose/com.storyblok.compose/-block-scope/index.html):
 
 ```kotlin
 Storyblok(
     accessToken = "YOUR_ACCESS_TOKEN",
     version = Draft,
-    blokProvider = myBlokProvider
+    blockProvider = myBlockProvider
 ) {
     val story by story<Page>("home").collectAsState(null)
     
-    story?.let { Blok(it.content) }
+    story?.let { Block(it.content) }
 }
 ```
 
 # SDK Guide
-## Creating a blok provider
+## Creating a block provider
 
-The blok provider is the core concept of the SDK. It registers your Storyblok components and defines how they should be rendered as Compose UI.
+The block provider is the core concept of the SDK. It registers your Storyblok components and defines how they should be rendered as Compose UI.
 
 ### Basic provider setup
 
-Use [`blokProvider`](https://storyblok.github.io/storyblok-kotlin/storyblok-material3/com.storyblok.compose.provider/blok-provider.html) to create a provider:
+Use [`blockProvider`](https://storyblok.github.io/storyblok-kotlin/storyblok-material3/com.storyblok.compose.provider/block-provider.html) to create a provider:
 
 ```kotlin
-val provider = blokProvider {
+val provider = blockProvider {
     // Register components here
 }
 ```
 > [!NOTE]
-> The [`blokProvider`](https://storyblok.github.io/storyblok-kotlin/storyblok-material3/com.storyblok.compose.provider/blok-provider.html) function is provided by the `storyblok-material3` module and comes with pre-configured Material 3 rich text renderers.
-> If you want to use it without the Material 3 defaults, you can create a provider with [`blokProviderWithoutRichText`](https://storyblok.github.io/storyblok-kotlin/storyblok-compose/com.storyblok.compose.provider/blok-provider-without-rich-text.html)
+> The [`blockProvider`](https://storyblok.github.io/storyblok-kotlin/storyblok-material3/com.storyblok.compose.provider/block-provider.html) function is provided by the `storyblok-material3` module and comes with pre-configured Material 3 rich text renderers.
+> If you want to use it without the Material 3 defaults, you can create a provider with [`blockProviderWithoutRichText`](https://storyblok.github.io/storyblok-kotlin/storyblok-compose/com.storyblok.compose.provider/block-provider-without-rich-text.html)
 
 ### Registering components
 
-Register components using the `blok` function. The component class must extend [`Component`](https://storyblok.github.io/storyblok-kotlin/content-api-client/com.storyblok.cdn.schema/-component/index.html) and be annotated with `@Serializable` and `@SerialName`:
+Register components using the `block` function. The component class must extend [`Component`](https://storyblok.github.io/storyblok-kotlin/content-api-client/com.storyblok.cdn.schema/-component/index.html) and be annotated with `@Serializable` and `@SerialName`:
 
 ```kotlin
 @Serializable
@@ -109,11 +109,11 @@ class Page(
     val body: List<Component>
 ) : Component()
 
-val provider = blokProvider {
-    blok<Page> { page, modifier ->
+val provider = blockProvider {
+    block<Page> { page, modifier ->
         Column(modifier) {
             Text(page.title)
-            page.body.forEach { Blok(it) }
+            page.body.forEach { Block(it) }
         }
     }
 }
@@ -124,10 +124,10 @@ val provider = blokProvider {
 You can register components without a composable renderer. This is useful for components that are only used as data containers or are rendered by their parent:
 
 ```kotlin
-blokProvider {
-    blok<Author>() // Registered for serialization only
+blockProvider {
+    block<Author>() // Registered for serialization only
     
-    blok<Article> { article, modifier ->
+    block<Article> { article, modifier ->
         // Author is accessed as data, not rendered directly
         Text("By ${article.author.name}")
     }
@@ -139,7 +139,7 @@ blokProvider {
 By default, unknown components throw an exception. You can provide a custom fallback handler:
 
 ```kotlin
-val provider = blokProvider(
+val provider = blockProvider(
     fallback = { component, modifier ->
         Text("Unknown component: ${component.component}", modifier)
     }
@@ -188,7 +188,7 @@ richText<RichText.Text> { text ->
 Use `defaultRichText` to register fallback renderers that won't override custom implementations:
 
 ```kotlin
-blokProvider {
+blockProvider {
     // Custom heading renderer
     richText<RichText.Heading> { heading, modifier ->
         Text(/* custom styling */)
@@ -202,22 +202,22 @@ blokProvider {
 ```
 
 > [!TIP]
-> The [storyblok-material3](../storyblok-material3) module provides a `blokProvider` function with pre-configured default renderers for all rich text node types using Material 3 components.
+> The [storyblok-material3](../storyblok-material3) module provides a `blockProvider` function with pre-configured default renderers for all rich text node types using Material 3 components.
 
 
-## The BlokScope
+## The BlockScope
 
-Inside a blok provider's composables, you have access to [`BlokScope`](https://storyblok.github.io/storyblok-kotlin/storyblok-compose/com.storyblok.compose/-blok-scope/index.html) which provides functions for rendering nested content:
+Inside a block provider's composables, you have access to [`BlockScope`](https://storyblok.github.io/storyblok-kotlin/storyblok-compose/com.storyblok.compose/-block-scope/index.html) which provides functions for rendering nested content:
 
 ### Rendering nested components
 
-Use `Blok()` to render child components:
+Use `Block()` to render child components:
 
 ```kotlin
-blok<Page> { page, modifier ->
+block<Page> { page, modifier ->
     Column(modifier) {
         page.body.forEach { component ->
-            Blok(component)
+            Block(component)
         }
     }
 }
@@ -228,7 +228,7 @@ blok<Page> { page, modifier ->
 Use `RichText()` to render rich text content:
 
 ```kotlin
-blok<Article> { article, modifier ->
+block<Article> { article, modifier ->
     Column(modifier) {
         Text(article.title)
         RichText(article.content, Modifier.fillMaxWidth())
@@ -238,19 +238,19 @@ blok<Article> { article, modifier ->
 
 ## The StoryblokScope
 
-The [`StoryblokScope`](https://storyblok.github.io/storyblok-kotlin/storyblok-compose/com.storyblok.compose/-storyblok-scope/index.html) combines access to both the [`StoryblokClient`](https://storyblok.github.io/storyblok-kotlin/content-api-client/com.storyblok.cdn/-storyblok-client/index.html) and [`BlokScope`](https://storyblok.github.io/storyblok-kotlin/storyblok-compose/com.storyblok.compose/-blok-scope/index.html):
+The [`StoryblokScope`](https://storyblok.github.io/storyblok-kotlin/storyblok-compose/com.storyblok.compose/-storyblok-scope/index.html) combines access to both the [`StoryblokClient`](https://storyblok.github.io/storyblok-kotlin/content-api-client/com.storyblok.cdn/-storyblok-client/index.html) and [`BlockScope`](https://storyblok.github.io/storyblok-kotlin/storyblok-compose/com.storyblok.compose/-block-scope/index.html):
 
 ```kotlin
 Storyblok(
     accessToken = "YOUR_ACCESS_TOKEN",
     version = Draft,
-    blokProvider = myBlokProvider
+    blockProvider = myBlockProvider
 ) {
     // Access StoryblokClient functions
     val story by story<Page>("home").collectAsState(null)
     
-    // Access BlokScope functions
-    story?.content?.let { Blok(it) }
+    // Access BlockScope functions
+    story?.content?.let { Block(it) }
 }
 ```
 
@@ -280,7 +280,7 @@ The `Storyblok` composable accepts the following configuration:
 | `language` | Language code for content retrieval |
 | `fallbackLanguage` | Fallback language for untranslated fields |
 | `cv` | Cache version timestamp |
-| `blokProvider` | The blok provider for component rendering |
+| `blockProvider` | The block provider for component rendering |
 
 ```kotlin
 Storyblok(
@@ -290,7 +290,7 @@ Storyblok(
     language = "en",
     fallbackLanguage = "de",
     cv = "1706094649",
-    blokProvider = myBlokProvider
+    blockProvider = myBlockProvider
 ) {
     // ...
 }
