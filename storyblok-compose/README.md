@@ -256,7 +256,7 @@ Storyblok(
 
 ### Fetching stories
 
-Stories are fetched using the client's reactive [`story()`](https://storyblok.github.io/storyblok-kotlin/content-api-client/com.storyblok.cdn/-storyblok-client/story.html) function which returns a `Flow`:
+Stories are fetched using the client's reactive [`story()`](https://storyblok.github.io/storyblok-kotlin/content-api-client/com.storyblok.cdn/-storyblok-client/story.html) function, which returns a `Flow` that emits first from cache (if present), then from the network (once connected):
 
 ```kotlin
 // By slug
