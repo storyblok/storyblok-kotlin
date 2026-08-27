@@ -33,6 +33,7 @@ kotlin {
             "kotlinx.serialization.ExperimentalSerializationApi",
             "kotlin.uuid.ExperimentalUuidApi",
             "com.storyblok.InternalAPI",
+            "androidx.paging.ExperimentalPagingApi",
         )
     }
     @OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
@@ -57,13 +58,8 @@ kotlin {
             }
         }
     }
-    androidNativeArm32()
-    androidNativeArm64()
-    androidNativeX64()
-    androidNativeX86()
     iosArm64()
     iosSimulatorArm64()
-    iosX64()
     linuxArm64()
     linuxX64()
     macosArm64()
@@ -91,6 +87,7 @@ kotlin {
         commonMain.dependencies {
             api(project(":ktor-client-storyblok"))
             api(libs.kotlinx.serialization.json)
+            api(libs.androidx.paging.common)
             implementation(libs.kotlinx.datetime)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
@@ -102,6 +99,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.ktor.client.logging)
             implementation(libs.ktor.client.mock)
+            implementation(libs.androidx.paging.testing)
         }
 
         jvmTest.dependencies {
