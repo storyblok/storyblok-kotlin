@@ -1,5 +1,14 @@
 ### Changelog
 
+**0.5.0**
+
+- Added `StoryblokClient.stories(...)` for the
+  [retrieve multiple stories](https://www.storyblok.com/docs/api/content-delivery/v2/stories/retrieve-multiple-stories)
+  endpoint, returning a `Flow<androidx.paging.PagingData<Story<T>>>`.
+- BREAKING CHANGE: the Content Delivery API Client no longer publishes the `iosX64` and
+  `androidNativeArm32`/`androidNativeArm64`/`androidNativeX64`/`androidNativeX86` targets, which
+  `androidx.paging:paging-common` does not support.
+
 **0.4.0**
 
 - The Content Delivery API Client now persists its HTTP cache to disk on JVM and Android, so cached

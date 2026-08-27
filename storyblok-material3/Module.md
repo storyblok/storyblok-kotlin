@@ -8,7 +8,7 @@ A customizable rich text block provider for the [Compose SDK](https://github.com
 
 ```kotlin
 dependencies {
-    implementation("com.storyblok:storyblok-material3:0.4.0")
+    implementation("com.storyblok:storyblok-material3:0.5.0")
 }
 ```
 
