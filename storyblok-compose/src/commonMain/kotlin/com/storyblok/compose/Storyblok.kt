@@ -2,6 +2,8 @@ package com.storyblok.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.remember
 import com.storyblok.cdn.StoryblokClient
 import com.storyblok.compose.provider.BlockProvider
 import com.storyblok.ktor.Api.Config.Region
@@ -62,7 +64,9 @@ public fun Storyblok(
         StoryblokClient(accessToken, version, region, language, fallbackLanguage, cv, blockProvider.serializersModule)
     }
 
-    content(StoryblokScope(client, blockProvider.blockScope))
+    // Remembered so that a recomposition of Storyblok hands `content` the same receiver
+    val scope = remember(client, blockProvider.blockScope) { StoryblokScope(client, blockProvider.blockScope) }
+    content(scope)
 }
 
 /**
@@ -70,6 +74,7 @@ public fun Storyblok(
  *
  * Provides access to story fetching via [StoryblokClient] and component rendering via [BlockScope].
  */
+@Stable
 public class StoryblokScope(
     /** The underlying [StoryblokClient] used to fetch stories. */
     public val client: StoryblokClient,

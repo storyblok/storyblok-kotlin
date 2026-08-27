@@ -1,6 +1,7 @@
 package com.storyblok.compose
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import com.storyblok.cdn.schema.Component
@@ -12,6 +13,7 @@ import kotlin.reflect.KClass
 /**
  * Scope providing composable functions for rendering Storyblok [Component] and [RichText] content.
  */
+@Stable
 public interface BlockScope {
     /**
      * Renders a Storyblok [Component] using its registered composable.

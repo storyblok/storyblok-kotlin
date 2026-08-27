@@ -1,6 +1,7 @@
 package com.storyblok.compose.provider
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
 import com.storyblok.cdn.schema.Component
 import com.storyblok.compose.BlockScope
@@ -14,6 +15,7 @@ import kotlin.reflect.KClass
  *
  * Create instances using [blockProvider][com.storyblok.compose.provider.blockProvider] or [blockProviderWithoutRichText].
  */
+@Immutable
 public class BlockProvider internal constructor(
     public val blockScope: BlockScope,
     /** The [SerializersModule] containing serializers for all registered [Component] types. */
