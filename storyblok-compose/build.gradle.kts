@@ -61,6 +61,7 @@ kotlin {
             api(project(":content-api-client"))
             api(libs.compose.runtime)
             api(libs.compose.ui)
+            api(libs.androidx.paging.compose)
             implementation(libs.androidx.lifecycle.runtime.compose)
         }
 
