@@ -55,19 +55,23 @@ class StoryblokTest {
     }
 
     @Test
-    fun `retries up to 5 times on network failures`() = runTest {
-        val client = HttpClient(MockEngine.create {
+    fun `retries up to 2 times on network failures`() = runTest {
+        // Unreachable hosts are retried far less than server errors: the caller is waiting on an
+        // exponential backoff to be told the request failed, and a host that cannot be reached is
+        // unlikely to start answering. Asserted from both sides so the budget itself is pinned.
+        fun clientFailing(times: Int) = HttpClient(MockEngine.create {
             reuseHandlers = false
-            addHandler { HttpClient().get("https:/127.0.0.1:666/"); error("get did not throw") }
-            addHandler { HttpClient().get("https:/127.0.0.1:666/"); error("get did not throw") }
-            addHandler { HttpClient().get("https:/127.0.0.1:666/"); error("get did not throw") }
-            addHandler { HttpClient().get("https:/127.0.0.1:666/"); error("get did not throw") }
-            addHandler { HttpClient().get("https:/127.0.0.1:666/"); error("get did not throw") }
+            repeat(times) {
+                addHandler { HttpClient().get("https:/127.0.0.1:666/"); error("get did not throw") }
+            }
             addHandler { respondJson("""{"story": { "content": {}}}""") }
         }) {
             install(Storyblok(CDN)) { accessToken = "mock-api-key" }
         }
-        assertContains(client.get("stories/mock-slug").body<JsonObject>(), "story")
+        // recovers while within the retry budget
+        assertContains(clientFailing(2).get("stories/mock-slug").body<JsonObject>(), "story")
+        // one failure past the budget reaches the caller instead of being retried away
+        assertFails { clientFailing(3).get("stories/mock-slug") }
 }
 
     @Test
