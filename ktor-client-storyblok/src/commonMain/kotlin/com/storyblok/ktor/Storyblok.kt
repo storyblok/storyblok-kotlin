@@ -22,6 +22,15 @@ import kotlin.time.Duration.Companion.seconds
 
 private val LOGGER: Logger = KtorSimpleLogger("com.storyblok.ktor.Storyblok")
 
+/**
+ * How many times a GET that never reached the host is retried. Kept low so an offline or unreachable
+ * client is told the request failed in seconds rather than after the full exponential backoff.
+ */
+private const val MAX_CONNECTION_RETRIES = 2
+
+/** How many times a GET answered with 429 or a 5xx is retried, where backing off is worth the wait. */
+private const val MAX_SERVER_ERROR_RETRIES = 5
+
 internal expect fun HttpClientConfig<*>.configureEngine()
 /**
  * Invoke this function in your [HttpClient][io.ktor.client.HttpClient] configuration block to [install][HttpClientConfig.install] the Storyblok plugin.
@@ -58,10 +67,14 @@ public fun <T: Api.Config> HttpClientConfig<*>.Storyblok(api: Api<T>): ClientPlu
         json(Json { ignoreUnknownKeys = true })
     }
 
-    // Installs retry logic with backoff for transient errors
+    // Installs retry logic with backoff for transient errors.
     install(HttpRequestRetry) {
-        retryOnExceptionIf { request, cause -> request.method == HttpMethod.Get && cause !is CancellationException }
-        retryIf(5) { request, response ->
+        retryOnExceptionIf { request, cause ->
+            request.method == HttpMethod.Get
+                    && cause !is CancellationException
+                    && retryCount <= MAX_CONNECTION_RETRIES
+        }
+        retryIf(MAX_SERVER_ERROR_RETRIES) { request, response ->
             (response.status == HttpStatusCode.TooManyRequests || response.status.value in 500..599)
                     && CacheControl.ONLY_IF_CACHED !in request.headers[HttpHeaders.CacheControl].orEmpty()
         }
