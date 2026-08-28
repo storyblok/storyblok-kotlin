@@ -2,7 +2,7 @@ package com.storyblok.cdn.schema
 
 import kotlinx.datetime.LocalDate
 import kotlin.time.Instant
-import kotlinx.serialization.SerialName
+import kotlinx.serialization.json.JsonNames
 import kotlinx.serialization.Serializable
 import kotlin.uuid.Uuid
 
@@ -27,58 +27,58 @@ public data class Story<T : Component>(
     val slug: String,
 
     /** Story full slug, combining the parent folder(s) and the story slug. */
-    @SerialName("full_slug")
+    @JsonNames("full_slug")
     val fullSlug: String,
 
     /** Creation timestamp (Timestamps follow the ISO 8601 standard in UTC). */
-    @SerialName("created_at")
+    @JsonNames("created_at")
     val createdAt: Instant,
 
     /** Latest publication timestamp (Timestamps follow the ISO 8601 standard in UTC). */
-    @SerialName("published_at")
+    @JsonNames("published_at")
     val publishedAt: Instant?,
 
     /** First publication timestamp (Timestamps follow the ISO 8601 standard in UTC). */
-    @SerialName("first_published_at")
+    @JsonNames("first_published_at")
     val firstPublishedAt: Instant?,
 
     /** Latest update timestamp (Timestamps follow the ISO 8601 standard in UTC). */
-    @SerialName("updated_at")
+    @JsonNames("updated_at")
     val updatedAt: Instant?,
 
     /** Date defined in the story's entry configuration (Format: YYYY-mm-dd). */
-    @SerialName("sort_by_date")
+    @JsonNames("sort_by_date")
     val sortByDate: LocalDate?,
 
     /** Numeric representation of the story's position in the folder. Users can change this property in the Content tab. */
     val position: Int,
 
     /** Array of tag names. */
-    @SerialName("tag_list")
+    @JsonNames("tag_list")
     val tagList: List<String>,
 
     /** True if the story is defined as folder root. */
-    @SerialName("is_startpage")
+    @JsonNames("is_startpage")
     val isStartPage: Boolean,
 
     /** Parent folder ID. */
-    @SerialName("parent_id")
+    @JsonNames("parent_id")
     val parentId: Long?,
 
     /** Object to store non-editable data that is exclusively maintained with the Management API. */
-    @SerialName("meta_data")
+    @JsonNames("meta_data")
     val metadata: Map<String, String>?,
 
     /** Group ID (UUID string), shared between stories defined as alternates. */
-    @SerialName("group_id")
+    @JsonNames("group_id")
     val groupId: Uuid,
 
     /** Current release ID (if requested via the from_release parameter). */
-    @SerialName("release_id")
+    @JsonNames("release_id")
     val releaseId: Long? = null,
 
     /** Language code of the current language version (if requested via the language parameter). */
-    @SerialName("lang")
+    @JsonNames("lang")
     val language: String,
 
     /** Real path defined in the story's entry configuration (see Visual Editor). */
@@ -88,11 +88,11 @@ public data class Story<T : Component>(
     val alternates: List<Alternate>,
 
     /** Contains the complete slug of the default language (if the Translatable Slugs app is installed). */
-    @SerialName("default_full_slug")
+    @JsonNames("default_full_slug")
     val defaultFullSlug: String?,
 
     /** Array of translated slug objects (if the Translatable Slugs app is installed). */
-    @SerialName("translated_slugs")
+    @JsonNames("translated_slugs")
     val translatedSlugs: List<TranslatedSlug>?
 ) {
     /**
@@ -111,13 +111,13 @@ public data class Story<T : Component>(
         /** True if the story is currently published. */
         val published: Boolean,
         /** Story full slug, combining the parent folder(s) and the story slug. */
-        @SerialName("full_slug")
+        @JsonNames("full_slug")
         val fullSlug: String,
         /** True if the instance constitutes a folder. */
-        @SerialName("is_folder")
+        @JsonNames("is_folder")
         val isFolder: Boolean,
         /** ID of the parent folder. */
-        @SerialName("parent_id")
+        @JsonNames("parent_id")
         val parentId: Long,
     )
 
@@ -133,7 +133,7 @@ public data class Story<T : Component>(
         /** Translated name. */
         val name: String?,
         /** Language code of story variant. */
-        @SerialName("lang")
+        @JsonNames("lang")
         val language: String,
         /** True if story variant is currently published. */
         val published: Boolean?,
