@@ -5,14 +5,18 @@ public abstract interface class com/storyblok/cdn/StoryblokClient {
 	public static final field Companion Lcom/storyblok/cdn/StoryblokClient$Companion;
 	public abstract fun close ()V
 	public abstract fun getHttp ()Lio/ktor/client/HttpClient;
-	public abstract fun story (Ljava/lang/String;I)Lkotlinx/coroutines/flow/Flow;
-	public abstract fun story (Ljava/lang/String;Lio/ktor/util/reflect/TypeInfo;I)Lkotlinx/coroutines/flow/Flow;
-	public abstract fun story (Lkotlin/uuid/Uuid;I)Lkotlinx/coroutines/flow/Flow;
-	public abstract fun story (Lkotlin/uuid/Uuid;Lio/ktor/util/reflect/TypeInfo;I)Lkotlinx/coroutines/flow/Flow;
-	public static synthetic fun story$default (Lcom/storyblok/cdn/StoryblokClient;Ljava/lang/String;IILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
-	public static synthetic fun story$default (Lcom/storyblok/cdn/StoryblokClient;Ljava/lang/String;Lio/ktor/util/reflect/TypeInfo;IILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
-	public static synthetic fun story$default (Lcom/storyblok/cdn/StoryblokClient;Lkotlin/uuid/Uuid;IILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
-	public static synthetic fun story$default (Lcom/storyblok/cdn/StoryblokClient;Lkotlin/uuid/Uuid;Lio/ktor/util/reflect/TypeInfo;IILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public abstract fun stories (Landroidx/paging/PagingConfig;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public abstract fun stories (Landroidx/paging/PagingConfig;Lio/ktor/util/reflect/TypeInfo;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun stories$default (Lcom/storyblok/cdn/StoryblokClient;Landroidx/paging/PagingConfig;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun stories$default (Lcom/storyblok/cdn/StoryblokClient;Landroidx/paging/PagingConfig;Lio/ktor/util/reflect/TypeInfo;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public abstract fun story (Ljava/lang/String;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public abstract fun story (Ljava/lang/String;Lio/ktor/util/reflect/TypeInfo;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public abstract fun story (Lkotlin/uuid/Uuid;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public abstract fun story (Lkotlin/uuid/Uuid;Lio/ktor/util/reflect/TypeInfo;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun story$default (Lcom/storyblok/cdn/StoryblokClient;Ljava/lang/String;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun story$default (Lcom/storyblok/cdn/StoryblokClient;Ljava/lang/String;Lio/ktor/util/reflect/TypeInfo;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun story$default (Lcom/storyblok/cdn/StoryblokClient;Lkotlin/uuid/Uuid;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun story$default (Lcom/storyblok/cdn/StoryblokClient;Lkotlin/uuid/Uuid;Lio/ktor/util/reflect/TypeInfo;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
 }
 
 public final class com/storyblok/cdn/StoryblokClient$Companion {
@@ -24,10 +28,12 @@ public final class com/storyblok/cdn/StoryblokClient$Companion {
 }
 
 public final class com/storyblok/cdn/StoryblokClient$DefaultImpls {
-	public static synthetic fun story$default (Lcom/storyblok/cdn/StoryblokClient;Ljava/lang/String;IILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
-	public static synthetic fun story$default (Lcom/storyblok/cdn/StoryblokClient;Ljava/lang/String;Lio/ktor/util/reflect/TypeInfo;IILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
-	public static synthetic fun story$default (Lcom/storyblok/cdn/StoryblokClient;Lkotlin/uuid/Uuid;IILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
-	public static synthetic fun story$default (Lcom/storyblok/cdn/StoryblokClient;Lkotlin/uuid/Uuid;Lio/ktor/util/reflect/TypeInfo;IILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun stories$default (Lcom/storyblok/cdn/StoryblokClient;Landroidx/paging/PagingConfig;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun stories$default (Lcom/storyblok/cdn/StoryblokClient;Landroidx/paging/PagingConfig;Lio/ktor/util/reflect/TypeInfo;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun story$default (Lcom/storyblok/cdn/StoryblokClient;Ljava/lang/String;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun story$default (Lcom/storyblok/cdn/StoryblokClient;Ljava/lang/String;Lio/ktor/util/reflect/TypeInfo;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun story$default (Lcom/storyblok/cdn/StoryblokClient;Lkotlin/uuid/Uuid;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun story$default (Lcom/storyblok/cdn/StoryblokClient;Lkotlin/uuid/Uuid;Lio/ktor/util/reflect/TypeInfo;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
 }
 
 public class com/storyblok/cdn/StoryblokClientException : java/lang/Exception {
@@ -43,10 +49,109 @@ public final class com/storyblok/cdn/StoryblokClientImpl : com/storyblok/cdn/Sto
 	public fun getHttp ()Lio/ktor/client/HttpClient;
 	public final fun getJson ()Lkotlinx/serialization/json/Json;
 	public final fun getRelations ()Ljava/util/Map;
-	public fun story (Ljava/lang/String;I)Lkotlinx/coroutines/flow/Flow;
-	public fun story (Ljava/lang/String;Lio/ktor/util/reflect/TypeInfo;I)Lkotlinx/coroutines/flow/Flow;
-	public fun story (Lkotlin/uuid/Uuid;I)Lkotlinx/coroutines/flow/Flow;
-	public fun story (Lkotlin/uuid/Uuid;Lio/ktor/util/reflect/TypeInfo;I)Lkotlinx/coroutines/flow/Flow;
+	public fun stories (Landroidx/paging/PagingConfig;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public fun stories (Landroidx/paging/PagingConfig;Lio/ktor/util/reflect/TypeInfo;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public fun story (Ljava/lang/String;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public fun story (Ljava/lang/String;Lio/ktor/util/reflect/TypeInfo;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public fun story (Lkotlin/uuid/Uuid;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public fun story (Lkotlin/uuid/Uuid;Lio/ktor/util/reflect/TypeInfo;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class com/storyblok/cdn/query/FilterQueryBuilder {
+	public final fun allIn (Lkotlin/reflect/KProperty1;Ljava/util/Collection;)V
+	public final fun anyIn (Lkotlin/reflect/KProperty1;Ljava/util/Collection;)V
+	public final fun greaterThan (Lkotlin/reflect/KProperty1;D)V
+	public final fun greaterThan (Lkotlin/reflect/KProperty1;J)V
+	public final fun greaterThan (Lkotlin/reflect/KProperty1;Lkotlin/time/Instant;)V
+	public final fun is (Lkotlin/reflect/KProperty1;Lcom/storyblok/cdn/query/Is;)V
+	public final fun isIn (Lkotlin/reflect/KProperty1;Ljava/util/Collection;)V
+	public final fun lessThan (Lkotlin/reflect/KProperty1;D)V
+	public final fun lessThan (Lkotlin/reflect/KProperty1;J)V
+	public final fun lessThan (Lkotlin/reflect/KProperty1;Lkotlin/time/Instant;)V
+	public final fun like (Lkotlin/reflect/KProperty1;Ljava/lang/String;)V
+	public final fun notIn (Lkotlin/reflect/KProperty1;Ljava/util/Collection;)V
+	public final fun notLike (Lkotlin/reflect/KProperty1;Ljava/lang/String;)V
+}
+
+public final class com/storyblok/cdn/query/Is : java/lang/Enum {
+	public static final field Empty Lcom/storyblok/cdn/query/Is;
+	public static final field EmptyArray Lcom/storyblok/cdn/query/Is;
+	public static final field False Lcom/storyblok/cdn/query/Is;
+	public static final field NotEmpty Lcom/storyblok/cdn/query/Is;
+	public static final field NotEmptyArray Lcom/storyblok/cdn/query/Is;
+	public static final field NotNull Lcom/storyblok/cdn/query/Is;
+	public static final field Null Lcom/storyblok/cdn/query/Is;
+	public static final field True Lcom/storyblok/cdn/query/Is;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/storyblok/cdn/query/Is;
+	public static fun values ()[Lcom/storyblok/cdn/query/Is;
+}
+
+public abstract class com/storyblok/cdn/query/Query {
+	public final fun parameter (Ljava/lang/String;Ljava/lang/Object;)V
+}
+
+public abstract interface annotation class com/storyblok/cdn/query/QueryDsl : java/lang/annotation/Annotation {
+}
+
+public final class com/storyblok/cdn/query/SortAs : java/lang/Enum {
+	public static final field DecimalNumber Lcom/storyblok/cdn/query/SortAs;
+	public static final field Text Lcom/storyblok/cdn/query/SortAs;
+	public static final field WholeNumber Lcom/storyblok/cdn/query/SortAs;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/storyblok/cdn/query/SortAs;
+	public static fun values ()[Lcom/storyblok/cdn/query/SortAs;
+}
+
+public final class com/storyblok/cdn/query/StoriesQuery : com/storyblok/cdn/query/StoryQuery {
+	public final fun filter (Lkotlin/jvm/functions/Function1;)V
+	public final fun getBySlugs ()Ljava/util/List;
+	public final fun getByUuids ()Ljava/util/List;
+	public final fun getByUuidsOrdered ()Ljava/util/List;
+	public final fun getExcludingIds ()Ljava/util/List;
+	public final fun getExcludingSlugs ()Ljava/util/List;
+	public final fun getFirstPublishedAtGreaterThan ()Lkotlin/time/Instant;
+	public final fun getFirstPublishedAtLessThan ()Lkotlin/time/Instant;
+	public final fun getPublishedAtGreaterThan ()Lkotlin/time/Instant;
+	public final fun getPublishedAtGreaterThanOrEqual ()Lkotlin/time/Instant;
+	public final fun getPublishedAtLessThan ()Lkotlin/time/Instant;
+	public final fun getPublishedAtLessThanOrEqual ()Lkotlin/time/Instant;
+	public final fun getSearchTerm ()Ljava/lang/String;
+	public final fun getStartsWith ()Ljava/lang/String;
+	public final fun getUpdatedAtGreaterThan ()Lkotlin/time/Instant;
+	public final fun getUpdatedAtLessThan ()Lkotlin/time/Instant;
+	public final fun getWithTag ()Ljava/util/List;
+	public final fun isStartpage ()Ljava/lang/Boolean;
+	public final fun setBySlugs (Ljava/util/List;)V
+	public final fun setByUuids (Ljava/util/List;)V
+	public final fun setByUuidsOrdered (Ljava/util/List;)V
+	public final fun setExcludingIds (Ljava/util/List;)V
+	public final fun setExcludingSlugs (Ljava/util/List;)V
+	public final fun setFirstPublishedAtGreaterThan (Lkotlin/time/Instant;)V
+	public final fun setFirstPublishedAtLessThan (Lkotlin/time/Instant;)V
+	public final fun setPublishedAtGreaterThan (Lkotlin/time/Instant;)V
+	public final fun setPublishedAtGreaterThanOrEqual (Lkotlin/time/Instant;)V
+	public final fun setPublishedAtLessThan (Lkotlin/time/Instant;)V
+	public final fun setPublishedAtLessThanOrEqual (Lkotlin/time/Instant;)V
+	public final fun setSearchTerm (Ljava/lang/String;)V
+	public final fun setStartpage (Ljava/lang/Boolean;)V
+	public final fun setStartsWith (Ljava/lang/String;)V
+	public final fun setUpdatedAtGreaterThan (Lkotlin/time/Instant;)V
+	public final fun setUpdatedAtLessThan (Lkotlin/time/Instant;)V
+	public final fun setWithTag (Ljava/util/List;)V
+	public final fun sortBy (Lkotlin/reflect/KProperty1;)V
+	public final fun sortBy (Lkotlin/reflect/KProperty1;Lcom/storyblok/cdn/query/SortAs;)V
+	public final fun sortByAttribute (Lkotlin/reflect/KProperty1;)V
+	public final fun sortByAttributeDescending (Lkotlin/reflect/KProperty1;)V
+	public final fun sortByDescending (Lkotlin/reflect/KProperty1;)V
+	public final fun sortByDescending (Lkotlin/reflect/KProperty1;Lcom/storyblok/cdn/query/SortAs;)V
+}
+
+public class com/storyblok/cdn/query/StoryQuery : com/storyblok/cdn/query/Query {
+	public final fun getExcludingFields ()Ljava/util/List;
+	public final fun getFromRelease ()Ljava/lang/String;
+	public final fun setExcludingFields (Ljava/util/List;)V
+	public final fun setFromRelease (Ljava/lang/String;)V
 }
 
 public final class com/storyblok/cdn/schema/Asset : com/storyblok/cdn/schema/Field {

@@ -30,11 +30,16 @@ val myStory = client.story("home").first()
 
 #### Define custom components for deserialization:
 
+- Use `@SerialName` on the class to set the component's technical name. 
+- Use `@JsonNames` on a field whose name in Storyblok differs from the Kotlin property
+
 ```kotlin
 @Serializable
 @SerialName("page")
 class Page(
     val title: String,
+    @JsonNames("hero_image") 
+    val heroImage: Asset,
     val body: List<Component>
 ) : Component()
 
