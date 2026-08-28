@@ -33,10 +33,10 @@ public final class com/storyblok/compose/StoryblokScope : com/storyblok/cdn/Stor
 	public fun getHttp ()Lio/ktor/client/HttpClient;
 	public fun stories (Landroidx/paging/PagingConfig;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
 	public fun stories (Landroidx/paging/PagingConfig;Lio/ktor/util/reflect/TypeInfo;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
-	public fun story (Ljava/lang/String;I)Lkotlinx/coroutines/flow/Flow;
-	public fun story (Ljava/lang/String;Lio/ktor/util/reflect/TypeInfo;I)Lkotlinx/coroutines/flow/Flow;
-	public fun story (Lkotlin/uuid/Uuid;I)Lkotlinx/coroutines/flow/Flow;
-	public fun story (Lkotlin/uuid/Uuid;Lio/ktor/util/reflect/TypeInfo;I)Lkotlinx/coroutines/flow/Flow;
+	public fun story (Ljava/lang/String;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public fun story (Ljava/lang/String;Lio/ktor/util/reflect/TypeInfo;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public fun story (Lkotlin/uuid/Uuid;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public fun story (Lkotlin/uuid/Uuid;Lio/ktor/util/reflect/TypeInfo;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
 }
 
 public final class com/storyblok/compose/provider/BlockProvider {
