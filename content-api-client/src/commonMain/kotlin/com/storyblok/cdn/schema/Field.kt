@@ -2,6 +2,7 @@ package com.storyblok.cdn.schema
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonNames
 import kotlinx.serialization.json.JsonClassDiscriminator
 import kotlinx.serialization.json.JsonObject
 
@@ -17,7 +18,7 @@ public sealed class Field {
     public val id: String? = null
 
     /** Technical name of the field type. */
-    @SerialName("fieldtype")
+    @JsonNames("fieldtype")
     public val fieldType: String = ""
 }
 
@@ -34,10 +35,10 @@ public class Link(
     /** Link target attribute (e.g., "_blank" for new tab). */
     public val target: String? = null,
     /** Type of link: "url", "story", "email", or "asset". */
-    @SerialName("linktype")
+    @JsonNames("linktype")
     public val linkType: String = "url",
     /** Cached URL resolved by Storyblok. */
-    @SerialName("cached_url")
+    @JsonNames("cached_url")
     public val cachedUrl: String? = null,
     /** Email address for email links. */
     public val email: String? = null
@@ -60,7 +61,7 @@ public class Asset(
     /** Focal point coordinates for image cropping. */
     public val focus: String?,
     /** Custom metadata key-value pairs. */
-    @SerialName("meta_data")
+    @JsonNames("meta_data")
     public val metadata: Map<String, String>? = null,
     /** Asset title. */
     public val title: String? = null,
@@ -69,6 +70,6 @@ public class Asset(
     /** Copyright information. */
     public val copyright: String? = null,
     /** True if the asset is hosted externally. */
-    @SerialName("is_external_url")
+    @JsonNames("is_external_url")
     public val isExternalUrl: Boolean = false
 ) : Field()

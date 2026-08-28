@@ -2,6 +2,7 @@ package com.storyblok.cdn.schema
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonNames
 import kotlinx.serialization.json.JsonClassDiscriminator
 
 /**
@@ -50,7 +51,7 @@ public sealed class RichText {
     @Serializable
     @SerialName("heading")
     public class Heading internal constructor(
-        @SerialName("attrs")
+        @JsonNames("attrs")
         internal val attributes: Attributes,
         public override val content: List<RichText>
     ) : RichText(), Composite {
@@ -74,7 +75,7 @@ public sealed class RichText {
     @SerialName("ordered_list")
     public class OrderedList internal constructor(
         public override val content: List<ListItem>,
-        @SerialName("attrs")
+        @JsonNames("attrs")
         internal val attributes: Attributes? = null
     ) : RichText(), Composite {
         /** Starting number for the list. */
@@ -87,7 +88,7 @@ public sealed class RichText {
     @Serializable
     @SerialName("image")
     public class Image internal constructor(
-        @SerialName("attrs")
+        @JsonNames("attrs")
         internal val attributes: Attributes
     ) : RichText() {
         /** Unique identifier for the image. */
@@ -113,7 +114,7 @@ public sealed class RichText {
             val title: String? = null,
             val source: String? = null,
             val copyright: String? = null,
-            @SerialName("meta_data")
+            @JsonNames("meta_data")
             val metadata: Map<String, String>? = null,
         )
     }
@@ -123,7 +124,7 @@ public sealed class RichText {
     @SerialName("code_block")
     public class CodeBlock internal constructor(
         public override val content: List<RichText>,
-        @SerialName("attrs")
+        @JsonNames("attrs")
         internal val attributes: Attributes? = null
     ) : RichText(), Composite {
         /** Programming language for syntax highlighting. */
@@ -133,7 +134,7 @@ public sealed class RichText {
         @Serializable
         internal class Attributes(
             val language: String? = null,
-            @SerialName("class") val clazz: String? = null
+            @JsonNames("class") val clazz: String? = null
         )
     }
 
@@ -181,7 +182,7 @@ public sealed class RichText {
     @Serializable
     @SerialName("tableHeader")
     public class TableHeader internal constructor(
-        @SerialName("attrs")
+        @JsonNames("attrs")
         override val attributes: Attributes? = null
     ) : TableElement() {
         @Serializable
@@ -192,7 +193,7 @@ public sealed class RichText {
     @Serializable
     @SerialName("tableCell")
     public class TableCell internal constructor(
-        @SerialName("attrs")
+        @JsonNames("attrs")
         override val attributes: Attributes? = null
     ) : TableElement() {
         /** Background color of the cell. */
@@ -206,7 +207,7 @@ public sealed class RichText {
     @SerialName("paragraph")
     public class Paragraph internal constructor(
         public override val content: List<RichText> = emptyList(),
-        @SerialName("attrs")
+        @JsonNames("attrs")
         internal val attributes: Attributes? = null,
     ) : RichText(), Composite {
 
@@ -273,7 +274,7 @@ public sealed class RichText {
         @Serializable
         @SerialName("link")
         public class Link internal constructor(
-            @SerialName("attrs")
+            @JsonNames("attrs")
             internal val attributes: Attributes
         ): Mark() {
             /** Link destination URL. */
@@ -304,7 +305,7 @@ public sealed class RichText {
         @Serializable
         @SerialName("textStyle")
         public class TextStyle internal constructor(
-            @SerialName("attrs")
+            @JsonNames("attrs")
             internal val attributes: Attributes,
         ) : Mark() {
             /** Text color value. */
@@ -318,7 +319,7 @@ public sealed class RichText {
         @Serializable
         @SerialName("highlight")
         public class Highlight internal constructor(
-            @SerialName("attrs")
+            @JsonNames("attrs")
             internal val attributes: Attributes
         ) : Mark() {
             /** Highlight color value. */
@@ -332,7 +333,7 @@ public sealed class RichText {
     @Serializable
     @SerialName("blok")
     public class Block internal constructor(
-        @SerialName("attrs")
+        @JsonNames("attrs")
         internal val attributes: Attributes,
     ) : RichText() {
 
@@ -359,7 +360,7 @@ public sealed class RichText {
     @Serializable
     @SerialName("emoji")
     public class Emoji internal constructor(
-        @SerialName("attrs")
+        @JsonNames("attrs")
         internal val attributes: Attributes
     ) : RichText() {
         /** Emoji name/identifier. */

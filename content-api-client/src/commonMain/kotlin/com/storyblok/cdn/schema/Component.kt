@@ -1,6 +1,6 @@
 package com.storyblok.cdn.schema
 
-import kotlinx.serialization.SerialName
+import kotlinx.serialization.json.JsonNames
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonIgnoreUnknownKeys
 
@@ -12,13 +12,13 @@ import kotlinx.serialization.json.JsonIgnoreUnknownKeys
 @Serializable
 public abstract class Component {
     /** Unique identifier for this component instance. */
-    @SerialName("_uid")
+    @JsonNames("_uid")
     public val uid: String = ""
 
     /** Technical name of the component type. */
     public val component: String = ""
 
-    @SerialName("_editable")
+    @JsonNames("_editable")
     internal val editable: String = ""
 
     /**
