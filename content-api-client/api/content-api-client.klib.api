@@ -1,30 +1,69 @@
 // Klib ABI Dump
-// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, mingwX64, tvosArm64, tvosSimulatorArm64, wasmJs, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64]
+// Targets: [iosArm64, iosSimulatorArm64, js, linuxArm64, linuxX64, macosArm64, mingwX64, tvosArm64, tvosSimulatorArm64, wasmJs, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
 // - Show declarations: true
 
 // Library unique name: <storyblok-kotlin:content-api-client>
+open annotation class com.storyblok.cdn.query/QueryDsl : kotlin/Annotation { // com.storyblok.cdn.query/QueryDsl|null[0]
+    constructor <init>() // com.storyblok.cdn.query/QueryDsl.<init>|<init>(){}[0]
+}
+
 open annotation class com.storyblok/InternalAPI : kotlin/Annotation { // com.storyblok/InternalAPI|null[0]
     constructor <init>() // com.storyblok/InternalAPI.<init>|<init>(){}[0]
+}
+
+final enum class com.storyblok.cdn.query/Is : kotlin/Enum<com.storyblok.cdn.query/Is> { // com.storyblok.cdn.query/Is|null[0]
+    enum entry Empty // com.storyblok.cdn.query/Is.Empty|null[0]
+    enum entry EmptyArray // com.storyblok.cdn.query/Is.EmptyArray|null[0]
+    enum entry False // com.storyblok.cdn.query/Is.False|null[0]
+    enum entry NotEmpty // com.storyblok.cdn.query/Is.NotEmpty|null[0]
+    enum entry NotEmptyArray // com.storyblok.cdn.query/Is.NotEmptyArray|null[0]
+    enum entry NotNull // com.storyblok.cdn.query/Is.NotNull|null[0]
+    enum entry Null // com.storyblok.cdn.query/Is.Null|null[0]
+    enum entry True // com.storyblok.cdn.query/Is.True|null[0]
+
+    final val entries // com.storyblok.cdn.query/Is.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.storyblok.cdn.query/Is> // com.storyblok.cdn.query/Is.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.storyblok.cdn.query/Is // com.storyblok.cdn.query/Is.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.storyblok.cdn.query/Is> // com.storyblok.cdn.query/Is.values|values#static(){}[0]
+}
+
+final enum class com.storyblok.cdn.query/SortAs : kotlin/Enum<com.storyblok.cdn.query/SortAs> { // com.storyblok.cdn.query/SortAs|null[0]
+    enum entry DecimalNumber // com.storyblok.cdn.query/SortAs.DecimalNumber|null[0]
+    enum entry Text // com.storyblok.cdn.query/SortAs.Text|null[0]
+    enum entry WholeNumber // com.storyblok.cdn.query/SortAs.WholeNumber|null[0]
+
+    final val entries // com.storyblok.cdn.query/SortAs.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.storyblok.cdn.query/SortAs> // com.storyblok.cdn.query/SortAs.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.storyblok.cdn.query/SortAs // com.storyblok.cdn.query/SortAs.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.storyblok.cdn.query/SortAs> // com.storyblok.cdn.query/SortAs.values|values#static(){}[0]
 }
 
 abstract interface com.storyblok.cdn/StoryblokClient { // com.storyblok.cdn/StoryblokClient|null[0]
     abstract val http // com.storyblok.cdn/StoryblokClient.http|{}http[0]
         abstract fun <get-http>(): io.ktor.client/HttpClient // com.storyblok.cdn/StoryblokClient.http.<get-http>|<get-http>(){}[0]
 
-    abstract fun <#A1: com.storyblok.cdn.schema/Component> story(kotlin.uuid/Uuid, io.ktor.util.reflect/TypeInfo, kotlin/Int = ...): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A1>> // com.storyblok.cdn/StoryblokClient.story|story(kotlin.uuid.Uuid;io.ktor.util.reflect.TypeInfo;kotlin.Int){0§<com.storyblok.cdn.schema.Component>}[0]
-    abstract fun <#A1: com.storyblok.cdn.schema/Component> story(kotlin/String, io.ktor.util.reflect/TypeInfo, kotlin/Int = ...): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A1>> // com.storyblok.cdn/StoryblokClient.story|story(kotlin.String;io.ktor.util.reflect.TypeInfo;kotlin.Int){0§<com.storyblok.cdn.schema.Component>}[0]
+    abstract fun <#A1: com.storyblok.cdn.schema/Component> stories(androidx.paging/PagingConfig, io.ktor.util.reflect/TypeInfo, kotlin/Int = ..., kotlin/Function1<com.storyblok.cdn.query/StoriesQuery<#A1>, kotlin/Unit> = ...): kotlinx.coroutines.flow/Flow<androidx.paging/PagingData<com.storyblok.cdn.schema/Story<#A1>>> // com.storyblok.cdn/StoryblokClient.stories|stories(androidx.paging.PagingConfig;io.ktor.util.reflect.TypeInfo;kotlin.Int;kotlin.Function1<com.storyblok.cdn.query.StoriesQuery<0:0>,kotlin.Unit>){0§<com.storyblok.cdn.schema.Component>}[0]
+    abstract fun <#A1: com.storyblok.cdn.schema/Component> story(kotlin.uuid/Uuid, io.ktor.util.reflect/TypeInfo, kotlin/Int = ..., kotlin/Function1<com.storyblok.cdn.query/StoryQuery<#A1>, kotlin/Unit> = ...): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A1>> // com.storyblok.cdn/StoryblokClient.story|story(kotlin.uuid.Uuid;io.ktor.util.reflect.TypeInfo;kotlin.Int;kotlin.Function1<com.storyblok.cdn.query.StoryQuery<0:0>,kotlin.Unit>){0§<com.storyblok.cdn.schema.Component>}[0]
+    abstract fun <#A1: com.storyblok.cdn.schema/Component> story(kotlin/String, io.ktor.util.reflect/TypeInfo, kotlin/Int = ..., kotlin/Function1<com.storyblok.cdn.query/StoryQuery<#A1>, kotlin/Unit> = ...): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A1>> // com.storyblok.cdn/StoryblokClient.story|story(kotlin.String;io.ktor.util.reflect.TypeInfo;kotlin.Int;kotlin.Function1<com.storyblok.cdn.query.StoryQuery<0:0>,kotlin.Unit>){0§<com.storyblok.cdn.schema.Component>}[0]
     abstract fun close() // com.storyblok.cdn/StoryblokClient.close|close(){}[0]
-    abstract fun story(kotlin.uuid/Uuid, kotlin/Int = ...): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<com.storyblok.cdn.schema/Component>> // com.storyblok.cdn/StoryblokClient.story|story(kotlin.uuid.Uuid;kotlin.Int){}[0]
-    abstract fun story(kotlin/String, kotlin/Int = ...): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<com.storyblok.cdn.schema/Component>> // com.storyblok.cdn/StoryblokClient.story|story(kotlin.String;kotlin.Int){}[0]
+    abstract fun stories(androidx.paging/PagingConfig = ..., kotlin/Int = ..., kotlin/Function1<com.storyblok.cdn.query/StoriesQuery<com.storyblok.cdn.schema/Component>, kotlin/Unit> = ...): kotlinx.coroutines.flow/Flow<androidx.paging/PagingData<com.storyblok.cdn.schema/Story<com.storyblok.cdn.schema/Component>>> // com.storyblok.cdn/StoryblokClient.stories|stories(androidx.paging.PagingConfig;kotlin.Int;kotlin.Function1<com.storyblok.cdn.query.StoriesQuery<com.storyblok.cdn.schema.Component>,kotlin.Unit>){}[0]
+    abstract fun story(kotlin.uuid/Uuid, kotlin/Int = ..., kotlin/Function1<com.storyblok.cdn.query/StoryQuery<com.storyblok.cdn.schema/Component>, kotlin/Unit> = ...): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<com.storyblok.cdn.schema/Component>> // com.storyblok.cdn/StoryblokClient.story|story(kotlin.uuid.Uuid;kotlin.Int;kotlin.Function1<com.storyblok.cdn.query.StoryQuery<com.storyblok.cdn.schema.Component>,kotlin.Unit>){}[0]
+    abstract fun story(kotlin/String, kotlin/Int = ..., kotlin/Function1<com.storyblok.cdn.query/StoryQuery<com.storyblok.cdn.schema/Component>, kotlin/Unit> = ...): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<com.storyblok.cdn.schema/Component>> // com.storyblok.cdn/StoryblokClient.story|story(kotlin.String;kotlin.Int;kotlin.Function1<com.storyblok.cdn.query.StoryQuery<com.storyblok.cdn.schema.Component>,kotlin.Unit>){}[0]
 
     final object Companion { // com.storyblok.cdn/StoryblokClient.Companion|null[0]
         final fun invoke(kotlin/Boolean = ..., kotlin/Function1<kotlinx.serialization.modules/SerializersModuleBuilder, kotlin/Unit>, kotlin/Function1<com.storyblok.ktor/Api.Config.Content, kotlin/Unit>): com.storyblok.cdn/StoryblokClient // com.storyblok.cdn/StoryblokClient.Companion.invoke|invoke(kotlin.Boolean;kotlin.Function1<kotlinx.serialization.modules.SerializersModuleBuilder,kotlin.Unit>;kotlin.Function1<com.storyblok.ktor.Api.Config.Content,kotlin.Unit>){}[0]
         final fun invoke(kotlin/Function1<com.storyblok.ktor/Api.Config.Content, kotlin/Unit>, kotlin/Function1<kotlinx.serialization.modules/SerializersModuleBuilder, kotlin/Unit>, kotlin/Function1<kotlinx.serialization.json/JsonBuilder, kotlin/Unit>): com.storyblok.cdn/StoryblokClient // com.storyblok.cdn/StoryblokClient.Companion.invoke|invoke(kotlin.Function1<com.storyblok.ktor.Api.Config.Content,kotlin.Unit>;kotlin.Function1<kotlinx.serialization.modules.SerializersModuleBuilder,kotlin.Unit>;kotlin.Function1<kotlinx.serialization.json.JsonBuilder,kotlin.Unit>){}[0]
         final fun invoke(kotlin/String, com.storyblok.ktor/Api.Config.Version, com.storyblok.ktor/Api.Config.Region = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlinx.serialization.modules/SerializersModule = ...): com.storyblok.cdn/StoryblokClient // com.storyblok.cdn/StoryblokClient.Companion.invoke|invoke(kotlin.String;com.storyblok.ktor.Api.Config.Version;com.storyblok.ktor.Api.Config.Region;kotlin.String?;kotlin.String?;kotlin.String?;kotlinx.serialization.modules.SerializersModule){}[0]
     }
+}
+
+abstract class com.storyblok.cdn.query/Query { // com.storyblok.cdn.query/Query|null[0]
+    final fun parameter(kotlin/String, kotlin/Any?) // com.storyblok.cdn.query/Query.parameter|parameter(kotlin.String;kotlin.Any?){}[0]
 }
 
 abstract class com.storyblok.cdn.schema/Component { // com.storyblok.cdn.schema/Component|null[0]
@@ -57,6 +96,84 @@ abstract class com.storyblok.cdn.schema/Component { // com.storyblok.cdn.schema/
         final fun serializer(): kotlinx.serialization/KSerializer<com.storyblok.cdn.schema/Component> // com.storyblok.cdn.schema/Component.Companion.serializer|serializer(){}[0]
         final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // com.storyblok.cdn.schema/Component.Companion.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
     }
+}
+
+final class <#A: com.storyblok.cdn.schema/Component> com.storyblok.cdn.query/FilterQueryBuilder { // com.storyblok.cdn.query/FilterQueryBuilder|null[0]
+    final fun (kotlin.reflect/KProperty1<in #A, *>).allIn(kotlin.collections/Collection<kotlin/String>) // com.storyblok.cdn.query/FilterQueryBuilder.allIn|allIn@kotlin.reflect.KProperty1<in|1:0,*>(kotlin.collections.Collection<kotlin.String>){}[0]
+    final fun (kotlin.reflect/KProperty1<in #A, *>).anyIn(kotlin.collections/Collection<kotlin/String>) // com.storyblok.cdn.query/FilterQueryBuilder.anyIn|anyIn@kotlin.reflect.KProperty1<in|1:0,*>(kotlin.collections.Collection<kotlin.String>){}[0]
+    final fun (kotlin.reflect/KProperty1<in #A, *>).greaterThan(kotlin.time/Instant) // com.storyblok.cdn.query/FilterQueryBuilder.greaterThan|greaterThan@kotlin.reflect.KProperty1<in|1:0,*>(kotlin.time.Instant){}[0]
+    final fun (kotlin.reflect/KProperty1<in #A, *>).greaterThan(kotlin/Double) // com.storyblok.cdn.query/FilterQueryBuilder.greaterThan|greaterThan@kotlin.reflect.KProperty1<in|1:0,*>(kotlin.Double){}[0]
+    final fun (kotlin.reflect/KProperty1<in #A, *>).greaterThan(kotlin/Long) // com.storyblok.cdn.query/FilterQueryBuilder.greaterThan|greaterThan@kotlin.reflect.KProperty1<in|1:0,*>(kotlin.Long){}[0]
+    final fun (kotlin.reflect/KProperty1<in #A, *>).is(com.storyblok.cdn.query/Is) // com.storyblok.cdn.query/FilterQueryBuilder.is|is@kotlin.reflect.KProperty1<in|1:0,*>(com.storyblok.cdn.query.Is){}[0]
+    final fun (kotlin.reflect/KProperty1<in #A, *>).isIn(kotlin.collections/Collection<kotlin/String>) // com.storyblok.cdn.query/FilterQueryBuilder.isIn|isIn@kotlin.reflect.KProperty1<in|1:0,*>(kotlin.collections.Collection<kotlin.String>){}[0]
+    final fun (kotlin.reflect/KProperty1<in #A, *>).lessThan(kotlin.time/Instant) // com.storyblok.cdn.query/FilterQueryBuilder.lessThan|lessThan@kotlin.reflect.KProperty1<in|1:0,*>(kotlin.time.Instant){}[0]
+    final fun (kotlin.reflect/KProperty1<in #A, *>).lessThan(kotlin/Double) // com.storyblok.cdn.query/FilterQueryBuilder.lessThan|lessThan@kotlin.reflect.KProperty1<in|1:0,*>(kotlin.Double){}[0]
+    final fun (kotlin.reflect/KProperty1<in #A, *>).lessThan(kotlin/Long) // com.storyblok.cdn.query/FilterQueryBuilder.lessThan|lessThan@kotlin.reflect.KProperty1<in|1:0,*>(kotlin.Long){}[0]
+    final fun (kotlin.reflect/KProperty1<in #A, *>).like(kotlin/String) // com.storyblok.cdn.query/FilterQueryBuilder.like|like@kotlin.reflect.KProperty1<in|1:0,*>(kotlin.String){}[0]
+    final fun (kotlin.reflect/KProperty1<in #A, *>).notIn(kotlin.collections/Collection<kotlin/String>) // com.storyblok.cdn.query/FilterQueryBuilder.notIn|notIn@kotlin.reflect.KProperty1<in|1:0,*>(kotlin.collections.Collection<kotlin.String>){}[0]
+    final fun (kotlin.reflect/KProperty1<in #A, *>).notLike(kotlin/String) // com.storyblok.cdn.query/FilterQueryBuilder.notLike|notLike@kotlin.reflect.KProperty1<in|1:0,*>(kotlin.String){}[0]
+}
+
+final class <#A: com.storyblok.cdn.schema/Component> com.storyblok.cdn.query/StoriesQuery : com.storyblok.cdn.query/StoryQuery<#A> { // com.storyblok.cdn.query/StoriesQuery|null[0]
+    final var bySlugs // com.storyblok.cdn.query/StoriesQuery.bySlugs|{}bySlugs[0]
+        final fun <get-bySlugs>(): kotlin.collections/List<kotlin/String> // com.storyblok.cdn.query/StoriesQuery.bySlugs.<get-bySlugs>|<get-bySlugs>(){}[0]
+        final fun <set-bySlugs>(kotlin.collections/List<kotlin/String>) // com.storyblok.cdn.query/StoriesQuery.bySlugs.<set-bySlugs>|<set-bySlugs>(kotlin.collections.List<kotlin.String>){}[0]
+    final var byUuids // com.storyblok.cdn.query/StoriesQuery.byUuids|{}byUuids[0]
+        final fun <get-byUuids>(): kotlin.collections/List<kotlin.uuid/Uuid> // com.storyblok.cdn.query/StoriesQuery.byUuids.<get-byUuids>|<get-byUuids>(){}[0]
+        final fun <set-byUuids>(kotlin.collections/List<kotlin.uuid/Uuid>) // com.storyblok.cdn.query/StoriesQuery.byUuids.<set-byUuids>|<set-byUuids>(kotlin.collections.List<kotlin.uuid.Uuid>){}[0]
+    final var byUuidsOrdered // com.storyblok.cdn.query/StoriesQuery.byUuidsOrdered|{}byUuidsOrdered[0]
+        final fun <get-byUuidsOrdered>(): kotlin.collections/List<kotlin.uuid/Uuid> // com.storyblok.cdn.query/StoriesQuery.byUuidsOrdered.<get-byUuidsOrdered>|<get-byUuidsOrdered>(){}[0]
+        final fun <set-byUuidsOrdered>(kotlin.collections/List<kotlin.uuid/Uuid>) // com.storyblok.cdn.query/StoriesQuery.byUuidsOrdered.<set-byUuidsOrdered>|<set-byUuidsOrdered>(kotlin.collections.List<kotlin.uuid.Uuid>){}[0]
+    final var excludingIds // com.storyblok.cdn.query/StoriesQuery.excludingIds|{}excludingIds[0]
+        final fun <get-excludingIds>(): kotlin.collections/List<kotlin/Long> // com.storyblok.cdn.query/StoriesQuery.excludingIds.<get-excludingIds>|<get-excludingIds>(){}[0]
+        final fun <set-excludingIds>(kotlin.collections/List<kotlin/Long>) // com.storyblok.cdn.query/StoriesQuery.excludingIds.<set-excludingIds>|<set-excludingIds>(kotlin.collections.List<kotlin.Long>){}[0]
+    final var excludingSlugs // com.storyblok.cdn.query/StoriesQuery.excludingSlugs|{}excludingSlugs[0]
+        final fun <get-excludingSlugs>(): kotlin.collections/List<kotlin/String> // com.storyblok.cdn.query/StoriesQuery.excludingSlugs.<get-excludingSlugs>|<get-excludingSlugs>(){}[0]
+        final fun <set-excludingSlugs>(kotlin.collections/List<kotlin/String>) // com.storyblok.cdn.query/StoriesQuery.excludingSlugs.<set-excludingSlugs>|<set-excludingSlugs>(kotlin.collections.List<kotlin.String>){}[0]
+    final var firstPublishedAtGreaterThan // com.storyblok.cdn.query/StoriesQuery.firstPublishedAtGreaterThan|{}firstPublishedAtGreaterThan[0]
+        final fun <get-firstPublishedAtGreaterThan>(): kotlin.time/Instant? // com.storyblok.cdn.query/StoriesQuery.firstPublishedAtGreaterThan.<get-firstPublishedAtGreaterThan>|<get-firstPublishedAtGreaterThan>(){}[0]
+        final fun <set-firstPublishedAtGreaterThan>(kotlin.time/Instant?) // com.storyblok.cdn.query/StoriesQuery.firstPublishedAtGreaterThan.<set-firstPublishedAtGreaterThan>|<set-firstPublishedAtGreaterThan>(kotlin.time.Instant?){}[0]
+    final var firstPublishedAtLessThan // com.storyblok.cdn.query/StoriesQuery.firstPublishedAtLessThan|{}firstPublishedAtLessThan[0]
+        final fun <get-firstPublishedAtLessThan>(): kotlin.time/Instant? // com.storyblok.cdn.query/StoriesQuery.firstPublishedAtLessThan.<get-firstPublishedAtLessThan>|<get-firstPublishedAtLessThan>(){}[0]
+        final fun <set-firstPublishedAtLessThan>(kotlin.time/Instant?) // com.storyblok.cdn.query/StoriesQuery.firstPublishedAtLessThan.<set-firstPublishedAtLessThan>|<set-firstPublishedAtLessThan>(kotlin.time.Instant?){}[0]
+    final var isStartpage // com.storyblok.cdn.query/StoriesQuery.isStartpage|{}isStartpage[0]
+        final fun <get-isStartpage>(): kotlin/Boolean? // com.storyblok.cdn.query/StoriesQuery.isStartpage.<get-isStartpage>|<get-isStartpage>(){}[0]
+        final fun <set-isStartpage>(kotlin/Boolean?) // com.storyblok.cdn.query/StoriesQuery.isStartpage.<set-isStartpage>|<set-isStartpage>(kotlin.Boolean?){}[0]
+    final var publishedAtGreaterThan // com.storyblok.cdn.query/StoriesQuery.publishedAtGreaterThan|{}publishedAtGreaterThan[0]
+        final fun <get-publishedAtGreaterThan>(): kotlin.time/Instant? // com.storyblok.cdn.query/StoriesQuery.publishedAtGreaterThan.<get-publishedAtGreaterThan>|<get-publishedAtGreaterThan>(){}[0]
+        final fun <set-publishedAtGreaterThan>(kotlin.time/Instant?) // com.storyblok.cdn.query/StoriesQuery.publishedAtGreaterThan.<set-publishedAtGreaterThan>|<set-publishedAtGreaterThan>(kotlin.time.Instant?){}[0]
+    final var publishedAtGreaterThanOrEqual // com.storyblok.cdn.query/StoriesQuery.publishedAtGreaterThanOrEqual|{}publishedAtGreaterThanOrEqual[0]
+        final fun <get-publishedAtGreaterThanOrEqual>(): kotlin.time/Instant? // com.storyblok.cdn.query/StoriesQuery.publishedAtGreaterThanOrEqual.<get-publishedAtGreaterThanOrEqual>|<get-publishedAtGreaterThanOrEqual>(){}[0]
+        final fun <set-publishedAtGreaterThanOrEqual>(kotlin.time/Instant?) // com.storyblok.cdn.query/StoriesQuery.publishedAtGreaterThanOrEqual.<set-publishedAtGreaterThanOrEqual>|<set-publishedAtGreaterThanOrEqual>(kotlin.time.Instant?){}[0]
+    final var publishedAtLessThan // com.storyblok.cdn.query/StoriesQuery.publishedAtLessThan|{}publishedAtLessThan[0]
+        final fun <get-publishedAtLessThan>(): kotlin.time/Instant? // com.storyblok.cdn.query/StoriesQuery.publishedAtLessThan.<get-publishedAtLessThan>|<get-publishedAtLessThan>(){}[0]
+        final fun <set-publishedAtLessThan>(kotlin.time/Instant?) // com.storyblok.cdn.query/StoriesQuery.publishedAtLessThan.<set-publishedAtLessThan>|<set-publishedAtLessThan>(kotlin.time.Instant?){}[0]
+    final var publishedAtLessThanOrEqual // com.storyblok.cdn.query/StoriesQuery.publishedAtLessThanOrEqual|{}publishedAtLessThanOrEqual[0]
+        final fun <get-publishedAtLessThanOrEqual>(): kotlin.time/Instant? // com.storyblok.cdn.query/StoriesQuery.publishedAtLessThanOrEqual.<get-publishedAtLessThanOrEqual>|<get-publishedAtLessThanOrEqual>(){}[0]
+        final fun <set-publishedAtLessThanOrEqual>(kotlin.time/Instant?) // com.storyblok.cdn.query/StoriesQuery.publishedAtLessThanOrEqual.<set-publishedAtLessThanOrEqual>|<set-publishedAtLessThanOrEqual>(kotlin.time.Instant?){}[0]
+    final var searchTerm // com.storyblok.cdn.query/StoriesQuery.searchTerm|{}searchTerm[0]
+        final fun <get-searchTerm>(): kotlin/String? // com.storyblok.cdn.query/StoriesQuery.searchTerm.<get-searchTerm>|<get-searchTerm>(){}[0]
+        final fun <set-searchTerm>(kotlin/String?) // com.storyblok.cdn.query/StoriesQuery.searchTerm.<set-searchTerm>|<set-searchTerm>(kotlin.String?){}[0]
+    final var startsWith // com.storyblok.cdn.query/StoriesQuery.startsWith|{}startsWith[0]
+        final fun <get-startsWith>(): kotlin/String? // com.storyblok.cdn.query/StoriesQuery.startsWith.<get-startsWith>|<get-startsWith>(){}[0]
+        final fun <set-startsWith>(kotlin/String?) // com.storyblok.cdn.query/StoriesQuery.startsWith.<set-startsWith>|<set-startsWith>(kotlin.String?){}[0]
+    final var updatedAtGreaterThan // com.storyblok.cdn.query/StoriesQuery.updatedAtGreaterThan|{}updatedAtGreaterThan[0]
+        final fun <get-updatedAtGreaterThan>(): kotlin.time/Instant? // com.storyblok.cdn.query/StoriesQuery.updatedAtGreaterThan.<get-updatedAtGreaterThan>|<get-updatedAtGreaterThan>(){}[0]
+        final fun <set-updatedAtGreaterThan>(kotlin.time/Instant?) // com.storyblok.cdn.query/StoriesQuery.updatedAtGreaterThan.<set-updatedAtGreaterThan>|<set-updatedAtGreaterThan>(kotlin.time.Instant?){}[0]
+    final var updatedAtLessThan // com.storyblok.cdn.query/StoriesQuery.updatedAtLessThan|{}updatedAtLessThan[0]
+        final fun <get-updatedAtLessThan>(): kotlin.time/Instant? // com.storyblok.cdn.query/StoriesQuery.updatedAtLessThan.<get-updatedAtLessThan>|<get-updatedAtLessThan>(){}[0]
+        final fun <set-updatedAtLessThan>(kotlin.time/Instant?) // com.storyblok.cdn.query/StoriesQuery.updatedAtLessThan.<set-updatedAtLessThan>|<set-updatedAtLessThan>(kotlin.time.Instant?){}[0]
+    final var withTag // com.storyblok.cdn.query/StoriesQuery.withTag|{}withTag[0]
+        final fun <get-withTag>(): kotlin.collections/List<kotlin/String> // com.storyblok.cdn.query/StoriesQuery.withTag.<get-withTag>|<get-withTag>(){}[0]
+        final fun <set-withTag>(kotlin.collections/List<kotlin/String>) // com.storyblok.cdn.query/StoriesQuery.withTag.<set-withTag>|<set-withTag>(kotlin.collections.List<kotlin.String>){}[0]
+
+    final fun filter(kotlin/Function1<com.storyblok.cdn.query/FilterQueryBuilder<#A>, kotlin/Unit>) // com.storyblok.cdn.query/StoriesQuery.filter|filter(kotlin.Function1<com.storyblok.cdn.query.FilterQueryBuilder<1:0>,kotlin.Unit>){}[0]
+    final fun sortBy(kotlin.reflect/KProperty1<com.storyblok.cdn.schema/Story<*>, *>) // com.storyblok.cdn.query/StoriesQuery.sortBy|sortBy(kotlin.reflect.KProperty1<com.storyblok.cdn.schema.Story<*>,*>){}[0]
+    final fun sortBy(kotlin.reflect/KProperty1<in #A, *>) // com.storyblok.cdn.query/StoriesQuery.sortBy|sortBy(kotlin.reflect.KProperty1<in|1:0,*>){}[0]
+    final fun sortBy(kotlin.reflect/KProperty1<in #A, *>, com.storyblok.cdn.query/SortAs) // com.storyblok.cdn.query/StoriesQuery.sortBy|sortBy(kotlin.reflect.KProperty1<in|1:0,*>;com.storyblok.cdn.query.SortAs){}[0]
+    final fun sortByDescending(kotlin.reflect/KProperty1<com.storyblok.cdn.schema/Story<*>, *>) // com.storyblok.cdn.query/StoriesQuery.sortByDescending|sortByDescending(kotlin.reflect.KProperty1<com.storyblok.cdn.schema.Story<*>,*>){}[0]
+    final fun sortByDescending(kotlin.reflect/KProperty1<in #A, *>) // com.storyblok.cdn.query/StoriesQuery.sortByDescending|sortByDescending(kotlin.reflect.KProperty1<in|1:0,*>){}[0]
+    final fun sortByDescending(kotlin.reflect/KProperty1<in #A, *>, com.storyblok.cdn.query/SortAs) // com.storyblok.cdn.query/StoriesQuery.sortByDescending|sortByDescending(kotlin.reflect.KProperty1<in|1:0,*>;com.storyblok.cdn.query.SortAs){}[0]
 }
 
 final class <#A: com.storyblok.cdn.schema/Component> com.storyblok.cdn.schema/Story { // com.storyblok.cdn.schema/Story|null[0]
@@ -315,11 +432,22 @@ final class com.storyblok.cdn/StoryblokClientImpl : com.storyblok.cdn/StoryblokC
     final val relations // com.storyblok.cdn/StoryblokClientImpl.relations|{}relations[0]
         final fun <get-relations>(): kotlin.collections/Map<kotlin/String, kotlin.collections/Map<kotlin/String, kotlin/Boolean>> // com.storyblok.cdn/StoryblokClientImpl.relations.<get-relations>|<get-relations>(){}[0]
 
-    final fun <#A1: com.storyblok.cdn.schema/Component> story(kotlin.uuid/Uuid, io.ktor.util.reflect/TypeInfo, kotlin/Int): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A1>> // com.storyblok.cdn/StoryblokClientImpl.story|story(kotlin.uuid.Uuid;io.ktor.util.reflect.TypeInfo;kotlin.Int){0§<com.storyblok.cdn.schema.Component>}[0]
-    final fun <#A1: com.storyblok.cdn.schema/Component> story(kotlin/String, io.ktor.util.reflect/TypeInfo, kotlin/Int): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A1>> // com.storyblok.cdn/StoryblokClientImpl.story|story(kotlin.String;io.ktor.util.reflect.TypeInfo;kotlin.Int){0§<com.storyblok.cdn.schema.Component>}[0]
+    final fun <#A1: com.storyblok.cdn.schema/Component> stories(androidx.paging/PagingConfig, io.ktor.util.reflect/TypeInfo, kotlin/Int, kotlin/Function1<com.storyblok.cdn.query/StoriesQuery<#A1>, kotlin/Unit>): kotlinx.coroutines.flow/Flow<androidx.paging/PagingData<com.storyblok.cdn.schema/Story<#A1>>> // com.storyblok.cdn/StoryblokClientImpl.stories|stories(androidx.paging.PagingConfig;io.ktor.util.reflect.TypeInfo;kotlin.Int;kotlin.Function1<com.storyblok.cdn.query.StoriesQuery<0:0>,kotlin.Unit>){0§<com.storyblok.cdn.schema.Component>}[0]
+    final fun <#A1: com.storyblok.cdn.schema/Component> story(kotlin.uuid/Uuid, io.ktor.util.reflect/TypeInfo, kotlin/Int, kotlin/Function1<com.storyblok.cdn.query/StoryQuery<#A1>, kotlin/Unit>): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A1>> // com.storyblok.cdn/StoryblokClientImpl.story|story(kotlin.uuid.Uuid;io.ktor.util.reflect.TypeInfo;kotlin.Int;kotlin.Function1<com.storyblok.cdn.query.StoryQuery<0:0>,kotlin.Unit>){0§<com.storyblok.cdn.schema.Component>}[0]
+    final fun <#A1: com.storyblok.cdn.schema/Component> story(kotlin/String, io.ktor.util.reflect/TypeInfo, kotlin/Int, kotlin/Function1<com.storyblok.cdn.query/StoryQuery<#A1>, kotlin/Unit>): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A1>> // com.storyblok.cdn/StoryblokClientImpl.story|story(kotlin.String;io.ktor.util.reflect.TypeInfo;kotlin.Int;kotlin.Function1<com.storyblok.cdn.query.StoryQuery<0:0>,kotlin.Unit>){0§<com.storyblok.cdn.schema.Component>}[0]
     final fun close() // com.storyblok.cdn/StoryblokClientImpl.close|close(){}[0]
-    final fun story(kotlin.uuid/Uuid, kotlin/Int): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<com.storyblok.cdn.schema/Component>> // com.storyblok.cdn/StoryblokClientImpl.story|story(kotlin.uuid.Uuid;kotlin.Int){}[0]
-    final fun story(kotlin/String, kotlin/Int): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<com.storyblok.cdn.schema/Component>> // com.storyblok.cdn/StoryblokClientImpl.story|story(kotlin.String;kotlin.Int){}[0]
+    final fun stories(androidx.paging/PagingConfig, kotlin/Int, kotlin/Function1<com.storyblok.cdn.query/StoriesQuery<com.storyblok.cdn.schema/Component>, kotlin/Unit>): kotlinx.coroutines.flow/Flow<androidx.paging/PagingData<com.storyblok.cdn.schema/Story<com.storyblok.cdn.schema/Component>>> // com.storyblok.cdn/StoryblokClientImpl.stories|stories(androidx.paging.PagingConfig;kotlin.Int;kotlin.Function1<com.storyblok.cdn.query.StoriesQuery<com.storyblok.cdn.schema.Component>,kotlin.Unit>){}[0]
+    final fun story(kotlin.uuid/Uuid, kotlin/Int, kotlin/Function1<com.storyblok.cdn.query/StoryQuery<com.storyblok.cdn.schema/Component>, kotlin/Unit>): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<com.storyblok.cdn.schema/Component>> // com.storyblok.cdn/StoryblokClientImpl.story|story(kotlin.uuid.Uuid;kotlin.Int;kotlin.Function1<com.storyblok.cdn.query.StoryQuery<com.storyblok.cdn.schema.Component>,kotlin.Unit>){}[0]
+    final fun story(kotlin/String, kotlin/Int, kotlin/Function1<com.storyblok.cdn.query/StoryQuery<com.storyblok.cdn.schema/Component>, kotlin/Unit>): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<com.storyblok.cdn.schema/Component>> // com.storyblok.cdn/StoryblokClientImpl.story|story(kotlin.String;kotlin.Int;kotlin.Function1<com.storyblok.cdn.query.StoryQuery<com.storyblok.cdn.schema.Component>,kotlin.Unit>){}[0]
+}
+
+open class <#A: com.storyblok.cdn.schema/Component> com.storyblok.cdn.query/StoryQuery : com.storyblok.cdn.query/Query { // com.storyblok.cdn.query/StoryQuery|null[0]
+    final var excludingFields // com.storyblok.cdn.query/StoryQuery.excludingFields|{}excludingFields[0]
+        final fun <get-excludingFields>(): kotlin.collections/List<kotlin/String> // com.storyblok.cdn.query/StoryQuery.excludingFields.<get-excludingFields>|<get-excludingFields>(){}[0]
+        final fun <set-excludingFields>(kotlin.collections/List<kotlin/String>) // com.storyblok.cdn.query/StoryQuery.excludingFields.<set-excludingFields>|<set-excludingFields>(kotlin.collections.List<kotlin.String>){}[0]
+    final var fromRelease // com.storyblok.cdn.query/StoryQuery.fromRelease|{}fromRelease[0]
+        final fun <get-fromRelease>(): kotlin/String? // com.storyblok.cdn.query/StoryQuery.fromRelease.<get-fromRelease>|<get-fromRelease>(){}[0]
+        final fun <set-fromRelease>(kotlin/String?) // com.storyblok.cdn.query/StoryQuery.fromRelease.<set-fromRelease>|<set-fromRelease>(kotlin.String?){}[0]
 }
 
 open class com.storyblok.cdn/StoryblokClientException : kotlin/Exception { // com.storyblok.cdn/StoryblokClientException|null[0]
@@ -963,5 +1091,6 @@ sealed class com.storyblok.cdn.schema/RichText { // com.storyblok.cdn.schema/Ric
 
 final object com.storyblok.serializers/StoryblokDateTimeSerializer : kotlinx.datetime.serializers/FormattedLocalDateTimeSerializer // com.storyblok.serializers/StoryblokDateTimeSerializer|null[0]
 
-final inline fun <#A: reified com.storyblok.cdn.schema/Component> (com.storyblok.cdn/StoryblokClient).com.storyblok.cdn/story(kotlin.uuid/Uuid, kotlin/Int = ...): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A>> // com.storyblok.cdn/story|story@com.storyblok.cdn.StoryblokClient(kotlin.uuid.Uuid;kotlin.Int){0§<com.storyblok.cdn.schema.Component>}[0]
-final inline fun <#A: reified com.storyblok.cdn.schema/Component> (com.storyblok.cdn/StoryblokClient).com.storyblok.cdn/story(kotlin/String, kotlin/Int = ...): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A>> // com.storyblok.cdn/story|story@com.storyblok.cdn.StoryblokClient(kotlin.String;kotlin.Int){0§<com.storyblok.cdn.schema.Component>}[0]
+final inline fun <#A: reified com.storyblok.cdn.schema/Component> (com.storyblok.cdn/StoryblokClient).com.storyblok.cdn/stories(androidx.paging/PagingConfig = ..., kotlin/Int = ..., noinline kotlin/Function1<com.storyblok.cdn.query/StoriesQuery<#A>, kotlin/Unit> = ...): kotlinx.coroutines.flow/Flow<androidx.paging/PagingData<com.storyblok.cdn.schema/Story<#A>>> // com.storyblok.cdn/stories|stories@com.storyblok.cdn.StoryblokClient(androidx.paging.PagingConfig;kotlin.Int;kotlin.Function1<com.storyblok.cdn.query.StoriesQuery<0:0>,kotlin.Unit>){0§<com.storyblok.cdn.schema.Component>}[0]
+final inline fun <#A: reified com.storyblok.cdn.schema/Component> (com.storyblok.cdn/StoryblokClient).com.storyblok.cdn/story(kotlin.uuid/Uuid, kotlin/Int = ..., noinline kotlin/Function1<com.storyblok.cdn.query/StoryQuery<#A>, kotlin/Unit> = ...): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A>> // com.storyblok.cdn/story|story@com.storyblok.cdn.StoryblokClient(kotlin.uuid.Uuid;kotlin.Int;kotlin.Function1<com.storyblok.cdn.query.StoryQuery<0:0>,kotlin.Unit>){0§<com.storyblok.cdn.schema.Component>}[0]
+final inline fun <#A: reified com.storyblok.cdn.schema/Component> (com.storyblok.cdn/StoryblokClient).com.storyblok.cdn/story(kotlin/String, kotlin/Int = ..., noinline kotlin/Function1<com.storyblok.cdn.query/StoryQuery<#A>, kotlin/Unit> = ...): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A>> // com.storyblok.cdn/story|story@com.storyblok.cdn.StoryblokClient(kotlin.String;kotlin.Int;kotlin.Function1<com.storyblok.cdn.query.StoryQuery<0:0>,kotlin.Unit>){0§<com.storyblok.cdn.schema.Component>}[0]

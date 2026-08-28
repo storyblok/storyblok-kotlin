@@ -13,7 +13,8 @@ import kotlin.reflect.KClass
 /**
  * Container for registered component composables and their serializers.
  *
- * Create instances using [blockProvider][com.storyblok.compose.provider.blockProvider] or [blockProviderWithoutRichText].
+ * Create instances using [blockProviderWithoutRichText], or `blockProvider` from the `storyblok-material3`
+ * module for one that renders rich text.
  */
 @Immutable
 public class BlockProvider internal constructor(
