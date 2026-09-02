@@ -67,7 +67,7 @@ internal class SerializedFields(descriptor: SerialDescriptor) {
      * them, and one declaring none is named by the property itself.
      */
     private val soleAlias: Map<String, String> = buildMap {
-        val descriptor = component ?: return@buildMap
+        val descriptor = component ?: serializer<Component.Unknown>().descriptor
         for (i in 0 until descriptor.elementsCount) {
             descriptor.getElementAnnotations(i)
                 .filterIsInstance<JsonNames>()
@@ -86,7 +86,7 @@ internal class SerializedFields(descriptor: SerialDescriptor) {
      * field cannot be compared with it.
      */
     fun nameOf(property: KProperty1<*, *>, operand: Operand? = null): String {
-        val fields = fields ?: return property.name
+        val fields = fields ?: return soleAlias[property.name] ?: property.name
         val field = fields[property.name]
         require(field != null) {
             "'${property.name}' is not a serialized field of the queried component. Name it with " +
