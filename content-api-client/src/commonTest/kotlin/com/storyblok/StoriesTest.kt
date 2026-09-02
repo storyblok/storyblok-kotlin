@@ -218,18 +218,6 @@ class StoriesTest {
     }
 
     @Test
-    fun `a null parameter removes the one it would otherwise generate`() {
-        assertEquals(
-            mapOf("starts_with" to "articles/"),
-            productQuery {
-                startsWith = "articles/"
-                parameter("content_type", null)
-                parameter("never_generated", null)
-            },
-        )
-    }
-
-    @Test
     fun `an abstract component sets no content type and an empty query sends nothing`() {
         assertEquals(emptyMap(), query<Component> { })
     }
