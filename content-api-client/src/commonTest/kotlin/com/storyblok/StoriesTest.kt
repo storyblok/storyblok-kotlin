@@ -573,6 +573,16 @@ class StoriesTest {
     }
 
     @Test
+    fun `an abstract query names an inherited field by its alias`() {
+        // The content descriptor is polymorphic, so there are no fields to check the reference against — but the
+        // fields every component inherits are still addressable, and Component::uid is `_uid` on the wire.
+        assertEquals(
+            mapOf("sort_by" to "content._uid:asc"),
+            query<Component> { sortBy(Component::uid) },
+        )
+    }
+
+    @Test
     fun `per_page is the configured page size`() = runTest {
         var url: Url? = null
         val client = StoryblokClientImpl(
