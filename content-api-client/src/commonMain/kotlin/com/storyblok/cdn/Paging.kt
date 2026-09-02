@@ -55,11 +55,15 @@ internal suspend fun <T : Any> HttpClient.fetchPage(
             (mapOf("page" to page.toString(), "per_page" to perPage.toString()) + params)
                 .forEach { (name, value) -> parameter(name, value) }
         }
+    } catch (e: CancellationException) {
+        throw e
     } catch (e: ServerResponseException) {
         if (cachedOnly && e.response.status == HttpStatusCode.GatewayTimeout) {
             return PagedResponse(emptyList(), total = 0, perPage = perPage, page = page)
         }
         throw StoryblokClientException(e.response.bodyAsText(), e)
+    } catch (e: Throwable) {
+        throw StoryblokClientException(e.message, e)
     }
 
     val fetched = items(response.body<String>())
