@@ -63,7 +63,7 @@ abstract interface com.storyblok.cdn/StoryblokClient { // com.storyblok.cdn/Stor
 }
 
 abstract class com.storyblok.cdn.query/Query { // com.storyblok.cdn.query/Query|null[0]
-    final fun parameter(kotlin/String, kotlin/Any?) // com.storyblok.cdn.query/Query.parameter|parameter(kotlin.String;kotlin.Any?){}[0]
+    final fun parameter(kotlin/String, kotlin/Any) // com.storyblok.cdn.query/Query.parameter|parameter(kotlin.String;kotlin.Any){}[0]
 }
 
 abstract class com.storyblok.cdn.schema/Component { // com.storyblok.cdn.schema/Component|null[0]
