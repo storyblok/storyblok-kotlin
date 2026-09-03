@@ -1,12 +1,17 @@
 package com.storyblok
 
+import androidx.paging.LoadType
 import androidx.paging.PagingConfig
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import androidx.paging.testing.asSnapshot
 import com.storyblok.cdn.query.FilterQueryBuilder
 import com.storyblok.cdn.query.Is
 import com.storyblok.cdn.query.SortAs
 import com.storyblok.cdn.query.StoriesQuery
 import kotlinx.serialization.json.JsonNames
+import com.storyblok.cdn.NetworkRemoteMediator
+import com.storyblok.cdn.PagedResponse
 import com.storyblok.cdn.StoryblokClientImpl
 import com.storyblok.cdn.query.Is.*
 import com.storyblok.cdn.stories
@@ -568,6 +573,35 @@ class StoriesTest {
             mapOf("sort_by" to "content._uid:asc"),
             query<Component> { sortBy(Component::uid) },
         )
+    }
+
+    @Test
+    fun `the mediator appends after the last loaded page, not after its own last fetch`() = runTest {
+        val requested = mutableListOf<Int>()
+        val mediator = NetworkRemoteMediator<String>(
+            fetch = { page ->
+                requested += page
+                PagedResponse(listOf("a", "b"), total = 10, perPage = 2, page = page)
+            },
+            invalidate = {},
+        )
+
+        // Three pages are loaded and on screen; a loaded page carries its predecessor as prevKey.
+        val loaded = (1..3).map { page ->
+            PagingSource.LoadResult.Page(
+                data = listOf("x", "y"),
+                prevKey = if (page <= 1) null else page - 1,
+                nextKey = page + 1,
+            )
+        }
+        val state = PagingState(loaded, anchorPosition = 5, config = PagingConfig(pageSize = 2), leadingPlaceholderCount = 0)
+
+        // The refresh is what used to desync the two: it sent the mediator back to page 1 while the list stayed
+        // where it was, so the append that followed re-fetched page 2 instead of carrying on at page 4.
+        mediator.load(LoadType.REFRESH, state)
+        mediator.load(LoadType.APPEND, state)
+
+        assertEquals(listOf(1, 4), requested)
     }
 
     @Test
