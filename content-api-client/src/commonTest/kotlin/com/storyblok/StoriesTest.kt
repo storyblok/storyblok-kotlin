@@ -576,7 +576,7 @@ class StoriesTest {
     }
 
     @Test
-    fun `the mediator appends after the last loaded page, not after its own last fetch`() = runTest {
+    fun `the mediator appends after the last loaded page rather than its own last fetch`() = runTest {
         val requested = mutableListOf<Int>()
         val mediator = NetworkRemoteMediator<String>(
             fetch = { page ->
