@@ -583,6 +583,36 @@ class StoriesTest {
     }
 
     @Test
+    fun `paging continues when the response carries no Total header`() = runTest {
+        val requested = mutableListOf<String>()
+        val client = StoryblokClientImpl(
+            apiBuilder = {},
+            serializersModuleBuilder = { polymorphic(Component::class, Page::class, Page.serializer()) },
+            jsonBuilder = { ignoreUnknownKeys = true; explicitNulls = false; coerceInputValues = true },
+            http = HttpClient(MockEngine { request ->
+                val page = request.url.parameters["page"]!!.toInt()
+                requested += page.toString()
+                // Three full pages of two, then nothing — and no Total header to say so in advance.
+                val ids = if (page <= 3) listOf((page - 1) * 2 + 1, (page - 1) * 2 + 2) else emptyList()
+                val stories = ids.joinToString(",") {
+                    storyJson(it.toLong(), "00000000-0000-0000-0000-00000000000$it",
+                        """{"_uid":"c$it","component":"page","title":"t$it"}""")
+                }
+                respond(
+                    content = """{"stories":[$stories],"rels":[],"cv":1}""",
+                    headers = headersOf(HttpHeaders.ContentType to listOf("application/json")),
+                )
+            }),
+        )
+
+        val snapshot = client.stories<Page>(PagingConfig(pageSize = 2)).asSnapshot { scrollTo(3) }
+
+        // A full page with no Total header must not be read as the only page: falling back to the item count would
+        // make it one page long and stop after the first.
+        assertEquals(6, snapshot.size, "requested pages: $requested")
+    }
+
+    @Test
     fun `per_page is the configured page size`() = runTest {
         var url: Url? = null
         val client = StoryblokClientImpl(
