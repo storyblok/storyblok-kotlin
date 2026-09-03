@@ -21,12 +21,19 @@ import kotlinx.coroutines.CancellationException
  */
 internal class PagedResponse<T : Any>(
     val items: List<T>,
-    val total: Int,
+    val total: Int?,
     val perPage: Int,
     val page: Int,
 ) {
-    /** The total number of pages, derived from [total] and [perPage]. */
-    val pages: Int get() = if (perPage <= 0) 0 else (total + perPage - 1) / perPage
+    /** The total number of pages, or `null` when the response did not say how many items there are. */
+    val pages: Int? get() = total?.let { if (perPage <= 0) 0 else (it + perPage - 1) / perPage }
+
+    /**
+     * Whether [page] is the last one. When the endpoint said how many items there are this follows from [pages];
+     * when it did not, a page short of [perPage] is taken as the last, since no earlier page can be. Guessing the
+     * other way — that a full page is the last — would stop paging after the first one.
+     */
+    val last: Boolean get() = pages?.let { page >= it } ?: (items.size < perPage)
 }
 
 /**
@@ -66,10 +73,9 @@ internal suspend fun <T : Any> HttpClient.fetchPage(
         throw StoryblokClientException(e.message, e)
     }
 
-    val fetched = items(response.body<String>())
     return PagedResponse(
-        items = fetched,
-        total = response.headers["Total"]?.toIntOrNull() ?: fetched.size,
+        items = items(response.body<String>()),
+        total = response.headers["Total"]?.toIntOrNull(),
         perPage = response.headers["Per-Page"]?.toIntOrNull() ?: perPage,
         page = page,
     )
@@ -92,7 +98,7 @@ internal class CachedPagingSource<T : Any>(
             LoadResult.Page(
                 data = response.items,
                 prevKey = if (page <= 1) null else page - 1,
-                nextKey = if (response.items.isEmpty() || page >= response.pages) null else page + 1,
+                nextKey = if (response.items.isEmpty() || response.last) null else page + 1,
             )
         } catch (e: CancellationException) {
             throw e
@@ -134,7 +140,7 @@ internal class NetworkRemoteMediator<T : Any>(
             val response = fetch(page)
             lastPage = page
             invalidate()
-            MediatorResult.Success(endOfPaginationReached = page >= response.pages)
+            MediatorResult.Success(endOfPaginationReached = response.last)
         } catch (e: CancellationException) {
             throw e
         } catch (e: Throwable) {
