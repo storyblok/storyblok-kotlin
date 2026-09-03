@@ -66,6 +66,9 @@ internal suspend fun <T : Any> HttpClient.fetchPage(
         throw e
     } catch (e: ServerResponseException) {
         if (cachedOnly && e.response.status == HttpStatusCode.GatewayTimeout) {
+            // A cache miss, not an empty endpoint — and deliberately indistinguishable from one here. The empty
+            // page it produces reads as the end of the list, which is exactly what asks [NetworkRemoteMediator]
+            // for that page, and the fresh copy replaces it as soon as the network answers.
             return PagedResponse(emptyList(), total = 0, perPage = perPage, page = page)
         }
         throw StoryblokClientException(e.response.bodyAsText(), e)
@@ -80,6 +83,12 @@ internal suspend fun <T : Any> HttpClient.fetchPage(
         page = page,
     )
 }
+
+/**
+ * The page a loaded result came from. A page states its predecessor as [prevKey][PagingSource.LoadResult.Page.prevKey]
+ * and the first page has none, so the number is recoverable from the [PagingState] without tracking it separately.
+ */
+private val PagingSource.LoadResult.Page<Int, *>.page: Int get() = prevKey?.plus(1) ?: 1
 
 /**
  * [PagingSource] that reads pages from Ktor's HTTP cache, via a [fetch] that only reads the cache. Fresh data is
@@ -108,10 +117,7 @@ internal class CachedPagingSource<T : Any>(
     }
 
     override fun getRefreshKey(state: PagingState<Int, T>): Int? =
-        state.anchorPosition?.let { anchor ->
-            val closest = state.closestPageToPosition(anchor)
-            closest?.prevKey?.plus(1) ?: closest?.nextKey?.minus(1)
-        }
+        state.anchorPosition?.let { anchor -> state.closestPageToPosition(anchor)?.page }
 }
 
 /**
@@ -126,19 +132,18 @@ internal class NetworkRemoteMediator<T : Any>(
     private val invalidate: () -> Unit,
 ) : RemoteMediator<Int, T>() {
 
-    private var lastPage: Int = 0
-
     override suspend fun initialize(): InitializeAction = InitializeAction.LAUNCH_INITIAL_REFRESH
 
     override suspend fun load(loadType: LoadType, state: PagingState<Int, T>): MediatorResult {
         val page = when (loadType) {
             LoadType.REFRESH -> 1
             LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
-            LoadType.APPEND -> lastPage + 1
+            LoadType.APPEND -> state.pages.lastOrNull()
+                ?.let { if (it.data.isEmpty()) it.page else it.page + 1 }
+                ?: 1
         }
         return try {
             val response = fetch(page)
-            lastPage = page
             invalidate()
             MediatorResult.Success(endOfPaginationReached = response.last)
         } catch (e: CancellationException) {
