@@ -1,0 +1,475 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>StoriesQuery</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+      if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      } else {
+        const savedDarkMode = JSON.parse(storage)
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/safe-local-storage_blocking.js"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../ui-kit/ui-kit.min.js" defer></script></head>
+<body>
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+<a class="library-name--link" href="../../../index.html" tabindex="1">
+                    Storyblok Kotlin
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+        </div>
+        <div class="navigation-controls">
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true" data-filter=":content-api-client/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":content-api-client/commonMain" data-filter=":content-api-client/commonMain">
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </ul>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config="{&quot;defaultSize&quot;: 280, &quot;minSize&quot;: 200, &quot;maxSize&quot;: 400}">
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
+                            <span>
+                                    Storyblok Kotlin
+                            </span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="Content Delivery API Client::com.storyblok.cdn.query/StoriesQuery///PointingToDeclaration//706928317">
+  <div class="breadcrumbs"><a href="../../index.html">Content Delivery API Client</a><span class="delimiter">/</span><a href="../index.html">com.storyblok.cdn.query</a><span class="delimiter">/</span><span class="current">StoriesQuery</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Stories</span><wbr><span><span>Query</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">StoriesQuery</a><span class="token operator">&lt;</span><a href="index.html">T</a><span class="token operator"> : </span><a href="../../com.storyblok.cdn.schema/-component/index.html">Component</a><span class="token operator">&gt;</span> : <a href="../-story-query/index.html">StoryQuery</a><span class="token operator">&lt;</span><a href="index.html">T</a><span class="token operator">&gt; </span><span class="source-link-wrapper"><span class="source-link" data-element-type="source-link">(<a href="https://github.com/storyblok/storyblok-kotlin/blob/main/content-api-client//com/storyblok/cdn/query/StoriesQuery.kt#L32">source</a>)</span></span></div><p class="paragraph">Builder for the query parameters of the <a href="https://www.storyblok.com/docs/api/content-delivery/v2/stories/retrieve-multiple-stories">retrieve multiple stories</a> endpoint.</p><p class="paragraph">Every documented parameter has a dedicated, type-safe entry point. Fields of your own content types are addressed by a property reference of <a href="index.html">T</a>, <a href="../../com.storyblok.cdn.schema/-story/index.html">Story</a> attributes are addressed by a property reference of <a href="../../com.storyblok.cdn.schema/-story/index.html">Story</a>:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">client.stories&lt;Article&gt; {<br>    sortBy(Article::headline)                    // sort_by=content.headline:asc<br>    sortByDescending(Story&lt;*&gt;::publishedAt)      // sort_by=published_at:desc<br>    filter { Article::price greaterThan 100.0 }  // filter_query[price][gt_float]=100.0<br>}</code></pre><span class="copy-tooltip"><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div><span class="copy-icon"></span></span></div><h4 class="tableheader">Type Parameters</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>T</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The <a href="../../com.storyblok.cdn.schema/-component/index.html">Component</a> type the query is built for, whose properties the property-reference overloads accept.</p></div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="PROPERTY">
+        <h2 class="tableheader">Properties</h2>
+        <div class="table"><a data-name="-1940553218%2FProperties%2F706928317" anchor-label="bySlugs" id="-1940553218%2FProperties%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="by-slugs.html"><span>by</span><wbr><span><span>Slugs</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1940553218%2FProperties%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="by-slugs.html">bySlugs</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Retrieve the stories matching these <a href="../../com.storyblok.cdn.schema/-story/full-slug.html">full slugs</a>; supports <code class="lang-kotlin">*</code> wildcards. Maps to <code class="lang-kotlin">by_slugs</code>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="197023502%2FProperties%2F706928317" anchor-label="byUuids" id="197023502%2FProperties%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="by-uuids.html"><span>by</span><wbr><span><span>Uuids</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="197023502%2FProperties%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="by-uuids.html">byUuids</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.uuid/-uuid/index.html">Uuid</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Retrieve the stories with these <a href="../../com.storyblok.cdn.schema/-story/uuid.html">uuids</a>, in the API's own order. Maps to <code class="lang-kotlin">by_uuids</code>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1286917217%2FProperties%2F706928317" anchor-label="byUuidsOrdered" id="-1286917217%2FProperties%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="by-uuids-ordered.html"><span>by</span><wbr><span>Uuids</span><wbr><span><span>Ordered</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1286917217%2FProperties%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="by-uuids-ordered.html">byUuidsOrdered</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.uuid/-uuid/index.html">Uuid</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Retrieve the stories with these <a href="../../com.storyblok.cdn.schema/-story/uuid.html">uuids</a>, preserving the order given here. Maps to <code class="lang-kotlin">by_uuids_ordered</code>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-610007199%2FProperties%2F706928317" anchor-label="excludingFields" id="-610007199%2FProperties%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-story-query/excluding-fields.html"><span>excluding</span><wbr><span><span>Fields</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-610007199%2FProperties%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="../-story-query/excluding-fields.html">excludingFields</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Omit these content fields from the response to reduce its size. Maps to <code class="lang-kotlin">excluding_fields</code>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="404217034%2FProperties%2F706928317" anchor-label="excludingIds" id="404217034%2FProperties%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="excluding-ids.html"><span>excluding</span><wbr><span><span>Ids</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="404217034%2FProperties%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="excluding-ids.html">excludingIds</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Exclude the stories with these <a href="../../com.storyblok.cdn.schema/-story/id.html">ids</a>. Maps to <code class="lang-kotlin">excluding_ids</code>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1609840358%2FProperties%2F706928317" anchor-label="excludingSlugs" id="-1609840358%2FProperties%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="excluding-slugs.html"><span>excluding</span><wbr><span><span>Slugs</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1609840358%2FProperties%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="excluding-slugs.html">excludingSlugs</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Exclude the stories matching these <a href="../../com.storyblok.cdn.schema/-story/full-slug.html">full slugs</a>; supports <code class="lang-kotlin">*</code> wildcards. Maps to <code class="lang-kotlin">excluding_slugs</code>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="381596197%2FProperties%2F706928317" anchor-label="firstPublishedAtGreaterThan" id="381596197%2FProperties%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="first-published-at-greater-than.html"><span>first</span><wbr><span>Published</span><wbr><span>At</span><wbr><span>Greater</span><wbr><span><span>Than</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="381596197%2FProperties%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="first-published-at-greater-than.html">firstPublishedAtGreaterThan</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.time/-instant/index.html">Instant</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Retrieve stories <a href="../../com.storyblok.cdn.schema/-story/first-published-at.html">first published</a> after this instant. Maps to <code class="lang-kotlin">first_published_at_gt</code>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="128742976%2FProperties%2F706928317" anchor-label="firstPublishedAtLessThan" id="128742976%2FProperties%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="first-published-at-less-than.html"><span>first</span><wbr><span>Published</span><wbr><span>At</span><wbr><span>Less</span><wbr><span><span>Than</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="128742976%2FProperties%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="first-published-at-less-than.html">firstPublishedAtLessThan</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.time/-instant/index.html">Instant</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Retrieve stories <a href="../../com.storyblok.cdn.schema/-story/first-published-at.html">first published</a> before this instant. Maps to <code class="lang-kotlin">first_published_at_lt</code>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1029785268%2FProperties%2F706928317" anchor-label="fromRelease" id="1029785268%2FProperties%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-story-query/from-release.html"><span>from</span><wbr><span><span>Release</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1029785268%2FProperties%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="../-story-query/from-release.html">fromRelease</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Retrieve the story as it appears in the <a href="https://www.storyblok.com/docs/guide/essentials/releases">release</a> with this id. Maps to <code class="lang-kotlin">from_release</code>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1419377384%2FProperties%2F706928317" anchor-label="isStartpage" id="1419377384%2FProperties%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-startpage.html"><span>is</span><wbr><span><span>Startpage</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1419377384%2FProperties%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="is-startpage.html">isStartpage</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Retrieve only start pages (<code class="lang-kotlin">true</code>) or only non-start pages (<code class="lang-kotlin">false</code>). Maps to <code class="lang-kotlin">is_startpage</code>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1215276719%2FProperties%2F706928317" anchor-label="publishedAtGreaterThan" id="-1215276719%2FProperties%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="published-at-greater-than.html"><span>published</span><wbr><span>At</span><wbr><span>Greater</span><wbr><span><span>Than</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1215276719%2FProperties%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="published-at-greater-than.html">publishedAtGreaterThan</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.time/-instant/index.html">Instant</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Retrieve stories <a href="../../com.storyblok.cdn.schema/-story/published-at.html">published</a> after this instant. Maps to <code class="lang-kotlin">published_at_gt</code>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1079052760%2FProperties%2F706928317" anchor-label="publishedAtGreaterThanOrEqual" id="1079052760%2FProperties%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="published-at-greater-than-or-equal.html"><span>published</span><wbr><span>At</span><wbr><span>Greater</span><wbr><span>Than</span><wbr><span>Or</span><wbr><span><span>Equal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1079052760%2FProperties%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="published-at-greater-than-or-equal.html">publishedAtGreaterThanOrEqual</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.time/-instant/index.html">Instant</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Retrieve stories <a href="../../com.storyblok.cdn.schema/-story/published-at.html">published</a> at or after this instant. Maps to <code class="lang-kotlin">published_at_gte</code>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="997457556%2FProperties%2F706928317" anchor-label="publishedAtLessThan" id="997457556%2FProperties%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="published-at-less-than.html"><span>published</span><wbr><span>At</span><wbr><span>Less</span><wbr><span><span>Than</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="997457556%2FProperties%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="published-at-less-than.html">publishedAtLessThan</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.time/-instant/index.html">Instant</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Retrieve stories <a href="../../com.storyblok.cdn.schema/-story/published-at.html">published</a> before this instant. Maps to <code class="lang-kotlin">published_at_lt</code>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2028503861%2FProperties%2F706928317" anchor-label="publishedAtLessThanOrEqual" id="2028503861%2FProperties%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="published-at-less-than-or-equal.html"><span>published</span><wbr><span>At</span><wbr><span>Less</span><wbr><span>Than</span><wbr><span>Or</span><wbr><span><span>Equal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2028503861%2FProperties%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="published-at-less-than-or-equal.html">publishedAtLessThanOrEqual</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.time/-instant/index.html">Instant</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Retrieve stories <a href="../../com.storyblok.cdn.schema/-story/published-at.html">published</a> at or before this instant. Maps to <code class="lang-kotlin">published_at_lte</code>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="701853847%2FProperties%2F706928317" anchor-label="searchTerm" id="701853847%2FProperties%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="search-term.html"><span>search</span><wbr><span><span>Term</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="701853847%2FProperties%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="search-term.html">searchTerm</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Search across all content fields, e.g. <code class="lang-kotlin">spaceship</code>. Maps to <code class="lang-kotlin">search_term</code>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-769005708%2FProperties%2F706928317" anchor-label="startsWith" id="-769005708%2FProperties%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="starts-with.html"><span>starts</span><wbr><span><span>With</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-769005708%2FProperties%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="starts-with.html">startsWith</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Filter by the <a href="../../com.storyblok.cdn.schema/-story/full-slug.html">full slug</a> prefix, e.g. <code class="lang-kotlin">blog/posts</code>, to retrieve the stories of a specific folder. Maps to the <code class="lang-kotlin">starts_with</code> parameter.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1149001250%2FProperties%2F706928317" anchor-label="updatedAtGreaterThan" id="-1149001250%2FProperties%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="updated-at-greater-than.html"><span>updated</span><wbr><span>At</span><wbr><span>Greater</span><wbr><span><span>Than</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1149001250%2FProperties%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="updated-at-greater-than.html">updatedAtGreaterThan</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.time/-instant/index.html">Instant</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Retrieve stories <a href="../../com.storyblok.cdn.schema/-story/updated-at.html">updated</a> after this instant. Maps to <code class="lang-kotlin">updated_at_gt</code>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1552369959%2FProperties%2F706928317" anchor-label="updatedAtLessThan" id="1552369959%2FProperties%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="updated-at-less-than.html"><span>updated</span><wbr><span>At</span><wbr><span>Less</span><wbr><span><span>Than</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1552369959%2FProperties%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="updated-at-less-than.html">updatedAtLessThan</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.time/-instant/index.html">Instant</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Retrieve stories <a href="../../com.storyblok.cdn.schema/-story/updated-at.html">updated</a> before this instant. Maps to <code class="lang-kotlin">updated_at_lt</code>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1639484283%2FProperties%2F706928317" anchor-label="withTag" id="1639484283%2FProperties%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="with-tag.html"><span>with</span><wbr><span><span>Tag</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1639484283%2FProperties%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">var </span><a href="with-tag.html">withTag</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Retrieve only stories carrying <i>all</i> of these tags. Maps to <code class="lang-kotlin">with_tag</code>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="tableheader">Functions</h2>
+        <div class="table"><a data-name="-964657063%2FFunctions%2F706928317" anchor-label="filter" id="-964657063%2FFunctions%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="filter.html"><span><span>filter</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-964657063%2FFunctions%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="filter.html"><span class="token function">filter</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">block<span class="token operator">: </span><a href="../-filter-query-builder/index.html">FilterQueryBuilder</a><span class="token operator">&lt;</span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Configure advanced <a href="https://www.storyblok.com/docs/api/content-delivery/v2/filter-queries">filter queries</a> targeting the fields of your content types, e.g.:</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="690988671%2FFunctions%2F706928317" anchor-label="parameter" id="690988671%2FFunctions%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-query/parameter.html"><span><span>parameter</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="690988671%2FFunctions%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../-query/parameter.html"><span class="token function">parameter</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Set a query parameter directly, for forward compatibility with parameters this SDK version does not know about yet.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="953400740%2FFunctions%2F706928317" anchor-label="sortBy" id="953400740%2FFunctions%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="sort-by.html"><span>sort</span><wbr><span><span>By</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="953400740%2FFunctions%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="sort-by.html"><span class="token function">sortBy</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">field<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.reflect/-k-property1/index.html">KProperty1</a><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="index.html">T</a><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Sort the stories by the content field <a href="sort-by.html">field</a> ascending, e.g. <code class="lang-kotlin">Article::price</code>. Call repeatedly, or alongside <a href="sort-by-descending.html">sortByDescending</a>, to sort by several fields; they are applied in call order. Maps to <code class="lang-kotlin">sort_by</code>, prefixed with <code class="lang-kotlin">content.</code> as the API requires for content fields.</p></div><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-name/index.html"><span class="token annotation builtin">JvmName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"sortByAttribute"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">fun </span><a href="sort-by.html"><span class="token function">sortBy</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">field<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.reflect/-k-property1/index.html">KProperty1</a><span class="token operator">&lt;</span><a href="../../com.storyblok.cdn.schema/-story/index.html">Story</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Sort the stories ascending by the <a href="../../com.storyblok.cdn.schema/-story/index.html">Story</a> attribute <a href="sort-by.html">field</a>, e.g. <code class="lang-kotlin">Story&lt;*&gt;::publishedAt</code>, rather than by a field of their content. Only some attributes are sortable; the API answers the rest with <code class="lang-kotlin">Not sortable by this column</code> rather than the SDK second-guessing which those are.</p></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="sort-by.html"><span class="token function">sortBy</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">field<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.reflect/-k-property1/index.html">KProperty1</a><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="index.html">T</a><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">sortAs<span class="token operator">: </span><a href="../-sort-as/index.html">SortAs</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Sort the stories by the content field <a href="sort-by.html">field</a> ascending, ordering it as <a href="sort-by.html">sortAs</a> states rather than as the property's type implies — for a number Storyblok holds in a text field, which is otherwise sorted as text.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2071535484%2FFunctions%2F706928317" anchor-label="sortByDescending" id="2071535484%2FFunctions%2F706928317" data-filterable-set=":content-api-client/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":content-api-client/commonMain" data-filterable-set=":content-api-client/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="sort-by-descending.html"><span>sort</span><wbr><span>By</span><wbr><span><span>Descending</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2071535484%2FFunctions%2F706928317"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":content-api-client/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="sort-by-descending.html"><span class="token function">sortByDescending</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">field<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.reflect/-k-property1/index.html">KProperty1</a><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="index.html">T</a><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Sort the stories by the content field <a href="sort-by-descending.html">field</a> descending, see <a href="sort-by.html">sortBy</a>.</p></div><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-name/index.html"><span class="token annotation builtin">JvmName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"sortByAttributeDescending"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">fun </span><a href="sort-by-descending.html"><span class="token function">sortByDescending</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">field<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.reflect/-k-property1/index.html">KProperty1</a><span class="token operator">&lt;</span><a href="../../com.storyblok.cdn.schema/-story/index.html">Story</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Sort the stories descending by the <a href="../../com.storyblok.cdn.schema/-story/index.html">Story</a> attribute <a href="sort-by-descending.html">field</a>, see <a href="sort-by.html">sortBy</a>.</p></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="sort-by-descending.html"><span class="token function">sortByDescending</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">field<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.reflect/-k-property1/index.html">KProperty1</a><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="index.html">T</a><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">sortAs<span class="token operator">: </span><a href="../-sort-as/index.html">SortAs</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Sort the stories by the content field <a href="sort-by-descending.html">field</a> descending, ordering it as <a href="sort-by-descending.html">sortAs</a> states, see <a href="sort-by.html">sortBy</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2026 Copyright</div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
