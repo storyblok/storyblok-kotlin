@@ -55,6 +55,24 @@ client.story<Page>("home")
     .collect { story -> println(story.content.title) }
 ```
 
+#### Fetch multiple stories:
+
+`client.stories(...)` returns a `Flow<PagingData<Story<T>>>`, so pages are fetched as they are needed. The
+`content_type` parameter comes from the component the query is typed to, and the query DSL narrows, sorts and
+filters the result:
+
+```kotlin
+val articles = client.stories<Page> {
+    startsWith = "articles/"
+    sortByDescending(Story<*>::publishedAt)
+    filter { Page::title like "*space*" }
+}
+
+// In Compose, collectAsLazyPagingItems() drives the loading as the list scrolls.
+// Elsewhere, asItemSnapshotListFlow() presents each update as a plain list.
+articles.asItemSnapshotListFlow().collect { println(it.items.size) }
+```
+
 ## Other resources
 
 You can find the full guide to the Content Delivery API Client inside [README.md](https://github.com/storyblok/storyblok-kotlin/tree/main/content-api-client#client-guide).
