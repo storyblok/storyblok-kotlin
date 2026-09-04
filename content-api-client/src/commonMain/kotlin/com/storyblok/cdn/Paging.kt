@@ -1,6 +1,9 @@
 package com.storyblok.cdn
 
+import androidx.paging.InvalidatingPagingSourceFactory
 import androidx.paging.LoadType
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
@@ -11,6 +14,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.SerializationException
 
@@ -38,25 +42,78 @@ internal class PagedResponse<T : Any>(
 }
 
 /**
+ * A [Pager] over the offset-paginated endpoint at [path], reading each page's items out of the response body with
+ * [items]. The Content Delivery API pages uniformly, so only those two and the [params] the query states
+ * are particular to an endpoint; everything below applies to any of them.
+ *
+ * Pages are read from Ktor's HTTP cache by a [CachedPagingSource] and refreshed from the network by a
+ * [NetworkRemoteMediator], which repopulates the cache and invalidates the source so the fresh copy is re-read —
+ * the same cached-then-fresh behaviour [com.storyblok.cdn.StoryblokClient.story] has.
+ *
+ * @param T The type of the items being paged.
+ */
+internal fun <T : Any> HttpClient.pager(
+    path: String,
+    config: PagingConfig,
+    params: Map<String, String>,
+    items: (body: String) -> List<T>,
+): Pager<Int, T> {
+    // Completed once the mediator's initial refresh has been through, whether it fetched or failed. The first
+    // cached read waits on this rather than publishing the cold cache as an empty page. Relies on the mediator
+    // asking for that refresh — see its LAUNCH_INITIAL_REFRESH — since nothing else completes this.
+    val primed = CompletableDeferred<Unit>()
+
+    // The factory owns the invalidation, rather than the mediator holding the source in a captured var: that var
+    // would be written on one coroutine and read on another, and a second collection of this cold flow would leave
+    // the first mediator invalidating a source nobody was reading.
+    val sources = InvalidatingPagingSourceFactory {
+        CachedPagingSource(
+            awaitPriming = { primed.await() },
+            fetch = { page -> read(path, page, config.pageSize, cachedOnly = true, params, items) },
+        )
+    }
+
+    return Pager(
+        config = config,
+        remoteMediator = NetworkRemoteMediator(
+            fetch = { page ->
+                try {
+                    checkNotNull(read(path, page, config.pageSize, cachedOnly = false, params, items)) {
+                        "a read that may go to the network cannot miss the cache"
+                    }
+                } finally {
+                    primed.complete(Unit)
+                }
+            },
+            invalidate = sources::invalidate,
+        ),
+        // Invoked rather than passed: only the JVM has a Pager overload taking the factory type itself.
+        pagingSourceFactory = { sources() },
+    )
+}
+
+/**
  * Fetches one page of the offset-paginated endpoint at [path], reading its items out of the response body with
  * [items]. The Content Delivery API pages uniformly, so everything but [items] describes any of its endpoints:
  * `page` and `per_page` go out ahead of [params], so that a query stating them replaces them, and the `Total` and
  * `Per-Page` response headers describe what came back, each falling back to what the page itself shows when the
  * header is absent.
  *
- * When [cachedOnly] is `true` the request only reads Ktor's HTTP cache; a cache miss (a `504 Gateway Timeout`)
- * yields an empty page.
+ * With [cachedOnly] the read never touches the network and answers `null` when Ktor's cache does not hold the page.
+ * The miss is reported rather than rendered as an empty page: an empty page is indistinguishable from the end of
+ * the list, and a collector that does not re-drive its own loads would take it for one. A read that may go to the
+ * network cannot miss, and so never answers `null`.
  *
  * @param T The type of the items on the page.
  */
-internal suspend fun <T : Any> HttpClient.fetchPage(
+private suspend fun <T : Any> HttpClient.read(
     path: String,
     page: Int,
     perPage: Int,
     cachedOnly: Boolean,
     params: Map<String, String>,
     items: (body: String) -> List<T>,
-): PagedResponse<T> {
+): PagedResponse<T>? {
     val response = try {
         get(path) {
             if (cachedOnly) onlyIfCached()
@@ -66,12 +123,8 @@ internal suspend fun <T : Any> HttpClient.fetchPage(
     } catch (e: CancellationException) {
         throw e
     } catch (e: ServerResponseException) {
-        if (cachedOnly && e.response.status == HttpStatusCode.GatewayTimeout) {
-            // A cache miss, not an empty endpoint — and deliberately indistinguishable from one here. The empty
-            // page it produces reads as the end of the list, which is exactly what asks [NetworkRemoteMediator]
-            // for that page, and the fresh copy replaces it as soon as the network answers.
-            return PagedResponse(emptyList(), total = 0, perPage = perPage, page = page)
-        }
+        // Ktor answers a cached-only read it cannot serve with a 504, which is a miss rather than a failure.
+        if (cachedOnly && e.response.status == HttpStatusCode.GatewayTimeout) return null
         throw StoryblokClientException(e.response.bodyAsText(), e)
     } catch (e: Throwable) {
         throw StoryblokClientException(e.message, e)
@@ -93,7 +146,7 @@ internal suspend fun <T : Any> HttpClient.fetchPage(
     }
 
     return PagedResponse(
-        items = items(response.body<String>()),
+        items = fetched,
         total = response.headers["Total"]?.toIntOrNull(),
         perPage = response.headers["Per-Page"]?.toIntOrNull() ?: perPage,
         page = page,
@@ -107,19 +160,35 @@ internal suspend fun <T : Any> HttpClient.fetchPage(
 private val PagingSource.LoadResult.Page<Int, *>.page: Int get() = prevKey?.plus(1) ?: 1
 
 /**
- * [PagingSource] that reads pages from Ktor's HTTP cache, via a [fetch] that only reads the cache. Fresh data is
- * pulled from the network by [NetworkRemoteMediator], which refreshes the cache and invalidates this source.
+ * [PagingSource] that reads pages from Ktor's HTTP cache, via a [fetch] that only reads the cache and answers `null`
+ * when it does not hold the page. Fresh data is pulled from the network by [NetworkRemoteMediator], which refreshes
+ * the cache and invalidates this source.
+ *
+ * A miss is published as an empty page, since an exhausted source is what asks the mediator for the next page — but
+ * not on the very first load, where an empty page would be the whole of what a collector sees and is
+ * indistinguishable from an endpoint with no stories. That one waits on [awaitPriming] instead: the mediator's
+ * initial refresh is already on its way to filling the cache, so waiting for it publishes the loaded page rather
+ * than an empty one, and costs no request that was not being made anyway.
  *
  * @param T The type of the items being paged.
  */
 internal class CachedPagingSource<T : Any>(
-    private val fetch: suspend (page: Int) -> PagedResponse<T>,
+    private val awaitPriming: suspend () -> Unit,
+    private val fetch: suspend (page: Int) -> PagedResponse<T>?,
 ) : PagingSource<Int, T>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, T> {
         val page = params.key ?: 1
         return try {
-            val response = fetch(page)
+            val cached = fetch(page)
+                ?: if (params is LoadParams.Refresh) awaitPriming().let { fetch(page) } else null
+
+            val response = cached ?: return LoadResult.Page(
+                data = emptyList(),
+                prevKey = if (page <= 1) null else page - 1,
+                nextKey = null,
+            )
+
             LoadResult.Page(
                 data = response.items,
                 prevKey = if (page <= 1) null else page - 1,

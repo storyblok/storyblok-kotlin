@@ -57,9 +57,8 @@ client.story<Page>("home")
 
 #### Fetch multiple stories:
 
-`client.stories(...)` returns a `Flow<PagingData<Story<T>>>`, so pages are fetched as they are needed. The
-`content_type` parameter comes from the component the query is typed to, and the query DSL narrows, sorts and
-filters the result:
+`client.stories(...)` returns a `Pager`, whose `flow` emits pages as they are needed. The `content_type` parameter
+comes from the component the query is typed to, and the query DSL narrows, sorts and filters the result:
 
 ```kotlin
 val articles = client.stories<Page> {
@@ -67,10 +66,6 @@ val articles = client.stories<Page> {
     sortByDescending(Story<*>::publishedAt)
     filter { Page::title like "*space*" }
 }
-
-// In Compose, collectAsLazyPagingItems() drives the loading as the list scrolls.
-// Elsewhere, asItemSnapshotListFlow() presents each update as a plain list.
-articles.asItemSnapshotListFlow().collect { println(it.items.size) }
 ```
 
 ## Other resources

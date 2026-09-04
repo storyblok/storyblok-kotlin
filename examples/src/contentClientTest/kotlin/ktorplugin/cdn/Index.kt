@@ -24,6 +24,7 @@ class Index {
         
         val stories = client
             .stories()
+            .flow
             .asItemSnapshotListFlow()
             .first()
         

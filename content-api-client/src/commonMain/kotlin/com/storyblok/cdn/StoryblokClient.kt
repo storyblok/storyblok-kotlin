@@ -4,13 +4,13 @@ package com.storyblok.cdn
 
 import com.storyblok.cdn.query.StoriesQuery
 import com.storyblok.cdn.query.StoryQuery
+import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.storyblok.cdn.schema.Component
 import com.storyblok.cdn.schema.Story
 import com.storyblok.ktor.Api
 import com.storyblok.ktor.Api.Config.Version
-import com.storyblok.ktor.Storyblok
 import io.ktor.client.HttpClient
 import io.ktor.util.reflect.TypeInfo
 import io.ktor.util.reflect.typeInfo
@@ -78,13 +78,13 @@ public inline fun <reified T : Component> StoryblokClient.story(
  * @param config The Paging [configuration][PagingConfig]; its [pageSize][PagingConfig.pageSize] maps to the API's `per_page`.
  * @param resolveLevel How deeply nested [Story] relations are resolved, see [story].
  * @param query Configures the query parameters via the [StoriesQuery] DSL.
- * @return A [Flow] of [PagingData] emitting the stories, with potential cached and fresh values.
+ * @return A [Pager] whose [flow][Pager.flow] emits the stories, with potential cached and fresh values.
  */
 public inline fun <reified T : Component> StoryblokClient.stories(
     config: PagingConfig = PagingConfig(pageSize = 25),
     resolveLevel: Int = 1,
     noinline query: StoriesQuery<T>.() -> Unit = {},
-): Flow<PagingData<Story<T>>> = stories(config, typeInfo<Story<T>>(), resolveLevel, query)
+): Pager<Int, Story<T>> = stories(config, typeInfo<Story<T>>(), resolveLevel, query)
 
 /**
  * Client for the Storyblok [Content Delivery API](https://www.storyblok.com/docs/api/content-delivery/v2).
@@ -183,13 +183,14 @@ public interface StoryblokClient {
      * @param config The Paging [configuration][PagingConfig]; its [pageSize][PagingConfig.pageSize] maps to the API's `per_page`, defaults to 25.
      * @param resolveLevel How deeply nested [Story] relations are resolved, see [story].
      * @param query Configures the query parameters via the [StoriesQuery] DSL.
-     * @return A [Flow] of [PagingData] emitting the stories with [Component] content, with potential cached and fresh values.
+     * @return A [Pager] whose [flow][Pager.flow] emits the stories with [Component] content, with potential cached
+     * and fresh values.
      */
     public fun stories(
         config: PagingConfig = PagingConfig(pageSize = 25),
         resolveLevel: Int = 1,
         query: StoriesQuery<Component>.() -> Unit = {},
-    ): Flow<PagingData<Story<Component>>>
+    ): Pager<Int, Story<Component>>
 
     /**
      * Retrieves multiple [stories][Story] as a [PagingData] stream with explicit type information for the [Component] type.
@@ -199,14 +200,14 @@ public interface StoryblokClient {
      * @param typeInfo Type information for deserialization; must describe a `Story<T>`.
      * @param resolveLevel How deeply nested [Story] relations are resolved, see [story].
      * @param query Configures the query parameters via the [StoriesQuery] DSL.
-     * @return A [Flow] of [PagingData] emitting the stories, with potential cached and fresh values.
+     * @return A [Pager] whose [flow][Pager.flow] emits the stories, with potential cached and fresh values.
      */
     public fun <T : Component> stories(
         config: PagingConfig,
         typeInfo: TypeInfo,
         resolveLevel: Int = 1,
         query: StoriesQuery<T>.() -> Unit = {},
-    ): Flow<PagingData<Story<T>>>
+    ): Pager<Int, Story<T>>
 
     public companion object {
 

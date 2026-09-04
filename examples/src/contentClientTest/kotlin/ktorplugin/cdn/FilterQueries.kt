@@ -30,6 +30,7 @@ class FilterQueries {
             .stories {
                 parameter("filter_query[headline__i18n__es_co][in]", "Sinfonía de la Tierra: Navegar por las maravillas y los desafíos de nuestro oasis azul")
             }
+            .flow
             .asItemSnapshotListFlow()
             .first()
         
@@ -53,6 +54,7 @@ class FilterQueries {
             .stories {
                 parameter("filter_query[body.0.name][in]", "This is a nested blok")
             }
+            .flow
             .asItemSnapshotListFlow()
             .first()
         
@@ -78,6 +80,7 @@ class FilterQueries {
                     Article::topics allIn listOf("solar-system", "space-exploration")
                 }
             }
+            .flow
             .asItemSnapshotListFlow()
             .first()
         
@@ -103,6 +106,7 @@ class FilterQueries {
                     Article::topics anyIn listOf("solar-system", "space-exploration")
                 }
             }
+            .flow
             .asItemSnapshotListFlow()
             .first()
         
@@ -128,6 +132,7 @@ class FilterQueries {
                     Article::scheduled greaterThan Instant.parse("2023-12-31T09:00:00Z")
                 }
             }
+            .flow
             .asItemSnapshotListFlow()
             .first()
         
@@ -153,6 +158,7 @@ class FilterQueries {
                     Product::price greaterThan 1199.99
                 }
             }
+            .flow
             .asItemSnapshotListFlow()
             .first()
         
@@ -178,6 +184,7 @@ class FilterQueries {
                     Product::price greaterThan 1200L
                 }
             }
+            .flow
             .asItemSnapshotListFlow()
             .first()
         
@@ -203,6 +210,7 @@ class FilterQueries {
                     Article::categories isIn listOf("space-exploration", "solar-system")
                 }
             }
+            .flow
             .asItemSnapshotListFlow()
             .first()
         
@@ -228,6 +236,7 @@ class FilterQueries {
                     Article::categories `is` NotEmptyArray
                 }
             }
+            .flow
             .asItemSnapshotListFlow()
             .first()
         
@@ -253,6 +262,7 @@ class FilterQueries {
                     Article::headline like "*space*"
                 }
             }
+            .flow
             .asItemSnapshotListFlow()
             .first()
         
@@ -278,6 +288,7 @@ class FilterQueries {
                     Article::scheduled lessThan Instant.parse("2023-12-31T09:00:00Z")
                 }
             }
+            .flow
             .asItemSnapshotListFlow()
             .first()
         
@@ -303,6 +314,7 @@ class FilterQueries {
                     Product::price lessThan 1199.99
                 }
             }
+            .flow
             .asItemSnapshotListFlow()
             .first()
         
@@ -328,6 +340,7 @@ class FilterQueries {
                     Product::price lessThan 1200L
                 }
             }
+            .flow
             .asItemSnapshotListFlow()
             .first()
         
@@ -353,6 +366,7 @@ class FilterQueries {
                     Article::categories notIn listOf("space-exploration", "culture")
                 }
             }
+            .flow
             .asItemSnapshotListFlow()
             .first()
         
@@ -378,6 +392,7 @@ class FilterQueries {
                     Article::headline notLike "*Mysteries*"
                 }
             }
+            .flow
             .asItemSnapshotListFlow()
             .first()
         
@@ -404,6 +419,7 @@ class FilterQueries {
                     Article::highlighted isIn listOf("true")
                 }
             }
+            .flow
             .asItemSnapshotListFlow()
             .first()
         
@@ -431,6 +447,7 @@ class FilterQueries {
                     Product::price greaterThan 100.0
                 }
             }
+            .flow
             .asItemSnapshotListFlow()
             .first()
         

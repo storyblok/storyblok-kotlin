@@ -51,6 +51,7 @@ class Stories {
             .stories {
                 startsWith = "articles"
             }
+            .flow
             .asItemSnapshotListFlow()
             .first()
         
@@ -118,6 +119,7 @@ class Stories {
             .stories {
                 startsWith = "articles/"
             }
+            .flow
             .asItemSnapshotListFlow()
             .first()
         
@@ -162,6 +164,7 @@ class Stories {
             .stories {
                 parameter("resolve_relations", "article.categories,article.author")
             }
+            .flow
             .asItemSnapshotListFlow()
             .first()
         
@@ -185,6 +188,7 @@ class Stories {
             .stories<Article> {
                 sortBy(Article::headline)
             }
+            .flow
             .asItemSnapshotListFlow()
             .first()
         
@@ -208,6 +212,7 @@ class Stories {
             .stories {
                 sortByDescending(Story<*>::firstPublishedAt)
             }
+            .flow
             .asItemSnapshotListFlow()
             .first()
         
