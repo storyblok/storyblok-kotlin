@@ -7,9 +7,13 @@ import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTes
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.kotlin.multiplatform.library)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
+    compilerOptions {
+        optIn.add("kotlin.uuid.ExperimentalUuidApi")
+    }
     jvm()
     js {
         browser {
@@ -68,6 +72,31 @@ kotlin {
 
         jvmTest.dependencies {
             implementation(libs.logback.classic)
+        }
+    }
+
+    // Generated content-api-client tests live in src/contentClientTest (not commonTest), because content-api-client
+    // (via androidx.paging) supports fewer targets than this module.
+    val contentClientTest = sourceSets.create("contentClientTest") {
+        dependsOn(sourceSets.getByName("commonTest"))
+        dependencies {
+            implementation(project(":content-api-client"))
+            implementation(libs.androidx.paging.common)
+        }
+    }
+
+    // Targets that can't host the content-client tests: content-api-client omits androidNative*/iosX64, and the
+    // asItemSnapshotListFlow tests use runBlocking (real time, since runTest's virtual clock doesn't drive Paging),
+    // which js/wasmJs don't have. That leaves JVM + Native. commonTest stays buildable on all of them.
+    val contentClientExcludedTargets =
+        setOf("androidNativeArm32", "androidNativeArm64", "androidNativeX64", "androidNativeX86", "iosX64", "js", "wasmJs")
+    targets.configureEach {
+        if (name !in contentClientExcludedTargets) {
+            compilations.configureEach {
+                if (name == "test") {
+                    defaultSourceSet.dependsOn(contentClientTest)
+                }
+            }
         }
     }
 }
