@@ -42,6 +42,61 @@ class CapiTest {
     }
 
     @Test
+    fun `query parameter names are sorted so the same request is always spelled the same way`() = runTest {
+        // Ktor's HttpCache keys an entry by the request URL as written, so two requests for one resource have to
+        // spell it identically. They would not otherwise: the API appends `cv` to the end of the Location it
+        // redirects a published request to, while DefaultRequest puts `cv` ahead of `token` and `version` on the
+        // request that follows, and a response stored under one spelling is never read back under the other.
+        val spellings = mutableListOf<String>()
+        val client = HttpClient(MockEngine { request ->
+            spellings += request.url.encodedQuery
+            respondOk()
+        }) {
+            install(Storyblok(CDN)) {
+                region = Custom("https://localhost/mock/")
+                accessToken = "mock-api-key"
+            }
+        }
+
+        client.get("stories") { parameter("page", "1"); parameter("cv", "123"); parameter("a_first", "x") }
+        // The same parameters, asked for in a different order.
+        client.get("stories") { parameter("cv", "123"); parameter("a_first", "x"); parameter("page", "1") }
+
+        assertEquals(
+            "a_first=x&cv=123&page=1&token=mock-api-key&version=published",
+            spellings.first(),
+            "names should go out in sorted order",
+        )
+        assertEquals(spellings.first(), spellings.last(), "the order they were added in must not change the URL")
+    }
+
+    @Test
+    fun `repeated values keep the order they were given`() = runTest {
+        // Only names are ordered. A repeated parameter's values are a sequence the API answers to, not a set.
+        var query: String? = null
+        val client = HttpClient(MockEngine { request ->
+            query = request.url.encodedQuery
+            respondOk()
+        }) {
+            install(Storyblok(CDN)) {
+                region = Custom("https://localhost/mock/")
+                accessToken = "mock-api-key"
+            }
+        }
+
+        client.get("stories") {
+            parameter("by_uuids_ordered", "third")
+            parameter("by_uuids_ordered", "first")
+            parameter("by_uuids_ordered", "second")
+        }
+
+        assertEquals(
+            listOf("third", "first", "second"),
+            Url("https://localhost/?$query").parameters.getAll("by_uuids_ordered"),
+        )
+    }
+
+    @Test
     fun `default query parameters set when specified in config`() = runTest {
         val client = HttpClient(MockEngine { request ->
             assertEquals("mock-cv", request.url.parameters["cv"])

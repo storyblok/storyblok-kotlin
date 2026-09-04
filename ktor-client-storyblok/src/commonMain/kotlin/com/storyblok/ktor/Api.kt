@@ -9,11 +9,12 @@ import io.ktor.client.call.replaceResponse
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.api.ClientPluginBuilder
 import io.ktor.client.plugins.cache.HttpCache
-import io.ktor.client.statement.DefaultHttpResponse
+import io.ktor.client.request.HttpSendPipeline
 import io.ktor.client.statement.HttpReceivePipeline
 import io.ktor.client.statement.content
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
+import io.ktor.http.ParametersBuilder
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.Url
 import io.ktor.http.parseHeaderValue
@@ -73,6 +74,19 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
         }
 
         override fun ClientPluginBuilder<*>.configure(config: Content) {
+            //sort parameters for stable cache keys
+            client.sendPipeline.intercept(HttpSendPipeline.Before) {
+                val parameters = context.url.parameters
+                val sorted = ParametersBuilder(parameters.entries().size).apply {
+                    parameters.entries()
+                        .sortedBy { it.key }
+                        .forEach { (name, values) -> appendAll(name, values) }
+                }
+                parameters.clear()
+                parameters.appendAll(sorted.build())
+                proceed()
+            }
+
             client.receivePipeline.intercept(HttpReceivePipeline.Before) { response ->
                 val modifiedHeaders = Headers.build {
                     appendAll(response.headers)
