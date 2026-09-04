@@ -11,7 +11,7 @@ The Storyblok Compose SDK requires adding the `storyblok-compose` artifact in yo
 
 ```kotlin
 dependencies {
-    implementation("com.storyblok:storyblok-compose:0.5.0")
+    implementation("com.storyblok:storyblok-compose:0.5.1")
 }
 ```
 
@@ -19,8 +19,8 @@ dependencies {
 > For rich text rendering with Material 3 components, also add the [storyblok-material3](../storyblok-material3) module which provides default renderers for all rich text node types:
 > ```kotlin
 > dependencies {
->   implementation("com.storyblok:storyblok-compose:0.5.0")
->   implementation("com.storyblok:storyblok-material3:0.5.0")
+>   implementation("com.storyblok:storyblok-compose:0.5.1")
+>   implementation("com.storyblok:storyblok-material3:0.5.1")
 > }
 > ```
 

@@ -18,6 +18,7 @@ class Links {
     @Test
     fun `Retrieve Multiple Links`() = runTest {
 
+        // implementation("com.storyblok:ktor-client-storyblok:0.5.1")
         val client = HttpClient {
             install(Storyblok(CDN)) {
                 accessToken = "krcV6QGxWORpYLUWt12xKQtt"
@@ -30,6 +31,25 @@ class Links {
                 parameters.append("starts_with", "articles")
             }
         }
+        
+        println(response.body<JsonElement>())
+    }
+
+    /**
+     * Retrieve a single link object by its UUID using the Content Delivery API.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/links/retrieve-single-link
+     */
+    @Test
+    fun `Retrieve a Single Link`() = runTest {
+
+        // implementation("com.storyblok:ktor-client-storyblok:0.5.1")
+        val client = HttpClient {
+            install(Storyblok(CDN)) {
+                accessToken = "krcV6QGxWORpYLUWt12xKQtt"
+            }
+        }
+        
+        val response = client.get("links/660452d2-1a68-4493-b5b6-2f03b6fa722b")
         
         println(response.body<JsonElement>())
     }

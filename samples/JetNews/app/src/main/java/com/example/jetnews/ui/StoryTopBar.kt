@@ -61,7 +61,7 @@ fun StoryblokScope.StoryTopBar(
             remember(term) {
                 stories<Post> {
                     searchTerm = term.ifEmpty { null }
-                }
+                }.flow
             }
             .collectAsLazyPagingItems()
 

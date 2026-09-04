@@ -5,10 +5,10 @@ public abstract interface class com/storyblok/cdn/StoryblokClient {
 	public static final field Companion Lcom/storyblok/cdn/StoryblokClient$Companion;
 	public abstract fun close ()V
 	public abstract fun getHttp ()Lio/ktor/client/HttpClient;
-	public abstract fun stories (Landroidx/paging/PagingConfig;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
-	public abstract fun stories (Landroidx/paging/PagingConfig;Lio/ktor/util/reflect/TypeInfo;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
-	public static synthetic fun stories$default (Lcom/storyblok/cdn/StoryblokClient;Landroidx/paging/PagingConfig;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
-	public static synthetic fun stories$default (Lcom/storyblok/cdn/StoryblokClient;Landroidx/paging/PagingConfig;Lio/ktor/util/reflect/TypeInfo;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public abstract fun stories (Landroidx/paging/PagingConfig;ILkotlin/jvm/functions/Function1;)Landroidx/paging/Pager;
+	public abstract fun stories (Landroidx/paging/PagingConfig;Lio/ktor/util/reflect/TypeInfo;ILkotlin/jvm/functions/Function1;)Landroidx/paging/Pager;
+	public static synthetic fun stories$default (Lcom/storyblok/cdn/StoryblokClient;Landroidx/paging/PagingConfig;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Landroidx/paging/Pager;
+	public static synthetic fun stories$default (Lcom/storyblok/cdn/StoryblokClient;Landroidx/paging/PagingConfig;Lio/ktor/util/reflect/TypeInfo;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Landroidx/paging/Pager;
 	public abstract fun story (Ljava/lang/String;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
 	public abstract fun story (Ljava/lang/String;Lio/ktor/util/reflect/TypeInfo;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
 	public abstract fun story (Lkotlin/uuid/Uuid;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
@@ -28,8 +28,8 @@ public final class com/storyblok/cdn/StoryblokClient$Companion {
 }
 
 public final class com/storyblok/cdn/StoryblokClient$DefaultImpls {
-	public static synthetic fun stories$default (Lcom/storyblok/cdn/StoryblokClient;Landroidx/paging/PagingConfig;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
-	public static synthetic fun stories$default (Lcom/storyblok/cdn/StoryblokClient;Landroidx/paging/PagingConfig;Lio/ktor/util/reflect/TypeInfo;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun stories$default (Lcom/storyblok/cdn/StoryblokClient;Landroidx/paging/PagingConfig;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Landroidx/paging/Pager;
+	public static synthetic fun stories$default (Lcom/storyblok/cdn/StoryblokClient;Landroidx/paging/PagingConfig;Lio/ktor/util/reflect/TypeInfo;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Landroidx/paging/Pager;
 	public static synthetic fun story$default (Lcom/storyblok/cdn/StoryblokClient;Ljava/lang/String;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
 	public static synthetic fun story$default (Lcom/storyblok/cdn/StoryblokClient;Ljava/lang/String;Lio/ktor/util/reflect/TypeInfo;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
 	public static synthetic fun story$default (Lcom/storyblok/cdn/StoryblokClient;Lkotlin/uuid/Uuid;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
@@ -49,8 +49,8 @@ public final class com/storyblok/cdn/StoryblokClientImpl : com/storyblok/cdn/Sto
 	public fun getHttp ()Lio/ktor/client/HttpClient;
 	public final fun getJson ()Lkotlinx/serialization/json/Json;
 	public final fun getRelations ()Ljava/util/Map;
-	public fun stories (Landroidx/paging/PagingConfig;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
-	public fun stories (Landroidx/paging/PagingConfig;Lio/ktor/util/reflect/TypeInfo;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public fun stories (Landroidx/paging/PagingConfig;ILkotlin/jvm/functions/Function1;)Landroidx/paging/Pager;
+	public fun stories (Landroidx/paging/PagingConfig;Lio/ktor/util/reflect/TypeInfo;ILkotlin/jvm/functions/Function1;)Landroidx/paging/Pager;
 	public fun story (Ljava/lang/String;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
 	public fun story (Ljava/lang/String;Lio/ktor/util/reflect/TypeInfo;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
 	public fun story (Lkotlin/uuid/Uuid;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;

@@ -4,10 +4,8 @@ package com.storyblok.cdn
 
 import com.storyblok.cdn.query.StoriesQuery
 import com.storyblok.cdn.query.StoryQuery
-import androidx.paging.InvalidatingPagingSourceFactory
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import androidx.paging.PagingData
 import com.storyblok.InternalAPI
 import com.storyblok.cdn.schema.Component
 import com.storyblok.cdn.schema.Story
@@ -214,40 +212,20 @@ public class StoryblokClientImpl constructor(
         config: PagingConfig,
         resolveLevel: Int,
         query: StoriesQuery<Component>.() -> Unit,
-    ): Flow<PagingData<Story<Component>>> =
-        stories(config, typeInfo<Story<Component>>(), resolveLevel, query)
+    ): Pager<Int, Story<Component>> = stories(config, typeInfo<Story<Component>>(), resolveLevel, query)
 
     override fun <T : Component> stories(
         config: PagingConfig,
         typeInfo: TypeInfo,
         resolveLevel: Int,
         query: StoriesQuery<T>.() -> Unit,
-    ): Flow<PagingData<Story<T>>> {
-        // The relation parameters are folded in here, since resolving relations is this endpoint's concern rather
-        // than any paged endpoint's.
+    ): Pager<Int, Story<T>> {
         val params = relationParameters(resolveLevel) + StoriesQuery<T>(typeInfo).apply(query).build()
-        // Everything but the page number and the cache restriction is fixed for this call, so the two branches
-        // below differ only in whether they may go to the network.
-        suspend fun fetch(page: Int, cachedOnly: Boolean): PagedResponse<Story<T>> =
-            http.fetchPage("stories", page, config.pageSize, cachedOnly, params) { body ->
-                val envelope = json.parseToJsonElement(body).jsonObject
-                val rels = envelope.rels
-                envelope["stories"]!!.jsonArray.map { it.jsonObject.toStory<T>(typeInfo, rels, resolveLevel) }
-            }
-
-        val sources = InvalidatingPagingSourceFactory {
-            CachedPagingSource { page -> fetch(page, cachedOnly = true) }
+        return http.pager("stories", config, params) { body ->
+            val envelope = json.parseToJsonElement(body).jsonObject
+            val rels = envelope.rels
+            envelope["stories"]!!.jsonArray.map { it.jsonObject.toStory(typeInfo, rels, resolveLevel) }
         }
-
-        val pager = Pager(
-            config = config,
-            remoteMediator = NetworkRemoteMediator(
-                fetch = { page -> fetch(page, cachedOnly = false) },
-                invalidate = sources::invalidate,
-            ),
-            pagingSourceFactory = { sources() },
-        )
-        return pager.flow
     }
 
     private fun <T : Component> story(

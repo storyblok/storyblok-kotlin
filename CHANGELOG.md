@@ -1,5 +1,10 @@
 ### Changelog
 
+**0.5.1**
+
+- BREAKING CHANGE: `StoryblokClient.stories(...)` returns an `androidx.paging.Pager<Int, Story<T>>` rather than a
+  `Flow<PagingData<Story<T>>>`.
+
 **0.5.0**
 
 - Added `StoryblokClient.stories(...)` for the

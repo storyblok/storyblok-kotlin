@@ -18,6 +18,7 @@ class Datasources {
     @Test
     fun `Retrieve a Single Datasource`() = runTest {
 
+        // implementation("com.storyblok:ktor-client-storyblok:0.5.1")
         val client = HttpClient {
             install(Storyblok(CDN)) {
                 accessToken = "ask9soUkv02QqbZgmZdeDAtt"
@@ -36,6 +37,7 @@ class Datasources {
     @Test
     fun `Retrieve Multiple Datasource Entries`() = runTest {
 
+        // implementation("com.storyblok:ktor-client-storyblok:0.5.1")
         val client = HttpClient {
             install(Storyblok(CDN)) {
                 accessToken = "ask9soUkv02QqbZgmZdeDAtt"
@@ -59,6 +61,7 @@ class Datasources {
     @Test
     fun `Retrieve Multiple Datasources`() = runTest {
 
+        // implementation("com.storyblok:ktor-client-storyblok:0.5.1")
         val client = HttpClient {
             install(Storyblok(CDN)) {
                 accessToken = "ask9soUkv02QqbZgmZdeDAtt"

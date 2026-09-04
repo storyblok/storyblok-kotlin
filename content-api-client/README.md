@@ -11,7 +11,7 @@ The Content Delivery API Client requires adding the `content-api-client` artifac
 
 ```kotlin
 dependencies {
-    implementation("com.storyblok:content-api-client:0.5.0")
+    implementation("com.storyblok:content-api-client:0.5.1")
 }
 ```
 
@@ -45,6 +45,18 @@ client.story("articles/hello-world")
 client.story(Uuid.parse("bfea4895-8a19-4e82-ae1c-1c8f3e4b6f9c"))
     .collect { story -> println(story.name) }
 ```
+
+## Fetch multiple stories
+
+Use [`stories(...)`](https://storyblok.github.io/storyblok-kotlin/content-api-client/com.storyblok.cdn/stories.html) for the [retrieve multiple stories](https://www.storyblok.com/docs/api/content-delivery/v2/stories/retrieve-multiple-stories) endpoint. It returns a [`Pager`](https://developer.android.com/reference/kotlin/androidx/paging/Pager), whose `flow` emits [`PagingData`](https://developer.android.com/reference/kotlin/androidx/paging/PagingData) so pages are fetched as they are needed rather than all at once:
+
+```kotlin
+client.stories<Article> {
+    startsWith = "articles/"
+}
+```
+
+See [Fetching multiple stories](#fetching-multiple-stories) for how to consume the result and how to narrow, sort and filter it.
 
 # Client Guide
 ## Creating a client
@@ -135,6 +147,145 @@ client.story<Page>("home")
 ### Unknown components
 
 Components that are not registered will be deserialized as [`Component.Unknown`](https://storyblok.github.io/storyblok-kotlin/content-api-client/com.storyblok.cdn.schema/-component/-unknown/index.html). This allows you to handle unrecognized components gracefully without causing deserialization errors.
+
+## Fetching multiple stories
+
+`stories(...)` returns a `Pager<Int, Story<T>>`. The `content_type` parameter is derived from `T`, so a query typed to a registered component asks only for that component's stories; typing it to `Component` asks for all of them.
+
+```kotlin
+val articles: Pager<Int, Story<Article>> = client.stories<Article> {
+    startsWith = "articles/"
+}
+```
+
+### Consuming the result
+
+In Compose, collect it with [`collectAsLazyPagingItems()`](https://developer.android.com/reference/kotlin/androidx/paging/compose/package-summary#collectAsLazyPagingItems) from `androidx.paging:paging-compose`, which drives the loading as the list scrolls:
+
+```kotlin
+val articles = remember { client.stories<Article> { startsWith = "articles/" }.flow }
+    .collectAsLazyPagingItems()
+
+LazyColumn {
+    items(articles.itemCount) { index ->
+        articles[index]?.let { story -> Text(story.content.headline) }
+    }
+}
+```
+
+Outside Compose, `asItemSnapshotListFlow()` presents each update as a plain list:
+
+```kotlin
+val pager = client.stories<Article> { startsWith = "articles/" }
+
+pager.flow
+    .asItemSnapshotListFlow()
+    .collect { snapshot -> println(snapshot.items.map { it.content.headline }) }
+```
+
+A snapshot flow presents the loaded window and re-emits as more arrives, but it cannot request anything itself — paging is driven by access hints, which a presenter such as `collectAsLazyPagingItems` sends as the list scrolls and a plain flow has no way to send. Drive it from the `Pager` instead:
+
+```kotlin
+pager.append()   // load the next page
+pager.refresh()  // reload from the top
+pager.retry()    // recover after a failed load
+```
+
+### Page size
+
+The Paging [`PagingConfig`](https://developer.android.com/reference/kotlin/androidx/paging/PagingConfig)'s `pageSize` is sent as the API's `per_page`, and defaults to 25:
+
+```kotlin
+client.stories<Article>(PagingConfig(pageSize = 50)) { startsWith = "articles/" }
+```
+
+> [!TIP]
+> The `stories` endpoint caps `per_page` at 100. A larger size is refused by the API rather than quietly reduced.
+
+### Narrowing the result
+
+Every documented parameter has a type-safe entry point:
+
+```kotlin
+client.stories<Article> {
+    startsWith = "articles/"                 // starts_with
+    searchTerm = "spaceship"                 // search_term
+    isStartpage = false                      // is_startpage
+    bySlugs = listOf("articles/*")           // by_slugs
+    excludingSlugs = listOf("articles/wip-*")// excluding_slugs
+    byUuids = listOf(uuid)                   // by_uuids
+    byUuidsOrdered = listOf(uuid)            // by_uuids_ordered, in the order given
+    excludingIds = listOf(1L, 2L)            // excluding_ids
+    withTag = listOf("featured")             // with_tag
+    excludingFields = listOf("body")         // excluding_fields
+    fromRelease = "12345"                    // from_release
+
+    publishedAtGreaterThan = Instant.parse("2024-01-01T00:00:00Z")
+    updatedAtLessThan = Instant.parse("2025-01-01T00:00:00Z")
+}
+```
+
+### Sorting
+
+Content fields are named by a property reference, which resolves to the serialized field name and adds the `content.` prefix the API expects. `Story` attributes are named the same way:
+
+```kotlin
+client.stories<Article> {
+    sortBy(Article::headline)                   // sort_by=content.headline:asc
+    sortByDescending(Story<*>::publishedAt)     // sort_by=published_at:desc
+}
+```
+
+A numeric field is ordered numerically and everything else as text, which is also the right ordering for an ISO-8601 date. Storyblok serializes a number field as text, though, so a field holding a number may be modelled as a `String` — its type cannot settle the ordering, and a second argument states it:
+
+```kotlin
+client.stories<Product> {
+    sortBy(Product::price, SortAs.WholeNumber)  // sort_by=content.price:asc:int
+}
+```
+
+> [!NOTE]
+> Only some `Story` attributes are sortable. The API answers the rest with `Not sortable by this column` rather than the SDK second-guessing which those are.
+
+### Filter queries
+
+[Filter queries](https://www.storyblok.com/docs/api/content-delivery/v2/filter-queries) are written with an infix DSL, addressing fields by property reference:
+
+```kotlin
+client.stories<Product> {
+    filter {
+        Product::headline like "*space*"
+        Product::headline notLike "*draft*"
+        Product::categories `is` Is.NotEmptyArray
+        Product::headline isIn listOf("Spaceship", "Rocket")
+        Product::headline notIn listOf("Paper")
+        Product::categories allIn listOf("solar-system", "mars")
+        Product::categories anyIn listOf("solar-system", "mars")
+        Product::stock greaterThan 10          // Long    -> gt_int
+        Product::rating lessThan 4.5           // Double  -> lt_float
+        Product::releaseDate greaterThan Instant.parse("2024-01-01T00:00:00Z")
+    }
+}
+```
+
+The comparison operations pick their wire operation from the operand's type, and check the field can hold it — a decimal comparison against a whole-number field is reported rather than silently matching nothing. `allIn`/`anyIn` likewise require a multi-value field, where `isIn` is the operation that applies to a single-value one.
+
+> [!NOTE]
+> A property reference addresses one of the component's own fields. [Nested blocks and fields](https://www.storyblok.com/docs/api/content-delivery/v2/filter-queries/nested-blocks-and-fields), which the API addresses with a dotted path, have no entry point — write those out with `parameter(...)`.
+
+### Parameters the SDK does not know about
+
+`parameter(name, value)` sets any query parameter directly, both for forward compatibility and to override one the SDK sends on your behalf:
+
+```kotlin
+client.stories<Article> {
+    parameter("filter_query[seo.description][is]", "not_empty")
+    parameter("some_future_param", "value")
+}
+```
+
+> [!WARNING]
+> Overriding `page`, `per_page`, `resolve_relations`, `resolve_level` or `content_type` can break the features that rely on them — changing `per_page`, for instance, desynchronises the page numbers Paging requests from the ones the HTTP cache holds.
 
 ## Story relations
 

@@ -10,7 +10,7 @@ With automatic relation resolution and custom component deserialization.
 
 ```kotlin
 dependencies {
-    implementation("com.storyblok:content-api-client:0.5.0")
+    implementation("com.storyblok:content-api-client:0.5.1")
 }
 ```
 
@@ -53,6 +53,19 @@ val client = StoryblokClient(
 
 client.story<Page>("home")
     .collect { story -> println(story.content.title) }
+```
+
+#### Fetch multiple stories:
+
+`client.stories(...)` returns a `Pager`, whose `flow` emits pages as they are needed. The `content_type` parameter
+comes from the component the query is typed to, and the query DSL narrows, sorts and filters the result:
+
+```kotlin
+val articles = client.stories<Page> {
+    startsWith = "articles/"
+    sortByDescending(Story<*>::publishedAt)
+    filter { Page::title like "*space*" }
+}
 ```
 
 ## Other resources

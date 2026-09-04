@@ -9,14 +9,14 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.*
 import kotlin.test.Test
 
-class Tags {
+class Experiments {
 
     /**
-     * Retrieve tags used in a space.
-     * https://www.storyblok.com/docs/api/content-delivery/v2/tags/retrieve-multiple-tags
+     * Retrieve all running experiments from your Storyblok space using the Content Delivery API.
+     * https://www.storyblok.com/docs/api/content-delivery/v2/experiments/retrieve-running-experiments
      */
     @Test
-    fun `Retrieve Multiple Tags`() = runTest {
+    fun `Retrieve Running Experiments`() = runTest {
 
         // implementation("com.storyblok:ktor-client-storyblok:0.5.1")
         val client = HttpClient {
@@ -25,11 +25,7 @@ class Tags {
             }
         }
         
-        val response = client.get("tags") {
-            url {
-                parameters.append("starts_with", "articles/")
-            }
-        }
+        val response = client.get("experiments")
         
         println(response.body<JsonElement>())
     }
