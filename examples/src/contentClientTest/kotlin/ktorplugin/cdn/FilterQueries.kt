@@ -19,7 +19,7 @@ class FilterQueries {
     @Test
     fun `Filter Queries with Field-level Translation`() = runBlocking {
 
-        // implementation("com.storyblok:content-api-client:0.5.0")
+        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "krcV6QGxWORpYLUWt12xKQtt",
             version = Published,
@@ -44,7 +44,7 @@ class FilterQueries {
     @Test
     fun `Filter Queries with Nestable Blocks and Fields`() = runBlocking {
 
-        // implementation("com.storyblok:content-api-client:0.5.0")
+        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "krcV6QGxWORpYLUWt12xKQtt",
             version = Published,
@@ -57,7 +57,7 @@ class FilterQueries {
             .flow
             .asItemSnapshotListFlow()
             .first()
-        
+
         println(stories)
     }
 
@@ -68,7 +68,7 @@ class FilterQueries {
     @Test
     fun all_in_array() = runBlocking {
 
-        // implementation("com.storyblok:content-api-client:0.5.0")
+        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "krcV6QGxWORpYLUWt12xKQtt",
             version = Published,
@@ -94,7 +94,7 @@ class FilterQueries {
     @Test
     fun any_in_array() = runBlocking {
 
-        // implementation("com.storyblok:content-api-client:0.5.0")
+        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "krcV6QGxWORpYLUWt12xKQtt",
             version = Published,
@@ -120,7 +120,7 @@ class FilterQueries {
     @Test
     fun gt_date() = runBlocking {
 
-        // implementation("com.storyblok:content-api-client:0.5.0")
+        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "krcV6QGxWORpYLUWt12xKQtt",
             version = Published,
@@ -146,7 +146,7 @@ class FilterQueries {
     @Test
     fun gt_float() = runBlocking {
 
-        // implementation("com.storyblok:content-api-client:0.5.0")
+        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "krcV6QGxWORpYLUWt12xKQtt",
             version = Published,
@@ -172,7 +172,7 @@ class FilterQueries {
     @Test
     fun gt_int() = runBlocking {
 
-        // implementation("com.storyblok:content-api-client:0.5.0")
+        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "krcV6QGxWORpYLUWt12xKQtt",
             version = Published,
@@ -198,7 +198,7 @@ class FilterQueries {
     @Test
     fun `in`() = runBlocking {
 
-        // implementation("com.storyblok:content-api-client:0.5.0")
+        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "krcV6QGxWORpYLUWt12xKQtt",
             version = Published,
@@ -224,7 +224,7 @@ class FilterQueries {
     @Test
     fun `is`() = runBlocking {
 
-        // implementation("com.storyblok:content-api-client:0.5.0")
+        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "krcV6QGxWORpYLUWt12xKQtt",
             version = Published,
@@ -250,7 +250,7 @@ class FilterQueries {
     @Test
     fun like() = runBlocking {
 
-        // implementation("com.storyblok:content-api-client:0.5.0")
+        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "krcV6QGxWORpYLUWt12xKQtt",
             version = Published,
@@ -276,7 +276,7 @@ class FilterQueries {
     @Test
     fun lt_date() = runBlocking {
 
-        // implementation("com.storyblok:content-api-client:0.5.0")
+        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "krcV6QGxWORpYLUWt12xKQtt",
             version = Published,
@@ -302,7 +302,7 @@ class FilterQueries {
     @Test
     fun lt_float() = runBlocking {
 
-        // implementation("com.storyblok:content-api-client:0.5.0")
+        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "krcV6QGxWORpYLUWt12xKQtt",
             version = Published,
@@ -328,7 +328,7 @@ class FilterQueries {
     @Test
     fun lt_int() = runBlocking {
 
-        // implementation("com.storyblok:content-api-client:0.5.0")
+        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "krcV6QGxWORpYLUWt12xKQtt",
             version = Published,
@@ -354,7 +354,7 @@ class FilterQueries {
     @Test
     fun not_in() = runBlocking {
 
-        // implementation("com.storyblok:content-api-client:0.5.0")
+        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "krcV6QGxWORpYLUWt12xKQtt",
             version = Published,
@@ -380,7 +380,7 @@ class FilterQueries {
     @Test
     fun not_like() = runBlocking {
 
-        // implementation("com.storyblok:content-api-client:0.5.0")
+        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "krcV6QGxWORpYLUWt12xKQtt",
             version = Published,
@@ -406,7 +406,7 @@ class FilterQueries {
     @Test
     fun `Filtering Stories by a Boolean Value`() = runBlocking {
 
-        // implementation("com.storyblok:content-api-client:0.5.0")
+        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "krcV6QGxWORpYLUWt12xKQtt",
             version = Published,
@@ -433,7 +433,7 @@ class FilterQueries {
     @Test
     fun `Filtering Stories by Defining a Value Range`() = runBlocking {
 
-        // implementation("com.storyblok:content-api-client:0.5.0")
+        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "krcV6QGxWORpYLUWt12xKQtt",
             version = Published,

@@ -10,7 +10,7 @@ With automatic relation resolution and custom component deserialization.
 
 ```kotlin
 dependencies {
-    implementation("com.storyblok:content-api-client:0.5.0")
+    implementation("com.storyblok:content-api-client:0.5.1")
 }
 ```
 

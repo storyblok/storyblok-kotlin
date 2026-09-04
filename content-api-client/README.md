@@ -11,7 +11,7 @@ The Content Delivery API Client requires adding the `content-api-client` artifac
 
 ```kotlin
 dependencies {
-    implementation("com.storyblok:content-api-client:0.5.0")
+    implementation("com.storyblok:content-api-client:0.5.1")
 }
 ```
 

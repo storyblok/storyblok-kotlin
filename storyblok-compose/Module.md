@@ -10,9 +10,9 @@ With out-of-the-box support for component mapping, rich text rendering, and reac
 
 ```kotlin
 dependencies {
-    implementation("com.storyblok:storyblok-compose:0.5.0")
+    implementation("com.storyblok:storyblok-compose:0.5.1")
     // Optional, for Material 3 rich text renderers
-    implementation("com.storyblok:storyblok-material3:0.5.0")
+    implementation("com.storyblok:storyblok-material3:0.5.1")
 }
 ```
 
