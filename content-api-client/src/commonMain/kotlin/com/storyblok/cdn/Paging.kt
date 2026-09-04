@@ -12,6 +12,7 @@ import io.ktor.client.request.parameter
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.CancellationException
+import kotlinx.serialization.SerializationException
 
 /**
  * One page of an offset-paginated endpoint. The Content Delivery API pages uniformly — a `page` and a `per_page`
@@ -73,6 +74,21 @@ internal suspend fun <T : Any> HttpClient.fetchPage(
         }
         throw StoryblokClientException(e.response.bodyAsText(), e)
     } catch (e: Throwable) {
+        throw StoryblokClientException(e.message, e)
+    }
+
+    val fetched = try {
+        items(response.body<String>())
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: SerializationException) {
+        // As StoryblokClient.story does: a deserialization failure is a modelling error rather than a transient API
+        // one, so it propagates unwrapped instead of arriving as a (potentially retryable) client exception.
+        throw e
+    } catch (e: Throwable) {
+        // A body that is well-formed JSON but not the shape this endpoint answers with does not reach the
+        // deserializer at all — it fails on the way there, and would otherwise surface to the caller as whatever
+        // the traversal happened to throw.
         throw StoryblokClientException(e.message, e)
     }
 
