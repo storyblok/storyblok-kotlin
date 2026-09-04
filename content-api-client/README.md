@@ -48,7 +48,7 @@ client.story(Uuid.parse("bfea4895-8a19-4e82-ae1c-1c8f3e4b6f9c"))
 
 ## Fetch multiple stories
 
-Use [`stories(...)`](https://storyblok.github.io/storyblok-kotlin/content-api-client/com.storyblok.cdn/stories.html) for the [retrieve multiple stories](https://www.storyblok.com/docs/api/content-delivery/v2/stories/retrieve-multiple-stories) endpoint. It returns a [`Flow`](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/) of [`PagingData`](https://developer.android.com/reference/kotlin/androidx/paging/PagingData), so pages are fetched as they are needed rather than all at once:
+Use [`stories(...)`](https://storyblok.github.io/storyblok-kotlin/content-api-client/com.storyblok.cdn/stories.html) for the [retrieve multiple stories](https://www.storyblok.com/docs/api/content-delivery/v2/stories/retrieve-multiple-stories) endpoint. It returns a [`Pager`](https://developer.android.com/reference/kotlin/androidx/paging/Pager), whose `flow` emits [`PagingData`](https://developer.android.com/reference/kotlin/androidx/paging/PagingData) so pages are fetched as they are needed rather than all at once:
 
 ```kotlin
 client.stories<Article> {
@@ -150,10 +150,10 @@ Components that are not registered will be deserialized as [`Component.Unknown`]
 
 ## Fetching multiple stories
 
-`stories(...)` returns a `Flow<PagingData<Story<T>>>`. The `content_type` parameter is derived from `T`, so a query typed to a registered component asks only for that component's stories; typing it to `Component` asks for all of them.
+`stories(...)` returns a `Pager<Int, Story<T>>`. The `content_type` parameter is derived from `T`, so a query typed to a registered component asks only for that component's stories; typing it to `Component` asks for all of them.
 
 ```kotlin
-val articles: Flow<PagingData<Story<Article>>> = client.stories<Article> {
+val articles: Pager<Int, Story<Article>> = client.stories<Article> {
     startsWith = "articles/"
 }
 ```
@@ -163,7 +163,7 @@ val articles: Flow<PagingData<Story<Article>>> = client.stories<Article> {
 In Compose, collect it with [`collectAsLazyPagingItems()`](https://developer.android.com/reference/kotlin/androidx/paging/compose/package-summary#collectAsLazyPagingItems) from `androidx.paging:paging-compose`, which drives the loading as the list scrolls:
 
 ```kotlin
-val articles = remember { client.stories<Article> { startsWith = "articles/" } }
+val articles = remember { client.stories<Article> { startsWith = "articles/" }.flow }
     .collectAsLazyPagingItems()
 
 LazyColumn {
@@ -176,19 +176,20 @@ LazyColumn {
 Outside Compose, `asItemSnapshotListFlow()` presents each update as a plain list:
 
 ```kotlin
-client.stories<Article> { startsWith = "articles/" }
+val pager = client.stories<Article> { startsWith = "articles/" }
+
+pager.flow
     .asItemSnapshotListFlow()
     .collect { snapshot -> println(snapshot.items.map { it.content.headline }) }
 ```
 
-> [!NOTE]
-> A snapshot flow presents the **initial load window** and stays there. Paging past it is driven by access hints, which a presenter such as `collectAsLazyPagingItems` sends as the list scrolls and a plain flow has no way to send.
->
-> How large that window is differs from stock Paging: `PagingConfig.initialLoadSize` defaults to three times `pageSize`, but this client requests one API page per load, so a snapshot flow receives `pageSize` items. Set `initialLoadSize = pageSize` to make the config say what actually arrives:
->
-> ```kotlin
-> client.stories<Article>(PagingConfig(pageSize = 25, initialLoadSize = 25))
-> ```
+A snapshot flow presents the loaded window and re-emits as more arrives, but it cannot request anything itself — paging is driven by access hints, which a presenter such as `collectAsLazyPagingItems` sends as the list scrolls and a plain flow has no way to send. Drive it from the `Pager` instead:
+
+```kotlin
+pager.append()   // load the next page
+pager.refresh()  // reload from the top
+pager.retry()    // recover after a failed load
+```
 
 ### Page size
 

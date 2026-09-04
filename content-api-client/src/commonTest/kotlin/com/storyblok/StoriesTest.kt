@@ -550,7 +550,7 @@ class StoriesTest {
             startsWith = "articles/"
             sortByDescending(Article::author)
             filter { Article::author `is` Is.NotEmpty }
-        }.asSnapshot()
+        }.flow.asSnapshot()
 
         assertEquals(1, snapshot.size)
         assertEquals("Jane", (snapshot[0].content.author.content as Page).title)
@@ -627,7 +627,7 @@ class StoriesTest {
             }),
         )
 
-        val snapshot = client.stories<Page>(PagingConfig(pageSize = 2)).asSnapshot { scrollTo(3) }
+        val snapshot = client.stories<Page>(PagingConfig(pageSize = 2)).flow.asSnapshot { scrollTo(3) }
 
         // A full page with no Total header must not be read as the only page: falling back to the item count would
         // make it one page long and stop after the first.
@@ -654,7 +654,7 @@ class StoriesTest {
             }),
         )
 
-        client.stories<Page>(PagingConfig(pageSize = 40)).asSnapshot()
+        client.stories<Page>(PagingConfig(pageSize = 40)).flow.asSnapshot()
 
         // Not silently reduced: a size the endpoint rejects is the API's to refuse, and Paging's prefetchDistance
         // and initialLoadSize are derived from this same number.
@@ -681,7 +681,7 @@ class StoriesTest {
             }),
         )
 
-        client.stories<Page>(PagingConfig(pageSize = 25)) { parameter("per_page", 5) }.asSnapshot()
+        client.stories<Page>(PagingConfig(pageSize = 25)) { parameter("per_page", 5) }.flow.asSnapshot()
 
         val params = lastUrl!!.parameters
         assertEquals(listOf("5"), params.getAll("per_page"), "the override must replace, not join")
@@ -713,7 +713,7 @@ class StoriesTest {
             }),
         )
 
-        val snapshot = client.stories<Page>(PagingConfig(pageSize = 25)).asSnapshot()
+        val snapshot = client.stories<Page>(PagingConfig(pageSize = 25)).flow.asSnapshot()
 
         // full_slug and created_at are only reachable through @JsonNames.
         assertEquals("articles/story-1", snapshot[0].fullSlug)
@@ -748,11 +748,11 @@ class StoriesTest {
             },
         )
 
-        client.stories<Page>(PagingConfig(pageSize = 25)).asSnapshot()
+        client.stories<Page>(PagingConfig(pageSize = 25)).flow.asSnapshot()
         assertEquals(listOf("de"), url!!.parameters.getAll("language"))
         assertEquals(listOf("en"), url!!.parameters.getAll("fallback_lang"))
 
-        client.stories<Page>(PagingConfig(pageSize = 25)) { parameter("language", "fr") }.asSnapshot()
+        client.stories<Page>(PagingConfig(pageSize = 25)) { parameter("language", "fr") }.flow.asSnapshot()
         assertEquals(listOf("fr"), url!!.parameters.getAll("language"), "a query parameter must replace the default")
         assertEquals(listOf("en"), url!!.parameters.getAll("fallback_lang"))
     }
