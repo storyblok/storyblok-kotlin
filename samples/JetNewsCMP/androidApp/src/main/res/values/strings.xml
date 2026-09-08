@@ -1,0 +1,4 @@
+<resources>
+    <!-- The launcher label. Every other string the app shows lives in :shared's composeResources. -->
+    <string name="app_name">JetNews</string>
+</resources>

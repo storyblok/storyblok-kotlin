@@ -1,0 +1,7 @@
+// Signing and identity for the iOS app.
+//
+// TEAM_ID may stay empty for the simulator; set it to your Apple Developer team
+// identifier to run on a device.
+TEAM_ID=
+BUNDLE_ID=com.example.jetnews
+APP_NAME=JetNews
