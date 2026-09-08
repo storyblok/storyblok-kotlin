@@ -1,0 +1,49 @@
+[versions]
+agp = "9.1.1"
+kotlin = "2.4.20"
+storyblok = "0.5.1"
+# Compose Multiplatform. 1.11.0-beta02 or later is required: earlier versions crash on
+# Kotlin/Native when restoring a TextFieldState that has undo history (CMP-9960), which the
+# search bar hits every time you open an article and come back. `compose-material3` tracks its
+# own version line — the plugin default (1.9.0) predates the expressive search bar JetNews uses.
+compose-multiplatform = "1.12.0"
+compose-material3 = "1.12.0-alpha03"
+androidx-activity-compose = "1.13.0"
+androidx-lifecycle = "2.10.0"
+# Navigation 3: `navigation3-runtime` comes from Google and is already multiplatform, so only
+# the UI half needs JetBrains' Compose Multiplatform build.
+navigation3-ui = "1.1.1"
+# Kept in step with Compose Multiplatform: both must agree on a Skiko version.
+coil = "3.6.2"
+kotlin-datetime = "0.7.1"
+kotlinx-coroutines = "1.10.2"
+android-minSdk = "30"
+# Coil 3.6 requires consumers to compile against 37.
+android-compileSdk = "37"
+android-targetSdk = "36"
+
+[libraries]
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
+androidx-lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
+compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-multiplatform" }
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-multiplatform" }
+compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-multiplatform" }
+compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose-multiplatform" }
+compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose-material3" }
+navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "navigation3-ui" }
+coil-bom = { module = "io.coil-kt.coil3:coil-bom", version.ref = "coil" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose" }
+coil-network-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlin-datetime" }
+kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
+storyblok-compose = { module = "com.storyblok:storyblok-compose", version.ref = "storyblok" }
+storyblok-material3 = { module = "com.storyblok:storyblok-material3", version.ref = "storyblok" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
