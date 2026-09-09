@@ -9,14 +9,14 @@ storyblok = "0.5.1"
 compose-multiplatform = "1.12.0"
 compose-material3 = "1.12.0-alpha03"
 androidx-activity-compose = "1.13.0"
-androidx-lifecycle = "2.10.0"
+androidx-lifecycle = "2.11.0"
 # Navigation 3: `navigation3-runtime` comes from Google and is already multiplatform, so only
 # the UI half needs JetBrains' Compose Multiplatform build.
 navigation3-ui = "1.1.1"
 # Kept in step with Compose Multiplatform: both must agree on a Skiko version.
 coil = "3.6.2"
-kotlin-datetime = "0.7.1"
-kotlinx-coroutines = "1.10.2"
+kotlin-datetime = "0.8.0"
+kotlinx-coroutines = "1.11.0"
 android-minSdk = "30"
 # Coil 3.6 requires consumers to compile against 37.
 android-compileSdk = "37"
