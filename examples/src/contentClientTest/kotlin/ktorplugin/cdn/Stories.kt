@@ -21,7 +21,6 @@ class Stories {
     @Test
     fun `Retrieve a Single Story`() = runTest {
 
-        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "ask9soUkv02QqbZgmZdeDAtt",
             version = Published,
@@ -41,7 +40,6 @@ class Stories {
     @Test
     fun `Retrieve Multiple Stories`() = runBlocking {
 
-        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "krcV6QGxWORpYLUWt12xKQtt",
             version = Published,
@@ -65,7 +63,6 @@ class Stories {
     @Test
     fun `Retrieving a Story from a Specific Release`() = runTest {
 
-        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "krcV6QGxWORpYLUWt12xKQtt",
             version = Draft,
@@ -88,7 +85,6 @@ class Stories {
     @Test
     fun `Retrieving Localized Stories by UUID`() = runTest {
 
-        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "krcV6QGxWORpYLUWt12xKQtt",
             version = Published,
@@ -109,7 +105,6 @@ class Stories {
     @Test
     fun `Retrieving Stories from a Folder`() = runBlocking {
 
-        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "krcV6QGxWORpYLUWt12xKQtt",
             version = Draft,
@@ -133,7 +128,6 @@ class Stories {
     @Test
     fun `Retrieving Stories in a Particular Language`() = runTest {
 
-        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "krcV6QGxWORpYLUWt12xKQtt",
             version = Published,
@@ -154,7 +148,6 @@ class Stories {
     @Test
     fun `Retrieving Stories with Resolved Relations`() = runBlocking {
 
-        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "krcV6QGxWORpYLUWt12xKQtt",
             version = Published,
@@ -178,7 +171,6 @@ class Stories {
     @Test
     fun `Sorting by Fields Associated with a Story Type`() = runBlocking {
 
-        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "krcV6QGxWORpYLUWt12xKQtt",
             version = Published,
@@ -202,7 +194,6 @@ class Stories {
     @Test
     fun `Sorting by Story Object Property`() = runBlocking {
 
-        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "krcV6QGxWORpYLUWt12xKQtt",
             version = Published,

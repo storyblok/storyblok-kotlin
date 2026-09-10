@@ -18,7 +18,6 @@ class Assets {
     @Test
     fun `Get Signed URL`() = runTest {
 
-        // implementation("com.storyblok:ktor-client-storyblok:0.5.1")
         val client = HttpClient {
             install(Storyblok(CDN)) {
                 accessToken = "cNGPp8cvuCfoAZB3g3eHrAtt"

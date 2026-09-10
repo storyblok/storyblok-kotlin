@@ -18,7 +18,6 @@ class Links {
     @Test
     fun `Retrieve Multiple Links`() = runTest {
 
-        // implementation("com.storyblok:ktor-client-storyblok:0.5.1")
         val client = HttpClient {
             install(Storyblok(CDN)) {
                 accessToken = "krcV6QGxWORpYLUWt12xKQtt"
@@ -42,7 +41,6 @@ class Links {
     @Test
     fun `Retrieve a Single Link`() = runTest {
 
-        // implementation("com.storyblok:ktor-client-storyblok:0.5.1")
         val client = HttpClient {
             install(Storyblok(CDN)) {
                 accessToken = "krcV6QGxWORpYLUWt12xKQtt"
