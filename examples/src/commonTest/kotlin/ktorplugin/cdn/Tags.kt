@@ -18,7 +18,6 @@ class Tags {
     @Test
     fun `Retrieve Multiple Tags`() = runTest {
 
-        // implementation("com.storyblok:ktor-client-storyblok:0.5.1")
         val client = HttpClient {
             install(Storyblok(CDN)) {
                 accessToken = "ask9soUkv02QqbZgmZdeDAtt"

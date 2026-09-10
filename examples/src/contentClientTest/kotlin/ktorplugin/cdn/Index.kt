@@ -16,7 +16,6 @@ class Index {
     @Test
     fun Introduction() = runBlocking {
 
-        // implementation("com.storyblok:content-api-client:0.5.1")
         val client = StoryblokClient(
             accessToken = "wANpEQEsMYGOwLxwXQ76Ggtt",
             version = Published,
