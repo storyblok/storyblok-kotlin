@@ -20,6 +20,9 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.resources.Res
 import com.example.jetnews.resources.article_post_min_read
 import com.example.jetnews.resources.ic_account_circle
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.format.MonthNames
+import kotlinx.datetime.format.char
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -47,7 +50,7 @@ fun PostMetadata(post: Post, modifier: Modifier = Modifier) {
             Text(
                 text = stringResource(
                     Res.string.article_post_min_read,
-                    "${post.date.month.name.run { first() + drop(1).lowercase() }} ${post.date.day}",
+                    post.date.monthAndDay,
                     post.readTimeMinutes,
                 ),
                 style = MaterialTheme.typography.bodySmall,
@@ -55,3 +58,14 @@ fun PostMetadata(post: Post, modifier: Modifier = Modifier) {
         }
     }
 }
+
+/**
+ * The date form the post cards and the article metadata all share, for example `May 18`.
+ */
+private val MonthAndDay = LocalDateTime.Format {
+    monthName(MonthNames.ENGLISH_FULL)
+    char(' ')
+    day()
+}
+
+val LocalDateTime.monthAndDay: String get() = MonthAndDay.format(this)

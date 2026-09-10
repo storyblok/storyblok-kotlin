@@ -14,6 +14,7 @@ JetNewsCMP/
 │       ├── commonMain/composeResources/ # strings, icons and fonts for every platform
 │       └── iosMain/kotlin/             # MainViewController(), called from Swift
 ├── androidApp/   # Android entry point: MainActivity, manifest, launcher icons
+├── desktopApp/   # Desktop (JVM) entry point: main(), window
 ├── webApp/       # Wasm entry point: main(), index.html
 └── iosApp/       # Xcode project that hosts the shared UI in a SwiftUI app
 ```
@@ -74,12 +75,12 @@ all of the UI are unchanged — they were already platform-agnostic Compose. The
 | Android sample | Compose Multiplatform |
 |---|---|
 | `MainActivity` holds the UI | [`JetNewsApp()`](shared/src/commonMain/kotlin/com/example/jetnews/JetNewsApp.kt) in `commonMain`; all four platform entry points just call it |
-| `BuildConfig.DEBUG` picks draft vs published | a `draft` parameter on `JetNewsApp` — Android still passes `BuildConfig.DEBUG` |
+| `BuildConfig.DEBUG` picks draft vs published | a `draft` parameter on `JetNewsApp`. Android still passes `BuildConfig.DEBUG`; iOS, desktop and web have no build type to key off and pass `true`, so anything actually shipped from those targets needs to pass `false` |
 | Navigation 3 | unchanged, on JetBrains' `org.jetbrains.androidx.navigation3:navigation3-ui` — but the back stack now needs a [`SavedStateConfiguration`](shared/src/commonMain/kotlin/com/example/jetnews/NavKey.kt) (see below) |
 | `R.string` / `R.drawable` / `R.font` | Compose Multiplatform resources under `commonMain/composeResources`, reached through the generated `Res` class |
 | Dynamic color on Android 12+ | the JetNews palette everywhere — dynamic color has no counterpart off Android |
 | `PlatformTextStyle(includeFontPadding = false)` | dropped; font padding is an Android text-layout quirk |
-| Fonts as top-level `val`s | `JetnewsTypography()` is `@Composable`, because loading a font resource is a composable read |
+| Fonts as top-level `val`s | `JetnewsTypography` is a `@Composable get()` property, because loading a font resource is a composable read |
 
 Coil also needs its network fetcher registered by hand off the JVM, which `JetNewsApp` does; the
 Storyblok client already supplies a Ktor engine for every target.

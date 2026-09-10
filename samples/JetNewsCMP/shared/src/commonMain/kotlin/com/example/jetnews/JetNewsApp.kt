@@ -38,7 +38,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 
 /**
- * The whole of JetNews. The Android, iOS and web entry points each do nothing but call this.
+ * The whole of JetNews. The Android, iOS, desktop and web entry points each do nothing but
+ * call this.
  *
  * @param draft Whether to read unpublished content. Android passes `BuildConfig.DEBUG`.
  */
