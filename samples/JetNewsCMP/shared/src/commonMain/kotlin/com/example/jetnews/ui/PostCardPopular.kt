@@ -56,7 +56,7 @@ fun PostCardPopular(post: Story<Post>, navigateToArticle: (Story<Post>) -> Unit,
                 Text(
                     text = stringResource(
                         Res.string.home_post_min_read,
-                        "${post.content.date.month.name.run { first() + drop(1).lowercase() }} ${post.content.date.day}",
+                        post.content.date.monthAndDay,
                         post.content.readTimeMinutes,
                     ),
                     style = MaterialTheme.typography.bodySmall,

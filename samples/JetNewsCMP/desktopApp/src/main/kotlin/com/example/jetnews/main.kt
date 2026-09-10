@@ -18,6 +18,9 @@ fun main() = application {
         title = "JetNews",
         state = rememberWindowState(size = DpSize(480.dp, 900.dp)),
     ) {
+        // Always draft: there is no build type here to key off, the way Android uses
+        // `BuildConfig.DEBUG`. Anything packaged with `packageDistributionForCurrentOS` for real
+        // use should pass `false`, or read a Gradle property set at build time.
         JetNewsApp(draft = true)
     }
 }

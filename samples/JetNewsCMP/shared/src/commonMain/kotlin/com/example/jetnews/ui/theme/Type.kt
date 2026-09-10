@@ -31,8 +31,7 @@ import org.jetbrains.compose.resources.Font
 
 /*
  * Loading a font resource is a composable read, so the family and everything derived from it are
- * `@Composable get()` properties rather than the top-level `val`s the Android sample uses. Call
- * sites are unchanged.
+ * `@Composable get()` properties rather than the top-level `val`s the Android sample uses.
  *
  * The Android-only `PlatformTextStyle(includeFontPadding = false)` is gone with them: font padding
  * is an Android text-layout quirk that the other targets never had.

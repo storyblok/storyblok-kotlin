@@ -57,15 +57,6 @@ fun StoryblokScope.StoryTopBar(
                     .distinctUntilChanged()
             }
             .collectAsState(initial = "")
-        // A blank term omits `search_term`, so the endpoint returns all posts.
-        val posts =
-            remember(term) {
-                stories<Post> {
-                    searchTerm = term.ifEmpty { null }
-                }.flow
-            }
-            .collectAsLazyPagingItems()
-
         val coroutineScope = rememberCoroutineScope()
         val inputField = @Composable {
             SearchBarDefaults.InputField(
@@ -83,6 +74,15 @@ fun StoryblokScope.StoryTopBar(
         AppBarWithSearch(state = searchBarState, inputField = inputField)
 
         ExpandedFullScreenSearchBar(state = searchBarState, inputField = inputField) {
+            // A blank term omits `search_term`, so the endpoint returns all posts.
+            val posts =
+                remember(term) {
+                    stories<Post> {
+                        searchTerm = term.ifEmpty { null }
+                    }.flow
+                }
+                .collectAsLazyPagingItems()
+
             LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
                 items(
                     count = posts.itemCount,
