@@ -1,9 +1,14 @@
 ### Changelog
 
-**0.5.1**
+**0.6.0**
 
 - BREAKING CHANGE: `StoryblokClient.stories(...)` returns an `androidx.paging.Pager<Int, Story<T>>` rather than a
   `Flow<PagingData<Story<T>>>`.
+- The Content Delivery API Client now declares `kotlinx-datetime` as an `api` dependency. `Story.sortByDate` and
+  `StoryblokDateTimeSerializer` expose its types, so consumers needed it on their compile classpath already.
+- Updated `kotlinx-datetime` to 0.8.0 and Ktor to 3.5.2.
+- Added a [Compose Multiplatform sample](samples/JetNewsCMP), a port of the JetNews sample running the same shared
+  UI on Android, iOS, desktop and the web.
 
 **0.5.0**
 
