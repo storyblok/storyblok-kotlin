@@ -84,6 +84,21 @@
       <h3 class="">What is Storyblok?</h3>
       <p class="paragraph"><a href="https://www.storyblok.com">Storyblok</a> is a headless content management system (CMS) that empowers developers and content creators. It provides a visual editor for content teams while giving developers the flexibility to build with their preferred tech stack and deliver content through APIs to any platform or device.</p>
       <h3 class="">Changelog</h3>
+      <p class="paragraph"><strong>0.6.0</strong></p>
+      <ul>
+        <li>
+          <p class="paragraph">BREAKING CHANGE: <code class="lang-kotlin">StoryblokClient.stories(...)</code> returns an <code class="lang-kotlin">androidx.paging.Pager&lt;Int, Story&lt;T&gt;&gt;</code> rather than a   <code class="lang-kotlin">Flow&lt;PagingData&lt;Story&lt;T&gt;&gt;&gt;</code>.</p>
+        </li>
+        <li>
+          <p class="paragraph">The Content Delivery API Client now declares <code class="lang-kotlin">kotlinx-datetime</code> as an <code class="lang-kotlin">api</code> dependency. <code class="lang-kotlin">Story.sortByDate</code> and   <code class="lang-kotlin">StoryblokDateTimeSerializer</code> expose its types, so consumers needed it on their compile classpath already.</p>
+        </li>
+        <li>
+          <p class="paragraph">Updated <code class="lang-kotlin">kotlinx-datetime</code> to 0.8.0 and Ktor to 3.5.2.</p>
+        </li>
+        <li>
+          <p class="paragraph">Added a samples/JetNewsCMP, a port of the JetNews sample running the same shared   UI on Android, iOS, desktop and the web.</p>
+        </li>
+      </ul>
       <p class="paragraph"><strong>0.5.0</strong></p>
       <ul>
         <li>
@@ -121,28 +136,28 @@
           </thead>
           <tbody>
             <tr>
-              <td><code class="org.jetbrains.dokka.pages.commenttable@e360deb lang-kotlin">RichText.Blok</code></td>
-              <td><code class="org.jetbrains.dokka.pages.commenttable@e360deb lang-kotlin">RichText.Block</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@78da3d50 lang-kotlin">RichText.Blok</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@78da3d50 lang-kotlin">RichText.Block</code></td>
             </tr>
             <tr>
-              <td><code class="org.jetbrains.dokka.pages.commenttable@e360deb lang-kotlin">BlokScope</code> / <code class="org.jetbrains.dokka.pages.commenttable@e360deb lang-kotlin">.Blok()</code></td>
-              <td><code class="org.jetbrains.dokka.pages.commenttable@e360deb lang-kotlin">BlockScope</code> / <code class="org.jetbrains.dokka.pages.commenttable@e360deb lang-kotlin">.Block()</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@78da3d50 lang-kotlin">BlokScope</code> / <code class="org.jetbrains.dokka.pages.commenttable@78da3d50 lang-kotlin">.Blok()</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@78da3d50 lang-kotlin">BlockScope</code> / <code class="org.jetbrains.dokka.pages.commenttable@78da3d50 lang-kotlin">.Block()</code></td>
             </tr>
             <tr>
-              <td><code class="org.jetbrains.dokka.pages.commenttable@e360deb lang-kotlin">BlokProvider</code> / <code class="org.jetbrains.dokka.pages.commenttable@e360deb lang-kotlin">.blokScope</code></td>
-              <td><code class="org.jetbrains.dokka.pages.commenttable@e360deb lang-kotlin">BlockProvider</code> / <code class="org.jetbrains.dokka.pages.commenttable@e360deb lang-kotlin">.blockScope</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@78da3d50 lang-kotlin">BlokProvider</code> / <code class="org.jetbrains.dokka.pages.commenttable@78da3d50 lang-kotlin">.blokScope</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@78da3d50 lang-kotlin">BlockProvider</code> / <code class="org.jetbrains.dokka.pages.commenttable@78da3d50 lang-kotlin">.blockScope</code></td>
             </tr>
             <tr>
-              <td><code class="org.jetbrains.dokka.pages.commenttable@e360deb lang-kotlin">BlokProviderScope</code> / <code class="org.jetbrains.dokka.pages.commenttable@e360deb lang-kotlin">blok(){}</code></td>
-              <td><code class="org.jetbrains.dokka.pages.commenttable@e360deb lang-kotlin">BlockProviderScope</code> / <code class="org.jetbrains.dokka.pages.commenttable@e360deb lang-kotlin">block(){}</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@78da3d50 lang-kotlin">BlokProviderScope</code> / <code class="org.jetbrains.dokka.pages.commenttable@78da3d50 lang-kotlin">blok(){}</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@78da3d50 lang-kotlin">BlockProviderScope</code> / <code class="org.jetbrains.dokka.pages.commenttable@78da3d50 lang-kotlin">block(){}</code></td>
             </tr>
             <tr>
-              <td><code class="org.jetbrains.dokka.pages.commenttable@e360deb lang-kotlin">blokProvider()</code></td>
-              <td><code class="org.jetbrains.dokka.pages.commenttable@e360deb lang-kotlin">blockProvider()</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@78da3d50 lang-kotlin">blokProvider()</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@78da3d50 lang-kotlin">blockProvider()</code></td>
             </tr>
             <tr>
-              <td><code class="org.jetbrains.dokka.pages.commenttable@e360deb lang-kotlin">blokProviderWithoutRichText()</code></td>
-              <td><code class="org.jetbrains.dokka.pages.commenttable@e360deb lang-kotlin">blockProviderWithoutRichText()</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@78da3d50 lang-kotlin">blokProviderWithoutRichText()</code></td>
+              <td><code class="org.jetbrains.dokka.pages.commenttable@78da3d50 lang-kotlin">blockProviderWithoutRichText()</code></td>
             </tr>
           </tbody>
         </table>
