@@ -1,5 +1,10 @@
 ### Changelog
 
+**0.7.0**
+- `StoryblokClient.story(...)` now emits live updates from Storyblok's Visual Editor on the `wasmJs` target, so a
+  preview re-renders as an author types. Nothing to configure: the flow keeps emitting while the page is embedded in
+  the editor, and is unchanged everywhere else.
+
 **0.6.0**
 
 - BREAKING CHANGE: `StoryblokClient.stories(...)` returns an `androidx.paging.Pager<Int, Story<T>>` rather than a

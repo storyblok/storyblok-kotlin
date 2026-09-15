@@ -2,7 +2,15 @@
 coil = "3.4.0"
 storyblok-kotlin = "0.6.0"
 agp = "9.1.1"
+# Held at 2.3.x: 2.4.20 miscompiles `Story<T : Component>` for wasmJs. The serialization plugin
+# emits a `deserialize` that passes the wrong reference type to the synthetic constructor, and the
+# resulting Wasm fails Binaryen validation — see KT-89275. The failure only shows in an optimised
+# build (`wasmJsBrowserDistribution`), so a development run will not catch it.
+# https://youtrack.jetbrains.com/issue/KT-89275
 kotlin = "2.3.20"
+# The last release built with Kotlin 2.3.x, and so the last whose klibs this project can read.
+# Newer releases are ABI 2.4.0 and need the Kotlin bump that KT-89275 blocks.
+kotlin-wrappers = "2026.6.1"
 kotlin-corountines = "1.11.0"
 kotlin-serialization = "1.11.0"
 kotlin-datetime = "0.8.0"
@@ -26,6 +34,8 @@ kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotl
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlin-datetime" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlin-corountines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlin-serialization" }
+kotlin-browser = { module = "org.jetbrains.kotlin-wrappers:kotlin-browser", version.ref = "kotlin-wrappers" }
+kotlin-js = { module = "org.jetbrains.kotlin-wrappers:kotlin-js", version.ref = "kotlin-wrappers" }
 ktor-client = { module = "io.ktor:ktor-client-core", version.ref = "ktor-client" }
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor-client" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor-client" }

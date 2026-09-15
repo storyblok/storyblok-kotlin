@@ -34,6 +34,7 @@ kotlin {
             "kotlin.uuid.ExperimentalUuidApi",
             "com.storyblok.InternalAPI",
             "androidx.paging.ExperimentalPagingApi",
+            "kotlinx.coroutines.ExperimentalCoroutinesApi",
         )
     }
     @OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
@@ -68,6 +69,11 @@ kotlin {
     tvosSimulatorArm64()
     wasmJs {
         nodejs()
+        browser {
+            testTask {
+                useKarma { useChromeHeadless() }
+            }
+        }
     }
     watchosArm32()
     watchosArm64()
@@ -92,6 +98,12 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktor.client.logging)
+        }
+
+        wasmJsMain.dependencies {
+            implementation(npm("@storyblok/preview-bridge", "2.3.0"))
+            implementation(libs.kotlin.browser)
+            implementation(libs.kotlin.js)
         }
 
         commonTest.dependencies {
