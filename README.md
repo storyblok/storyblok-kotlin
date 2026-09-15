@@ -36,6 +36,15 @@ This monorepo consists of the following modules:
 | [storyblok-material3](storyblok-material3)     | The default Storyblok rich text provider                           |
 | [examples](examples)                           | Example Kotlin code snippets from Storyblok's docs site            |
 
+## 📱 Samples
+
+Two runnable apps, both reading the same content from the same Storyblok space:
+
+| Sample                           | Description                                                                                                                                          |
+|----------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [JetNews](samples/JetNews)       | Google's [JetNews](https://github.com/android/compose-samples/tree/main/JetNews) Jetpack Compose sample, rebuilt to take its content from Storyblok    |
+| [JetNewsCMP](samples/JetNewsCMP) | The same app on Compose Multiplatform: one shared UI on Android and iOS, plus a web target for previewing draft content in Storyblok's Visual Editor   |
+
 ## 📄 Contributing
 
 We welcome contributions! Please see our [Contributing Guide](https://github.com/storyblok/storyblok-kotlin?tab=contributing-ov-file) for details on:

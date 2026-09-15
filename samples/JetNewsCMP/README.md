@@ -1,8 +1,8 @@
 # JetNews Compose Multiplatform Sample
 
 The [JetNews sample](../JetNews) rebuilt on Compose Multiplatform: one shared UI that runs on
-**Android**, **iOS**, the **web** and the **desktop**, still backed by Storyblok through the
-Storyblok Kotlin SDK.
+**Android** and **iOS**, still backed by Storyblok through the Storyblok Kotlin SDK. A **web**
+target is added for one purpose — previewing draft content in Storyblok's Visual Editor.
 
 ## Module layout
 
@@ -14,7 +14,6 @@ JetNewsCMP/
 │       ├── commonMain/composeResources/ # strings, icons and fonts for every platform
 │       └── iosMain/kotlin/             # MainViewController(), called from Swift
 ├── androidApp/   # Android entry point: MainActivity, manifest, launcher icons
-├── desktopApp/   # Desktop (JVM) entry point: main(), window
 ├── webApp/       # Wasm entry point: main(), index.html
 └── iosApp/       # Xcode project that hosts the shared UI in a SwiftUI app
 ```
@@ -49,14 +48,6 @@ run on a device; the simulator needs nothing.
 Apple Silicon only. `storyblok-compose` publishes `iosArm64` and `iosSimulatorArm64` slices but no
 `iosX64`, so the project excludes `x86_64` from simulator builds.
 
-### Desktop
-
-```bash
-./gradlew :desktopApp:run
-```
-
-`./gradlew :desktopApp:packageDistributionForCurrentOS` builds a native installer.
-
 ### Web
 
 ```bash
@@ -74,8 +65,10 @@ all of the UI are unchanged — they were already platform-agnostic Compose. The
 
 | Android sample | Compose Multiplatform |
 |---|---|
-| `MainActivity` holds the UI | [`JetNewsApp()`](shared/src/commonMain/kotlin/com/example/jetnews/JetNewsApp.kt) in `commonMain`; all four platform entry points just call it |
-| `BuildConfig.DEBUG` picks draft vs published | a `draft` parameter on `JetNewsApp`. Android still passes `BuildConfig.DEBUG`; iOS, desktop and web have no build type to key off and pass `true`, so anything actually shipped from those targets needs to pass `false` |
+| `MainActivity` holds the UI | [`JetNewsApp()`](shared/src/commonMain/kotlin/com/example/jetnews/JetNewsApp.kt) in `commonMain`; all three platform entry points just call it |
+| `BuildConfig.DEBUG` picks draft vs published | an `expect val contentVersion` in `JetNewsApp.kt`. The web target's actual is `Draft`, because it is the one embedded in Storyblok's Visual Editor; Android and iOS share an `appMain` source set whose actual is `Published` |
+| — | an `expect val initialStoryKey`, also in `JetNewsApp.kt`. The web target derives it from `window.location.pathname`, so a Visual Editor preview URL such as `/post6` opens that story; the app targets start at the home story |
+| — | nothing: on the web target `story()` keeps emitting while the page is inside the Visual Editor, so the preview re-renders as an author types. The flow therefore never completes there, which is why `state` stays `Loading` in the editor — harmless, since content renders as soon as the story arrives |
 | Navigation 3 | unchanged, on JetBrains' `org.jetbrains.androidx.navigation3:navigation3-ui` — but the back stack now needs a [`SavedStateConfiguration`](shared/src/commonMain/kotlin/com/example/jetnews/NavKey.kt) (see below) |
 | `R.string` / `R.drawable` / `R.font` | Compose Multiplatform resources under `commonMain/composeResources`, reached through the generated `Res` class |
 | Dynamic color on Android 12+ | the JetNews palette everywhere — dynamic color has no counterpart off Android |
