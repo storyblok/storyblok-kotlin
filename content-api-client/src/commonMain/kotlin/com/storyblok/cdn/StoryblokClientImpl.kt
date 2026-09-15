@@ -34,8 +34,9 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.transformLatest
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
@@ -82,32 +83,39 @@ internal fun HttpClientConfig<*>.configureStoryblok(json: Json, apiBuilder: Api.
 }
 
 /**
+ * The [Json] a client decodes with: the registered components as polymorphic subtypes of [Component], discriminated
+ * the way the Content Delivery API discriminates them, with anything unregistered decoding as [Component.Unknown].
+ *
+ * Extracted from the constructor that defaults to it so that a client built directly from a [Json] — which is how the
+ * tests reach the constructor parameters the factory functions do not expose — still decodes the same way.
+ */
+internal fun storyblokJson(
+    serializersModuleBuilder: SerializersModuleBuilder.() -> Unit,
+    jsonBuilder: JsonBuilder.() -> Unit,
+): Json = Json {
+    isLenient = true
+    decodeEnumsCaseInsensitive = true
+    classDiscriminator = "component"
+    serializersModule = SerializersModule {
+        polymorphic(Component::class) {
+            defaultDeserializer { serializer<Component.Unknown>() }
+        }
+        serializersModuleBuilder()
+    }
+    jsonBuilder()
+    // Applied after jsonBuilder so it cannot be turned off: the schema classes name their fields with
+    // @JsonNames, which is only honoured while alternative names are enabled.
+    useAlternativeNames = true
+}
+
+/**
  * Default [StoryblokClient] implementation. Create clients through the [StoryblokClient] factory functions instead of
  * instantiating this class directly.
  */
 @InternalAPI
-public class StoryblokClientImpl constructor(
-    apiBuilder: Api.Config.Content.() -> Unit,
-    serializersModuleBuilder: SerializersModuleBuilder.() -> Unit,
-    jsonBuilder: JsonBuilder.() -> Unit,
-    public val json: Json = Json {
-        isLenient = true
-        decodeEnumsCaseInsensitive = true
-        classDiscriminator = "component"
-        serializersModule = SerializersModule {
-            polymorphic(Component::class) {
-                defaultDeserializer { serializer<Component.Unknown>() }
-            }
-            serializersModuleBuilder()
-        }
-        jsonBuilder()
-        // Applied after jsonBuilder so it cannot be turned off: the schema classes name their fields with
-        // @JsonNames, which is only honoured while alternative names are enabled.
-        useAlternativeNames = true
-    },
-    override val http: HttpClient = HttpClient { configureStoryblok(json, apiBuilder) }
-) : StoryblokClient {
-
+public class StoryblokClientImpl internal constructor(
+    public val json: Json,
+    override val http: HttpClient,
     /**
      * Relation fields per component, mapping each field name to whether its [Story] type is nullable (for list
      * relations, whether the list's element type is nullable).
@@ -134,17 +142,32 @@ public class StoryblokClientImpl constructor(
                         .let { put(serialName, it.ifEmpty { return@let }.toMap()) }
                 }
             })
-        }
-
-    /**
-     * Every registered relation as `<component>.<field>`, sorted so that the request URL — and so the HTTP cache key
-     * — does not depend on map iteration order. Fixed for the lifetime of the client, since [relations] is.
-     */
-    private val resolveRelations: String =
-        relations.entries
+        },
+        /**
+         * Every registered relation as `<component>.<field>`, sorted so that the request URL — and so the HTTP cache key
+         * — does not depend on map iteration order. Fixed for the lifetime of the client, since [relations] is.
+         */
+        private val resolveRelations: String = relations.entries
             .flatMap { (component, fields) -> fields.keys.map { "$component.$it" } }
             .sorted()
-            .joinToString(",")
+            .joinToString(","),
+        /**
+         * The Visual Editor this client is being previewed in, if any.
+         *
+         * Held for the client's lifetime and destroyed with it — including one that was passed in, which
+         * this client then owns — so that it outlives the individual [story] collections that subscribe
+         * to it. Those come and go as the app navigates, and the connection has to survive that.
+         */
+        private val bridge: StoryblokBridge = StoryblokBridge(json, resolveRelations)
+) : StoryblokClient {
+
+    public constructor(
+        apiBuilder: Api.Config.Content.() -> Unit,
+        serializersModuleBuilder: SerializersModuleBuilder.() -> Unit,
+        jsonBuilder: JsonBuilder.() -> Unit,
+        json: Json = storyblokJson(serializersModuleBuilder, jsonBuilder),
+        http: HttpClient = HttpClient { configureStoryblok(json, apiBuilder) },
+    ) : this(json, http)
 
     /**
      * The relation-resolution parameters both story endpoints send, given the [resolveLevel] the caller asked for.
@@ -170,7 +193,10 @@ public class StoryblokClientImpl constructor(
         JsonObject(this + ("content" to this["content"]!!.jsonObject.resolve(rels, resolveLevel))),
     )
 
-    override fun close(): Unit = http.close()
+    override fun close() {
+        bridge.destroy()
+        http.close()
+    }
 
     override fun story(
         slug: String,
@@ -253,10 +279,13 @@ public class StoryblokClientImpl constructor(
             emit(response.body<String>())
         }
         .distinctUntilChanged()
-        .map { response ->
+        .transformLatest { response ->
             val body = json.parseToJsonElement(response).jsonObject
-            body["story"]!!.jsonObject.toStory<T>(typeInfo, body.rels, resolveLevel)
+            val story = body["story"]!!.jsonObject.toStory<T>(typeInfo, body.rels, resolveLevel)
+            emit(story)
+            emitAll(bridge.story(story.id, typeInfo, resolveLevel))
         }
+        .distinctUntilChanged()
         .catch {
             if (it is CancellationException) {
                 currentCoroutineContext().ensureActive()

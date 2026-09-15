@@ -4,12 +4,14 @@ import kotlinx.datetime.LocalDate
 import kotlin.time.Instant
 import kotlinx.serialization.json.JsonNames
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonIgnoreUnknownKeys
 import kotlin.uuid.Uuid
 
 /**
  * Represents a single story retrieved from the Storyblok API.
  */
 @Serializable
+@JsonIgnoreUnknownKeys
 public data class Story<T : Component>(
     /** Story ID. */
     val id: Long,
@@ -89,7 +91,7 @@ public data class Story<T : Component>(
 
     /** Contains the complete slug of the default language (if the Translatable Slugs app is installed). */
     @JsonNames("default_full_slug")
-    val defaultFullSlug: String?,
+    val defaultFullSlug: String? = null,
 
     /** Array of translated slug objects (if the Translatable Slugs app is installed). */
     @JsonNames("translated_slugs")

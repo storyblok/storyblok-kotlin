@@ -444,6 +444,18 @@ The client configures the cache with file-backed storage where the platform supp
 
 The cache directory is derived from the `java.io.tmpdir` system property, on **Android** the platform points `java.io.tmpdir` at the app's cache directory, so this resolves to `context.cacheDir`.
 
+## Visual Preview in [Compose Multiplatform for Web](https://lp.jetbrains.com/cmp-for-web/)
+
+On the `wasmJs` target, `story(...)` keeps emitting while the page is embedded in Storyblok's [Visual Editor](https://www.storyblok.com/docs/concepts/visual-editor): the 
+editor pushes the story on every keystroke through the Storyblok preview bridge, and each update is emitted as a `Story` 
+in place of the one that was fetched.
+
+```kotlin
+// In the Visual Editor this emits again on every edit; everywhere else it completes after the fetch.
+client.story<Page>("home")
+    .collect { story -> println(story.content.title) }
+```
+
 ## Error handling
 
 API errors are wrapped in [`StoryblokClientException`](https://storyblok.github.io/storyblok-kotlin/content-api-client/com.storyblok.cdn/-storyblok-client-exception/index.html):
