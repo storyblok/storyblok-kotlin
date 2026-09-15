@@ -16,3 +16,7 @@ local.properties
 .kotlin
 xcuserdata/
 *.xcworkspace/xcuserdata/
+
+# Visual Editor preview needs https on localhost; certificates are per-machine.
+localhost.pem
+localhost-key.pem
