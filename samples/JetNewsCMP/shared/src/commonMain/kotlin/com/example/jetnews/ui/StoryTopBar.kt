@@ -107,7 +107,13 @@ fun StoryblokScope.StoryTopBar(
                     overflow = TextOverflow.Ellipsis,
                 )
             },
-            navigationIcon = { BackButton(onClick = { backStack.removeAt(backStack.lastIndex) }) },
+            // Only offer back when there is somewhere to go: a Visual Editor preview URL such as
+            // `/post6` starts the back stack on that story, with nothing beneath it.
+            navigationIcon = {
+                if (backStack.size > 1) {
+                    BackButton(onClick = { backStack.removeAt(backStack.lastIndex) })
+                }
+            },
         )
 }
 

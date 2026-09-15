@@ -16,7 +16,6 @@ navigation3-ui = "1.1.1"
 # Kept in step with Compose Multiplatform: both must agree on a Skiko version.
 coil = "3.6.2"
 kotlin-datetime = "0.8.0"
-kotlinx-coroutines = "1.11.0"
 android-minSdk = "30"
 # Coil 3.6 requires consumers to compile against 37.
 android-compileSdk = "37"
@@ -35,7 +34,6 @@ coil-bom = { module = "io.coil-kt.coil3:coil-bom", version.ref = "coil" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose" }
 coil-network-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlin-datetime" }
-kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 storyblok-compose = { module = "com.storyblok:storyblok-compose", version.ref = "storyblok" }
 storyblok-material3 = { module = "com.storyblok:storyblok-material3", version.ref = "storyblok" }
 
@@ -43,7 +41,6 @@ storyblok-material3 = { module = "com.storyblok:storyblok-material3", version.re
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }

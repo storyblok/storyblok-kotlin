@@ -28,7 +28,7 @@ import com.example.jetnews.ui.theme.JetNewsTheme
 import com.storyblok.cdn.StoryblokClientException
 import com.storyblok.compose.Storyblok
 import com.storyblok.compose.provider.blockProvider
-import com.storyblok.ktor.Api.Config.Version.*
+import com.storyblok.ktor.Api.Config.Version
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -38,13 +38,26 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 
 /**
- * The whole of JetNews. The Android, iOS, desktop and web entry points each do nothing but
- * call this.
+ * Which version of the Storyblok content this target reads.
  *
- * @param draft Whether to read unpublished content. Android passes `BuildConfig.DEBUG`.
+ * The web target is the one embedded in Storyblok's Visual Editor, so it reads
+ * [Draft][Version.Draft]. The app targets read [Published][Version.Published].
+ */
+internal expect val contentVersion: Version
+
+/**
+ * The story to open on launch.
+ *
+ * The web target reads it from the URL, so that the Visual Editor — which points the preview at
+ * each story's real path — shows the story being edited. The app targets start at the home story.
+ */
+internal expect val initialStoryKey: StoryKey
+
+/**
+ * The whole of JetNews. The Android, iOS and web entry points each do nothing but call this.
  */
 @Composable
-fun JetNewsApp(draft: Boolean) {
+fun JetNewsApp() {
     // Coil registers its network fetcher automatically only on the JVM, so wire it up explicitly:
     // the Storyblok client already brings a Ktor engine for every target.
     setSingletonImageLoaderFactory { context ->
@@ -55,11 +68,11 @@ fun JetNewsApp(draft: Boolean) {
     }
 
     JetNewsTheme {
-        val backStack = rememberNavBackStack(NavConfiguration, HomeKey)
+        val backStack = rememberNavBackStack(NavConfiguration, initialStoryKey)
 
         Storyblok(
             accessToken = "t56rE6UQJVErhMrkKvAe8Att",
-            version = if (draft) Draft else Published,
+            version = contentVersion,
             blockProvider = blockProvider(
                 fallback = { _, _ -> /* TODO: Show some kind of error UI */ },
                 storyLinkListener = { uuid, _ -> backStack.add((StoryKey(uuid = uuid))) },
