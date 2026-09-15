@@ -2,6 +2,7 @@
 
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -32,11 +33,19 @@ kotlin {
         }
     }
 
-    // Compose Multiplatform desktop runs on the JVM.
-    jvm()
-
     wasmJs {
         browser()
+    }
+
+    // One source set for every target that is an app rather than the Visual Editor preview, so
+    // they can share a single `contentVersion` actual.
+    applyDefaultHierarchyTemplate {
+        common {
+            group("app") {
+                withIos()
+                withCompilations { it.target.platformType == KotlinPlatformType.androidJvm }
+            }
+        }
     }
 
     sourceSets {

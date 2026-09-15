@@ -41,8 +41,6 @@ android {
 
     buildFeatures {
         compose = true
-        // MainActivity reads BuildConfig.DEBUG to pick draft vs published content.
-        buildConfig = true
     }
 }
 
