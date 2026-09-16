@@ -1,6 +1,6 @@
 [versions]
 coil = "3.4.0"
-storyblok-kotlin = "0.6.0"
+storyblok-kotlin = "0.7.0"
 agp = "9.1.1"
 # Held at 2.3.x: 2.4.20 miscompiles `Story<T : Component>` for wasmJs. The serialization plugin
 # emits a `deserialize` that passes the wrong reference type to the synthetic constructor, and the

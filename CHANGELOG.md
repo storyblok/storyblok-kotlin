@@ -1,6 +1,7 @@
 ### Changelog
 
 **0.7.0**
+
 - Updated a [Compose Multiplatform sample](samples/JetNewsCMP), to target Android and iOS only, 
   with a web target specifically for Visual Editor preview.
 - `StoryblokClient.story(...)` now emits live updates from Storyblok's Visual Editor on the `wasmJs` target, so a

@@ -1,7 +1,7 @@
 [versions]
 agp = "9.1.1"
 kotlin = "2.4.20"
-storyblok = "0.6.0"
+storyblok = "0.7.0"
 # Compose Multiplatform. 1.11.0-beta02 or later is required: earlier versions crash on
 # Kotlin/Native when restoring a TextFieldState that has undo history (CMP-9960), which the
 # search bar hits every time you open an article and come back. `compose-material3` tracks its
