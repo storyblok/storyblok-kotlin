@@ -363,8 +363,9 @@ public final class com/storyblok/cdn/schema/RichText$Composite$DefaultImpls {
 
 public class com/storyblok/cdn/schema/RichText$Document : com/storyblok/cdn/schema/RichText, com/storyblok/cdn/schema/RichText$Composite {
 	public static final field Companion Lcom/storyblok/cdn/schema/RichText$Document$Companion;
-	public synthetic fun <init> (ILjava/lang/String;Ljava/util/List;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public synthetic fun <init> (ILjava/lang/String;Ljava/util/List;Lcom/storyblok/cdn/schema/RichText$Document$Attributes;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public fun flatten ()Lkotlin/sequences/Sequence;
+	public final fun getBackgroundColor ()Ljava/lang/String;
 	public fun getContent ()Ljava/util/List;
 	public static final synthetic fun write$Self (Lcom/storyblok/cdn/schema/RichText$Document;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }

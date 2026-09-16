@@ -854,8 +854,10 @@ sealed class com.storyblok.cdn.schema/RichText { // com.storyblok.cdn.schema/Ric
     }
 
     open class Document : com.storyblok.cdn.schema/RichText, com.storyblok.cdn.schema/RichText.Composite { // com.storyblok.cdn.schema/RichText.Document|null[0]
-        constructor <init>(kotlin/Int, kotlin/String?, kotlin.collections/List<com.storyblok.cdn.schema/RichText>?, kotlinx.serialization.internal/SerializationConstructorMarker?) // com.storyblok.cdn.schema/RichText.Document.<init>|<init>(kotlin.Int;kotlin.String?;kotlin.collections.List<com.storyblok.cdn.schema.RichText>?;kotlinx.serialization.internal.SerializationConstructorMarker?){}[0]
+        constructor <init>(kotlin/Int, kotlin/String?, kotlin.collections/List<com.storyblok.cdn.schema/RichText>?, com.storyblok.cdn.schema/RichText.Document.Attributes?, kotlinx.serialization.internal/SerializationConstructorMarker?) // com.storyblok.cdn.schema/RichText.Document.<init>|<init>(kotlin.Int;kotlin.String?;kotlin.collections.List<com.storyblok.cdn.schema.RichText>?;com.storyblok.cdn.schema.RichText.Document.Attributes?;kotlinx.serialization.internal.SerializationConstructorMarker?){}[0]
 
+        final val backgroundColor // com.storyblok.cdn.schema/RichText.Document.backgroundColor|{}backgroundColor[0]
+            final fun <get-backgroundColor>(): kotlin/String? // com.storyblok.cdn.schema/RichText.Document.backgroundColor.<get-backgroundColor>|<get-backgroundColor>(){}[0]
         open val content // com.storyblok.cdn.schema/RichText.Document.content|{}content[0]
             open fun <get-content>(): kotlin.collections/List<com.storyblok.cdn.schema/RichText> // com.storyblok.cdn.schema/RichText.Document.content.<get-content>|<get-content>(){}[0]
 
