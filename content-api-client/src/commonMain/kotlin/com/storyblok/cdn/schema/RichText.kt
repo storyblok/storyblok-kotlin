@@ -45,7 +45,22 @@ public sealed class RichText {
     /** Root document node containing all rich text content. */
     @Serializable
     @SerialName("doc")
-    public open class Document internal constructor(public override val content: List<RichText>) : RichText(), Composite
+    public open class Document internal constructor(
+        public override val content: List<RichText>,
+        /**
+         * Only the Visual Editor sends these; the Content Delivery API returns a document with no
+         * `attrs` at all, which is why this is nullable.
+         */
+        @JsonNames("attrs")
+        internal val attributes: Attributes? = null,
+    ) : RichText(), Composite {
+
+        /** Background colour applied to the whole document, if one is set. */
+        public val backgroundColor: String? get() = attributes?.backgroundColor
+
+        @Serializable
+        internal class Attributes(val backgroundColor: String? = null)
+    }
 
     /** Heading node with configurable level (1-6). */
     @Serializable
