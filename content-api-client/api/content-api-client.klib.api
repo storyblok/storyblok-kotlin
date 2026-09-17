@@ -642,8 +642,6 @@ sealed class com.storyblok.cdn.schema/RichText { // com.storyblok.cdn.schema/Ric
     }
 
     final class HorizontalRule : com.storyblok.cdn.schema/RichText { // com.storyblok.cdn.schema/RichText.HorizontalRule|null[0]
-        constructor <init>() // com.storyblok.cdn.schema/RichText.HorizontalRule.<init>|<init>(){}[0]
-
         final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<com.storyblok.cdn.schema/RichText.HorizontalRule> { // com.storyblok.cdn.schema/RichText.HorizontalRule.$serializer|null[0]
             final val descriptor // com.storyblok.cdn.schema/RichText.HorizontalRule.$serializer.descriptor|{}descriptor[0]
                 final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // com.storyblok.cdn.schema/RichText.HorizontalRule.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
@@ -879,8 +877,6 @@ sealed class com.storyblok.cdn.schema/RichText { // com.storyblok.cdn.schema/Ric
 
     sealed class Mark : com.storyblok.cdn.schema/RichText { // com.storyblok.cdn.schema/RichText.Mark|null[0]
         final class Bold : com.storyblok.cdn.schema/RichText.Mark { // com.storyblok.cdn.schema/RichText.Mark.Bold|null[0]
-            constructor <init>() // com.storyblok.cdn.schema/RichText.Mark.Bold.<init>|<init>(){}[0]
-
             final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<com.storyblok.cdn.schema/RichText.Mark.Bold> { // com.storyblok.cdn.schema/RichText.Mark.Bold.$serializer|null[0]
                 final val descriptor // com.storyblok.cdn.schema/RichText.Mark.Bold.$serializer.descriptor|{}descriptor[0]
                     final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // com.storyblok.cdn.schema/RichText.Mark.Bold.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
@@ -896,8 +892,6 @@ sealed class com.storyblok.cdn.schema/RichText { // com.storyblok.cdn.schema/Ric
         }
 
         final class Code : com.storyblok.cdn.schema/RichText.Mark { // com.storyblok.cdn.schema/RichText.Mark.Code|null[0]
-            constructor <init>() // com.storyblok.cdn.schema/RichText.Mark.Code.<init>|<init>(){}[0]
-
             final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<com.storyblok.cdn.schema/RichText.Mark.Code> { // com.storyblok.cdn.schema/RichText.Mark.Code.$serializer|null[0]
                 final val descriptor // com.storyblok.cdn.schema/RichText.Mark.Code.$serializer.descriptor|{}descriptor[0]
                     final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // com.storyblok.cdn.schema/RichText.Mark.Code.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
@@ -931,8 +925,6 @@ sealed class com.storyblok.cdn.schema/RichText { // com.storyblok.cdn.schema/Ric
         }
 
         final class Italic : com.storyblok.cdn.schema/RichText.Mark { // com.storyblok.cdn.schema/RichText.Mark.Italic|null[0]
-            constructor <init>() // com.storyblok.cdn.schema/RichText.Mark.Italic.<init>|<init>(){}[0]
-
             final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<com.storyblok.cdn.schema/RichText.Mark.Italic> { // com.storyblok.cdn.schema/RichText.Mark.Italic.$serializer|null[0]
                 final val descriptor // com.storyblok.cdn.schema/RichText.Mark.Italic.$serializer.descriptor|{}descriptor[0]
                     final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // com.storyblok.cdn.schema/RichText.Mark.Italic.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
@@ -976,8 +968,6 @@ sealed class com.storyblok.cdn.schema/RichText { // com.storyblok.cdn.schema/Ric
         }
 
         final class Strike : com.storyblok.cdn.schema/RichText.Mark { // com.storyblok.cdn.schema/RichText.Mark.Strike|null[0]
-            constructor <init>() // com.storyblok.cdn.schema/RichText.Mark.Strike.<init>|<init>(){}[0]
-
             final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<com.storyblok.cdn.schema/RichText.Mark.Strike> { // com.storyblok.cdn.schema/RichText.Mark.Strike.$serializer|null[0]
                 final val descriptor // com.storyblok.cdn.schema/RichText.Mark.Strike.$serializer.descriptor|{}descriptor[0]
                     final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // com.storyblok.cdn.schema/RichText.Mark.Strike.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
@@ -993,8 +983,6 @@ sealed class com.storyblok.cdn.schema/RichText { // com.storyblok.cdn.schema/Ric
         }
 
         final class Subscript : com.storyblok.cdn.schema/RichText.Mark { // com.storyblok.cdn.schema/RichText.Mark.Subscript|null[0]
-            constructor <init>() // com.storyblok.cdn.schema/RichText.Mark.Subscript.<init>|<init>(){}[0]
-
             final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<com.storyblok.cdn.schema/RichText.Mark.Subscript> { // com.storyblok.cdn.schema/RichText.Mark.Subscript.$serializer|null[0]
                 final val descriptor // com.storyblok.cdn.schema/RichText.Mark.Subscript.$serializer.descriptor|{}descriptor[0]
                     final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // com.storyblok.cdn.schema/RichText.Mark.Subscript.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
@@ -1010,8 +998,6 @@ sealed class com.storyblok.cdn.schema/RichText { // com.storyblok.cdn.schema/Ric
         }
 
         final class Superscript : com.storyblok.cdn.schema/RichText.Mark { // com.storyblok.cdn.schema/RichText.Mark.Superscript|null[0]
-            constructor <init>() // com.storyblok.cdn.schema/RichText.Mark.Superscript.<init>|<init>(){}[0]
-
             final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<com.storyblok.cdn.schema/RichText.Mark.Superscript> { // com.storyblok.cdn.schema/RichText.Mark.Superscript.$serializer|null[0]
                 final val descriptor // com.storyblok.cdn.schema/RichText.Mark.Superscript.$serializer.descriptor|{}descriptor[0]
                     final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // com.storyblok.cdn.schema/RichText.Mark.Superscript.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
@@ -1045,8 +1031,6 @@ sealed class com.storyblok.cdn.schema/RichText { // com.storyblok.cdn.schema/Ric
         }
 
         final class Underline : com.storyblok.cdn.schema/RichText.Mark { // com.storyblok.cdn.schema/RichText.Mark.Underline|null[0]
-            constructor <init>() // com.storyblok.cdn.schema/RichText.Mark.Underline.<init>|<init>(){}[0]
-
             final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<com.storyblok.cdn.schema/RichText.Mark.Underline> { // com.storyblok.cdn.schema/RichText.Mark.Underline.$serializer|null[0]
                 final val descriptor // com.storyblok.cdn.schema/RichText.Mark.Underline.$serializer.descriptor|{}descriptor[0]
                     final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // com.storyblok.cdn.schema/RichText.Mark.Underline.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]

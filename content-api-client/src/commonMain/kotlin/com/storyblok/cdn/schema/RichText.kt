@@ -2,6 +2,7 @@ package com.storyblok.cdn.schema
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonIgnoreUnknownKeys
 import kotlinx.serialization.json.JsonNames
 import kotlinx.serialization.json.JsonClassDiscriminator
 
@@ -41,6 +42,18 @@ public sealed class RichText {
         public fun flatten(): Sequence<RichText> = content.asSequence()
             .flatMap { if(it is Composite) it.flatten() else sequenceOf(it) }
     }
+
+    /**
+     * The `attrs` the Visual Editor adds to nodes that carry none in the Content Delivery API.
+     *
+     * The editor decorates nodes as it normalises them, and which fields it puts here is Storyblok's
+     * to change — a node arriving with one the client has never seen must not fail the whole story,
+     * so the contents are deliberately not modelled. A node whose attributes the client does read
+     * declares its own type instead.
+     */
+    @Serializable
+    @JsonIgnoreUnknownKeys
+    internal class EditorAttributes
 
     /** Root document node containing all rich text content. */
     @Serializable
@@ -83,7 +96,11 @@ public sealed class RichText {
     /** Unordered (bullet) list node. */
     @Serializable
     @SerialName("bullet_list")
-    public class BulletList internal constructor(public override val content: List<ListItem>) : RichText(), Composite
+    public class BulletList internal constructor(
+        public override val content: List<ListItem>,
+        @JsonNames("attrs")
+        internal val attributes: EditorAttributes? = null,
+    ) : RichText(), Composite
 
     /** Ordered (numbered) list node. */
     @Serializable
@@ -156,22 +173,37 @@ public sealed class RichText {
     /** Block quote node. */
     @Serializable
     @SerialName("blockquote")
-    public class Blockquote internal constructor(public override val content: List<RichText>) : RichText(), Composite
+    public class Blockquote internal constructor(
+        public override val content: List<RichText>,
+        @JsonNames("attrs")
+        internal val attributes: EditorAttributes? = null,
+    ) : RichText(), Composite
 
     /** Horizontal rule (divider) node. */
     @Serializable
     @SerialName("horizontal_rule")
-    public class HorizontalRule : RichText()
+    public class HorizontalRule internal constructor(
+        @JsonNames("attrs")
+        internal val attributes: EditorAttributes? = null,
+    ) : RichText()
 
     /** Table container node. */
     @Serializable
     @SerialName("table")
-    public class Table internal constructor(public override val content: List<TableRow>) : RichText(), Composite
+    public class Table internal constructor(
+        public override val content: List<TableRow>,
+        @JsonNames("attrs")
+        internal val attributes: EditorAttributes? = null,
+    ) : RichText(), Composite
 
     /** Table row node. */
     @Serializable
     @SerialName("table_row")
-    public class TableRow internal constructor(public override val content: List<TableElement>) : RichText(), Composite
+    public class TableRow internal constructor(
+        public override val content: List<TableElement>,
+        @JsonNames("attrs")
+        internal val attributes: EditorAttributes? = null,
+    ) : RichText(), Composite
 
     /** Base class for table cells (header and data cells). */
     @Serializable
@@ -253,37 +285,58 @@ public sealed class RichText {
         /** Bold text formatting. */
         @Serializable
         @SerialName("bold")
-        public class Bold : Mark()
+        public class Bold internal constructor(
+            @JsonNames("attrs")
+            internal val attributes: EditorAttributes? = null,
+        ) : Mark()
 
         /** Italic text formatting. */
         @Serializable
         @SerialName("italic")
-        public class Italic : Mark()
+        public class Italic internal constructor(
+            @JsonNames("attrs")
+            internal val attributes: EditorAttributes? = null,
+        ) : Mark()
 
         /** Underlined text formatting. */
         @Serializable
         @SerialName("underline")
-        public class Underline : Mark()
+        public class Underline internal constructor(
+            @JsonNames("attrs")
+            internal val attributes: EditorAttributes? = null,
+        ) : Mark()
 
         /** Strikethrough text formatting. */
         @Serializable
         @SerialName("strike")
-        public class Strike : Mark()
+        public class Strike internal constructor(
+            @JsonNames("attrs")
+            internal val attributes: EditorAttributes? = null,
+        ) : Mark()
 
         /** Inline code formatting. */
         @Serializable
         @SerialName("code")
-        public class Code : Mark()
+        public class Code internal constructor(
+            @JsonNames("attrs")
+            internal val attributes: EditorAttributes? = null,
+        ) : Mark()
 
         /** Subscript text formatting. */
         @Serializable
         @SerialName("subscript")
-        public class Subscript : Mark()
+        public class Subscript internal constructor(
+            @JsonNames("attrs")
+            internal val attributes: EditorAttributes? = null,
+        ) : Mark()
 
         /** Superscript text formatting. */
         @Serializable
         @SerialName("superscript")
-        public class Superscript : Mark()
+        public class Superscript internal constructor(
+            @JsonNames("attrs")
+            internal val attributes: EditorAttributes? = null,
+        ) : Mark()
 
         /** Hyperlink mark with URL and metadata. */
         @Serializable
@@ -369,7 +422,11 @@ public sealed class RichText {
     /** List item node. */
     @Serializable
     @SerialName("list_item")
-    public class ListItem internal constructor(public override val content: List<RichText>) : RichText(), Composite
+    public class ListItem internal constructor(
+        public override val content: List<RichText>,
+        @JsonNames("attrs")
+        internal val attributes: EditorAttributes? = null,
+    ) : RichText(), Composite
 
     /** Emoji node with fallback image support. */
     @Serializable
