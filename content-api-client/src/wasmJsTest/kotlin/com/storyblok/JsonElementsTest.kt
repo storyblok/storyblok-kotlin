@@ -54,9 +54,22 @@ class JsonElementsTest {
     }
 
     @Test
-    fun `resolve level 0 follows nothing`() {
-        // Not even the value itself is entered, so there is nothing left to read it into.
-        assertEquals(JsonNull, circularValue().toJsonElement(resolveLevel = 0))
+    fun `resolve level 0 still reads the story it is given`() {
+        // Level 0 means relations are not resolved, not that nothing is read. Nothing here resolves
+        // a relation in the first place — the editor inlines the ones it was asked for before the
+        // payload ever arrives — so a level of 0 has a whole story to read just as level 1 does.
+        val json = storyValue().toJsonElement(resolveLevel = 0).jsonObject
+
+        assertEquals("post1", json["name"]!!.jsonPrimitive.content)
+        assertEquals("x", json["content"]!!.jsonObject["nested"]!!.jsonObject["title"]!!.jsonPrimitive.content)
+    }
+
+    @Test
+    fun `resolve level 0 still cuts a cycle`() {
+        val json = circularValue().toJsonElement(resolveLevel = 0).jsonObject
+
+        assertEquals("a", json["name"]!!.jsonPrimitive.content)
+        assertEquals(JsonNull, json["self"])
     }
 
     @Test
