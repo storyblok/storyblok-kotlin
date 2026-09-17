@@ -40,6 +40,22 @@ class RichTextEditorShapeTest {
     }
 
     @Test
+    fun `a container the editor decorates with attrs still decodes`() {
+        val node = json.decodeFromString<RichText>(
+            """{"type": "blockquote", "attrs": {"anything": 1}, "content": []}"""
+        )
+
+        assertIs<RichText.Blockquote>(node)
+    }
+
+    @Test
+    fun `a mark the editor decorates with attrs still decodes`() {
+        val mark = json.decodeFromString<RichText.Mark>("""{"type": "underline", "attrs": {}}""")
+
+        assertIs<RichText.Mark.Underline>(mark)
+    }
+
+    @Test
     fun `a link mark keeps reading its attributes`() {
         val mark = json.decodeFromString<RichText.Mark>(
             """{"type": "link", "attrs": {"href": "/post5", "linktype": "story"}}"""
