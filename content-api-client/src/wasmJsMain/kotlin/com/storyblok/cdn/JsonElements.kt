@@ -43,6 +43,10 @@ private external object JsArrays {
 /**
  * This value as a [JsonElement], with [depths] counting how many times each value on the path to it
  * is already being read, so that a cycle is cut rather than followed forever.
+ *
+ * [resolveLevel] is how many times a value on that path may be re-entered, so a level above 1
+ * follows a cycle that much further. It is never below 1: a story has to be entered before any of
+ * it can be read.
  */
 internal fun JsAny?.toJsonElement(resolveLevel: Int, depths: JsMap<JsAny, JsNumber> = JsMap()): JsonElement {
     // JavaScript's `null` and `undefined` both arrive as Kotlin's `null`.
@@ -60,7 +64,12 @@ internal fun JsAny?.toJsonElement(resolveLevel: Int, depths: JsMap<JsAny, JsNumb
         // neither survives the structured clone `postMessage` hands the story over by.
         else -> {
             val depth = depths.get(this)?.toInt() ?: 0
-            if (depth >= resolveLevel) return JsonNull
+            // At least one, whatever the level: a value has to be entered before there is anything
+            // to read it into, and a level of 0 means relations are left unresolved rather than
+            // that nothing is read. Nothing here resolves a relation in any case — the editor
+            // inlines the ones it was asked for before the payload arrives — so the level only sets
+            // how far a value that refers back to itself is followed.
+            if (depth >= resolveLevel.coerceAtLeast(1)) return JsonNull
             depths.set(this, (depth + 1).toJsNumber())
             try {
                 if (JsArrays.isArray(this)) {
