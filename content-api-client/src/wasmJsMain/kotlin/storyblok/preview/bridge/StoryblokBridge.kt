@@ -32,11 +32,12 @@ internal external class StoryblokBridge(props: BridgeParams?) : JsAny {
 }
 
 /**
- * What the bridge is built with. Only the relations are set by this client; the rest keep their
- * defaults. The bridge forwards them to the editor as it initializes.
+ * What the bridge is built with. The bridge forwards these to the editor as it initializes, and
+ * whatever this client does not set keeps the package's own default.
  */
 internal external interface BridgeParams : JsAny {
     var resolveRelations: JsArray<JsString>?
+    var initOnlyOnce: Boolean
 }
 
 /**
