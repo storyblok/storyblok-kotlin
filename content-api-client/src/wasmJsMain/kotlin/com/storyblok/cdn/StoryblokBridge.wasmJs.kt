@@ -4,6 +4,7 @@ package com.storyblok.cdn
 
 import com.storyblok.cdn.schema.Component
 import com.storyblok.cdn.schema.Story
+import io.ktor.util.logging.KtorSimpleLogger
 import io.ktor.util.reflect.TypeInfo
 import io.ktor.util.reflect.serializer
 import js.globals.globalThis
@@ -25,6 +26,8 @@ import kotlin.js.toJsArray
 import kotlin.js.toJsString
 import web.window.window
 import storyblok.preview.bridge.StoryblokBridge as PreviewBridge
+
+private val LOGGER = KtorSimpleLogger("com.storyblok.cdn.VisualEditor")
 
 internal actual fun StoryblokBridge(json: Json, resolveRelations: String): StoryblokBridge = when {
     // Node and any other host without a DOM, where there is no editor to be previewed by.
@@ -90,15 +93,13 @@ private class VisualEditor(private val json: Json, resolveRelations: String) : S
     override fun <T : Component> story(storyId: Long, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>> = edits
         .filter { it.id == storyId.toDouble() }
         .mapNotNull { edited ->
-            // Dropped rather than thrown: the editor pushes the states between two valid ones as
-            // well, and failing here would end live preview for the rest of the session. See the
-            // contract on StoryblokBridge.story.
             try {
                 json.decodeFromJsonElement(
                     @OptIn(io.ktor.utils.io.InternalAPI::class) typeInfo.serializer() as KSerializer<Story<T>>,
                     edited.toJsonElement(resolveLevel),
                 )
-            } catch (_: SerializationException) {
+            } catch (e: SerializationException) {
+                LOGGER.warn("Visual Editor update dropped, preview left on the last story that decoded", e)
                 null
             }
         }
