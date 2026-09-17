@@ -34,9 +34,8 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.transformLatest
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
@@ -279,11 +278,10 @@ public class StoryblokClientImpl internal constructor(
             emit(response.body<String>())
         }
         .distinctUntilChanged()
-        .transformLatest { response ->
+        .flatMapLatest { response ->
             val body = json.parseToJsonElement(response).jsonObject
             val story = body["story"]!!.jsonObject.toStory<T>(typeInfo, body.rels, resolveLevel)
-            emit(story)
-            emitAll(bridge.story(story.id, typeInfo, resolveLevel))
+            bridge.story(story, typeInfo, resolveLevel)
         }
         .distinctUntilChanged()
         .catch {

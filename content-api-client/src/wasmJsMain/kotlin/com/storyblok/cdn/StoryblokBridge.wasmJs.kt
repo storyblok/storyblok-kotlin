@@ -6,17 +6,12 @@ import com.storyblok.cdn.schema.Component
 import com.storyblok.cdn.schema.Story
 import io.ktor.util.logging.KtorSimpleLogger
 import io.ktor.util.reflect.TypeInfo
-import io.ktor.util.reflect.serializer
 import js.globals.globalThis
 import js.objects.Object
 import js.objects.unsafeJso
-import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import storyblok.preview.bridge.InputBridgeEvent
@@ -62,20 +57,14 @@ private class VisualEditor(private val json: Json, resolveRelations: String) : S
     })
 
     /**
-     * The story as the editor currently holds it, still a JavaScript value, for every subscriber.
+     * The story as the editor currently holds it, still a JavaScript value, for every subscriber —
+     * `null` until the author touches something.
      *
      * The preview bridge has no way to remove a single listener — `destroy` is all there is — so
      * registering one per subscription would leak a handler on every screen the app navigates
      * through. It registers once below instead, and subscribers come and go around this flow.
-     *
-     * Stories are dropped rather than suspending a JavaScript callback that cannot wait: a
-     * subscriber that falls behind wants the newest story anyway, which is what
-     * [conflate][kotlinx.coroutines.flow.conflate] downstream also asks for.
      */
-    private val edits = MutableSharedFlow<StoryMetadata>(
-        extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST,
-    )
+    private val edits = MutableStateFlow<StoryMetadata?>(null)
 
     init {
         // `input` is the only event worth subscribing to. A save leaves the draft holding exactly
@@ -89,18 +78,24 @@ private class VisualEditor(private val json: Json, resolveRelations: String) : S
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : Component> story(storyId: Long, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>> = edits
-        .filter { it.id == storyId.toDouble() }
+    override fun <T : Component> story(story: Story<T>, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>> = edits
         .mapNotNull { edited ->
-            try {
-                json.decodeFromJsonElement(
-                    @OptIn(io.ktor.utils.io.InternalAPI::class) typeInfo.serializer() as KSerializer<Story<T>>,
-                    edited.toJsonElement(resolveLevel),
-                )
-            } catch (e: SerializationException) {
-                LOGGER.warn("Visual Editor update dropped, preview left on the last story that decoded", e)
-                null
+            // Only the content is taken from the editor. The envelope is the one that was fetched,
+            // which is both fresher — this flow restarts on every fetch — and free of the editor's
+            // own fields, which the Content Delivery API never returns and Story does not model.
+            when {
+                edited == null || edited.id != story.id.toDouble() -> story
+                else -> try {
+                    story.copy(
+                        content = json.decodeFromJsonElement(
+                            typeInfo.contentSerializer<T>(),
+                            edited.content.toJsonElement(resolveLevel),
+                        ),
+                    )
+                } catch (e: SerializationException) {
+                    LOGGER.warn("Visual Editor update dropped, preview left on the last story that decoded", e)
+                    null
+                }
             }
         }
 

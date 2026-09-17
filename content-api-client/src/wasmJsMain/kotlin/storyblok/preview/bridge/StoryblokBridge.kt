@@ -52,4 +52,5 @@ internal external interface InputBridgeEvent : JsAny {
 /** A partial description of a story. Only its id is read here; the rest is converted whole. */
 internal external interface StoryMetadata : JsAny {
     val id: Double
+    val content: JsAny
 }
