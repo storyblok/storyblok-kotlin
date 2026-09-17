@@ -26,6 +26,14 @@ internal interface StoryblokBridge {
      * The editor sends its relations already resolved — it is given the same `resolve_relations` the
      * request is — so there is nothing left to resolve against the response this replaces.
      *
+     * A payload that cannot be decoded is dropped and the flow stays open, leaving the collector on
+     * the last story that decoded. This is the opposite of the fetch path, which fails on one, and
+     * deliberately so: the editor pushes a story on every keystroke, so it also pushes the states
+     * between two valid ones — a number field cleared before it is retyped, a relation unlinked
+     * before the next is picked. Failing there would end live preview for the rest of the session
+     * over an edit the author was midway through. Nothing is hidden by this, because a story the
+     * client genuinely cannot model fails the fetch that opens the flow, which does throw.
+     *
      * @param storyId The story to receive updates for. Updates for any other story are dropped.
      * @param resolveLevel How deep to follow a value that is already being read, as it is for
      * relations.

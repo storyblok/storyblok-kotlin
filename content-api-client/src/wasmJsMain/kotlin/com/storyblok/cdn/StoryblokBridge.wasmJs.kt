@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import storyblok.preview.bridge.InputBridgeEvent
 import storyblok.preview.bridge.StoryMetadata
@@ -88,11 +89,18 @@ private class VisualEditor(private val json: Json, resolveRelations: String) : S
     @Suppress("UNCHECKED_CAST")
     override fun <T : Component> story(storyId: Long, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>> = edits
         .filter { it.id == storyId.toDouble() }
-        .map { edited ->
-            json.decodeFromJsonElement(
-                @OptIn(io.ktor.utils.io.InternalAPI::class) typeInfo.serializer() as KSerializer<Story<T>>,
-                edited.toJsonElement(resolveLevel),
-            )
+        .mapNotNull { edited ->
+            // Dropped rather than thrown: the editor pushes the states between two valid ones as
+            // well, and failing here would end live preview for the rest of the session. See the
+            // contract on StoryblokBridge.story.
+            try {
+                json.decodeFromJsonElement(
+                    @OptIn(io.ktor.utils.io.InternalAPI::class) typeInfo.serializer() as KSerializer<Story<T>>,
+                    edited.toJsonElement(resolveLevel),
+                )
+            } catch (_: SerializationException) {
+                null
+            }
         }
 
     override fun destroy(): Unit = bridge.destroy()
