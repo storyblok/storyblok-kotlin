@@ -268,11 +268,13 @@ public sealed class RichText {
     /** Text node containing plain text with optional marks (formatting). */
     @Serializable
     @SerialName("text")
-    public class Text(
+    public class Text internal constructor(
         /** The text content. */
         public val text: String = "",
         /** Applied formatting marks. */
-        public val marks: List<Mark> = emptyList()
+        public val marks: List<Mark> = emptyList(),
+        @JsonNames("attrs")
+        internal val attributes: EditorAttributes? = null,
     ) : RichText()
 
     /**
@@ -453,8 +455,10 @@ public sealed class RichText {
     /** Hard line break node. */
     @Serializable
     @SerialName("hard_break")
-    public class HardBreak(
+    public class HardBreak internal constructor(
         /** Applied formatting marks carried across the break. */
-        public val marks: List<Mark> = emptyList()
+        public val marks: List<Mark> = emptyList(),
+        @JsonNames("attrs")
+        internal val attributes: EditorAttributes? = null,
     ) : RichText()
 }

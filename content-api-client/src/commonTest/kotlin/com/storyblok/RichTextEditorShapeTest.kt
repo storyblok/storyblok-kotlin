@@ -49,6 +49,24 @@ class RichTextEditorShapeTest {
     }
 
     @Test
+    fun `a text node the editor decorates with attrs still decodes`() {
+        val node = json.decodeFromString<RichText>(
+            """{"type": "text", "attrs": {"anything": 1}, "text": "CEO & Co-Founder"}"""
+        )
+
+        assertEquals("CEO & Co-Founder", assertIs<RichText.Text>(node).text)
+    }
+
+    @Test
+    fun `a hard break the editor decorates with attrs still decodes`() {
+        val node = json.decodeFromString<RichText>(
+            """{"type": "hard_break", "attrs": {"anything": 1}}"""
+        )
+
+        assertIs<RichText.HardBreak>(node)
+    }
+
+    @Test
     fun `a mark the editor decorates with attrs still decodes`() {
         val mark = json.decodeFromString<RichText.Mark>("""{"type": "underline", "attrs": {}}""")
 
