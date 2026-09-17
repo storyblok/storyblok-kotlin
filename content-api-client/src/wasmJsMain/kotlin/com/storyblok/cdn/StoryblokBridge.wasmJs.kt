@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import storyblok.preview.bridge.BridgeParams
 import storyblok.preview.bridge.InputBridgeEvent
 import storyblok.preview.bridge.StoryMetadata
 import kotlin.js.ExperimentalWasmJsInterop
@@ -35,6 +36,19 @@ internal actual fun StoryblokBridge(json: Json, resolveRelations: String): Story
 }
 
 /**
+ * What to build the bridge with: the relations the Content Delivery API request asks the editor to
+ * resolve, and `initOnlyOnce` turned off.
+ */
+internal fun bridgeParams(resolveRelations: String): BridgeParams = unsafeJso {
+    this.resolveRelations = resolveRelations
+        .takeIf { it.isNotEmpty() }
+        ?.split(",")
+        ?.map { it.toJsString() }
+        ?.toJsArray()
+    this.initOnlyOnce = false
+}
+
+/**
  * The page's connection to the Visual Editor, over `@storyblok/preview-bridge`.
  *
  * Constructing one injects styles and four elements into the page, a `window` message listener and a
@@ -44,17 +58,7 @@ internal actual fun StoryblokBridge(json: Json, resolveRelations: String): Story
  */
 private class VisualEditor(private val json: Json, resolveRelations: String) : StoryblokBridge {
 
-    /**
-     * `initOnlyOnce` and `preventClicks` are left at the bridge's own defaults. `resolveRelations`
-     * asks the editor to resolve the same relations the Content Delivery API request asks it to.
-     */
-    private val bridge = PreviewBridge(unsafeJso {
-        this.resolveRelations = resolveRelations
-            .takeIf { it.isNotEmpty() }
-            ?.split(",")
-            ?.map { it.toJsString() }
-            ?.toJsArray()
-    })
+    private val bridge = PreviewBridge(bridgeParams(resolveRelations))
 
     /**
      * The story as the editor currently holds it, still a JavaScript value, for every subscriber —
