@@ -4,14 +4,12 @@ import kotlinx.datetime.LocalDate
 import kotlin.time.Instant
 import kotlinx.serialization.json.JsonNames
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonIgnoreUnknownKeys
 import kotlin.uuid.Uuid
 
 /**
  * Represents a single story retrieved from the Storyblok API.
  */
 @Serializable
-@JsonIgnoreUnknownKeys
 public data class Story<T : Component>(
     /** Story ID. */
     val id: Long,

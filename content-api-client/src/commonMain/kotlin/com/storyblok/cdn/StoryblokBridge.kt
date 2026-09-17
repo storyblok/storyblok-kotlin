@@ -3,8 +3,10 @@ package com.storyblok.cdn
 import com.storyblok.cdn.schema.Component
 import com.storyblok.cdn.schema.Story
 import io.ktor.util.reflect.TypeInfo
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.serializer
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.serialization.json.Json
 
 /**
@@ -20,25 +22,20 @@ import kotlinx.serialization.json.Json
 internal interface StoryblokBridge {
 
     /**
-     * The story as it is edited, pushed to the app rather than fetched from the Content Delivery
-     * API, decoded as the [Story] type [typeInfo] describes.
+     * [story] as the app should show it: what was fetched, then that story carrying the content the
+     * author is editing.
      *
-     * The editor sends its relations already resolved — it is given the same `resolve_relations` the
-     * request is — so there is nothing left to resolve against the response this replaces.
+     * Only the content comes from the editor, so slug and name edits do not show here; the editor
+     * reloads the preview for those. Relations arrive already resolved. The newest edit is retained,
+     * so the restart that every completed fetch causes re-emits it rather than waiting for the next
+     * keystroke. An update that cannot be decoded is dropped and the flow stays open, because the
+     * editor also pushes the half-finished states between two valid ones.
      *
-     * A payload that cannot be decoded is dropped and the flow stays open, leaving the collector on
-     * the last story that decoded. This is the opposite of the fetch path, which fails on one, and
-     * deliberately so: the editor pushes a story on every keystroke, so it also pushes the states
-     * between two valid ones — a number field cleared before it is retyped, a relation unlinked
-     * before the next is picked. Failing there would end live preview for the rest of the session
-     * over an edit the author was midway through. Nothing is hidden by this, because a story the
-     * client genuinely cannot model fails the fetch that opens the flow, which does throw.
-     *
-     * @param storyId The story to receive updates for. Updates for any other story are dropped.
-     * @param resolveLevel How deep to follow a value that is already being read, as it is for
-     * relations.
+     * @param story The story as fetched: the first thing emitted and the envelope under every later
+     * one. Updates for any other story are ignored.
+     * @param resolveLevel How deep to follow a value that is already being read.
      */
-    fun <T : Component> story(storyId: Long, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>>
+    fun <T : Component> story(story: Story<T>, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>>
 
     /**
      * Removes whatever the connection holds — on the web target the bridge's event listeners,
@@ -49,9 +46,8 @@ internal interface StoryblokBridge {
     fun destroy()
 }
 
-/** No editor on the other side: what every target but the web one has, and the web one outside a preview. */
 internal object NoVisualEditor : StoryblokBridge {
-    override fun <T : Component> story(storyId: Long, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>> = emptyFlow()
+    override fun <T : Component> story(story: Story<T>, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>> = flowOf(story)
     override fun destroy(): Unit = Unit
 }
 
@@ -68,3 +64,7 @@ internal object NoVisualEditor : StoryblokBridge {
  * one either silently do nothing or reset the first one's listeners.
  */
 internal expect fun StoryblokBridge(json: Json, resolveRelations: String): StoryblokBridge
+
+@Suppress("UNCHECKED_CAST")
+internal fun <T : Component> TypeInfo.contentSerializer(): KSerializer<T> =
+    serializer(kotlinType!!.arguments.first().type!!) as KSerializer<T>
