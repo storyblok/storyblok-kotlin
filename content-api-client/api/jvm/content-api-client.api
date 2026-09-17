@@ -410,8 +410,6 @@ public final class com/storyblok/cdn/schema/RichText$Emoji$Companion {
 public final class com/storyblok/cdn/schema/RichText$HardBreak : com/storyblok/cdn/schema/RichText {
 	public static final field Companion Lcom/storyblok/cdn/schema/RichText$HardBreak$Companion;
 	public fun <init> ()V
-	public fun <init> (Ljava/util/List;)V
-	public synthetic fun <init> (Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getMarks ()Ljava/util/List;
 }
 
@@ -883,8 +881,6 @@ public final class com/storyblok/cdn/schema/RichText$TableRow$Companion {
 public final class com/storyblok/cdn/schema/RichText$Text : com/storyblok/cdn/schema/RichText {
 	public static final field Companion Lcom/storyblok/cdn/schema/RichText$Text$Companion;
 	public fun <init> ()V
-	public fun <init> (Ljava/lang/String;Ljava/util/List;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getMarks ()Ljava/util/List;
 	public final fun getText ()Ljava/lang/String;
 }

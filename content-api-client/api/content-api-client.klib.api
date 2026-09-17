@@ -596,8 +596,6 @@ sealed class com.storyblok.cdn.schema/RichText { // com.storyblok.cdn.schema/Ric
     }
 
     final class HardBreak : com.storyblok.cdn.schema/RichText { // com.storyblok.cdn.schema/RichText.HardBreak|null[0]
-        constructor <init>(kotlin.collections/List<com.storyblok.cdn.schema/RichText.Mark> = ...) // com.storyblok.cdn.schema/RichText.HardBreak.<init>|<init>(kotlin.collections.List<com.storyblok.cdn.schema.RichText.Mark>){}[0]
-
         final val marks // com.storyblok.cdn.schema/RichText.HardBreak.marks|{}marks[0]
             final fun <get-marks>(): kotlin.collections/List<com.storyblok.cdn.schema/RichText.Mark> // com.storyblok.cdn.schema/RichText.HardBreak.marks.<get-marks>|<get-marks>(){}[0]
 
@@ -828,8 +826,6 @@ sealed class com.storyblok.cdn.schema/RichText { // com.storyblok.cdn.schema/Ric
     }
 
     final class Text : com.storyblok.cdn.schema/RichText { // com.storyblok.cdn.schema/RichText.Text|null[0]
-        constructor <init>(kotlin/String = ..., kotlin.collections/List<com.storyblok.cdn.schema/RichText.Mark> = ...) // com.storyblok.cdn.schema/RichText.Text.<init>|<init>(kotlin.String;kotlin.collections.List<com.storyblok.cdn.schema.RichText.Mark>){}[0]
-
         final val marks // com.storyblok.cdn.schema/RichText.Text.marks|{}marks[0]
             final fun <get-marks>(): kotlin.collections/List<com.storyblok.cdn.schema/RichText.Mark> // com.storyblok.cdn.schema/RichText.Text.marks.<get-marks>|<get-marks>(){}[0]
         final val text // com.storyblok.cdn.schema/RichText.Text.text|{}text[0]
