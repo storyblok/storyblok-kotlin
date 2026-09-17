@@ -18,9 +18,11 @@ import io.ktor.http.headersOf
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -74,15 +76,21 @@ class StoryblokBridgeTest {
      * A bridge reporting [updates] and nothing else, standing in for the editor.
      *
      * It decodes them the way the web target's bridge does, with the client's own [json], so that
-     * what the editor sends is still parsed by the code path that parses it in the browser.
+     * what the editor sends is still parsed by the code path that parses it in the browser —
+     * including dropping a payload it cannot decode, which is part of the contract rather than an
+     * accident of the browser implementation.
      */
     private fun bridge(updates: (storyId: Long, resolveLevel: Int) -> Flow<JsonObject>) =
         object : StoryblokBridge {
             override fun <T : Component> story(storyId: Long, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>> =
-                updates(storyId, resolveLevel).map {
-                    @Suppress("UNCHECKED_CAST")
-                    @OptIn(io.ktor.utils.io.InternalAPI::class)
-                    json.decodeFromJsonElement(typeInfo.serializer() as KSerializer<Story<T>>, it)
+                updates(storyId, resolveLevel).mapNotNull {
+                    try {
+                        @Suppress("UNCHECKED_CAST")
+                        @OptIn(io.ktor.utils.io.InternalAPI::class)
+                        json.decodeFromJsonElement(typeInfo.serializer() as KSerializer<Story<T>>, it)
+                    } catch (_: SerializationException) {
+                        null
+                    }
                 }
 
             override fun destroy() = Unit
@@ -120,6 +128,23 @@ class StoryblokBridgeTest {
         val stories = client.story<Page>("home").toList()
 
         assertEquals(listOf("Home"), stories.map { it.content.title })
+    }
+
+    @Test
+    fun `a payload that cannot be decoded is dropped and the next one still arrives`() = runTest {
+        // The middle payload is a page mid-edit with its title cleared. On a fetch that is a
+        // modelling error worth failing on; here it is one keystroke, and the edits after it have to
+        // keep arriving.
+        val client = client(
+            PAGE_RESPONSE,
+            editedPage("Home, edited"),
+            edited("""{"component": "page", "_uid": "u1"}"""),
+            editedPage("Home, edited twice"),
+        )
+
+        val titles = client.story<Page>("home").toList().map { it.content.title }
+
+        assertEquals(listOf("Home", "Home, edited", "Home, edited twice"), titles)
     }
 
     @Test
