@@ -43,17 +43,9 @@ public sealed class RichText {
             .flatMap { if(it is Composite) it.flatten() else sequenceOf(it) }
     }
 
-    /**
-     * The `attrs` the Visual Editor adds to nodes that carry none in the Content Delivery API.
-     *
-     * The editor decorates nodes as it normalises them, and which fields it puts here is Storyblok's
-     * to change — a node arriving with one the client has never seen must not fail the whole story,
-     * so the contents are deliberately not modelled. A node whose attributes the client does read
-     * declares its own type instead.
-     */
     @Serializable
     @JsonIgnoreUnknownKeys
-    internal class EditorAttributes
+    internal class UnknownAttributes
 
     /** Root document node containing all rich text content. */
     @Serializable
@@ -72,6 +64,7 @@ public sealed class RichText {
         public val backgroundColor: String? get() = attributes?.backgroundColor
 
         @Serializable
+        @JsonIgnoreUnknownKeys
         internal class Attributes(val backgroundColor: String? = null)
     }
 
@@ -90,6 +83,7 @@ public sealed class RichText {
         public val textAlign: TextAlign? get() = attributes.textAlign
 
         @Serializable
+        @JsonIgnoreUnknownKeys
         internal class Attributes(val level: Int, val textAlign: TextAlign? = null)
     }
 
@@ -99,7 +93,7 @@ public sealed class RichText {
     public class BulletList internal constructor(
         public override val content: List<ListItem>,
         @JsonNames("attrs")
-        internal val attributes: EditorAttributes? = null,
+        internal val attributes: UnknownAttributes? = null,
     ) : RichText(), Composite
 
     /** Ordered (numbered) list node. */
@@ -113,6 +107,7 @@ public sealed class RichText {
         /** Starting number for the list. */
         public val order: Int? get() = attributes?.order
         @Serializable
+        @JsonIgnoreUnknownKeys
         internal class Attributes(val order: Int? = null)
     }
 
@@ -139,6 +134,7 @@ public sealed class RichText {
         public val metadata: Map<String, String>? get() = attributes.metadata
 
         @Serializable
+        @JsonIgnoreUnknownKeys
         internal class Attributes(
             val id: String,
             val src: String,
@@ -164,6 +160,7 @@ public sealed class RichText {
         /** CSS class name. */
         public val clazz: String? get() = attributes?.clazz
         @Serializable
+        @JsonIgnoreUnknownKeys
         internal class Attributes(
             val language: String? = null,
             @JsonNames("class") val clazz: String? = null
@@ -176,7 +173,7 @@ public sealed class RichText {
     public class Blockquote internal constructor(
         public override val content: List<RichText>,
         @JsonNames("attrs")
-        internal val attributes: EditorAttributes? = null,
+        internal val attributes: UnknownAttributes? = null,
     ) : RichText(), Composite
 
     /** Horizontal rule (divider) node. */
@@ -184,7 +181,7 @@ public sealed class RichText {
     @SerialName("horizontal_rule")
     public class HorizontalRule internal constructor(
         @JsonNames("attrs")
-        internal val attributes: EditorAttributes? = null,
+        internal val attributes: UnknownAttributes? = null,
     ) : RichText()
 
     /** Table container node. */
@@ -193,7 +190,7 @@ public sealed class RichText {
     public class Table internal constructor(
         public override val content: List<TableRow>,
         @JsonNames("attrs")
-        internal val attributes: EditorAttributes? = null,
+        internal val attributes: UnknownAttributes? = null,
     ) : RichText(), Composite
 
     /** Table row node. */
@@ -202,7 +199,7 @@ public sealed class RichText {
     public class TableRow internal constructor(
         public override val content: List<TableElement>,
         @JsonNames("attrs")
-        internal val attributes: EditorAttributes? = null,
+        internal val attributes: UnknownAttributes? = null,
     ) : RichText(), Composite
 
     /** Base class for table cells (header and data cells). */
@@ -233,6 +230,7 @@ public sealed class RichText {
         override val attributes: Attributes? = null
     ) : TableElement() {
         @Serializable
+        @JsonIgnoreUnknownKeys
         internal class Attributes : TableElement.Attributes()
     }
 
@@ -246,6 +244,7 @@ public sealed class RichText {
         /** Background color of the cell. */
         public val backgroundColor: String? get() = attributes?.backgroundColor
         @Serializable
+        @JsonIgnoreUnknownKeys
         internal class Attributes(val backgroundColor: String? = null) : TableElement.Attributes()
     }
 
@@ -262,6 +261,7 @@ public sealed class RichText {
         public val textAlign: TextAlign? get() = attributes?.textAlign
 
         @Serializable
+        @JsonIgnoreUnknownKeys
         internal class Attributes(val textAlign: TextAlign? = null)
     }
     
@@ -274,7 +274,7 @@ public sealed class RichText {
         /** Applied formatting marks. */
         public val marks: List<Mark> = emptyList(),
         @JsonNames("attrs")
-        internal val attributes: EditorAttributes? = null,
+        internal val attributes: UnknownAttributes? = null,
     ) : RichText()
 
     /**
@@ -289,7 +289,7 @@ public sealed class RichText {
         @SerialName("bold")
         public class Bold internal constructor(
             @JsonNames("attrs")
-            internal val attributes: EditorAttributes? = null,
+            internal val attributes: UnknownAttributes? = null,
         ) : Mark()
 
         /** Italic text formatting. */
@@ -297,7 +297,7 @@ public sealed class RichText {
         @SerialName("italic")
         public class Italic internal constructor(
             @JsonNames("attrs")
-            internal val attributes: EditorAttributes? = null,
+            internal val attributes: UnknownAttributes? = null,
         ) : Mark()
 
         /** Underlined text formatting. */
@@ -305,7 +305,7 @@ public sealed class RichText {
         @SerialName("underline")
         public class Underline internal constructor(
             @JsonNames("attrs")
-            internal val attributes: EditorAttributes? = null,
+            internal val attributes: UnknownAttributes? = null,
         ) : Mark()
 
         /** Strikethrough text formatting. */
@@ -313,7 +313,7 @@ public sealed class RichText {
         @SerialName("strike")
         public class Strike internal constructor(
             @JsonNames("attrs")
-            internal val attributes: EditorAttributes? = null,
+            internal val attributes: UnknownAttributes? = null,
         ) : Mark()
 
         /** Inline code formatting. */
@@ -321,7 +321,7 @@ public sealed class RichText {
         @SerialName("code")
         public class Code internal constructor(
             @JsonNames("attrs")
-            internal val attributes: EditorAttributes? = null,
+            internal val attributes: UnknownAttributes? = null,
         ) : Mark()
 
         /** Subscript text formatting. */
@@ -329,7 +329,7 @@ public sealed class RichText {
         @SerialName("subscript")
         public class Subscript internal constructor(
             @JsonNames("attrs")
-            internal val attributes: EditorAttributes? = null,
+            internal val attributes: UnknownAttributes? = null,
         ) : Mark()
 
         /** Superscript text formatting. */
@@ -337,7 +337,7 @@ public sealed class RichText {
         @SerialName("superscript")
         public class Superscript internal constructor(
             @JsonNames("attrs")
-            internal val attributes: EditorAttributes? = null,
+            internal val attributes: UnknownAttributes? = null,
         ) : Mark()
 
         /** Hyperlink mark with URL and metadata. */
@@ -361,6 +361,7 @@ public sealed class RichText {
             public val linktype: String get() = attributes.linktype
 
             @Serializable
+            @JsonIgnoreUnknownKeys
             internal class Attributes(
                 val href: String,
                 val uuid: String? = null,
@@ -382,6 +383,7 @@ public sealed class RichText {
             public val color: String? get() = attributes.color.ifEmpty { null }
 
             @Serializable
+            @JsonIgnoreUnknownKeys
             internal class Attributes(val color: String)
         }
 
@@ -395,6 +397,7 @@ public sealed class RichText {
             /** Highlight color value. */
             public val color: String? get() = attributes.color.ifEmpty { null }
             @Serializable
+            @JsonIgnoreUnknownKeys
             internal class Attributes(val color: String)
         }
     }
@@ -410,6 +413,7 @@ public sealed class RichText {
         /** List of embedded components. */
         public val body: List<Component> get() = attributes.body
         @Serializable
+        @JsonIgnoreUnknownKeys
         internal class Attributes(val id: String, val body: List<Component>)
     }
 
@@ -427,7 +431,7 @@ public sealed class RichText {
     public class ListItem internal constructor(
         public override val content: List<RichText>,
         @JsonNames("attrs")
-        internal val attributes: EditorAttributes? = null,
+        internal val attributes: UnknownAttributes? = null,
     ) : RichText(), Composite
 
     /** Emoji node with fallback image support. */
@@ -445,6 +449,7 @@ public sealed class RichText {
         public val fallbackImage: String get() = attributes.fallbackImage
 
         @Serializable
+        @JsonIgnoreUnknownKeys
         internal class Attributes(
             val name: String,
             val emoji: String,
@@ -459,6 +464,6 @@ public sealed class RichText {
         /** Applied formatting marks carried across the break. */
         public val marks: List<Mark> = emptyList(),
         @JsonNames("attrs")
-        internal val attributes: EditorAttributes? = null,
+        internal val attributes: UnknownAttributes? = null,
     ) : RichText()
 }
