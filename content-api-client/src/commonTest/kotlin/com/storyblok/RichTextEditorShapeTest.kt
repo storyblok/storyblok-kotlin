@@ -67,6 +67,15 @@ class RichTextEditorShapeTest {
     }
 
     @Test
+    fun `a node whose attrs the client reads tolerates a key it does not`() {
+        val node = json.decodeFromString<RichText>(
+            """{"type": "heading", "attrs": {"level": 1, "addedLater": true}, "content": []}"""
+        )
+
+        assertEquals(1, assertIs<RichText.Heading>(node).level)
+    }
+
+    @Test
     fun `a mark the editor decorates with attrs still decodes`() {
         val mark = json.decodeFromString<RichText.Mark>("""{"type": "underline", "attrs": {}}""")
 
