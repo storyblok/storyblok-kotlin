@@ -51,7 +51,7 @@ jobs:
       with:
         distribution: temurin
         java-version: 17
-    - uses: gradle/actions/setup-gradle@v5
+    - uses: gradle/actions/setup-gradle@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
     - uses: actions/cache@v4
       with:
         path: |
@@ -68,7 +68,7 @@ jobs:
       with:
         distribution: temurin
         java-version: 17
-    - uses: gradle/actions/setup-gradle@v5
+    - uses: gradle/actions/setup-gradle@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
     - run: ./gradlew :storyblok-compose:checkLegacyAbi || { exit_code=$?; printf "*** This commit changes the public API. If intentional run './gradlew :storyblok-compose:updateLegacyAbi' and commit updated files. ***"; exit $exit_code; }
 
   api-dump:
@@ -85,11 +85,11 @@ jobs:
       with:
         distribution: temurin
         java-version: 17
-    - uses: gradle/actions/setup-gradle@v5
+    - uses: gradle/actions/setup-gradle@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
     - run: ./gradlew :storyblok-compose:updateLegacyAbi
     # The workflow token cannot push to fork branches, so auto-commit only same-repository changes and
     # fail fork pull requests that have stale dumps with instructions instead.
-    - uses: stefanzweifel/git-auto-commit-action@v6
+    - uses: stefanzweifel/git-auto-commit-action@778341af668090896ca464160c2def5d1d1a3eb0 # v6.0.1
       if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     - if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
       run: git diff --exit-code || { exit_code=$?; printf "*** This pull request changes the public API. Run './gradlew :storyblok-compose:updateLegacyAbi' and commit the updated files. ***"; exit $exit_code; }
