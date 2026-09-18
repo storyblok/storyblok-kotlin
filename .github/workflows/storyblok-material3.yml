@@ -47,6 +47,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
     - uses: actions/setup-java@v4
       with:
         distribution: temurin
@@ -64,6 +66,8 @@ jobs:
     if: github.repository == 'storyblok/storyblok-kotlin' && github.ref == 'refs/heads/main'
     steps:
     - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
     - uses: actions/setup-java@v4
       with:
         distribution: temurin
@@ -79,6 +83,9 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
+        # git-auto-commit-action below pushes the refreshed ABI dump using these
+        # credentials, so this job must keep them.
+        persist-credentials: true
         # Fork branches cannot be checked out by name from the base repository, so fall back to the merge commit.
         ref: ${{ github.event.pull_request.head.repo.full_name == github.repository && github.head_ref || '' }}
     - uses: actions/setup-java@v4
