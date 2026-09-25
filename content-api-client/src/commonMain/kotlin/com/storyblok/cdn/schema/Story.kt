@@ -2,6 +2,7 @@ package com.storyblok.cdn.schema
 
 import kotlinx.datetime.LocalDate
 import kotlin.time.Instant
+import kotlinx.serialization.json.JsonIgnoreUnknownKeys
 import kotlinx.serialization.json.JsonNames
 import kotlinx.serialization.Serializable
 import kotlin.uuid.Uuid
@@ -10,6 +11,7 @@ import kotlin.uuid.Uuid
  * Represents a single story retrieved from the Storyblok API.
  */
 @Serializable
+@JsonIgnoreUnknownKeys
 public data class Story<T : Component>(
     /** Story ID. */
     val id: Long,
