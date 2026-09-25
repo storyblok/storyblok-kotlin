@@ -85,8 +85,10 @@ private class VisualEditor(private val json: Json, resolveRelations: String) : S
     override fun <T : Component> story(story: Story<T>, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>> = edits
         .mapNotNull { edited ->
             // Only the content is taken from the editor. The envelope is the one that was fetched,
-            // which is both fresher — this flow restarts on every fetch — and free of the editor's
-            // own fields, which the Content Delivery API never returns and Story does not model.
+            // which is fresher, this flow being restarted by every fetch. It is not a way of
+            // avoiding the editor's own fields: the relations it resolves are inlined into the
+            // content as story envelopes carrying those same fields, so Story meets them here
+            // whatever this one is built from.
             when {
                 edited == null || edited.id != story.id.toDouble() -> story
                 else -> try {

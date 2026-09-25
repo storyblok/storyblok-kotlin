@@ -343,12 +343,31 @@ class StoryblokBridgeTest {
          * inlines — so no uuid is ever left for the client to look up, and there is no `rels` on the
          * payload to look one up in.
          */
-        val EDITOR_RESOLVED_AUTHOR = story(
-            3,
-            "c2b7fd7a-3adf-45f4-9e40-5b8ba18cbb15",
-            "grace",
-            """{"component": "author", "_uid": "u3", "name": "Grace"}""",
+        val EDITOR_RESOLVED_AUTHOR = editorResolved(
+            story(
+                3,
+                "c2b7fd7a-3adf-45f4-9e40-5b8ba18cbb15",
+                "grace",
+                """{"component": "author", "_uid": "u3", "name": "Grace"}""",
+            )
         )
+
+        /**
+         * A story envelope as the editor inlines one, which is the Content Delivery API's shape plus
+         * the fields only the editor has — `_stopResolving` being how it marks where it stopped
+         * following a relation back to itself.
+         *
+         * A relation the editor resolves arrives inside the content, so this is an envelope the
+         * client decodes even though the envelope around the whole story comes from the fetch.
+         */
+        fun editorResolved(story: String) = story.trim().removeSuffix("}") + """,
+              "_stopResolving": true,
+              "unpublished_changes": false,
+              "breadcrumbs": [],
+              "is_folder": false,
+              "preview_token": { "token": "9f2a", "timestamp": "1758153600" }
+            }
+        """
 
         /**
          * A story as the Visual Editor pushes it: the Content Delivery API's shape, plus the fields
