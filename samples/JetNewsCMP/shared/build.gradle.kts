@@ -38,7 +38,8 @@ kotlin {
     }
 
     // One source set for every target that is an app rather than the Visual Editor preview, so
-    // they can share a single `contentVersion` actual.
+    // they can share a single `initialStoryKey` actual. `contentVersion` is per platform, each
+    // having its own way of telling a debug build from a shipped one.
     applyDefaultHierarchyTemplate {
         common {
             group("app") {
