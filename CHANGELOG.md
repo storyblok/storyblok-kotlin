@@ -1,5 +1,10 @@
 ### Changelog
 
+**0.7.1**
+
+- Fixed live updates never reaching a preview of a story with a resolved relation.
+- Updated the [Compose Multiplatform sample](samples/JetNewsCMP) to read draft content on debug app builds. 
+
 **0.7.0**
 
 - Updated a [Compose Multiplatform sample](samples/JetNewsCMP), to target Android and iOS only, 
