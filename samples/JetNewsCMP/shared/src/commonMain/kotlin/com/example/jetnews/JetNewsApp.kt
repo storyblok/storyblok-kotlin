@@ -39,11 +39,9 @@ import kotlinx.coroutines.flow.onCompletion
 
 /**
  * Which version of the Storyblok content this target reads.
- *
- * The web target is the one embedded in Storyblok's Visual Editor, so it reads
- * [Draft][Version.Draft]. The app targets read [Published][Version.Published].
  */
 internal expect val contentVersion: Version
+    @Composable get
 
 /**
  * The story to open on launch.
