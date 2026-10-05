@@ -15,7 +15,7 @@ public open class StoryQuery<T : Component> internal constructor() : Query() {
     /** Omit these content fields from the response to reduce its size. Maps to `excluding_fields`. */
     public var excludingFields: List<String> = emptyList()
 
-    /** Retrieve the story as it appears in the [release](https://www.storyblok.com/docs/guide/essentials/releases) with this id. Maps to `from_release`. */
+    /** Retrieve the story as it appears in the [release](https://www.storyblok.com/docs/api/content-delivery/v2/stories/examples/retrieving-an-edited-version-of-a-story-from-a-release) with this id. Maps to `from_release`. */
     public var fromRelease: String? = null
 
     override fun generate(): Map<String, String> = buildMap {

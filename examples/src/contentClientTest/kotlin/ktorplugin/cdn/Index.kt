@@ -11,7 +11,7 @@ class Index {
 
     /**
      * Learn the basics of the Storyblok Content Delivery API, including authentication, caching, CDN, pagination, rate limits, and error handling.
-     * https://www.storyblok.com/docs/api/content-delivery/v2/index
+     * https://www.storyblok.com/docs/api/content-delivery/v2
      */
     @Test
     fun Introduction() = runBlocking {

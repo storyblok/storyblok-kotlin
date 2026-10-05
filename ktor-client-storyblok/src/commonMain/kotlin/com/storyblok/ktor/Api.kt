@@ -129,7 +129,7 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
          * Defaults to 1000 requests per second for the [Content Delivery API][Content.requestsPerSecond] and 6 requests per second for the [Management API][Management.requestsPerSecond].
          *
          * You can lower the value if necessary to avoid exceeding the
-         * [rate limits](https://www.storyblok.com/docs/api/content-delivery/v2/getting-started/rate-limit).
+         * [rate limits](https://www.storyblok.com/docs/api/content-delivery/v2).
          */
         public abstract var requestsPerSecond: Int
         /** The time source used for request scheduling and delays. */
@@ -180,7 +180,7 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
          */
         public class Content internal constructor(): Config() {
 
-            /** It is necessary to specify an API access token to [authenticate requests to the Content Delivery API](https://www.storyblok.com/docs/api/content-delivery/v2/getting-started/authentication). */
+            /** It is necessary to specify an API access token to [authenticate requests to the Content Delivery API](https://www.storyblok.com/docs/api/content-delivery/v2). */
             public lateinit var accessToken: String
             /**
              * Optionally, specify the default language to retrieve resources.
@@ -202,11 +202,11 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
              * Optionally, specify the [version][Version] to retrieve all resources. Defaults to [Published].
              */
             public var version: Version = Published
-            /** Optionally, specify the cached version Unix timestamp (see [Cache Invalidation](https://www.storyblok.com/docs/api/content-delivery/v2/getting-started/cache-invalidation)).
+            /** Optionally, specify the cached version Unix timestamp (see [Cache Invalidation](https://www.storyblok.com/docs/concepts/caching)).
              *
              * Note this is set automatically, set this property manually if you want to retrieve a specific cached version of a resource.
              *
-             * Learn more in [How stories are cached in the Content Delivery API](https://www.storyblok.com/faq/how-stories-are-cached-content-delivery-api#how-the-js-client-uses-the-cv-param).
+             * Learn more in [How stories are cached in the Content Delivery API](https://www.storyblok.com/docs/concepts/caching).
              * */
             public var cv: String? = null
 
@@ -223,7 +223,7 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
          */
         public class Management internal constructor() : Config() {
             /** It is necessary to specify a [personal][AccessToken.Personal] or [OAuth][AccessToken.OAuth] access token to
-             * [authenticate requests to the Management API](https://www.storyblok.com/docs/api/management/getting-started/authentication).
+             * [authenticate requests to the Management API](https://www.storyblok.com/docs/api/management).
              * */
             public lateinit var accessToken: AccessToken
             /**
@@ -232,7 +232,7 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
             override var requestsPerSecond: Int = 6
             /**
              * It is necessary to specify an [inheritor][AccessToken] of `AccessToken` when [configuring][Management.accessToken] the plugin to
-             * [authenticate requests to the Management API](https://www.storyblok.com/docs/api/management/getting-started/authentication).
+             * [authenticate requests to the Management API](https://www.storyblok.com/docs/api/management).
              */
             public sealed class AccessToken private constructor(internal val value: String) {
                 /**
