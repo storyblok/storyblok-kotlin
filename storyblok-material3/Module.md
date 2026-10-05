@@ -52,5 +52,5 @@ fun App() {
 
 ## Other resources
 
-You can find the full guide to the Material 3 Rich Text Provider inside [README.md](https://github.com/storyblok/storyblok-kotlin/tree/main/storyblok-material3#provider-guide).
+You can find the full guide to the Material 3 Rich Text Provider inside [README.md](https://github.com/storyblok/storyblok-kotlin/tree/main/storyblok-material3#user-guide).
 

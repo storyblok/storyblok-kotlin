@@ -4,11 +4,6 @@ A sample Android app demonstrating how to integrate Storyblok with Jetpack Compo
 
 This sample is based on Google's [JetNews](https://github.com/android/compose-samples/tree/main/JetNews) sample app from the official Compose Samples, reimagined to pull content from Storyblok instead of using hardcoded data.
 
-<p align="center">
-  <img src="https://github.com/storyblok/storyblok-kotlin/raw/main/samples/JetNews/screenshots/feed.png" width="300" alt="JetNews Feed Screen"/>
-  <img src="https://github.com/storyblok/storyblok-kotlin/raw/main/samples/JetNews/screenshots/article.png" width="300" alt="JetNews Article Screen"/>
-</p>
-
 ## Features
 
 - **Feed screen** - Displays a dynamic feed with highlighted, popular, recent, and recommended posts

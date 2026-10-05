@@ -115,7 +115,7 @@ val client = HttpClient {
 
 ### Rate limit handling
 
-The Content Delivery and Management APIs have different rate limits depending on the [type of request](https://www.storyblok.com/docs/api/content-delivery/v2/getting-started/rate-limit) and your [pricing plan](https://www.storyblok.com/pricing/technical-limits), these are expressed in requests per second.
+The Content Delivery and Management APIs have different rate limits depending on the [type of request](https://www.storyblok.com/docs/api/content-delivery/v2) and your [pricing plan](https://www.storyblok.com/pricing/technical-limits), these are expressed in requests per second.
 
 The plugin implements *API throttling* to slow down the API requests by introducing intermediate delays. You can specify the [maximum number of requests per second allowed](https://storyblok.github.io/storyblok-kotlin/ktor-client-storyblok/com.storyblok.ktor/-api/-config/requests-per-second.html) in the configuration block:
 
@@ -164,7 +164,7 @@ val client = HttpClient {
 
 #### CV parameter handling
 
-By specifying a default value for the `cv` parameter you can retrieve a specific [cached version](ttps://www.storyblok.com/docs/api/content-delivery/v2/getting-started/cache-invalidation) of a published resource.
+By specifying a default value for the `cv` parameter you can retrieve a specific [cached version](https://www.storyblok.com/docs/concepts/caching) of a published resource.
 
 Otherwise, the plugin will automatically set the `cv` parameter to the latest version of the space after the first request to the Content Delivery API.
 

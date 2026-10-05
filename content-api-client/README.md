@@ -17,7 +17,7 @@ dependencies {
 
 > [!NOTE]
 > The Content Delivery API Client uses Ktor under hood and depends on `ktor-client-storyblok`, you can learn more in the [Storyblok Ktor Client Plugin
-Guide](/../ktor-client-storyblok/README.md#add-plugin-dependency).
+Guide](../ktor-client-storyblok/README.md#add-plugin-dependency).
 
 ## Create the client
 
@@ -78,7 +78,7 @@ val client = StoryblokClient(
 )
 ```
 > [!TIP]
-> Learn more about these parameters in the [Storyblok Ktor Client Plugin Guide](/../ktor-client-storyblok/README.md#configuring-default-parameters-for-all-requests).
+> Learn more about these parameters in the [Storyblok Ktor Client Plugin Guide](../ktor-client-storyblok/README.md#configuring-default-parameters-for-all-requests).
 
 ### Advanced configuration
 
@@ -100,7 +100,7 @@ val client = StoryblokClient(
 )
 ```
 > [!TIP]
-> Learn more about the `apiBuilder` parameters in the [Storyblok Ktor Client Plugin Guide](/../ktor-client-storyblok/README.md#plugin-configuration).
+> Learn more about the `apiBuilder` parameters in the [Storyblok Ktor Client Plugin Guide](../ktor-client-storyblok/README.md#plugin-configuration).
 
 ## Registering custom components
 
@@ -483,4 +483,4 @@ client.close()
 ## Other resources
 
 - You can find the full client reference at https://storyblok.github.io/storyblok-kotlin/content-api-client/index.html
-- For details on the Ktor plugin, see the [Storyblok Ktor Client Plugin Guide](/../ktor-client-storyblok/README.md#plugin-guide).
+- For details on the Ktor plugin, see the [Storyblok Ktor Client Plugin Guide](../ktor-client-storyblok/README.md#plugin-guide).

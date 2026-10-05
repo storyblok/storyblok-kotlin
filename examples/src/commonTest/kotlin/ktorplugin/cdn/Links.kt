@@ -36,7 +36,7 @@ class Links {
 
     /**
      * Retrieve a single link object by its UUID using the Content Delivery API.
-     * https://www.storyblok.com/docs/api/content-delivery/v2/links/retrieve-single-link
+     * https://www.storyblok.com/docs/api/content-delivery/v2/links/retrieve-a-single-link
      */
     @Test
     fun `Retrieve a Single Link`() = runTest {
