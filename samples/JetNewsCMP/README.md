@@ -50,11 +50,22 @@ Apple Silicon only. `storyblok-compose` publishes `iosArm64` and `iosSimulatorAr
 
 ### Web
 
+The dev server uses HTTPS, because the Visual Editor only embeds https pages, even on localhost.
+Create a certificate in this folder once, with [mkcert](https://github.com/FiloSottile/mkcert)
+(the files are gitignored):
+
+```bash
+mkcert -install
+mkcert -cert-file localhost.pem -key-file localhost-key.pem localhost 127.0.0.1
+```
+
+Then run:
+
 ```bash
 ./gradlew :webApp:wasmJsBrowserDevelopmentRun
 ```
 
-Then open <http://localhost:8080>. `./gradlew :webApp:wasmJsBrowserDistribution` writes a
+and open <https://localhost:8080>. `./gradlew :webApp:wasmJsBrowserDistribution` writes a
 deployable bundle to `webApp/build/dist/wasmJs/productionExecutable`.
 
 ## What changed from the Android sample
@@ -66,7 +77,7 @@ all of the UI are unchanged — they were already platform-agnostic Compose. The
 | Android sample | Compose Multiplatform |
 |---|---|
 | `MainActivity` holds the UI | [`JetNewsApp()`](shared/src/commonMain/kotlin/com/example/jetnews/JetNewsApp.kt) in `commonMain`; all three platform entry points just call it |
-| `BuildConfig.DEBUG` picks draft vs published | an `expect val contentVersion` in `JetNewsApp.kt`. The web target's actual is `Draft`, because it is the one embedded in Storyblok's Visual Editor; Android and iOS share an `appMain` source set whose actual is `Published` |
+| `BuildConfig.DEBUG` picks draft vs published | an `expect val contentVersion` in `JetNewsApp.kt`. The web target's actual is `Draft`, because it is the one embedded in Storyblok's Visual Editor. Android and iOS read `Draft` in debug builds and `Published` in release builds: Android checks whether the app is debuggable (`FLAG_DEBUGGABLE`), iOS whether the binary is a debug build (`Platform.isDebugBinary`) |
 | — | an `expect val initialStoryKey`, also in `JetNewsApp.kt`. The web target derives it from `window.location.pathname`, so a Visual Editor preview URL such as `/post6` opens that story; the app targets start at the home story |
 | — | nothing: on the web target `story()` keeps emitting while the page is inside the Visual Editor, so the preview re-renders as an author types. The flow therefore never completes there, which is why `state` stays `Loading` in the editor — harmless, since content renders as soon as the story arrives |
 | Navigation 3 | unchanged, on JetBrains' `org.jetbrains.androidx.navigation3:navigation3-ui` — but the back stack now needs a [`SavedStateConfiguration`](shared/src/commonMain/kotlin/com/example/jetnews/NavKey.kt) (see below) |
