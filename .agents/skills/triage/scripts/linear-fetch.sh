@@ -181,11 +181,21 @@ case "$command" in
       exit 1
     fi
     # Fetch each issue and collect results
+    # Fetch every identifier, then fail if any weren't found, so callers can't mistake a partial
+    # result for a complete one but still get the issues that do exist.
+    missing=()
     for id in "$@"; do
       echo "--- ${id} ---"
       response=$(fetch_issue "$id") || exit 1
-      jq -e '.data.issues.nodes[0] // empty' <<< "$response" || echo "error: ${id} not found" >&2
+      if ! jq -e '.data.issues.nodes[0] // empty' <<< "$response"; then
+        echo "error: ${id} not found" >&2
+        missing+=("$id")
+      fi
     done
+    if [ ${#missing[@]} -gt 0 ]; then
+      echo "error: not found: ${missing[*]}" >&2
+      exit 1
+    fi
     ;;
   triage)
     fetch_triage "$@" || exit 1
