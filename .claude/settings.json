@@ -1,0 +1,38 @@
+{
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "permissions": {
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Bash(./gradlew *)",
+      "Bash(bash .agents/skills/review-and-qa/scripts/review-context.sh *)",
+      "Bash(bash .agents/skills/review-and-qa/scripts/review-context.sh)",
+      "Bash(bash .agents/skills/triage/scripts/linear-fetch.sh *)",
+      "Bash(git log *)",
+      "Bash(git show *)",
+      "Bash(git diff *)",
+      "Bash(git status *)",
+      "Bash(git blame *)",
+      "Bash(git branch *)",
+      "Bash(git fetch *)",
+      "Bash(git worktree *)",
+      "Bash(gh issue view *)",
+      "Bash(gh issue list *)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr list *)",
+      "Bash(gh pr diff *)",
+      "Bash(gh pr checks *)",
+      "Bash(gh run list *)",
+      "Bash(gh run view *)",
+      "Bash(gh release list *)",
+      "Bash(mkdir -p claude-output)"
+    ],
+    "deny": [
+      "Bash(./gradlew *MavenCentral*)"
+    ]
+  }
+}
