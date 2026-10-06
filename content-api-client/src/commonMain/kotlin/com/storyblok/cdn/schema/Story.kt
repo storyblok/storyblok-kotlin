@@ -9,6 +9,10 @@ import kotlin.uuid.Uuid
 
 /**
  * Represents a single story retrieved from the Storyblok API.
+ *
+ * Unknown keys are ignored, here and in the nested [Alternate] and [TranslatedSlug], because a story is
+ * not only something this client fetches: the Visual Editor inlines the relations it resolves as story
+ * objects carrying its own extra fields, and a live update that fails to decode is dropped.
  */
 @Serializable
 @JsonIgnoreUnknownKeys
@@ -100,9 +104,11 @@ public data class Story<T : Component>(
     /**
      * Basic data for a story defined as an alternate of the current story.
      *
-     * Alternates are different language versions or variants of the same content.
+     * Alternates are different language versions or variants of the same content. Unknown keys are
+     * ignored, as on [Story].
      */
     @Serializable
+    @JsonIgnoreUnknownKeys
     public data class Alternate(
         /** Story ID. */
         val id: Long,
@@ -126,9 +132,10 @@ public data class Story<T : Component>(
     /**
      * Translated slug information for localized story variants.
      *
-     * Available when the Translatable Slugs app is installed.
+     * Available when the Translatable Slugs app is installed. Unknown keys are ignored, as on [Story].
      */
     @Serializable
+    @JsonIgnoreUnknownKeys
     public data class TranslatedSlug(
         /** Translated slug. */
         val path: String,
