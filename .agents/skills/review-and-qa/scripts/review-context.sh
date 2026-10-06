@@ -13,6 +13,12 @@
 
 set -euo pipefail
 
+# Under pipefail, a reader that exits early (grep -q, head) makes the writer die of SIGPIPE on large
+# input, and the whole pipeline then reports failure: a match reads as no match, or set -e aborts.
+# These helpers never close a pipe early.
+changed_has() { grep -qE "$1" <<< "$changed"; }   # does any changed path match the regex?
+first() { awk -v n="$1" 'NR <= n'; }              # like head -n, but reads all of its input
+
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 cd "$REPO_ROOT"
 OUT_DIR="claude-output"
@@ -33,6 +39,16 @@ if [[ "$target" =~ ^#?([0-9]+)$ ]] || [[ "$target" =~ /pull/([0-9]+) ]]; then
   git fetch -q origin "pull/$pr/head" "$base_branch"
   head_ref="$(git rev-parse FETCH_HEAD)"
   base="$(git merge-base "origin/$base_branch" "$head_ref")"
+  if [[ "$base" == "$head_ref" ]]; then
+    # Merged with a merge commit, so the head is already in the base branch and the range is empty.
+    # Compare against the base branch as it was before the merge instead.
+    merge_oid="$(gh pr view "$pr" --json mergeCommit --jq '.mergeCommit.oid // empty')"
+    if [[ -n "$merge_oid" ]]; then
+      base="$(git merge-base "$merge_oid^1" "$head_ref")"
+    else
+      echo "warning: the PR head is already in $base_branch, so the diff is empty" >&2
+    fi
+  fi
 elif [[ -z "$target" ]]; then
   worktree_mode=true
   head_ref="HEAD"
@@ -148,51 +164,51 @@ fi
 modules="ktor-client-storyblok content-api-client storyblok-compose storyblok-material3"
 touched_modules=""
 for m in $modules examples; do
-  if echo "$changed" | grep -q "^$m/"; then touched_modules="$touched_modules $m"; fi
+  if changed_has "^$m/"; then touched_modules="$touched_modules $m"; fi
 done
-build_changed=$(echo "$changed" | grep -E '^(gradle/|[^/]+\.gradle\.kts$|gradle\.properties$|kotlin-js-store/)' || true)
+build_changed=$(grep -E '^(gradle/|[^/]+\.gradle\.kts$|gradle\.properties$|kotlin-js-store/)' <<< "$changed" || true)
 
 echo
 echo "## Affected areas"
 echo
 for m in $touched_modules; do
-  if echo "$changed" | grep "^$m/" | grep -qvE "^$m/[^/]+\.md$"; then echo "- $m"; else echo "- $m (docs only)"; fi
+  if [[ -n "$(grep "^$m/" <<< "$changed" | grep -vE "^$m/[^/]+\.md$" || true)" ]]; then echo "- $m"; else echo "- $m (docs only)"; fi
 done
 for s in JetNews JetNewsCMP; do
-  echo "$changed" | grep -q "^samples/$s/" && echo "- samples/$s (separate Gradle build)"
+  changed_has "^samples/$s/" && echo "- samples/$s (separate Gradle build)"
 done
 [[ -n "$build_changed" ]] && echo "- build configuration (all modules):" && echo "$build_changed" | sed 's/^/  - /'
-echo "$changed" | grep -q '^\.github/' && echo "- CI workflows"
+changed_has '^\.github/' && echo "- CI workflows"
 
 echo
 echo "## Flags"
 echo
 for m in $modules; do
-  if echo "$changed" | grep -qE "^$m/src/[A-Za-z]+Main/"; then
-    if echo "$changed" | grep -q "^$m/api/"; then
+  if changed_has "^$m/src/[A-Za-z]+Main/"; then
+    if changed_has "^$m/api/"; then
       echo "- $m: main sources and ABI dump both changed. Read the api/ diff as the public API diff."
     else
       echo "- $m: main sources changed, ABI dump did not. Expected for non-signature changes; otherwise the dump is stale (run ./gradlew :$m:checkLegacyAbi)."
     fi
-    if ! echo "$changed" | grep -qE "^$m/src/[A-Za-z]+Test/"; then
+    if ! changed_has "^$m/src/[A-Za-z]+Test/"; then
       echo "- $m: main sources changed without test changes."
     fi
   fi
 done
-if [[ -n "$touched_modules" ]] && ! echo "$changed" | grep -q '^CHANGELOG.md$'; then
+if [[ -n "$touched_modules" ]] && ! changed_has '^CHANGELOG.md$'; then
   echo "- CHANGELOG.md not updated."
 fi
-echo "$changed" | grep -q '^gradle/libs.versions.toml$' && echo "- Dependency or version change in gradle/libs.versions.toml. Check the Kotlin hold note (KT-89275) and whether samples need the same bump."
-echo "$changed" | grep -q '^kotlin-js-store/' && echo "- Yarn lockfile changed. Check it came from kotlinUpgradeYarnLock / kotlinWasmUpgradeYarnLock."
-grep -nE '^\+.*(TODO|FIXME|println\()' "$diff_file" | head -5 | sed 's/^/- New TODO\/println: /' || true
-grep -nE '^\+.*@(Suppress|OptIn)\(' "$diff_file" | head -5 | sed 's/^/- New suppression\/opt-in: /' || true
+changed_has '^gradle/libs.versions.toml$' && echo "- Dependency or version change in gradle/libs.versions.toml. Check the Kotlin hold note (KT-89275) and whether samples need the same bump."
+changed_has '^kotlin-js-store/' && echo "- Yarn lockfile changed. Check it came from kotlinUpgradeYarnLock / kotlinWasmUpgradeYarnLock."
+grep -nE '^\+.*(TODO|FIXME|println\()' "$diff_file" | first 5 | sed 's/^/- New TODO\/println: /' || true
+grep -nE '^\+.*@(Suppress|OptIn)\(' "$diff_file" | first 5 | sed 's/^/- New suppression\/opt-in: /' || true
 
 echo
 echo "## Suggested verification (host only; CI covers the rest)"
 echo
 tasks=""
 for m in $modules; do
-  echo "$changed" | grep -qE "^$m/(src/|build\.gradle\.kts$)" && tasks="$tasks :$m:jvmTest"
+  changed_has "^$m/(src/|build\.gradle\.kts$)" && tasks="$tasks :$m:jvmTest"
 done
 if [[ -n "$build_changed" && -z "$tasks" ]]; then tasks=" :ktor-client-storyblok:jvmTest :content-api-client:jvmTest"; fi
 if [[ -n "$tasks" ]]; then
