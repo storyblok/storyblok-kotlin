@@ -34,8 +34,8 @@ entry.
 ## Commits and pull requests
 
 - Use [Conventional Commits](https://www.conventionalcommits.org/) with the module as the scope,
-  e.g. `fix(content-api-client): decode the relations the editor inlines`. Keep the subject in the
-  imperative and under 50 characters.
+  e.g. `fix(content-api-client): tolerate unknown keys`. Write the subject in the imperative and
+  aim for under 50 characters. With a long scope, keep the description short.
 - Keep each pull request to one logical change, with tests. A bug fix needs a regression test.
 - Storyblok employees: commit with your `@storyblok.com` email address. CI checks it.
 

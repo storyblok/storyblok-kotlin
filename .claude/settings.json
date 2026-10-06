@@ -8,7 +8,11 @@
       "Read",
       "Glob",
       "Grep",
-      "Bash(./gradlew *)",
+      "Bash(./gradlew checkLegacyAbi)",
+      "Bash(./gradlew :ktor-client-storyblok:jvmTest)",
+      "Bash(./gradlew :content-api-client:jvmTest)",
+      "Bash(./gradlew :storyblok-compose:jvmTest)",
+      "Bash(./gradlew :storyblok-material3:jvmTest)",
       "Bash(bash .agents/skills/review-and-qa/scripts/review-context.sh *)",
       "Bash(bash .agents/skills/review-and-qa/scripts/review-context.sh)",
       "Bash(bash .agents/skills/triage/scripts/linear-fetch.sh *)",
@@ -30,9 +34,6 @@
       "Bash(gh run view *)",
       "Bash(gh release list *)",
       "Bash(mkdir -p claude-output)"
-    ],
-    "deny": [
-      "Bash(./gradlew *MavenCentral*)"
     ]
   }
 }
