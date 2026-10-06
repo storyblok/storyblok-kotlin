@@ -360,6 +360,15 @@ class StoryblokBridgeTest {
         """
 
         /**
+         * An alternate as the Content Delivery API returns one. What the editor adds to these isn't
+         * documented, so the tests above add an arbitrary key: a nested object must tolerate one just as
+         * the story around it does, or the whole update is dropped.
+         */
+        val ALTERNATE = """
+            {"id": 9, "name": "Grace (de)", "slug": "grace", "published": true, "full_slug": "de/grace", "is_folder": false, "parent_id": 5}
+        """.trim()
+
+        /**
          * An author story as the editor sends it: inlined in place of the uuid the Content Delivery
          * API returns.
          *
@@ -369,15 +378,6 @@ class StoryblokBridgeTest {
          * inlines — so no uuid is ever left for the client to look up, and there is no `rels` on the
          * payload to look one up in.
          */
-        /**
-         * An alternate as the Content Delivery API returns one. What the editor adds to these isn't
-         * documented, so the tests above add an arbitrary key: a nested object must tolerate one just as
-         * the story around it does, or the whole update is dropped.
-         */
-        val ALTERNATE = """
-            {"id": 9, "name": "Grace (de)", "slug": "grace", "published": true, "full_slug": "de/grace", "is_folder": false, "parent_id": 5}
-        """.trim()
-
         val EDITOR_RESOLVED_AUTHOR = editorResolved(
             story(
                 3,
