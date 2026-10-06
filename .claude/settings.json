@@ -25,7 +25,6 @@
       "Bash(git branch -a)",
       "Bash(git branch -r)",
       "Bash(git branch --show-current)",
-      "Bash(git fetch *)",
       "Bash(git worktree list)",
       "Bash(gh issue view *)",
       "Bash(gh issue list *)",
@@ -37,6 +36,11 @@
       "Bash(gh run view *)",
       "Bash(gh release list *)",
       "Bash(mkdir -p claude-output)"
+    ],
+    "deny": [
+      "Bash(git diff *--output*)",
+      "Bash(git show *--output*)",
+      "Bash(git log *--output*)"
     ]
   }
 }
