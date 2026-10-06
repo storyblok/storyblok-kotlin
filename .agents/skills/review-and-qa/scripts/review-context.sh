@@ -79,7 +79,11 @@ if $worktree_mode; then
   # New files are part of the change too, but git diff only sees tracked ones.
   untracked="$(git ls-files --others --exclude-standard)"
   while IFS= read -r f; do
-    [[ -f "$f" && ! -L "$f" ]] && { git diff --no-index -U5 /dev/null "$f" >> "$diff_file" || true; }
+    if [[ -L "$f" ]]; then
+      printf 'new symlink: %s -> %s\n' "$f" "$(readlink "$f")" >> "$diff_file"
+    elif [[ -f "$f" ]]; then
+      git diff --no-index -U5 /dev/null "$f" >> "$diff_file" || true
+    fi
   done <<< "$untracked"
   [[ -n "$untracked" ]] && changed="$(printf '%s\n%s' "$changed" "$untracked" | sed '/^$/d')"
 fi
@@ -110,7 +114,7 @@ if [[ -n "$pr" ]]; then
   echo
   echo "### Description"
   echo
-  gh pr view "$pr" --json body --jq .body | head -80
+  gh pr view "$pr" --json body --jq .body
   echo
   echo "### CI checks"
   echo
@@ -192,7 +196,9 @@ for m in $modules; do
 done
 if [[ -n "$build_changed" && -z "$tasks" ]]; then tasks=" :ktor-client-storyblok:jvmTest :content-api-client:jvmTest"; fi
 if [[ -n "$tasks" ]]; then
-  echo "    ./gradlew$tasks checkLegacyAbi"
+  # One task per command: .claude/settings.json pre-approves these exact commands only.
+  for t in $tasks; do echo "    ./gradlew $t"; done
+  echo "    ./gradlew checkLegacyAbi"
   if $worktree_mode || $in_head; then
     echo "  (the checked-out code contains the change, so this can run as is)"
   else

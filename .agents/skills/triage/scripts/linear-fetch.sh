@@ -104,8 +104,9 @@ fetch_triage() {
   done
 
   local query='
-    query($filter: IssueFilter) {
-      issues(filter: $filter, first: 50, orderBy: createdAt) {
+    query($filter: IssueFilter, $after: String) {
+      issues(filter: $filter, first: 50, after: $after, orderBy: createdAt) {
+        pageInfo { hasNextPage endCursor }
         nodes {
           identifier
           title
@@ -126,17 +127,29 @@ fetch_triage() {
     }
   '
 
-  local variables
+  local filter
   if [ -n "$team_key" ]; then
-    variables=$(jq -n \
-      --arg team "$team_key" \
-      '{ filter: { state: { type: { eq: "triage" } }, team: { key: { eq: $team } } } }')
+    filter=$(jq -n --arg team "$team_key" \
+      '{ state: { type: { eq: "triage" } }, team: { key: { eq: $team } } }')
   else
-    variables=$(jq -n \
-      '{ filter: { state: { type: { eq: "triage" } } } }')
+    filter=$(jq -n '{ state: { type: { eq: "triage" } } }')
   fi
 
-  gql "$query" "$variables"
+  # Linear returns at most 50 issues per request, so follow the cursor until the last page and
+  # print every page's issues as one JSON array.
+  local after="null" all="[]" page
+  while :; do
+    page=$(gql "$query" "$(jq -n --argjson filter "$filter" --argjson after "$after" \
+      '{ filter: $filter, after: $after }')")
+    if [ "$(jq 'has("errors")' <<< "$page")" = "true" ]; then
+      jq -r '.errors[].message' <<< "$page" >&2
+      return 1
+    fi
+    all=$(jq -s '.[0] + .[1].data.issues.nodes' <(echo "$all") <(echo "$page"))
+    [ "$(jq '.data.issues.pageInfo.hasNextPage' <<< "$page")" = "true" ] || break
+    after=$(jq '.data.issues.pageInfo.endCursor' <<< "$page")
+  done
+  echo "$all"
 }
 
 # ---------------------------------------------------------------------------
@@ -160,7 +173,7 @@ case "$command" in
     done
     ;;
   triage)
-    fetch_triage "$@" | jq '.data.issues.nodes // empty'
+    fetch_triage "$@"
     ;;
   *)
     echo "Usage: linear-fetch.sh <issue|triage> [args...]" >&2

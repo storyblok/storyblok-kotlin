@@ -26,12 +26,18 @@ and resolve it from Maven Central first, then `mavenLocal()`.
 
 ## Step 2: Publish the SDK to Maven Local
 
-Use a local-only version in **both** the root and the sample's `gradle/libs.versions.toml`:
+Use a local-only version in **both** the root and the sample's `gradle/libs.versions.toml`. Both
+files must have no uncommitted changes first, because the cleanup below resets them. If either has
+changes, stop and ask the user rather than overwriting their work:
 
 ```bash
 LOCAL=0.0.0-local
-sed -i '' "s/^storyblok-kotlin = .*/storyblok-kotlin = \"$LOCAL\"/" gradle/libs.versions.toml
-sed -i '' "s/^storyblok = .*/storyblok = \"$LOCAL\"/" samples/<Sample>/gradle/libs.versions.toml
+if git diff --quiet -- gradle/libs.versions.toml samples/<Sample>/gradle/libs.versions.toml; then
+  sed -i '' "s/^storyblok-kotlin = .*/storyblok-kotlin = \"$LOCAL\"/" gradle/libs.versions.toml
+  sed -i '' "s/^storyblok = .*/storyblok = \"$LOCAL\"/" samples/<Sample>/gradle/libs.versions.toml
+else
+  echo "STOP: the version catalogs have uncommitted changes"
+fi
 ```
 
 (On Linux, use `sed -i` without `''`.)
@@ -58,7 +64,8 @@ Check that the sample resolves it:
 cd samples/JetNews && ./gradlew -q :app:dependencies --configuration debugRuntimeClasspath | grep com.storyblok
 ```
 
-**Before committing anything, revert both version edits:**
+**Before committing anything, revert both version edits.** The check above makes this safe: the
+only changes in these files are the two version lines.
 
 ```bash
 git checkout -- gradle/libs.versions.toml samples/<Sample>/gradle/libs.versions.toml

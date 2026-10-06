@@ -35,7 +35,7 @@ Keep it fast:
   the samples.
 - If the checked-out code contains the change (the script says so) and library code changed,
   start the suggested
-  `./gradlew ... jvmTest checkLegacyAbi` command **in the background** right away. Collect the
+  `./gradlew` commands **in the background** right away. Collect the
   result before writing the report.
 - Search with Grep across modules instead of reading whole files.
 
