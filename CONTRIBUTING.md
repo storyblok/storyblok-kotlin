@@ -45,8 +45,8 @@ This repository is set up for AI coding agents. Use them if you like, but you're
 everything you submit: review, run and understand the code as if you wrote it yourself.
 
 - **[AGENTS.md](AGENTS.md)**: the project guide for agents. It covers layout, targets, commands,
-  conventions and commit rules. Claude Code, Codex, Cursor, GitHub Copilot, Gemini CLI and most
-  other tools read it automatically (`CLAUDE.md` imports it for Claude Code).
+  conventions and commit rules. Claude Code (v2.1.277 or later), Codex, Cursor, GitHub Copilot,
+  Gemini CLI and most other tools read it automatically.
 - **Skills** in [`.agents/skills/`](.agents/skills) (symlinked into `.claude/skills/`) package
   common workflows. In Claude Code, run them as slash commands:
 

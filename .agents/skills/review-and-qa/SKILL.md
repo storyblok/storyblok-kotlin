@@ -16,10 +16,11 @@ with manual test cases. `AGENTS.md` has the repo layout and conventions. Don't r
 
 ## Step 0: Collect the context
 
-Run this first, with the arguments unchanged (empty means the current branch and working tree):
+Run this first, with the arguments unchanged and quoted, so a `#42` isn't read as a shell comment
+(empty means the current branch and working tree):
 
 ```bash
-bash .agents/skills/review-and-qa/scripts/review-context.sh $ARGUMENTS
+bash .agents/skills/review-and-qa/scripts/review-context.sh "$ARGUMENTS"
 ```
 
 It prints the PR description and CI status, commits with author emails, changed files, affected

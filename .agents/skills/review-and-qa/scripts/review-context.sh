@@ -184,13 +184,13 @@ echo
 echo "## Flags"
 echo
 for m in $modules; do
-  if changed_has "^$m/src/[A-Za-z]+Main/"; then
+  if changed_has "^$m/src/[A-Za-z0-9]+Main/"; then
     if changed_has "^$m/api/"; then
       echo "- $m: main sources and ABI dump both changed. Read the api/ diff as the public API diff."
     else
       echo "- $m: main sources changed, ABI dump did not. Expected for non-signature changes; otherwise the dump is stale (run ./gradlew :$m:checkLegacyAbi)."
     fi
-    if ! changed_has "^$m/src/[A-Za-z]+Test/"; then
+    if ! changed_has "^$m/src/[A-Za-z0-9]+Test/"; then
       echo "- $m: main sources changed without test changes."
     fi
   fi

@@ -100,19 +100,3 @@ Run Gradle from the repo root. JVM tests are the fast inner loop. CI runs the re
   `--force-with-lease`.
 - PRs target `main`. Keep them to one logical change. Note any public API change and how the ABI
   dump moved.
-
-## Skills
-
-Skills live in `.agents/skills/` (symlinked into `.claude/skills/`). Generated reports go to
-`claude-output/` (gitignored).
-
-| Skill              | Use it to                                                         |
-| ------------------ | ----------------------------------------------------------------- |
-| `review-and-qa`    | Review a PR, branch or commit and write a QA plan                 |
-| `investigate`      | Root-cause a GitHub issue or bug report                           |
-| `triage`           | Classify and prioritise GitHub issues or Linear tickets           |
-| `plan`             | Write an implementation plan before coding                        |
-| `implement`        | Carry out an approved plan                                        |
-| `qa-engineer-unit` | Write or change unit tests                                        |
-| `run-sample`       | Build and run JetNews or JetNewsCMP against local SDK changes     |
-| `release`          | Bump the version, update docs and changelog, and cut a release    |
