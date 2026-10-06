@@ -40,10 +40,28 @@ gql() {
   local payload
   payload=$(node -e "process.stdout.write(JSON.stringify({query: process.argv[1], variables: JSON.parse(process.argv[2])}))" "$query" "$variables")
 
-  curl -s -X POST "${LINEAR_API}" \
+  # Fail here, rather than let callers select `.data` from an error and print nothing: an HTTP error,
+  # a body that isn't JSON, a GraphQL `errors` array or a missing `data` all stop the script.
+  local response status
+  if ! response=$(curl -sS -X POST "${LINEAR_API}" \
     -H "Content-Type: application/json" \
     -H "Authorization: ${LINEAR_API_KEY}" \
-    -d "$payload"
+    -d "$payload" -w '\n%{http_code}'); then
+    echo "error: request to Linear failed" >&2
+    return 1
+  fi
+  status="${response##*$'\n'}"
+  response="${response%$'\n'*}"
+  if ! jq -e 'type == "object"' <<< "$response" > /dev/null 2>&1; then
+    echo "error: Linear returned HTTP ${status} with a body that isn't JSON" >&2
+    return 1
+  fi
+  if [ "$status" -ge 400 ] || [ "$(jq 'has("errors") or (.data == null)' <<< "$response")" = "true" ]; then
+    echo "error: Linear returned HTTP ${status}:" >&2
+    jq -r '(.errors // [{ message: "the response has no data" }])[] | "  " + (.message // tostring)' <<< "$response" >&2
+    return 1
+  fi
+  printf '%s\n' "$response"
 }
 
 # ---------------------------------------------------------------------------
@@ -140,11 +158,7 @@ fetch_triage() {
   local after="null" all="[]" page
   while :; do
     page=$(gql "$query" "$(jq -n --argjson filter "$filter" --argjson after "$after" \
-      '{ filter: $filter, after: $after }')")
-    if [ "$(jq 'has("errors")' <<< "$page")" = "true" ]; then
-      jq -r '.errors[].message' <<< "$page" >&2
-      return 1
-    fi
+      '{ filter: $filter, after: $after }')") || return 1
     all=$(jq -s '.[0] + .[1].data.issues.nodes' <(echo "$all") <(echo "$page"))
     [ "$(jq '.data.issues.pageInfo.hasNextPage' <<< "$page")" = "true" ] || break
     after=$(jq '.data.issues.pageInfo.endCursor' <<< "$page")
@@ -169,11 +183,12 @@ case "$command" in
     # Fetch each issue and collect results
     for id in "$@"; do
       echo "--- ${id} ---"
-      fetch_issue "$id" | jq '.data.issues.nodes[0] // empty'
+      response=$(fetch_issue "$id") || exit 1
+      jq -e '.data.issues.nodes[0] // empty' <<< "$response" || echo "error: ${id} not found" >&2
     done
     ;;
   triage)
-    fetch_triage "$@"
+    fetch_triage "$@" || exit 1
     ;;
   *)
     echo "Usage: linear-fetch.sh <issue|triage> [args...]" >&2
