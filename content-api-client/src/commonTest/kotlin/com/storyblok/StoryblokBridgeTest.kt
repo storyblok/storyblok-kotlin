@@ -275,6 +275,32 @@ class StoryblokBridgeTest {
     }
 
     @Test
+    fun `an edited story's relations decode when their alternates carry keys the client does not know`() = runTest {
+        val author = EDITOR_RESOLVED_AUTHOR.replace(
+            "\"alternates\": []",
+            "\"alternates\": [${ALTERNATE.dropLast(1)}, \"unknown_key\": true}]",
+        )
+        val client = client(ARTICLE_RESPONSE, editedArticle(author))
+
+        val story = client.story<Article>("article").toList().last()
+
+        assertEquals("Grace", (story.content.author.content as Author).name)
+    }
+
+    @Test
+    fun `an edited story's relations decode when their translated slugs carry keys the client does not know`() = runTest {
+        val author = EDITOR_RESOLVED_AUTHOR.replace(
+            "\"translated_slugs\": null",
+            """"translated_slugs": [{"path": "grace", "name": "Grace", "lang": "de", "published": true, "unknown_key": true}]""",
+        )
+        val client = client(ARTICLE_RESPONSE, editedArticle(author))
+
+        val story = client.story<Article>("article").toList().last()
+
+        assertEquals("Grace", (story.content.author.content as Author).name)
+    }
+
+    @Test
     fun `the resolve level the story was fetched with reaches the editor's updates`() = runTest {
         var seen: Int? = null
         val client = client(PAGE_RESPONSE) { _, level -> seen = level; flowOf() }
@@ -332,6 +358,15 @@ class StoryblokBridgeTest {
               "rels": [${story(2, AUTHOR_UUID, "ada", """{"component": "author", "_uid": "u2", "name": "Ada"}""")}]
             }
         """
+
+        /**
+         * An alternate as the Content Delivery API returns one. What the editor adds to these isn't
+         * documented, so the tests above add an arbitrary key: a nested object must tolerate one just as
+         * the story around it does, or the whole update is dropped.
+         */
+        val ALTERNATE = """
+            {"id": 9, "name": "Grace (de)", "slug": "grace", "published": true, "full_slug": "de/grace", "is_folder": false, "parent_id": 5}
+        """.trim()
 
         /**
          * An author story as the editor sends it: inlined in place of the uuid the Content Delivery
