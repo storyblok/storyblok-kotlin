@@ -40,7 +40,9 @@
     "deny": [
       "Bash(git diff *--output*)",
       "Bash(git show *--output*)",
-      "Bash(git log *--output*)"
+      "Bash(git log *--output*)",
+      "Read(./.env)",
+      "Read(./.env.*)"
     ]
   }
 }

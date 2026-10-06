@@ -58,10 +58,17 @@ MODULES="ktor-client-storyblok content-api-client storyblok-compose storyblok-ma
 ./gradlew $(for m in $MODULES; do printf ':%s:publishWasmJsPublicationToMavenLocal ' $m; done)
 ```
 
-Check that the sample resolves it:
+Check that the sample you're running resolves the local version, for the platform you're running.
+No output means it didn't, usually because a publication for that platform is missing:
 
 ```bash
-cd samples/JetNews && ./gradlew -q :app:dependencies --configuration debugRuntimeClasspath | grep com.storyblok
+# JetNews (Android)
+(cd samples/JetNews && ./gradlew -q :app:dependencies --configuration debugRuntimeClasspath | grep "com.storyblok.*$LOCAL")
+
+# JetNewsCMP: Android, web, iOS
+(cd samples/JetNewsCMP && ./gradlew -q :androidApp:dependencies --configuration debugRuntimeClasspath | grep "com.storyblok.*$LOCAL")
+(cd samples/JetNewsCMP && ./gradlew -q :webApp:dependencies --configuration wasmJsRuntimeClasspath | grep "com.storyblok.*$LOCAL")
+(cd samples/JetNewsCMP && ./gradlew -q :shared:dependencies --configuration iosSimulatorArm64CompileKlibraries | grep "com.storyblok.*$LOCAL")
 ```
 
 **Before committing anything, revert both version edits.** The check above makes this safe: the
