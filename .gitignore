@@ -13,4 +13,3 @@ xcuserdata
 *.gpg
 # AI agent reports
 claude-output
-.env

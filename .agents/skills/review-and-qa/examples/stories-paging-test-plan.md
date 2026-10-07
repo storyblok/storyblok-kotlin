@@ -7,8 +7,8 @@ description: Example of a manual test plan for an SDK change, verified through a
 
 ## Environment setup
 
-Build the SDK into Maven Local under an unpublished version, then point JetNews at it. See the
-`run-sample` skill for the full steps and how to revert.
+Build the SDK into Maven Local under an unpublished version, then point JetNews at it. Revert both
+version edits afterwards.
 
 ```bash
 # repo root: temporarily set storyblok-kotlin = "0.0.0-local" in gradle/libs.versions.toml

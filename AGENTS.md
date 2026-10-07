@@ -16,7 +16,9 @@ multi-module build. Every published module ships the same version, set by `story
 
 - `samples/JetNews` (Android) and `samples/JetNewsCMP` (Android, iOS, wasmJs web preview) are
   **separate Gradle builds**. They consume the SDK from Maven Central or `mavenLocal()`, not as
-  project dependencies. See the `run-sample` skill.
+  project dependencies. Maven Central is checked first, so to try local SDK changes in a sample,
+  `publishToMavenLocal` under a version that isn't on Central: set it in both the root and the
+  sample's `gradle/libs.versions.toml`, and revert both before committing.
 - Each published module has `README.md` (GitHub), `Module.md` (Dokka) and `api/` (ABI dumps).
 - `kotlin-js-store/` holds the committed yarn locks for the JS and Wasm test tooling.
 
