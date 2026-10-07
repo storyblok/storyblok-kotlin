@@ -152,8 +152,8 @@ Write manual test cases a person can run, covering:
    in slugs and queries.
 4. **Error recovery**: retry/backoff, cache fallback, and live preview after a bad payload.
 5. **Platforms**: which targets to spot-check by hand and why (e.g. Android and iOS via
-   `samples/JetNewsCMP`, and the web target for Visual Editor preview). Use the `run-sample` skill
-   steps for setup.
+   `samples/JetNewsCMP`, and the web target for Visual Editor preview). `AGENTS.md` explains how
+   to run a sample against local SDK changes.
 
 Skip cases automated tests already cover. Mention them in a line instead.
 
