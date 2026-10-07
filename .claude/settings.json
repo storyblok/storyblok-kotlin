@@ -1,0 +1,45 @@
+{
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "permissions": {
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Bash(./gradlew checkLegacyAbi)",
+      "Bash(./gradlew :ktor-client-storyblok:jvmTest)",
+      "Bash(./gradlew :content-api-client:jvmTest)",
+      "Bash(./gradlew :storyblok-compose:jvmTest)",
+      "Bash(./gradlew :storyblok-material3:jvmTest)",
+      "Bash(bash .agents/skills/review-and-qa/scripts/review-context.sh *)",
+      "Bash(bash .agents/skills/review-and-qa/scripts/review-context.sh)",
+      "Bash(git log *)",
+      "Bash(git show *)",
+      "Bash(git diff *)",
+      "Bash(git status *)",
+      "Bash(git blame *)",
+      "Bash(git branch)",
+      "Bash(git branch -a)",
+      "Bash(git branch -r)",
+      "Bash(git branch --show-current)",
+      "Bash(git worktree list)",
+      "Bash(gh issue view *)",
+      "Bash(gh issue list *)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr list *)",
+      "Bash(gh pr diff *)",
+      "Bash(gh pr checks *)",
+      "Bash(gh run list *)",
+      "Bash(gh run view *)",
+      "Bash(gh release list *)",
+      "Bash(mkdir -p claude-output)"
+    ],
+    "deny": [
+      "Bash(git diff *--output*)",
+      "Bash(git show *--output*)",
+      "Bash(git log *--output*)"
+    ]
+  }
+}
