@@ -17,9 +17,14 @@ plugins {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
+        // First, so a publishToMavenLocal build of the SDK wins over the same version on Central.
+        mavenLocal {
+            content {
+                includeGroup("com.storyblok")
+            }
+        }
         google()
         mavenCentral()
-        mavenLocal()
     }
 }
 
