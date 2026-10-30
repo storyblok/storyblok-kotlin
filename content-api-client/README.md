@@ -432,6 +432,8 @@ The client leverages the underlying [ktor-client-storyblok](../ktor-client-story
 
 This provides a "stale-while-revalidate" pattern for optimal user experience.
 
+A cached copy that no longer deserializes into your components is passed over, as though the cache held none, rather than failing the flow. This happens when a copy was cached before the content changed shape, such as a required field added to a component since. Only the latest version failing to deserialize is reported.
+
 ### Where the cache is stored
 
 The client configures the cache with file-backed storage where the platform supports it, so it survives process restarts. Only the Content Delivery API is cached to disk; the Management API is not.

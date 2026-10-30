@@ -34,6 +34,7 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.DeserializationStrategy
@@ -192,6 +193,12 @@ public class StoryblokClientImpl internal constructor(
         JsonObject(this + ("content" to this["content"]!!.jsonObject.resolve(rels, resolveLevel))),
     )
 
+    /** Deserializes the story a story endpoint's response [body][this] carries, as [toStory] does. */
+    private fun <T : Component> String.toStory(typeInfo: TypeInfo, resolveLevel: Int): Story<T> {
+        val body = json.parseToJsonElement(this).jsonObject
+        return body["story"]!!.jsonObject.toStory(typeInfo, body.rels, resolveLevel)
+    }
+
     override fun close() {
         bridge.destroy()
         http.close()
@@ -266,23 +273,27 @@ public class StoryblokClientImpl internal constructor(
                 val cached = http.get(uriString) {
                     onlyIfCached()
                     parameters.forEach { (name, value) -> parameter(name, value) }
+                }.body<String>()
+                // A copy cached before the content changed shape, such as a required field added to a component since,
+                // no longer deserializes. It is passed over as a miss is, rather than failing the flow before the fresh
+                // copy arrives.
+                val story = try {
+                    cached.toStory<T>(typeInfo, resolveLevel)
+                } catch (e: Exception) {
+                    null
                 }
-                emit(cached.body<String>())
+                if (story != null) emit(cached to story)
             } catch (e: ServerResponseException) {
                 if(e.response.status != HttpStatusCode.GatewayTimeout) throw e
             }
 
             val response = http.get(uriString) {
                 parameters.forEach { (name, value) -> parameter(name, value) }
-            }
-            emit(response.body<String>())
+            }.body<String>()
+            emit(response to response.toStory<T>(typeInfo, resolveLevel))
         }
-        .distinctUntilChanged()
-        .flatMapLatest { response ->
-            val body = json.parseToJsonElement(response).jsonObject
-            val story = body["story"]!!.jsonObject.toStory<T>(typeInfo, body.rels, resolveLevel)
-            bridge.story(story, typeInfo, resolveLevel)
-        }
+        .distinctUntilChangedBy { (body) -> body }
+        .flatMapLatest { (_, story) -> bridge.story(story, typeInfo, resolveLevel) }
         .distinctUntilChanged()
         .catch {
             if (it is CancellationException) {
