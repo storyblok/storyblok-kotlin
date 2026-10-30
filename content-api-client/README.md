@@ -422,6 +422,26 @@ println(page.image.filename)
 println(page.image.alt)
 ```
 
+### Blank values
+
+Storyblok sends a date, number or single-option story field left blank as `""`, rather than leaving it out or sending
+`null`. The client reads `""` as a value that is not set wherever the property does not hold text: a property with a
+default takes its default, and a nullable one is `null`. A `String` property keeps `""`, and a required property of any
+other type still fails to deserialize.
+
+```kotlin
+@Serializable
+@SerialName("event")
+class Event(
+    val startsAt: Instant?,                 // null when left blank
+    @Serializable(with = StoryblokDateTimeSerializer::class)
+    val doorsOpen: LocalDateTime?,          // null when left blank
+    val seats: Int = 0,                     // 0 when left blank
+    val venue: Uuid?,                       // a story option with no story selected is null
+    val note: String,                       // "" when left blank
+) : Component()
+```
+
 ## Caching
 
 The client leverages the underlying [ktor-client-storyblok](../ktor-client-storyblok/README.md) plugin's caching mechanism. When fetching stories:
@@ -470,7 +490,8 @@ client.story<Page>("non-existent")
 
 > [!NOTE]
 > Deserialization failures are **not** wrapped: they surface as `SerializationException`, since a mismatch between your
-> component definitions and the content is a modelling error rather than a transient failure worth retrying.
+> component definitions and the content is a modelling error rather than a transient failure worth retrying. That
+> includes a value a property's serializer cannot parse, such as a malformed date or uuid.
 
 ## Closing the client
 

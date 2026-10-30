@@ -93,7 +93,7 @@ private class VisualEditor(private val json: Json, resolveRelations: String) : S
                 edited == null || edited.id != story.id.toDouble() -> story
                 else -> try {
                     story.copy(
-                        content = json.decodeFromJsonElement(
+                        content = json.decodeContent(
                             typeInfo.contentSerializer<T>(),
                             edited.content.toJsonElement(resolveLevel),
                         ),

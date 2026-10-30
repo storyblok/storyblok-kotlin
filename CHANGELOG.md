@@ -1,5 +1,15 @@
 ### Changelog
 
+**0.7.2**
+
+- Fixed a blank date, number or single-option story field failing to deserialize. Storyblok sends one as `""`, which is
+  now read as a value that is not set wherever the property does not hold text: a property with a default takes it,
+  and a nullable one, such as an `Instant?`, `Int?` or `Uuid?`, is `null`. A `String` keeps `""`.
+- Fixed a value a property's serializer cannot parse, such as a malformed date or uuid, being reported as a
+  `StoryblokClientException`, the type for a failed request. It now surfaces as a `SerializationException`, as other
+  deserialization failures do. A Visual Editor update that fails this way is dropped like any other that does not
+  deserialize.
+
 **0.7.1**
 
 - Fixed live updates never reaching a preview of a story with a resolved relation.

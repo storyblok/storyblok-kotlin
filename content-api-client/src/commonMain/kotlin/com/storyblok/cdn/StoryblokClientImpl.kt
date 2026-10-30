@@ -181,13 +181,14 @@ public class StoryblokClientImpl internal constructor(
 
     /**
      * Deserializes a story object as the [Story] type [typeInfo] describes, with its content relations resolved
-     * [resolveLevel] deep from the [rels] of the response it arrived in.
+     * [resolveLevel] deep from the [rels] of the response it arrived in, and blank values read as [decodeContent] reads
+     * them.
      */
     private fun <T : Component> JsonObject.toStory(
         typeInfo: TypeInfo,
         rels: Map<String, JsonElement?>,
         resolveLevel: Int,
-    ): Story<T> = json.decodeFromJsonElement(
+    ): Story<T> = json.decodeContent(
         @OptIn(io.ktor.utils.io.InternalAPI::class) typeInfo.serializer() as KSerializer<Story<T>>,
         JsonObject(this + ("content" to this["content"]!!.jsonObject.resolve(rels, resolveLevel))),
     )
