@@ -99,10 +99,10 @@ internal fun <T : Any> HttpClient.pager(
  * `Per-Page` response headers describe what came back, each falling back to what the page itself shows when the
  * header is absent.
  *
- * With [cachedOnly] the read never touches the network and answers `null` when Ktor's cache does not hold the page.
- * The miss is reported rather than rendered as an empty page: an empty page is indistinguishable from the end of
- * the list, and a collector that does not re-drive its own loads would take it for one. A read that may go to the
- * network cannot miss, and so never answers `null`.
+ * With [cachedOnly] the read never touches the network and answers `null` when Ktor's cache does not hold the page,
+ * or holds one [items] can no longer read. The miss is reported rather than rendered as an empty page: an empty page
+ * is indistinguishable from the end of the list, and a collector that does not re-drive its own loads would take it
+ * for one. A read that may go to the network cannot miss, and so never answers `null`.
  *
  * @param T The type of the items on the page.
  */
@@ -134,11 +134,13 @@ private suspend fun <T : Any> HttpClient.read(
         items(response.body<String>())
     } catch (e: CancellationException) {
         throw e
-    } catch (e: SerializationException) {
+    } catch (e: Throwable) {
+        // A page cached before the content changed shape, such as a required field added to a component since, no
+        // longer deserializes. Like a page the cache does not hold, it is a miss rather than a failure.
+        if (cachedOnly) return null
         // As StoryblokClient.story does: a deserialization failure is a modelling error rather than a transient API
         // one, so it propagates unwrapped instead of arriving as a (potentially retryable) client exception.
-        throw e
-    } catch (e: Throwable) {
+        if (e is SerializationException) throw e
         // A body that is well-formed JSON but not the shape this endpoint answers with does not reach the
         // deserializer at all — it fails on the way there, and would otherwise surface to the caller as whatever
         // the traversal happened to throw.

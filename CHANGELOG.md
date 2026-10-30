@@ -13,6 +13,10 @@
   closes a cycle. A `null` entry in the list now stays `null` rather than failing decoding when it comes first.
 - The unresolved and circular relation errors now name the type to model the field with: `Story<T>?` or `String`
   for a single story, `List<Story<T>?>` or `List<String>` for a list.
+- Fixed `StoryblokClient.story(...)` failing with a `SerializationException` when its cached copy no longer
+  deserialized, for example after a required field was added to a component, before the fresh copy arrived. A cached
+  copy that does not deserialize is now passed over, and only the fresh copy failing to deserialize is reported.
+  `StoryblokClient.stories(...)` likewise treats such a cached page as a miss rather than reporting a load error.
 
 **0.7.1**
 
