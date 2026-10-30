@@ -55,6 +55,15 @@ class StaleCacheTest {
     /** The content of the response the endpoint answers the next request with. */
     private var content = ""
 
+    /**
+     * The `Cache-Control` the endpoint answers with. By default as it answers a draft request: stale a second later,
+     * when a cached-only read is still answered from the cache and any other goes to the network.
+     */
+    private var cacheControl = "max-age=0, private, must-revalidate"
+
+    /** As the endpoint answers a published request, which the client keeps fresh for the `s-maxage` of a week. */
+    private val published = "max-age=0, public, s-maxage=604800"
+
     private val client: StoryblokClientImpl by lazy {
         // An in-memory cache per client: the JVM's is file-backed and outlives the process.
         httpCacheStorage = { CacheStorage.Unlimited() }
@@ -74,9 +83,7 @@ class StaleCacheTest {
                 HttpStatusCode.OK,
                 headersOf(
                     HttpHeaders.ContentType to listOf("application/json"),
-                    // As the API answers a draft request: stale a second later, when a cached-only read is still
-                    // answered from the cache and any other goes to the network.
-                    HttpHeaders.CacheControl to listOf("max-age=0, private, must-revalidate"),
+                    HttpHeaders.CacheControl to listOf(cacheControl),
                     "Total" to listOf("1"),
                     "Per-Page" to listOf("25"),
                 ),
@@ -120,7 +127,31 @@ class StaleCacheTest {
     }
 
     @Test
-    fun `a cached page that no longer decodes gives way to the fresh one`(): Unit = runBlocking {
+    fun `a cached story that no longer decodes is revalidated rather than read again while it is fresh`() {
+        cacheControl = published
+        assertEquals(listOf("after"), titles(cached = before, loaded = after))
+    }
+
+    @Test
+    fun `a cached page that no longer decodes gives way to the fresh one`() {
+        val (errors, titles) = pageAfterStaleCache()
+        assertTrue(errors.isEmpty(), "a load error was reported: $errors")
+        assertEquals(listOf("after"), titles)
+    }
+
+    @Test
+    fun `a cached page that no longer decodes is revalidated rather than read again while it is fresh`() {
+        cacheControl = published
+        val (errors, titles) = pageAfterStaleCache()
+        assertTrue(errors.isEmpty(), "a load error was reported: $errors")
+        assertEquals(listOf("after"), titles)
+    }
+
+    /**
+     * The load errors reported, and the titles of the first page a collector sees, once the cache holds the page as it
+     * was before the field was added and the network has it with the field.
+     */
+    private fun pageAfterStaleCache(): Pair<List<Throwable>, List<String>?> = runBlocking {
         // A first collection caches the page as it was before the field was added, failing to read it.
         content = before
         withTimeoutOrNull(5_000) {
@@ -135,15 +166,14 @@ class StaleCacheTest {
             client.stories<Pg>(PagingConfig(pageSize = 25)).flow
                 .asItemSnapshotListFlow { states ->
                     // A source's own failed load shows under `source`, as the mediator's state stands for the whole.
-                    listOf(states.source.refresh, states.source.append, states.source.prepend)
+                    listOfNotNull(states.source, states.mediator)
+                        .flatMap { listOf(it.refresh, it.append, it.prepend) }
                         .filterIsInstance<LoadState.Error>()
                         .forEach { errors += it.error }
                 }
                 .first { it.items.isNotEmpty() }
                 .items.map { it.content.title }
         }
-
-        assertTrue(errors.isEmpty(), "a load error was reported: $errors")
-        assertEquals(listOf("after"), titles)
+        errors to titles
     }
 }
