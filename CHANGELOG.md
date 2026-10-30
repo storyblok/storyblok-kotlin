@@ -1,5 +1,12 @@
 ### Changelog
 
+**0.7.2**
+
+- Fixed `StoryblokClient.story(...)` failing with a `SerializationException` when its cached copy no longer
+  deserialized, for example after a required field was added to a component, before the fresh copy arrived. A cached
+  copy that does not deserialize is now passed over, and only the fresh copy failing to deserialize is reported.
+  `StoryblokClient.stories(...)` likewise treats such a cached page as a miss rather than reporting a load error.
+
 **0.7.1**
 
 - Fixed live updates never reaching a preview of a story with a resolved relation.

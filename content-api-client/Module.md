@@ -23,7 +23,7 @@ val client = StoryblokClient(
 )
 
 // client.story(...) returns a Flow that emits up-to two values:
-// - the cached version (if available) 
+// - the cached version (if available and it still deserializes)
 // - the latest version from the API (if different from the cached version)
 val myStory = client.story("home").first()
 ```

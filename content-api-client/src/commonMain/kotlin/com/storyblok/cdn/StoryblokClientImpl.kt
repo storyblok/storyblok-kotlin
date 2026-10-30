@@ -34,6 +34,7 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.DeserializationStrategy
@@ -192,6 +193,12 @@ public class StoryblokClientImpl internal constructor(
         JsonObject(this + ("content" to this["content"]!!.jsonObject.resolve(rels, resolveLevel))),
     )
 
+    /** Deserializes the story a story endpoint's response [body][this] carries, as [toStory] does. */
+    private fun <T : Component> String.toStory(typeInfo: TypeInfo, resolveLevel: Int): Story<T> {
+        val body = json.parseToJsonElement(this).jsonObject
+        return body["story"]!!.jsonObject.toStory(typeInfo, body.rels, resolveLevel)
+    }
+
     override fun close() {
         bridge.destroy()
         http.close()
@@ -261,27 +268,38 @@ public class StoryblokClientImpl internal constructor(
     ) =
         flow {
             val parameters = relationParameters(resolveLevel) + params
+            var passedOver = false
 
             try {
                 val cached = http.get(uriString) {
                     onlyIfCached()
                     parameters.forEach { (name, value) -> parameter(name, value) }
+                }.body<String>()
+                // A copy cached before the content changed shape, such as a required field added to a component since,
+                // no longer deserializes. It is passed over as a miss is, rather than failing the flow before the fresh
+                // copy arrives.
+                val story = try {
+                    cached.toStory<T>(typeInfo, resolveLevel)
+                } catch (e: Exception) {
+                    null
                 }
-                emit(cached.body<String>())
+                if (story != null) emit(cached to story) else passedOver = true
             } catch (e: ServerResponseException) {
                 if(e.response.status != HttpStatusCode.GatewayTimeout) throw e
             }
 
             val response = http.get(uriString) {
+                // A passed over copy may still be fresh, as published content is for days, and would answer this
+                // request again; revalidating it fetches the server's copy instead.
+                if (passedOver) header(HttpHeaders.CacheControl, "no-cache")
                 parameters.forEach { (name, value) -> parameter(name, value) }
-            }
-            emit(response.body<String>())
+            }.body<String>()
+            // Deserialized below, once a body the same as the cached one has been dropped.
+            emit(response to null)
         }
-        .distinctUntilChanged()
-        .flatMapLatest { response ->
-            val body = json.parseToJsonElement(response).jsonObject
-            val story = body["story"]!!.jsonObject.toStory<T>(typeInfo, body.rels, resolveLevel)
-            bridge.story(story, typeInfo, resolveLevel)
+        .distinctUntilChangedBy { (body) -> body }
+        .flatMapLatest { (body, story) ->
+            bridge.story(story ?: body.toStory(typeInfo, resolveLevel), typeInfo, resolveLevel)
         }
         .distinctUntilChanged()
         .catch {
