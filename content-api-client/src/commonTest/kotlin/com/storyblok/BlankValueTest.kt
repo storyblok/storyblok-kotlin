@@ -16,9 +16,12 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonNames
 import kotlinx.serialization.modules.polymorphic
 import kotlin.test.AfterTest
@@ -29,6 +32,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import kotlin.jvm.JvmInline
 import kotlin.time.Instant
 import kotlin.uuid.Uuid
 
@@ -65,22 +69,54 @@ class BlankValueTest {
     @Serializable @SerialName("required_date")
     class RequiredDate(val startsAt: Instant) : Component()
 
-    private val home = "11111111-1111-1111-1111-111111111111"
-    private val other = "22222222-2222-2222-2222-222222222222"
+    @Serializable @SerialName("venues")
+    class Venues(val venues: List<@Contextual Uuid?>) : Component()
 
-    private fun story(uuid: String, content: String) = """
-        {"id": 1, "uuid": "$uuid", "name": "Home", "slug": "home", "full_slug": "home",
-         "created_at": "2026-01-01T00:00:00.000Z", "published_at": null, "first_published_at": null,
-         "updated_at": null, "sort_by_date": null, "position": 0, "tag_list": [], "is_startpage": false,
-         "parent_id": null, "meta_data": null, "group_id": "941f4176-cbe4-4c15-9dd4-4384e136ac53",
-         "release_id": null, "lang": "default", "path": null, "alternates": [], "default_full_slug": null,
-         "translated_slugs": null, "content": $content}
-    """
+    @Serializable
+    class Range(val from: Instant?, val to: Instant?)
 
-    private fun event(extra: String = "") = """
-        {"component": "event", "_uid": "e", "title": "", "note": "", "startsAt": "", "day": "", "localStart": "",
-         "seats": "", "price": "", "venue": "", "capacity": "" $extra}
-    """
+    @Serializable @JvmInline
+    value class Window(val range: Range)
+
+    @Serializable @SerialName("booking")
+    class Booking(val window: Window) : Component()
+
+    @Serializable @SerialName("featured")
+    class Featured(val event: Story<Event> = FALLBACK) : Component()
+
+    @Serializable @SerialName("alias_after")
+    class AliasAfter(val title: String, @JsonNames("title") val seats: Int? = null) : Component()
+
+    @Serializable @SerialName("alias_before")
+    class AliasBefore(@JsonNames("title") val seats: Int? = null, val title: String) : Component()
+
+    private companion object {
+        const val HOME = "11111111-1111-1111-1111-111111111111"
+        const val OTHER = "22222222-2222-2222-2222-222222222222"
+
+        fun story(uuid: String, content: String) = """
+            {"id": 1, "uuid": "$uuid", "name": "Home", "slug": "home", "full_slug": "home",
+             "created_at": "2026-01-01T00:00:00.000Z", "published_at": null, "first_published_at": null,
+             "updated_at": null, "sort_by_date": null, "position": 0, "tag_list": [], "is_startpage": false,
+             "parent_id": null, "meta_data": null, "group_id": "941f4176-cbe4-4c15-9dd4-4384e136ac53",
+             "release_id": null, "lang": "default", "path": null, "alternates": [], "default_full_slug": null,
+             "translated_slugs": null, "content": $content}
+        """
+
+        fun event(extra: String = "") = """
+            {"component": "event", "_uid": "e", "title": "", "note": "", "startsAt": "", "day": "", "localStart": "",
+             "seats": "", "price": "", "venue": "", "capacity": "" $extra}
+        """
+
+        /** The story a [Featured] falls back on: an event with nothing blank. */
+        val FALLBACK: Story<Event> = Json { ignoreUnknownKeys = true }.decodeFromString(
+            Story.serializer(Event.serializer()),
+            story(OTHER, """
+                {"component": "event", "_uid": "f", "title": "Fallback", "note": null, "startsAt": null, "day": null,
+                 "localStart": null, "seats": null, "price": null, "venue": null}
+            """),
+        )
+    }
 
     private fun client(body: String) = StoryblokClientImpl(
         apiBuilder = {},
@@ -88,6 +124,12 @@ class BlankValueTest {
             polymorphic(Component::class, Event::class, Event.serializer())
             polymorphic(Component::class, Listing::class, Listing.serializer())
             polymorphic(Component::class, RequiredDate::class, RequiredDate.serializer())
+            polymorphic(Component::class, Venues::class, Venues.serializer())
+            polymorphic(Component::class, Booking::class, Booking.serializer())
+            polymorphic(Component::class, Featured::class, Featured.serializer())
+            polymorphic(Component::class, AliasAfter::class, AliasAfter.serializer())
+            polymorphic(Component::class, AliasBefore::class, AliasBefore.serializer())
+            contextual(Uuid::class, Uuid.serializer())
         },
         // As StoryblokClient(lenientJsonParsing = false) configures it.
         jsonBuilder = {
@@ -99,7 +141,7 @@ class BlankValueTest {
     )
 
     private suspend fun blankEvent(extra: String = ""): Event =
-        client("""{"story": ${story(home, event(extra))}}""").story<Event>("home").first().content
+        client("""{"story": ${story(HOME, event(extra))}}""").story<Event>("home").first().content
 
     @Test
     fun `blank dates decode as null`() = runTest {
@@ -148,8 +190,8 @@ class BlankValueTest {
 
     @Test
     fun `blank values in a resolved relation decode as null`() = runTest {
-        val listing = story(home, """{"component": "listing", "_uid": "l", "event": "$other"}""")
-        val related = story(other, event())
+        val listing = story(HOME, """{"component": "listing", "_uid": "l", "event": "$OTHER"}""")
+        val related = story(OTHER, event())
         val client = client("""{"story": $listing, "rels": [$related]}""")
 
         val event = assertNotNull(client.story<Listing>("home").first().content.event).content
@@ -160,17 +202,56 @@ class BlankValueTest {
 
     @Test
     fun `a blank required value still fails as a deserialization error`() = runTest {
-        val client = client("""{"story": ${story(home, """{"component": "required_date", "_uid": "r", "startsAt": ""}""")}}""")
+        val client = client("""{"story": ${story(HOME, """{"component": "required_date", "_uid": "r", "startsAt": ""}""")}}""")
 
         assertFailsWith<SerializationException> { client.story<RequiredDate>("home").first() }
     }
 
     @Test
     fun `a value that does not parse fails as a deserialization error`() = runTest {
-        val client = client("""{"story": ${story(home, event(""", "venue": "not-a-uuid""""))}}""")
+        val client = client("""{"story": ${story(HOME, event(""", "venue": "not-a-uuid""""))}}""")
 
         val exception = assertFailsWith<SerializationException> { client.story<Event>("home").first() }
 
         assertContains(assertNotNull(exception.message), "not-a-uuid")
+    }
+
+    @Test
+    fun `a blank entry in a list of nullable contextual values decodes as null`() = runTest {
+        val content = """{"component": "venues", "_uid": "v", "venues": ["", "$OTHER"]}"""
+        val venues = client("""{"story": ${story(HOME, content)}}""").story<Venues>("home").first().content.venues
+
+        assertEquals(listOf(null, Uuid.parse(OTHER)), venues)
+    }
+
+    @Test
+    fun `blank values in an inline class are read by the value it wraps`() = runTest {
+        val content = """{"component": "booking", "_uid": "b", "window": {"from": "", "to": "2026-01-01T00:00:00Z"}}"""
+        val window = client("""{"story": ${story(HOME, content)}}""").story<Booking>("home").first().content.window
+
+        assertNull(window.range.from)
+        assertEquals(Instant.parse("2026-01-01T00:00:00Z"), window.range.to)
+    }
+
+    @Test
+    fun `a blank relation takes the property's default`() = runTest {
+        val content = """{"component": "featured", "_uid": "f", "event": ""}"""
+        val featured = client("""{"story": ${story(HOME, content)}, "rels": []}""").story<Featured>("home").first().content
+
+        assertEquals(FALLBACK.uuid, featured.event.uuid)
+    }
+
+    @Test
+    fun `a property's own name takes precedence over another's alternative name`() = runTest {
+        for (component in listOf("alias_after", "alias_before")) {
+            val content = """{"component": "$component", "_uid": "a", "title": "", "seats": 5}"""
+            val story = client("""{"story": ${story(HOME, content)}}""").story<Component>("home").first().content
+
+            when (story) {
+                is AliasAfter -> assertEquals("" to 5, story.title to story.seats)
+                is AliasBefore -> assertEquals("" to 5, story.title to story.seats)
+                else -> error("unexpected $story")
+            }
+        }
     }
 }

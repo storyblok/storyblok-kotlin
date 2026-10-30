@@ -8,6 +8,7 @@ import kotlinx.serialization.descriptors.SerialKind
 import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.descriptors.capturedKClass
 import kotlinx.serialization.descriptors.getContextualDescriptor
+import kotlinx.serialization.descriptors.nullable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonClassDiscriminator
@@ -41,10 +42,15 @@ internal fun <T> Json.decodeContent(deserializer: DeserializationStrategy<T>, el
     }
 
 /** [element] with the blank values the [descriptor] it decodes as cannot read taken out, as [decodeContent] describes. */
-private fun Json.withoutBlanks(element: JsonElement, descriptor: SerialDescriptor): JsonElement {
-    if (descriptor.kind == SerialKind.CONTEXTUAL) {
-        return withoutBlanks(element, serializersModule.getContextualDescriptor(descriptor) ?: return element)
+internal fun Json.withoutBlanks(element: JsonElement, descriptor: SerialDescriptor): JsonElement {
+    // The serializer a contextual descriptor stands for, or the value an inline class wraps, is what reads the JSON.
+    // Either is described as not nullable, so the nullability of the property it fills is carried over.
+    val reader = when {
+        descriptor.kind == SerialKind.CONTEXTUAL -> serializersModule.getContextualDescriptor(descriptor) ?: return element
+        descriptor.isInline -> descriptor.getElementDescriptor(0)
+        else -> null
     }
+    if (reader != null) return withoutBlanks(element, if (descriptor.isNullable) reader.nullable else reader)
     return when (element) {
         is JsonPrimitive -> if (descriptor.isNullable && isUnreadableBlank(element, descriptor)) JsonNull else element
         is JsonArray -> when (descriptor.kind) {
@@ -74,24 +80,28 @@ private fun Json.objectWithoutBlanks(element: JsonObject, descriptor: SerialDesc
                 value !is JsonPrimitive || !isUnreadableBlank(value, elementDescriptor) -> put(key, withoutBlanks(value, elementDescriptor))
                 // Left out, so the property's default applies.
                 descriptor.isElementOptional(index) -> Unit
-                elementDescriptor.isNullable -> put(key, JsonNull)
-                // Left for decoding to report: a required property has no value to fall back on.
-                else -> put(key, value)
+                // `null` for a nullable property, and otherwise left for decoding to report, a required property having
+                // no value to fall back on.
+                else -> put(key, withoutBlanks(value, elementDescriptor))
             }
         }
     })
 }
 
-/** The index of each of [descriptor]'s elements by every key decoding accepts for it. */
+/**
+ * The index of each of [descriptor]'s elements by every key decoding accepts for it. An element's own name takes
+ * precedence over another's alternative name, as it does in decoding.
+ */
 private fun Json.elementIndices(descriptor: SerialDescriptor): Map<String, Int> = buildMap {
     for (index in 0 until descriptor.elementsCount) {
         val name = descriptor.getElementName(index)
         put(configuration.namingStrategy?.serialNameForJson(descriptor, index, name) ?: name, index)
-        if (configuration.useAlternativeNames) {
-            descriptor.getElementAnnotations(index)
-                .filterIsInstance<JsonNames>()
-                .forEach { annotation -> annotation.names.forEach { put(it, index) } }
-        }
+    }
+    if (!configuration.useAlternativeNames) return@buildMap
+    for (index in 0 until descriptor.elementsCount) {
+        descriptor.getElementAnnotations(index)
+            .filterIsInstance<JsonNames>()
+            .forEach { annotation -> annotation.names.forEach { getOrPut(it) { index } } }
     }
 }
 
