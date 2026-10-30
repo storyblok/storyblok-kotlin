@@ -1,5 +1,11 @@
 ### Changelog
 
+**0.7.2**
+
+- Documented that each story in a `List<Story<T>?>` relation that cannot be resolved, or that closes a cycle,
+  resolves to `null` in its place, keeping the others. The unresolved and circular relation errors now mention lists
+  of nullable stories.
+
 **0.7.1**
 
 - Fixed live updates never reaching a preview of a story with a resolved relation.

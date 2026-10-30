@@ -341,8 +341,8 @@ public class StoryblokClientImpl internal constructor(
             ?.run { return jsonObject.resolve(rels, resolveLevel, resolving + (uuid to depth + 1)) }
         if (nullable) return JsonNull
         throw SerializationException(
-            if (circular && resolveLevel > 0) "Circular story relation: $uuid (model the field as a nullable story)"
-            else "Unresolved story relation: $uuid (model the field as a nullable story, or as a String to receive the raw uuid)"
+            if (circular && resolveLevel > 0) "Circular story relation: $uuid (model the field as a nullable story, or a list of nullable stories)"
+            else "Unresolved story relation: $uuid (model the field as a nullable story or a list of nullable stories, or as a String to receive the raw uuid)"
         )
     }
 
