@@ -16,6 +16,7 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.headersOf
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
@@ -28,6 +29,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import kotlin.reflect.KClass
 import kotlin.uuid.Uuid
 
 class StoryblokClientTest {
@@ -58,6 +60,10 @@ class StoryblokClientTest {
     class RelatedRaw(val story: String) : Component()
     @Serializable @SerialName("related")
     class RelatedRequired(val story: Story<Component>) : Component()
+    @Serializable @SerialName("related_list")
+    class RelatedList(val stories: List<Story<Component>?>) : Component()
+    @Serializable @SerialName("related_list")
+    class RelatedListOptional(val stories: List<Story<Component>>?) : Component()
 
     @Test
     fun `a relation is not added for a class without a story property`() = runTest {
@@ -230,6 +236,65 @@ class StoryblokClientTest {
     }
 
     @Test
+    fun `a relation is added for a story list property with nullable elements`() = runTest {
+        val client = StoryblokClient("mock-api-key", Draft, serializersModule = SerializersModule {
+            polymorphic(Component::class, RelatedList::class, RelatedList.serializer())
+        }) as StoryblokClientImpl
+
+        assertEquals(mapOf("related_list" to mapOf("stories" to true)), client.relations)
+    }
+
+    @Test
+    fun `an unresolved story in a list of nullable stories resolves to null in its place`() = runTest {
+        val story = relatedListClient(RelatedList::class, RelatedList.serializer(), UNRESOLVED_LIST_RELATION_RESPONSE)
+            .story<RelatedList>("first").first()
+
+        assertEquals(
+            listOf(Uuid.parse("b599571b-df7e-4c85-97d9-0b0798d8b23f"), null),
+            story.content.stories.map { it?.uuid },
+        )
+    }
+
+    @Test
+    fun `a circular story in a list of nullable stories resolves to null in its place`() = runTest {
+        val story = relatedListClient(RelatedList::class, RelatedList.serializer(), CIRCULAR_LIST_RELATION_RESPONSE)
+            .story<RelatedList>("first").first()
+
+        val (first, second) = story.content.stories
+        assertEquals(Uuid.parse("a51df0b5-6d29-4d0c-bd28-a54f47cf46bf"), assertNotNull(first).uuid)
+        assertEquals(Uuid.parse("b599571b-df7e-4c85-97d9-0b0798d8b23f"), assertNotNull(second).uuid)
+        assertEquals(
+            listOf(null, Uuid.parse("b599571b-df7e-4c85-97d9-0b0798d8b23f")),
+            (first.content as RelatedList).stories.map { it?.uuid },
+        )
+    }
+
+    @Test
+    fun `an unresolved story in a nullable list of stories fails`() = runTest {
+        val client = relatedListClient(RelatedListOptional::class, RelatedListOptional.serializer(), UNRESOLVED_LIST_RELATION_RESPONSE)
+
+        val exception = assertFailsWith<SerializationException> { client.story<RelatedListOptional>("first").first() }
+
+        assertContains(assertNotNull(exception.message), "Unresolved story relation: d81538cf-5f75-4a5f-a8ab-a1e8fd276949")
+    }
+
+    /** A client for a `related_list` component modelled by [serializer], whose stories are `related` ones. */
+    private fun <T : Component> relatedListClient(kClass: KClass<T>, serializer: KSerializer<T>, response: String) = StoryblokClientImpl(
+        apiBuilder = {},
+        serializersModuleBuilder = {
+            polymorphic(Component::class, Related::class, Related.serializer())
+            polymorphic(Component::class, kClass, serializer)
+        },
+        jsonBuilder = {
+            explicitNulls = false
+            ignoreUnknownKeys = true
+        },
+        http = HttpClient(MockEngine {
+            respond(response, headers = headersOf(HttpHeaders.ContentType, "application/json"))
+        }),
+    )
+
+    @Test
     fun `resolveLevel 0 disables relation resolution`() = runTest {
         var resolveRelations: String? = null
         val client = StoryblokClientImpl(
@@ -376,6 +441,40 @@ class StoryblokClientTest {
                 "_uid": "0a1e0a90-0000-0000-0000-00000000000$id",
                 "story": "$relation"
               }
+            }
+        """
+
+        /** Builds a minimal story JSON object whose `related_list` content references [relations]. */
+        fun relatedListStory(id: Int, uuid: String, slug: String, vararg relations: String) =
+            relatedStory(id, uuid, slug, "").replace(
+                "\"component\": \"related\"",
+                "\"component\": \"related_list\", \"stories\": [${relations.joinToString { "\"$it\"" }}]",
+            )
+
+        /**
+         * A `stories/first` response whose list relation (`related_list.stories`) references a story in `rels` and
+         * one that is not.
+         */
+        val UNRESOLVED_LIST_RELATION_RESPONSE = """
+            {
+              "story": ${relatedListStory(1, "a51df0b5-6d29-4d0c-bd28-a54f47cf46bf", "first", "b599571b-df7e-4c85-97d9-0b0798d8b23f", "d81538cf-5f75-4a5f-a8ab-a1e8fd276949")},
+              "rels": [
+                ${relatedStory(2, "b599571b-df7e-4c85-97d9-0b0798d8b23f", "second", "d81538cf-5f75-4a5f-a8ab-a1e8fd276949")}
+              ]
+            }
+        """
+
+        /**
+         * A `stories/first` response whose list relation (`related_list.stories`) references the story itself and a
+         * second story, so the copy of itself in `rels` closes a cycle in its list.
+         */
+        val CIRCULAR_LIST_RELATION_RESPONSE = """
+            {
+              "story": ${relatedListStory(1, "a51df0b5-6d29-4d0c-bd28-a54f47cf46bf", "first", "a51df0b5-6d29-4d0c-bd28-a54f47cf46bf", "b599571b-df7e-4c85-97d9-0b0798d8b23f")},
+              "rels": [
+                ${relatedListStory(1, "a51df0b5-6d29-4d0c-bd28-a54f47cf46bf", "first", "a51df0b5-6d29-4d0c-bd28-a54f47cf46bf", "b599571b-df7e-4c85-97d9-0b0798d8b23f")},
+                ${relatedStory(2, "b599571b-df7e-4c85-97d9-0b0798d8b23f", "second", "d81538cf-5f75-4a5f-a8ab-a1e8fd276949")}
+              ]
             }
         """
 
