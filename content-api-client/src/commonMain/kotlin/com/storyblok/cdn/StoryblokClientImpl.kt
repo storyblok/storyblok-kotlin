@@ -268,6 +268,7 @@ public class StoryblokClientImpl internal constructor(
     ) =
         flow {
             val parameters = relationParameters(resolveLevel) + params
+            var passedOver = false
 
             try {
                 val cached = http.get(uriString) {
@@ -282,18 +283,24 @@ public class StoryblokClientImpl internal constructor(
                 } catch (e: Exception) {
                     null
                 }
-                if (story != null) emit(cached to story)
+                if (story != null) emit(cached to story) else passedOver = true
             } catch (e: ServerResponseException) {
                 if(e.response.status != HttpStatusCode.GatewayTimeout) throw e
             }
 
             val response = http.get(uriString) {
+                // A passed over copy may still be fresh, as published content is for days, and would answer this
+                // request again; revalidating it fetches the server's copy instead.
+                if (passedOver) header(HttpHeaders.CacheControl, "no-cache")
                 parameters.forEach { (name, value) -> parameter(name, value) }
             }.body<String>()
-            emit(response to response.toStory<T>(typeInfo, resolveLevel))
+            // Deserialized below, once a body the same as the cached one has been dropped.
+            emit(response to null)
         }
         .distinctUntilChangedBy { (body) -> body }
-        .flatMapLatest { (_, story) -> bridge.story(story, typeInfo, resolveLevel) }
+        .flatMapLatest { (body, story) ->
+            bridge.story(story ?: body.toStory(typeInfo, resolveLevel), typeInfo, resolveLevel)
+        }
         .distinctUntilChanged()
         .catch {
             if (it is CancellationException) {

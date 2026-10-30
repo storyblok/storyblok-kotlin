@@ -11,8 +11,10 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.client.statement.bodyAsText
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CancellationException
@@ -104,6 +106,10 @@ internal fun <T : Any> HttpClient.pager(
  * is indistinguishable from the end of the list, and a collector that does not re-drive its own loads would take it
  * for one. A read that may go to the network cannot miss, and so never answers `null`.
  *
+ * Such a read may still be answered from the cache, where published pages stay fresh for days. One whose items [items]
+ * cannot read is made again with [revalidate], which revalidates the cached page rather than reading it, so a page the
+ * source passed over as unreadable gives way to the server's.
+ *
  * @param T The type of the items on the page.
  */
 private suspend fun <T : Any> HttpClient.read(
@@ -113,10 +119,12 @@ private suspend fun <T : Any> HttpClient.read(
     cachedOnly: Boolean,
     params: Map<String, String>,
     items: (body: String) -> List<T>,
+    revalidate: Boolean = false,
 ): PagedResponse<T>? {
     val response = try {
         get(path) {
             if (cachedOnly) onlyIfCached()
+            if (revalidate) header(HttpHeaders.CacheControl, "no-cache")
             (mapOf("page" to page.toString(), "per_page" to perPage.toString()) + params)
                 .forEach { (name, value) -> parameter(name, value) }
         }
@@ -138,6 +146,7 @@ private suspend fun <T : Any> HttpClient.read(
         // A page cached before the content changed shape, such as a required field added to a component since, no
         // longer deserializes. Like a page the cache does not hold, it is a miss rather than a failure.
         if (cachedOnly) return null
+        if (!revalidate) return read(path, page, perPage, cachedOnly = false, params, items, revalidate = true)
         // As StoryblokClient.story does: a deserialization failure is a modelling error rather than a transient API
         // one, so it propagates unwrapped instead of arriving as a (potentially retryable) client exception.
         if (e is SerializationException) throw e
