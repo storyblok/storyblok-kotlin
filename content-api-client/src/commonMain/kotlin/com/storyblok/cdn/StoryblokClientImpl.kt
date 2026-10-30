@@ -188,10 +188,13 @@ public class StoryblokClientImpl internal constructor(
         typeInfo: TypeInfo,
         rels: Map<String, JsonElement?>,
         resolveLevel: Int,
-    ): Story<T> = json.decodeContent(
-        @OptIn(io.ktor.utils.io.InternalAPI::class) typeInfo.serializer() as KSerializer<Story<T>>,
-        JsonObject(this + ("content" to this["content"]!!.jsonObject.resolve(rels, resolveLevel))),
-    )
+    ): Story<T> {
+        val serializer = @OptIn(io.ktor.utils.io.InternalAPI::class) typeInfo.serializer() as KSerializer<Story<T>>
+        // Blank values are read before relations are resolved as well, so that a blank relation is not set rather than
+        // one that does not resolve, and takes its property's default. The stories resolved from rels are read after.
+        val story = json.withoutBlanks(this, serializer.descriptor).jsonObject
+        return json.decodeContent(serializer, JsonObject(story + ("content" to story["content"]!!.jsonObject.resolve(rels, resolveLevel))))
+    }
 
     override fun close() {
         bridge.destroy()
