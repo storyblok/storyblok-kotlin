@@ -9,6 +9,9 @@
   that does not deserialize, also catch `SerializationException`.
 - Fixed a blank Date/Time, Number or Single-Option field, which Storyblok sends as `""`, failing to deserialize into a
   nullable or defaulted number, date, time, `Uuid` or `Story` property: it is now `null` or the property's default.
+- Documented that each story in a `List<Story<T>?>` relation that cannot be resolved, or that closes a cycle,
+  resolves to `null` in its place, keeping the others. The unresolved and circular relation errors now mention lists
+  of nullable stories.
 
 **0.7.1**
 

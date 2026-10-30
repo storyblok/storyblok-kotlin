@@ -344,6 +344,18 @@ class Article(
 
 This includes circular relations — stories referencing each other directly or indirectly — which are cut once the level is exhausted. If an unresolvable relation field is not nullable, decoding fails with a `SerializationException` naming the unresolved story's UUID.
 
+In a list relation, it is the element type that must be nullable. Each story in a `List<Story<T>?>` that cannot be resolved is `null` in its place, and the stories that can be resolved are kept:
+
+```kotlin
+@Serializable
+@SerialName("article")
+class Article(
+    val relatedArticles: List<Story<Article>?>  // null in place of each story that can't be resolved
+) : Component()
+```
+
+A `List<Story<T>>?` does not help here: its stories are not nullable, so one that cannot be resolved fails decoding.
+
 ## Rich text fields
 
 Rich text content from Storyblok is deserialized into a structured [`RichText`](https://storyblok.github.io/storyblok-kotlin/content-api-client/com.storyblok.cdn.schema/-rich-text/index.html) sealed class hierarchy. This allows you to render rich text content in a type-safe manner:
