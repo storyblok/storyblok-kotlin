@@ -212,6 +212,7 @@ class StoryblokClientTest {
         val exception = assertFailsWith<SerializationException> { client.story<RelatedRequired>("first").first() }
 
         assertContains(assertNotNull(exception.message), "Unresolved story relation: d81538cf-5f75-4a5f-a8ab-a1e8fd276949")
+        assertContains(assertNotNull(exception.message), "model the field as Story<T>?, or as String")
     }
 
     @Test
@@ -236,12 +237,13 @@ class StoryblokClientTest {
     }
 
     @Test
-    fun `a relation is added for a story list property with nullable elements`() = runTest {
-        val client = StoryblokClient("mock-api-key", Draft, serializersModule = SerializersModule {
-            polymorphic(Component::class, RelatedList::class, RelatedList.serializer())
-        }) as StoryblokClientImpl
+    fun `a story list property with nullable elements is resolved`() = runTest {
+        var resolveRelations: String? = null
+        relatedListClient(RelatedList::class, RelatedList.serializer(), UNRESOLVED_LIST_RELATION_RESPONSE) {
+            resolveRelations = it
+        }.story<RelatedList>("first").first()
 
-        assertEquals(mapOf("related_list" to mapOf("stories" to true)), client.relations)
+        assertEquals("related.story,related_list.stories", resolveRelations)
     }
 
     @Test
@@ -260,12 +262,22 @@ class StoryblokClientTest {
         val story = relatedListClient(RelatedList::class, RelatedList.serializer(), CIRCULAR_LIST_RELATION_RESPONSE)
             .story<RelatedList>("first").first()
 
-        val (first, second) = story.content.stories
-        assertEquals(Uuid.parse("a51df0b5-6d29-4d0c-bd28-a54f47cf46bf"), assertNotNull(first).uuid)
-        assertEquals(Uuid.parse("b599571b-df7e-4c85-97d9-0b0798d8b23f"), assertNotNull(second).uuid)
+        val second = assertNotNull(story.content.stories.single())
+        assertEquals(Uuid.parse("b599571b-df7e-4c85-97d9-0b0798d8b23f"), second.uuid)
+        assertEquals(
+            listOf(null, Uuid.parse("c2b7fd7a-3adf-45f4-9e40-5b8ba18cbb15")),
+            (second.content as RelatedList).stories.map { it?.uuid },
+        )
+    }
+
+    @Test
+    fun `a null entry in a list of nullable stories stays null`() = runTest {
+        val story = relatedListClient(RelatedList::class, RelatedList.serializer(), NULL_ENTRY_LIST_RELATION_RESPONSE)
+            .story<RelatedList>("first").first()
+
         assertEquals(
             listOf(null, Uuid.parse("b599571b-df7e-4c85-97d9-0b0798d8b23f")),
-            (first.content as RelatedList).stories.map { it?.uuid },
+            story.content.stories.map { it?.uuid },
         )
     }
 
@@ -276,10 +288,19 @@ class StoryblokClientTest {
         val exception = assertFailsWith<SerializationException> { client.story<RelatedListOptional>("first").first() }
 
         assertContains(assertNotNull(exception.message), "Unresolved story relation: d81538cf-5f75-4a5f-a8ab-a1e8fd276949")
+        assertContains(assertNotNull(exception.message), "model the field as List<Story<T>?>, or as List<String>")
     }
 
-    /** A client for a `related_list` component modelled by [serializer], whose stories are `related` ones. */
-    private fun <T : Component> relatedListClient(kClass: KClass<T>, serializer: KSerializer<T>, response: String) = StoryblokClientImpl(
+    /**
+     * A client for a `related_list` component modelled by [serializer], whose stories are `related` or `related_list`
+     * ones, passing each request's `resolve_relations` to [onRequest].
+     */
+    private fun <T : Component> relatedListClient(
+        kClass: KClass<T>,
+        serializer: KSerializer<T>,
+        response: String,
+        onRequest: (resolveRelations: String?) -> Unit = {},
+    ) = StoryblokClientImpl(
         apiBuilder = {},
         serializersModuleBuilder = {
             polymorphic(Component::class, Related::class, Related.serializer())
@@ -289,7 +310,8 @@ class StoryblokClientTest {
             explicitNulls = false
             ignoreUnknownKeys = true
         },
-        http = HttpClient(MockEngine {
+        http = HttpClient(MockEngine { request ->
+            onRequest(request.url.parameters["resolve_relations"])
             respond(response, headers = headersOf(HttpHeaders.ContentType, "application/json"))
         }),
     )
@@ -444,11 +466,11 @@ class StoryblokClientTest {
             }
         """
 
-        /** Builds a minimal story JSON object whose `related_list` content references [relations]. */
+        /** Builds a minimal story JSON object whose `related_list` content references [relations], `"null"` as a null. */
         fun relatedListStory(id: Int, uuid: String, slug: String, vararg relations: String) =
             relatedStory(id, uuid, slug, "").replace(
                 "\"component\": \"related\"",
-                "\"component\": \"related_list\", \"stories\": [${relations.joinToString { "\"$it\"" }}]",
+                "\"component\": \"related_list\", \"stories\": [${relations.joinToString { if (it == "null") it else "\"$it\"" }}]",
             )
 
         /**
@@ -465,14 +487,27 @@ class StoryblokClientTest {
         """
 
         /**
-         * A `stories/first` response whose list relation (`related_list.stories`) references the story itself and a
-         * second story, so the copy of itself in `rels` closes a cycle in its list.
+         * A `stories/first` response whose list relation (`related_list.stories`) references a second story, whose own
+         * list references itself, closing a cycle, and a third story.
          */
         val CIRCULAR_LIST_RELATION_RESPONSE = """
             {
-              "story": ${relatedListStory(1, "a51df0b5-6d29-4d0c-bd28-a54f47cf46bf", "first", "a51df0b5-6d29-4d0c-bd28-a54f47cf46bf", "b599571b-df7e-4c85-97d9-0b0798d8b23f")},
+              "story": ${relatedListStory(1, "a51df0b5-6d29-4d0c-bd28-a54f47cf46bf", "first", "b599571b-df7e-4c85-97d9-0b0798d8b23f")},
               "rels": [
-                ${relatedListStory(1, "a51df0b5-6d29-4d0c-bd28-a54f47cf46bf", "first", "a51df0b5-6d29-4d0c-bd28-a54f47cf46bf", "b599571b-df7e-4c85-97d9-0b0798d8b23f")},
+                ${relatedListStory(2, "b599571b-df7e-4c85-97d9-0b0798d8b23f", "second", "b599571b-df7e-4c85-97d9-0b0798d8b23f", "c2b7fd7a-3adf-45f4-9e40-5b8ba18cbb15")},
+                ${relatedStory(3, "c2b7fd7a-3adf-45f4-9e40-5b8ba18cbb15", "third", "d81538cf-5f75-4a5f-a8ab-a1e8fd276949")}
+              ]
+            }
+        """
+
+        /**
+         * A `stories/first` response whose list relation (`related_list.stories`) holds a null entry, as content written
+         * through the Management API can, before a story in `rels`.
+         */
+        val NULL_ENTRY_LIST_RELATION_RESPONSE = """
+            {
+              "story": ${relatedListStory(1, "a51df0b5-6d29-4d0c-bd28-a54f47cf46bf", "first", "null", "b599571b-df7e-4c85-97d9-0b0798d8b23f")},
+              "rels": [
                 ${relatedStory(2, "b599571b-df7e-4c85-97d9-0b0798d8b23f", "second", "d81538cf-5f75-4a5f-a8ab-a1e8fd276949")}
               ]
             }
