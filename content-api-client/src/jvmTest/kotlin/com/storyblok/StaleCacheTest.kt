@@ -15,6 +15,7 @@ import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.plugins.cache.storage.CacheStorage
 import io.ktor.client.request.get
+import io.ktor.client.request.parameter
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
@@ -35,6 +36,7 @@ import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertIs
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
@@ -64,6 +66,12 @@ class StaleCacheTest {
     /** As the endpoint answers a published request, which the client keeps fresh for the `s-maxage` of a week. */
     private val published = "max-age=0, public, s-maxage=604800"
 
+    /** The status the endpoint answers with, as an unreachable or failing server would answer instead of the content. */
+    private var status = HttpStatusCode.OK
+
+    /** How many requests reached the endpoint, rather than being answered from the cache. */
+    private var requests = 0
+
     private val client: StoryblokClientImpl by lazy {
         // An in-memory cache per client: the JVM's is file-backed and outlives the process.
         httpCacheStorage = { CacheStorage.Unlimited() }
@@ -77,10 +85,11 @@ class StaleCacheTest {
             }
         }
         val engine = MockEngine { request ->
+            requests++
             val story = storyJson(content)
             respond(
                 if (request.url.encodedPath.endsWith("/stories")) """{"stories":[$story]}""" else """{"story":$story}""",
-                HttpStatusCode.OK,
+                status,
                 headersOf(
                     HttpHeaders.ContentType to listOf("application/json"),
                     HttpHeaders.CacheControl to listOf(cacheControl),
@@ -134,7 +143,8 @@ class StaleCacheTest {
 
     @Test
     fun `a cached page that no longer decodes gives way to the fresh one`() {
-        val (errors, titles) = pageAfterStaleCache()
+        cache(before)
+        val (errors, titles) = firstPage()
         assertTrue(errors.isEmpty(), "a load error was reported: $errors")
         assertEquals(listOf("after"), titles)
     }
@@ -142,25 +152,47 @@ class StaleCacheTest {
     @Test
     fun `a cached page that no longer decodes is revalidated rather than read again while it is fresh`() {
         cacheControl = published
-        val (errors, titles) = pageAfterStaleCache()
+        cache(before)
+        val (errors, titles) = firstPage()
         assertTrue(errors.isEmpty(), "a load error was reported: $errors")
         assertEquals(listOf("after"), titles)
     }
 
-    /**
-     * The load errors reported, and the titles of the first page a collector sees, once the cache holds the page as it
-     * was before the field was added and the network has it with the field.
-     */
-    private fun pageAfterStaleCache(): Pair<List<Throwable>, List<String>?> = runBlocking {
-        // A first collection caches the page as it was before the field was added, failing to read it.
+    @Test
+    fun `a page that does not decode from the network is not requested again`() {
         content = before
-        withTimeoutOrNull(5_000) {
-            client.stories<Pg>(PagingConfig(pageSize = 25)).flow
-                .asItemSnapshotListFlow { }
-                .first { it.items.isNotEmpty() }
-        }
+        val (errors) = firstPage(loaded = before)
+        assertIs<SerializationException>(errors.firstOrNull(), "errors: $errors")
+        assertEquals(1, requests)
+    }
 
-        content = after
+    @Test
+    fun `a cached page that no longer decodes still reports its own failure when revalidating it fails`() {
+        cacheControl = published
+        cache(before)
+        status = HttpStatusCode.NotFound
+        val (errors) = firstPage(loaded = before)
+        assertIs<SerializationException>(errors.firstOrNull(), "errors: $errors")
+    }
+
+    /** Caches the first page of stories as the endpoint answers it with [cached] as each story's content. */
+    private fun cache(cached: String) = runBlocking {
+        content = cached
+        client.http.get("stories") {
+            // As the pager asks for the first page of stories of the page component.
+            parameter("page", "1")
+            parameter("per_page", "25")
+            parameter("content_type", "page")
+        }
+        requests = 0
+    }
+
+    /**
+     * The load errors reported, and the titles of the first page a collector sees, once the network has the page with
+     * [loaded] as each story's content. Stops at the first error, as the page will not arrive after one.
+     */
+    private fun firstPage(loaded: String = after): Pair<List<Throwable>, List<String>?> = runBlocking {
+        content = loaded
         val errors = mutableListOf<Throwable>()
         val titles = withTimeoutOrNull(5_000) {
             client.stories<Pg>(PagingConfig(pageSize = 25)).flow
@@ -171,7 +203,7 @@ class StaleCacheTest {
                         .filterIsInstance<LoadState.Error>()
                         .forEach { errors += it.error }
                 }
-                .first { it.items.isNotEmpty() }
+                .first { it.items.isNotEmpty() || errors.isNotEmpty() }
                 .items.map { it.content.title }
         }
         errors to titles
