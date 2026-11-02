@@ -13,12 +13,19 @@ import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
+import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
+import io.ktor.client.statement.request
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
+import io.ktor.util.date.GMTDate
+import io.ktor.util.logging.KtorSimpleLogger
+import io.ktor.util.logging.Logger
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.SerializationException
+
+private val LOGGER: Logger = KtorSimpleLogger("com.storyblok.cdn.Paging")
 
 /**
  * One page of an offset-paginated endpoint. The Content Delivery API pages uniformly — a `page` and a `per_page`
@@ -106,9 +113,11 @@ internal fun <T : Any> HttpClient.pager(
  * is indistinguishable from the end of the list, and a collector that does not re-drive its own loads would take it
  * for one. A read that may go to the network cannot miss, and so never answers `null`.
  *
- * Such a read may still be answered from the cache, where published pages stay fresh for days. One whose items [items]
- * cannot read is made again with [revalidate], which revalidates the cached page rather than reading it, so a page the
- * source passed over as unreadable gives way to the server's.
+ * Such a read may still be answered from the cache, where published pages stay fresh for days. One answered from the
+ * cache whose items [items] cannot read is made again with [revalidate], which revalidates the cached page rather than
+ * reading it, so a page the source passed over as unreadable gives way to the server's. If that fails other than in
+ * deserializing, such as when it cannot reach the server, the cached page's failure is reported, with that one
+ * suppressed, as it would have been without the second read.
  *
  * @param T The type of the items on the page.
  */
@@ -121,6 +130,7 @@ private suspend fun <T : Any> HttpClient.read(
     items: (body: String) -> List<T>,
     revalidate: Boolean = false,
 ): PagedResponse<T>? {
+    val sent = GMTDate()
     val response = try {
         get(path) {
             if (cachedOnly) onlyIfCached()
@@ -142,18 +152,29 @@ private suspend fun <T : Any> HttpClient.read(
         items(response.body<String>())
     } catch (e: CancellationException) {
         throw e
-    } catch (e: Throwable) {
+    } catch (e: Exception) {
         // A page cached before the content changed shape, such as a required field added to a component since, no
         // longer deserializes. Like a page the cache does not hold, it is a miss rather than a failure.
-        if (cachedOnly) return null
-        if (!revalidate) return read(path, page, perPage, cachedOnly = false, params, items, revalidate = true)
-        // As StoryblokClient.story does: a deserialization failure is a modelling error rather than a transient API
-        // one, so it propagates unwrapped instead of arriving as a (potentially retryable) client exception.
-        if (e is SerializationException) throw e
-        // A body that is well-formed JSON but not the shape this endpoint answers with does not reach the
-        // deserializer at all — it fails on the way there, and would otherwise surface to the caller as whatever
-        // the traversal happened to throw.
-        throw StoryblokClientException(e.message, e)
+        if (cachedOnly) {
+            LOGGER.debug("Passing over a cached page of $path that no longer deserializes: ${e.message}")
+            return null
+        }
+        val failure = when (e) {
+            // As StoryblokClient.story does: a deserialization failure is a modelling error rather than a transient
+            // API one, so it propagates unwrapped instead of arriving as a (potentially retryable) client exception.
+            is SerializationException -> e
+            // A body that is well-formed JSON but not the shape this endpoint answers with does not reach the
+            // deserializer at all — it fails on the way there, and would otherwise surface to the caller as whatever
+            // the traversal happened to throw.
+            else -> StoryblokClientException(e.message, e)
+        }
+        if (revalidate || !response.answeredFromCache(since = sent)) throw failure
+        LOGGER.debug("Revalidating a cached page of $path that no longer deserializes: ${e.message}")
+        return try {
+            read(path, page, perPage, cachedOnly = false, params, items, revalidate = true)
+        } catch (unreachable: StoryblokClientException) {
+            throw failure.apply { addSuppressed(unreachable) }
+        }
     }
 
     return PagedResponse(
@@ -163,6 +184,14 @@ private suspend fun <T : Any> HttpClient.read(
         page = page,
     )
 }
+
+/**
+ * Whether Ktor's cache answered this response without asking the server, as it does while the cached copy is fresh,
+ * for a request [sent][since] after the copy was. A copy the server confirmed with a 304 keeps its original times too,
+ * but the request that confirmed it carried the copy's validators.
+ */
+private fun HttpResponse.answeredFromCache(since: GMTDate): Boolean =
+    requestTime < since && listOf(HttpHeaders.IfNoneMatch, HttpHeaders.IfModifiedSince).none { it in request.headers }
 
 /**
  * The page a loaded result came from. A page states its predecessor as [prevKey][PagingSource.LoadResult.Page.prevKey]

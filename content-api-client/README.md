@@ -477,7 +477,10 @@ The client leverages the underlying [ktor-client-storyblok](../ktor-client-story
 
 This provides a "stale-while-revalidate" pattern for optimal user experience.
 
-A cached copy that no longer deserializes into your components is passed over, as though the cache held none, rather than failing the flow. This happens when a copy was cached before the content changed shape, such as a required field added to a component since. Only the latest version failing to deserialize is reported.
+A cached copy that no longer deserializes into your components is passed over, as though the cache held none, rather than failing the flow. This happens when a copy was cached before the content changed shape, such as a required field added to a component since. The copy is then revalidated with the server, so the latest version is fetched even while the cached copy would otherwise still be fresh. Only the latest version failing to deserialize is reported. After an app update that adds a required field:
+
+- If the server answers that the copy is unchanged (`304 Not Modified`), the same copy fails again and its `SerializationException` is reported.
+- Offline, `story()` emits nothing and fails with the network error, rather than with a `SerializationException`.
 
 ### Where the cache is stored
 

@@ -25,6 +25,8 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.util.logging.KtorSimpleLogger
+import io.ktor.util.logging.Logger
 import io.ktor.util.reflect.TypeInfo
 import io.ktor.util.reflect.serializer
 import io.ktor.util.reflect.typeInfo
@@ -65,6 +67,8 @@ import kotlin.uuid.Uuid
 /** Restricts a request to Ktor's HTTP cache, which answers a miss with a `504 Gateway Timeout`. */
 internal fun HttpRequestBuilder.onlyIfCached(): Unit =
     header(HttpHeaders.CacheControl, "only-if-cached, max-stale=${Int.MAX_VALUE}")
+
+private val LOGGER: Logger = KtorSimpleLogger("com.storyblok.cdn.StoryblokClient")
 
 /** The `rels` of a response envelope by uuid, which is where relation resolution reads resolved stories from. */
 private val JsonObject.rels: Map<String, JsonObject>
@@ -282,6 +286,7 @@ public class StoryblokClientImpl internal constructor(
                 val story = try {
                     cached.toStory<T>(typeInfo, resolveLevel)
                 } catch (e: Exception) {
+                    LOGGER.debug("Passing over a cached copy of $uriString that no longer deserializes: ${e.message}")
                     null
                 }
                 if (story != null) emit(cached to story) else passedOver = true
