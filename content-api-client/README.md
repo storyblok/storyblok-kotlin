@@ -354,7 +354,12 @@ class Article(
 ) : Component()
 ```
 
-A `List<Story<T>>?` does not help here: its stories are not nullable, so one that cannot be resolved fails decoding.
+A `List<Story<T>>?` does not help here: its stories are not nullable, so one that cannot be resolved fails decoding. A `null` entry in the list, which content written through the Management API can hold, stays `null`.
+
+With `resolveLevel = 0`, no story can be resolved, so every entry is `null`. Model the field as `List<Uuid>` (or `List<String>`) to receive the raw UUIDs instead.
+
+> [!NOTE]
+> This describes the stories `story()` and `stories()` emit. A live update from the Visual Editor on the `wasmJs` target leaves a relation it cannot resolve as a raw UUID string, which a nullable story field does not yet accept.
 
 ## Rich text fields
 
