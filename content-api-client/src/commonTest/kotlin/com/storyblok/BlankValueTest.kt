@@ -18,6 +18,14 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonIgnoreUnknownKeys
+import kotlinx.serialization.json.JsonContentPolymorphicSerializer
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.serializer
@@ -84,6 +92,43 @@ class BlankValueTest {
     @Serializable @SerialName("featured")
     class Featured(val event: Story<Event> = FALLBACK) : Component()
 
+    @Serializable @SerialName("shelf")
+    class Shelf(val featured: Story<Featured>?) : Component()
+
+    @Serializable
+    sealed class Hero {
+        @Serializable @JsonIgnoreUnknownKeys class Banner(val title: String, val shownAt: Instant?) : Hero()
+    }
+
+    /** Picks a [Hero] by its component, as a custom block picker does, with a descriptor that lists no subclasses. */
+    object HeroPicker : JsonContentPolymorphicSerializer<Hero>(Hero::class) {
+        override fun selectDeserializer(element: JsonElement) = Hero.Banner.serializer()
+    }
+
+    @Serializable @SerialName("hero")
+    class HeroBlock(@Serializable(with = HeroPicker::class) val hero: Hero?) : Component()
+
+    @Serializable
+    enum class Size { @SerialName("") None, Small }
+
+    @Serializable(with = MoneySerializer::class)
+    class Money(val cents: Int)
+
+    /** Reads `""` as no money, as a custom serializer may. */
+    object MoneySerializer : KSerializer<Money> {
+        override val descriptor = PrimitiveSerialDescriptor("Money", PrimitiveKind.STRING)
+        override fun deserialize(decoder: Decoder) = Money(decoder.decodeString().ifEmpty { "0" }.toInt())
+        override fun serialize(encoder: Encoder, value: Money) = encoder.encodeString(value.cents.toString())
+    }
+
+    @Serializable @SerialName("item")
+    class Item(val size: Size? = null, val price: Money? = null) : Component()
+
+    @Serializable @SerialName("positive")
+    class Positive(val count: Int) : Component() {
+        init { require(count > 0) { "count must be positive, was $count" } }
+    }
+
     @Serializable @SerialName("alias_after")
     class AliasAfter(val title: String, @JsonNames("title") val seats: Int? = null) : Component()
 
@@ -129,6 +174,10 @@ class BlankValueTest {
             polymorphic(Component::class, Featured::class, Featured.serializer())
             polymorphic(Component::class, AliasAfter::class, AliasAfter.serializer())
             polymorphic(Component::class, AliasBefore::class, AliasBefore.serializer())
+            polymorphic(Component::class, Shelf::class, Shelf.serializer())
+            polymorphic(Component::class, HeroBlock::class, HeroBlock.serializer())
+            polymorphic(Component::class, Item::class, Item.serializer())
+            polymorphic(Component::class, Positive::class, Positive.serializer())
             contextual(Uuid::class, Uuid.serializer())
         },
         // As StoryblokClient(lenientJsonParsing = false) configures it.
@@ -253,5 +302,42 @@ class BlankValueTest {
                 else -> error("unexpected $story")
             }
         }
+    }
+
+    @Test
+    fun `a blank relation in a related story takes the property's default`() = runTest {
+        val shelf = story(HOME, """{"component": "shelf", "_uid": "s", "featured": "$OTHER"}""")
+        val featured = story(OTHER, """{"component": "featured", "_uid": "f", "event": ""}""")
+        val client = client("""{"story": $shelf, "rels": [$featured]}""")
+
+        val related = assertNotNull(client.story<Shelf>("home").first().content.featured)
+
+        assertEquals(FALLBACK.uuid, related.content.event.uuid)
+    }
+
+    @Test
+    fun `a field whose serializer picks a class from its content decodes`() = runTest {
+        val content = """{"component": "hero", "_uid": "h", "hero": {"component": "hero", "title": "Hi", "shownAt": null}}"""
+        val hero = client("""{"story": ${story(HOME, content)}}""").story<HeroBlock>("home").first().content.hero
+
+        assertEquals("Hi", (hero as Hero.Banner).title)
+    }
+
+    @Test
+    fun `an enum or a custom serializer still receives a blank value`() = runTest {
+        val content = """{"component": "item", "_uid": "i", "size": "", "price": ""}"""
+        val item = client("""{"story": ${story(HOME, content)}}""").story<Item>("home").first().content
+
+        assertEquals(Size.None, item.size)
+        assertEquals(0, assertNotNull(item.price).cents)
+    }
+
+    @Test
+    fun `a require in a component's init fails as a deserialization error`() = runTest {
+        val client = client("""{"story": ${story(HOME, """{"component": "positive", "_uid": "p", "count": 0}""")}}""")
+
+        val exception = assertFailsWith<SerializationException> { client.story<Positive>("home").first() }
+
+        assertContains(assertNotNull(exception.message), "count must be positive")
     }
 }

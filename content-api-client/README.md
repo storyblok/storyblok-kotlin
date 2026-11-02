@@ -424,12 +424,15 @@ println(page.image.alt)
 
 ### Blank values
 
-Storyblok sends a date, number or single-option story field left blank as `""`, rather than leaving it out or sending
-`null`. The client reads `""` as a value that is not set wherever the property does not hold text: a property with a
-default takes its default, and a nullable one is `null`. A `String` property keeps `""`, and a required property of any
-other type still fails to deserialize.
+Storyblok sends a Date/Time, Number or Single-Option field left blank as `""`, rather than leaving it out or sending
+`null`. Where a property's type cannot read `""` — a number, a date or time, a `Uuid` or a `Story` — the client reads it
+as a value that is not set: a property with a default takes its default, and a nullable one is `null`. The same applies
+to the elements of a list and the values of a map whose element type is nullable, such as `List<Uuid?>`; a
+`List<Int>` holding `""` still fails. A required property still fails to deserialize, and every other type, such as a
+`String`, an enum or a custom serializer, receives `""` as sent.
 
 ```kotlin
+@OptIn(ExperimentalUuidApi::class)
 @Serializable
 @SerialName("event")
 class Event(
@@ -437,10 +440,15 @@ class Event(
     @Serializable(with = StoryblokDateTimeSerializer::class)
     val doorsOpen: LocalDateTime?,          // null when left blank
     val seats: Int = 0,                     // 0 when left blank
-    val venue: Uuid?,                       // a story option with no story selected is null
+    val venue: Uuid?,                       // a Single-Option field sourced from stories: the selected story's uuid,
+                                            // or null when none is selected
     val note: String,                       // "" when left blank
 ) : Component()
 ```
+
+`venue` receives the story's uuid because it is not a `Story`, so the client does not resolve it (see
+[Story relations](#story-relations)). Model it as `Story<T>?` to receive the resolved story instead, which is also
+`null` when none is selected.
 
 ## Caching
 
@@ -482,8 +490,12 @@ API errors are wrapped in [`StoryblokClientException`](https://storyblok.github.
 
 ```kotlin
 client.story<Page>("non-existent")
-    .catch { e: StoryblokClientException ->
-        println("Failed to fetch story: ${e.message}")
+    .catch { e ->
+        when (e) {
+            is StoryblokClientException -> println("Failed to fetch story: ${e.message}")
+            is SerializationException -> println("Story does not match its components: ${e.message}")
+            else -> throw e
+        }
     }
     .collect { story -> /* handle story */ }
 ```
@@ -491,7 +503,8 @@ client.story<Page>("non-existent")
 > [!NOTE]
 > Deserialization failures are **not** wrapped: they surface as `SerializationException`, since a mismatch between your
 > component definitions and the content is a modelling error rather than a transient failure worth retrying. That
-> includes a value a property's serializer cannot parse, such as a malformed date or uuid.
+> includes a value a property's serializer cannot parse, such as a malformed date or uuid, and a `require` in a
+> component's `init` block.
 
 ## Closing the client
 
