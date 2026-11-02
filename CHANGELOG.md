@@ -2,9 +2,10 @@
 
 **0.7.2**
 
-- Documented that each story in a `List<Story<T>?>` relation that cannot be resolved, or that closes a cycle,
-  resolves to `null` in its place, keeping the others. The unresolved and circular relation errors now mention lists
-  of nullable stories.
+- A `List<Story<T>?>` relation keeps the stories that resolve, with `null` in place of each one that can't or that
+  closes a cycle. A `null` entry in the list now stays `null` rather than failing decoding when it comes first.
+- The unresolved and circular relation errors now name the type to model the field with: `Story<T>?` or `String`
+  for a single story, `List<Story<T>?>` or `List<String>` for a list.
 
 **0.7.1**
 

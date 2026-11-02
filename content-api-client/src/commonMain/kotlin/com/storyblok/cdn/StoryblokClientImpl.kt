@@ -308,13 +308,16 @@ public class StoryblokClientImpl internal constructor(
                 is JsonObject if (value["type"] as? JsonPrimitive)?.content == "doc" ->
                     value.resolveRichText(rels, resolveLevel, resolving)
                 is JsonPrimitive if value.isString && key in relations ->
-                    resolveRelation(value.content, rels, resolveLevel, resolving, nullable = relations.getValue(key))
+                    resolveRelation(value.content, rels, resolveLevel, resolving, relations.getValue(key), list = false)
+                // Each entry on its own, so a null entry (written through the Management API) stays null.
+                is JsonArray if key in relations -> JsonArray(value.map {
+                    if (it is JsonPrimitive && it.isString)
+                        resolveRelation(it.content, rels, resolveLevel, resolving, relations.getValue(key), list = true)
+                    else it
+                })
                 is JsonArray -> when(val element = value.firstOrNull()) {
                     is JsonObject if "component" in element ->
                         JsonArray(value.map { it.jsonObject.resolve(rels, resolveLevel, resolving) })
-                    is JsonPrimitive if element.isString && key in relations -> value
-                        .map { resolveRelation(it.jsonPrimitive.content, rels, resolveLevel, resolving, nullable = relations.getValue(key)) }
-                        .let { JsonArray(it) }
                     else -> return@mapNotNull null
                 }
                 else -> return@mapNotNull null
@@ -326,7 +329,8 @@ public class StoryblokClientImpl internal constructor(
     /**
      * Substitutes a relation [uuid] with its story from [rels]. A uuid that is missing from [rels], or already being
      * resolved [resolveLevel] times further up the call stack (a circular relation), resolves to [JsonNull] when the
-     * story field is [nullable], and fails with a [SerializationException] naming the uuid otherwise.
+     * story field is [nullable], and fails with a [SerializationException] naming the uuid otherwise. Its message names
+     * the types to model the field with, which differ for an entry of a [list].
      */
     private fun resolveRelation(
         uuid: String,
@@ -334,15 +338,19 @@ public class StoryblokClientImpl internal constructor(
         resolveLevel: Int,
         resolving: Map<String, Int>,
         nullable: Boolean,
+        list: Boolean,
     ): JsonElement {
         val depth = resolving[uuid] ?: 0
         val circular = depth >= resolveLevel
         rels[uuid]?.takeUnless { circular }
             ?.run { return jsonObject.resolve(rels, resolveLevel, resolving + (uuid to depth + 1)) }
         if (nullable) return JsonNull
+        val hint =
+            if (list) "model the field as List<Story<T>?>, or as List<String> to receive the raw uuids"
+            else "model the field as Story<T>?, or as String to receive the raw uuid"
         throw SerializationException(
-            if (circular && resolveLevel > 0) "Circular story relation: $uuid (model the field as a nullable story, or a list of nullable stories)"
-            else "Unresolved story relation: $uuid (model the field as a nullable story or a list of nullable stories, or as a String to receive the raw uuid)"
+            if (circular && resolveLevel > 0) "Circular story relation: $uuid ($hint)"
+            else "Unresolved story relation: $uuid ($hint)"
         )
     }
 
