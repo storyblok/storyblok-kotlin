@@ -38,8 +38,7 @@ internal interface StoryblokBridge {
     fun <T : Component> story(story: Story<T>, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>>
 
     /**
-     * Removes whatever the connection holds — on the web target the bridge's event listeners,
-     * timers and injected DOM.
+     * Removes whatever the connection holds — on the web target its message listener.
      *
      * The editor is told nothing: a page may be torn down without the preview ending.
      */
@@ -59,9 +58,6 @@ internal object NoVisualEditor : StoryblokBridge {
  * The relations are fixed here rather than per subscription because the bridge posts them to the
  * editor as it initializes. A page shows one story fetched with one set of relations, so there is
  * nothing to vary them by.
- *
- * At most one bridge should be open per page: the preview bridge's own `initOnlyOnce` makes a second
- * one either silently do nothing or reset the first one's listeners.
  */
 internal expect fun StoryblokBridge(json: Json, resolveRelations: String): StoryblokBridge
 

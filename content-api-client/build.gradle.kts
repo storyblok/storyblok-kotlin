@@ -101,7 +101,6 @@ kotlin {
         }
 
         wasmJsMain.dependencies {
-            implementation(npm("@storyblok/preview-bridge", "2.3.0"))
             implementation(libs.kotlin.browser)
             implementation(libs.kotlin.js)
         }
