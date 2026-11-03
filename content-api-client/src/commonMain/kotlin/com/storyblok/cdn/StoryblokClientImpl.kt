@@ -181,13 +181,14 @@ public class StoryblokClientImpl internal constructor(
 
     /**
      * Deserializes a story object as the [Story] type [typeInfo] describes, with its content relations resolved
-     * [resolveLevel] deep from the [rels] of the response it arrived in.
+     * [resolveLevel] deep from the [rels] of the response it arrived in, and blank values read as [decodeContent] reads
+     * them.
      */
     private fun <T : Component> JsonObject.toStory(
         typeInfo: TypeInfo,
         rels: Map<String, JsonElement?>,
         resolveLevel: Int,
-    ): Story<T> = json.decodeFromJsonElement(
+    ): Story<T> = json.decodeContent(
         @OptIn(io.ktor.utils.io.InternalAPI::class) typeInfo.serializer() as KSerializer<Story<T>>,
         JsonObject(this + ("content" to this["content"]!!.jsonObject.resolve(rels, resolveLevel))),
     )
@@ -307,11 +308,12 @@ public class StoryblokClientImpl internal constructor(
                 is JsonObject if "component" in value -> value.resolve(rels, resolveLevel, resolving)
                 is JsonObject if (value["type"] as? JsonPrimitive)?.content == "doc" ->
                     value.resolveRichText(rels, resolveLevel, resolving)
-                is JsonPrimitive if value.isString && key in relations ->
+                // A blank relation is a Single-Option field with no story selected, which decodeContent reads as not set.
+                is JsonPrimitive if value.isString && value.content.isNotEmpty() && key in relations ->
                     resolveRelation(value.content, rels, resolveLevel, resolving, relations.getValue(key), list = false)
                 // Each entry on its own, so a null entry (written through the Management API) stays null.
                 is JsonArray if key in relations -> JsonArray(value.map {
-                    if (it is JsonPrimitive && it.isString)
+                    if (it is JsonPrimitive && it.isString && it.content.isNotEmpty())
                         resolveRelation(it.content, rels, resolveLevel, resolving, relations.getValue(key), list = true)
                     else it
                 })

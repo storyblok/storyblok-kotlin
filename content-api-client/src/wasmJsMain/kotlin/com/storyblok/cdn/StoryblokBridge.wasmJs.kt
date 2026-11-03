@@ -12,8 +12,10 @@ import js.objects.unsafeJso
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 import storyblok.preview.bridge.BridgeParams
 import storyblok.preview.bridge.InputBridgeEvent
 import storyblok.preview.bridge.StoryMetadata
@@ -91,19 +93,21 @@ private class VisualEditor(private val json: Json, resolveRelations: String) : S
             // whatever this one is built from.
             when {
                 edited == null || edited.id != story.id.toDouble() -> story
-                else -> try {
-                    story.copy(
-                        content = json.decodeFromJsonElement(
-                            typeInfo.contentSerializer<T>(),
-                            edited.content.toJsonElement(resolveLevel),
-                        ),
-                    )
-                } catch (e: SerializationException) {
-                    LOGGER.warn("Visual Editor update dropped, preview left on the last story that decoded", e)
-                    null
-                }
+                else -> json.decodeEdit(typeInfo.contentSerializer<T>(), edited.content.toJsonElement(resolveLevel))
+                    ?.let { story.copy(content = it) }
             }
         }
 
     override fun destroy(): Unit = bridge.destroy()
+}
+
+/**
+ * The content of an edit the Visual Editor pushed, decoded as [decodeContent] decodes fetched content, or `null` when it
+ * does not decode, so that the preview stays on the last story that did.
+ */
+internal fun <T> Json.decodeEdit(deserializer: DeserializationStrategy<T>, content: JsonElement): T? = try {
+    decodeContent(deserializer, content)
+} catch (e: SerializationException) {
+    LOGGER.warn("Visual Editor update dropped, preview left on the last story that decoded", e)
+    null
 }

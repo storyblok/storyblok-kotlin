@@ -1,7 +1,14 @@
 ### Changelog
 
-**0.7.2**
+**0.8.0**
 
+- BREAKING CHANGE: Content that fails to deserialize now always surfaces from `StoryblokClient.story(...)` and
+  `StoryblokClient.stories(...)` as a `SerializationException`, including a value a property's serializer cannot parse,
+  such as a malformed date or uuid, and a `require` in a component's `init` block. These were reported as a
+  `StoryblokClientException`, the type for a failed request. If you catch `StoryblokClientException` to handle content
+  that does not deserialize, also catch `SerializationException`.
+- Fixed a blank Date/Time, Number or Single-Option field, which Storyblok sends as `""`, failing to deserialize into a
+  nullable or defaulted number, date, time, `Uuid` or `Story` property: it is now `null` or the property's default.
 - A `List<Story<T>?>` relation keeps the stories that resolve, with `null` in place of each one that can't or that
   closes a cycle. A `null` entry in the list now stays `null` rather than failing decoding when it comes first.
 - The unresolved and circular relation errors now name the type to model the field with: `Story<T>?` or `String`
