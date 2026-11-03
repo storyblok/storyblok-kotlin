@@ -1,4 +1,4 @@
-package ktorplugin.cdn
+package com.storyblok.examples.cdn
 
 import com.storyblok.cdn.schema.Component
 import kotlinx.serialization.SerialName
