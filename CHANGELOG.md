@@ -17,6 +17,8 @@
   when its cached copy no longer deserialized (for example, after a required field was added to a component). Such a
   copy is now passed over and revalidated with the server; only the latest version failing to deserialize is reported.
   `StoryblokClient.stories(...)` likewise treats such a cached page as a miss rather than reporting a load error.
+- Fixed the Ktor plugin not setting `Content-Type: application/json` on `PATCH` requests, so a `PATCH` with a JSON
+  body failed to send.
 
 **0.7.1**
 

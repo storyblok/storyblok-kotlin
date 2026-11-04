@@ -13,6 +13,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.http.ContentType.Application.Json
 import io.ktor.http.HttpHeaders.ContentType
+import io.ktor.http.HttpMethod.Companion.Patch
 import io.ktor.http.HttpMethod.Companion.Post
 import io.ktor.http.HttpMethod.Companion.Put
 import kotlinx.coroutines.joinAll
@@ -36,11 +37,11 @@ class StoryblokTest {
     }
 
     @Test
-    fun `adds json content type header on put and post requests`() = runTest {
+    fun `adds json content type header on put post and patch requests`() = runTest {
         val client = HttpClient(MockEngine.create {
             addHandler {
                 when(it.method) {
-                    Put, Post -> assertEquals(Json.toString(), it.headers[ContentType])
+                    Put, Post, Patch -> assertEquals(Json.toString(), it.headers[ContentType])
                     else -> assertNull(it.headers[ContentType])
                 }
                 respondOk()
@@ -51,6 +52,7 @@ class StoryblokTest {
         client.get("spaces/123/stories/1234")
         client.post("spaces/123/stories/1234")
         client.put("spaces/123/stories/1234")
+        client.patch("spaces/123/stories/1234")
         client.delete("spaces/123/stories/1234")
     }
 

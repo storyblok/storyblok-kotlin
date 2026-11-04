@@ -91,7 +91,7 @@ public fun <T: Api.Config> HttpClientConfig<*>.Storyblok(api: Api<T>): ClientPlu
         with(api) { configure(config) }
         onRequest { request, _ ->
             when(request.method) {
-                HttpMethod.Put, HttpMethod.Post -> request.contentType(ContentType.Application.Json)
+                HttpMethod.Put, HttpMethod.Post, HttpMethod.Patch -> request.contentType(ContentType.Application.Json)
             }
         }
         // Delays requests to respect rate limits
