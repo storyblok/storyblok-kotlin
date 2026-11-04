@@ -2,7 +2,8 @@
 
 A Compose Multiplatform SDK for rendering Storyblok content in your app built on the [Content Delivery API Client](https://github.com/storyblok/storyblok-kotlin/tree/main/content-api-client).
 
-With out-of-the-box support for component mapping, rich text rendering, and reactive story updates.
+With out-of-the-box support for component mapping, rich text rendering, reactive story updates, and previews in the
+Visual Editor, where tapping a block opens it in the editor.
 
 ## Quick start
 

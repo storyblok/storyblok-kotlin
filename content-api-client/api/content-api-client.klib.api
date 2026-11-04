@@ -1083,6 +1083,15 @@ sealed class com.storyblok.cdn.schema/RichText { // com.storyblok.cdn.schema/Ric
     }
 }
 
+final object com.storyblok.cdn/NoVisualEditor : com.storyblok.cdn/StoryblokBridge { // com.storyblok.cdn/NoVisualEditor|null[0]
+    final val selectedBlock // com.storyblok.cdn/NoVisualEditor.selectedBlock|{}selectedBlock[0]
+        final fun <get-selectedBlock>(): kotlinx.coroutines.flow/StateFlow<kotlin/String?> // com.storyblok.cdn/NoVisualEditor.selectedBlock.<get-selectedBlock>|<get-selectedBlock>(){}[0]
+
+    final fun <#A1: com.storyblok.cdn.schema/Component> story(com.storyblok.cdn.schema/Story<#A1>, io.ktor.util.reflect/TypeInfo, kotlin/Int): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A1>> // com.storyblok.cdn/NoVisualEditor.story|story(com.storyblok.cdn.schema.Story<0:0>;io.ktor.util.reflect.TypeInfo;kotlin.Int){0§<com.storyblok.cdn.schema.Component>}[0]
+    final fun destroy() // com.storyblok.cdn/NoVisualEditor.destroy|destroy(){}[0]
+    final fun openBlock(com.storyblok.cdn.schema/Component) // com.storyblok.cdn/NoVisualEditor.openBlock|openBlock(com.storyblok.cdn.schema.Component){}[0]
+}
+
 final object com.storyblok.serializers/StoryblokDateTimeSerializer : kotlinx.datetime.serializers/FormattedLocalDateTimeSerializer // com.storyblok.serializers/StoryblokDateTimeSerializer|null[0]
 
 final inline fun <#A: reified com.storyblok.cdn.schema/Component> (com.storyblok.cdn/StoryblokClient).com.storyblok.cdn/stories(androidx.paging/PagingConfig = ..., kotlin/Int = ..., noinline kotlin/Function1<com.storyblok.cdn.query/StoriesQuery<#A>, kotlin/Unit> = ...): androidx.paging/Pager<kotlin/Int, com.storyblok.cdn.schema/Story<#A>> // com.storyblok.cdn/stories|stories@com.storyblok.cdn.StoryblokClient(androidx.paging.PagingConfig;kotlin.Int;kotlin.Function1<com.storyblok.cdn.query.StoriesQuery<0:0>,kotlin.Unit>){0§<com.storyblok.cdn.schema.Component>}[0]

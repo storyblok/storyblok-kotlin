@@ -268,6 +268,24 @@ val articleStory by story<Article>(Uuid.parse("...")).collectAsState(null)
 
 The `story()` functions also accept a `resolveLevel` parameter to control how deeply story relations are resolved — see [Story relations](../content-api-client/README.md#story-relations) in the Content Delivery API Client guide.
 
+## Visual Editor preview
+
+When a [Compose Multiplatform for Web](https://lp.jetbrains.com/cmp-for-web/) (`wasmJs`) build is previewed in Storyblok's
+[Visual Editor](https://www.storyblok.com/docs/concepts/visual-editor), every block drawn with `Block()` becomes part of the
+editing experience, with nothing to configure:
+
+- **Tapping a block opens its form in the editor.** A tap on a nested block opens the innermost one under it. The first tap
+  on a block only selects it, so tapping a card that navigates opens the card instead of following it. A second tap does
+  what the block does.
+- **The selected block is outlined**, and when the author picks one in the editor's form, or adds, moves or duplicates one,
+  it is scrolled into view.
+
+For this to work, a block's composable must apply the `Modifier` it is given to its outermost layout, as in the examples
+above. Outside the editor, and on every other target, blocks behave exactly as before.
+
+> [!NOTE]
+> A block in a lazy list is only scrolled to while it is composed, that is, on or near the screen.
+
 ## Configuration options
 
 The `Storyblok` composable accepts the following configuration:

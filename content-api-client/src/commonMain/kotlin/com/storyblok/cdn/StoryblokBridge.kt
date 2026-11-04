@@ -70,7 +70,16 @@ public interface StoryblokBridge {
     public fun destroy()
 }
 
-internal object NoVisualEditor : StoryblokBridge {
+/**
+ * The bridge of a client that is not being previewed: every target but the web, and a web page
+ * outside the editor.
+ *
+ * Public only so that the Compose SDK can tell, and leave the blocks it draws alone.
+ *
+ * @suppress
+ */
+@InternalAPI
+public object NoVisualEditor : StoryblokBridge {
     override fun <T : Component> story(story: Story<T>, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>> = flowOf(story)
     override fun openBlock(block: Component): Unit = Unit
     override val selectedBlock: StateFlow<String?> = MutableStateFlow(null)
