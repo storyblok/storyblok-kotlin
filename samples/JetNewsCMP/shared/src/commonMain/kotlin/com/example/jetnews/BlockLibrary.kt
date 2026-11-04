@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -64,31 +64,31 @@ fun blockLibrary(onOpenStory: (StoryKey) -> Unit): BlockProviderScope.() -> Unit
     }
 
     block<Feed> { page, modifier ->
-        LazyColumn(modifier) {
-            items(page.body, key = { it.uid }) {
-                Block(
-                    it,
-                    Modifier.fillMaxWidth()
-                )
-            }
+        // blocks() rather than items(), so that in the Visual Editor the feed scrolls to a block selected off screen
+        val state = rememberLazyListState()
+        LazyColumn(modifier, state = state) {
+            blocks(page.body, state) { Block(it, Modifier.fillMaxWidth()) }
         }
     }
 
     // Nestables - Post
 
-    block<Header> { header, _ ->
-        val post = LocalPost.current
-        PostHeaderImage(post)
-        Spacer(Modifier.height(defaultSpacerSize))
-        Text(
-            header.alternativeTitle.ifEmpty { post.title },
-            style = MaterialTheme.typography.headlineLarge
-        )
-        Spacer(Modifier.height(8.dp))
-        val subtitle = header.alternativeSubtitle.ifEmpty { post.subtitle }
-        if (subtitle != null) {
-            Text(subtitle, style = MaterialTheme.typography.bodyMedium)
+    // Every block applies the modifier it is given, which is what lets the Visual Editor open and outline it
+    block<Header> { header, modifier ->
+        Column(modifier) {
+            val post = LocalPost.current
+            PostHeaderImage(post)
             Spacer(Modifier.height(defaultSpacerSize))
+            Text(
+                header.alternativeTitle.ifEmpty { post.title },
+                style = MaterialTheme.typography.headlineLarge
+            )
+            Spacer(Modifier.height(8.dp))
+            val subtitle = header.alternativeSubtitle.ifEmpty { post.subtitle }
+            if (subtitle != null) {
+                Text(subtitle, style = MaterialTheme.typography.bodyMedium)
+                Spacer(Modifier.height(defaultSpacerSize))
+            }
         }
     }
 
@@ -96,21 +96,23 @@ fun blockLibrary(onOpenStory: (StoryKey) -> Unit): BlockProviderScope.() -> Unit
 
     // Nestables - Feed
 
-    block<HighlightedPost> { highlighted, _ ->
-        Text(
-            modifier = Modifier.padding(
-                start = 16.dp,
-                top = 16.dp,
-                end = 16.dp
-            ),
-            text = highlighted.title,
-            style = MaterialTheme.typography.titleMedium,
-        )
-        PostCardTop(
-            post = highlighted.post.content,
-            modifier = Modifier.clickable(onClick = { onOpenStory(StoryKey(highlighted.post)) }),
-        )
-        PostListDivider()
+    block<HighlightedPost> { highlighted, modifier ->
+        Column(modifier) {
+            Text(
+                modifier = Modifier.padding(
+                    start = 16.dp,
+                    top = 16.dp,
+                    end = 16.dp
+                ),
+                text = highlighted.title,
+                style = MaterialTheme.typography.titleMedium,
+            )
+            PostCardTop(
+                post = highlighted.post.content,
+                modifier = Modifier.clickable(onClick = { onOpenStory(StoryKey(highlighted.post)) }),
+            )
+            PostListDivider()
+        }
     }
 
     block<RecommendedPosts> { recommended, modifier ->
