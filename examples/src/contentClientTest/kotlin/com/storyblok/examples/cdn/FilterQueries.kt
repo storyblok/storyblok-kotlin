@@ -1,4 +1,4 @@
-package ktorplugin.cdn
+package com.storyblok.examples.cdn
 
 import com.storyblok.ktor.Api.Config.Version.*
 import com.storyblok.cdn.StoryblokClient
@@ -9,6 +9,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.flow.first
 import androidx.paging.asItemSnapshotListFlow
 import kotlin.test.Test
+import kotlin.test.assertTrue
 
 class FilterQueries {
 
@@ -20,20 +21,21 @@ class FilterQueries {
     fun `Filter Queries with Field-level Translation`() = runBlocking {
 
         val client = StoryblokClient(
-            accessToken = "krcV6QGxWORpYLUWt12xKQtt",
+            accessToken = "ask9soUkv02QqbZgmZdeDAtt",
             version = Published,
-            language = "es-co",
+            language = "de",
         )
         
         val stories = client
             .stories {
-                parameter("filter_query[headline__i18n__es_co][in]", "Sinfonía de la Tierra: Navegar por las maravillas y los desafíos de nuestro oasis azul")
+                parameter("filter_query[description__i18n__de][like]", "Deutsches*")
             }
             .flow
             .asItemSnapshotListFlow()
             .first()
         
         println(stories)
+        assertTrue(stories.isNotEmpty(), "Expected the example to retrieve stories")
     }
 
     /**
@@ -44,19 +46,20 @@ class FilterQueries {
     fun `Filter Queries with Nestable Blocks and Fields`() = runBlocking {
 
         val client = StoryblokClient(
-            accessToken = "krcV6QGxWORpYLUWt12xKQtt",
+            accessToken = "ask9soUkv02QqbZgmZdeDAtt",
             version = Published,
         )
         
         val stories = client
             .stories {
-                parameter("filter_query[body.0.name][in]", "This is a nested blok")
+                parameter("filter_query[body.0.headline][in]", "Hello Earth!")
             }
             .flow
             .asItemSnapshotListFlow()
             .first()
         
         println(stories)
+        assertTrue(stories.isNotEmpty(), "Expected the example to retrieve stories")
     }
 
     /**
@@ -67,14 +70,14 @@ class FilterQueries {
     fun all_in_array() = runBlocking {
 
         val client = StoryblokClient(
-            accessToken = "krcV6QGxWORpYLUWt12xKQtt",
+            accessToken = "ask9soUkv02QqbZgmZdeDAtt",
             version = Published,
         )
         
         val stories = client
-            .stories<Article> {
+            .stories<Post> {
                 filter {
-                    Article::topics allIn listOf("solar-system", "space-exploration")
+                    Post::categories allIn listOf("9aa72a2f-04ae-48df-b71f-25f53044dc97", "84550816-245d-4fe6-8ae8-b633d4a328f4")
                 }
             }
             .flow
@@ -82,6 +85,7 @@ class FilterQueries {
             .first()
         
         println(stories)
+        assertTrue(stories.isNotEmpty(), "Expected the example to retrieve stories")
     }
 
     /**
@@ -92,14 +96,14 @@ class FilterQueries {
     fun any_in_array() = runBlocking {
 
         val client = StoryblokClient(
-            accessToken = "krcV6QGxWORpYLUWt12xKQtt",
+            accessToken = "ask9soUkv02QqbZgmZdeDAtt",
             version = Published,
         )
         
         val stories = client
-            .stories<Article> {
+            .stories<Post> {
                 filter {
-                    Article::topics anyIn listOf("solar-system", "space-exploration")
+                    Post::categories anyIn listOf("9aa72a2f-04ae-48df-b71f-25f53044dc97", "84550816-245d-4fe6-8ae8-b633d4a328f4")
                 }
             }
             .flow
@@ -107,6 +111,7 @@ class FilterQueries {
             .first()
         
         println(stories)
+        assertTrue(stories.isNotEmpty(), "Expected the example to retrieve stories")
     }
 
     /**
@@ -117,14 +122,14 @@ class FilterQueries {
     fun gt_date() = runBlocking {
 
         val client = StoryblokClient(
-            accessToken = "krcV6QGxWORpYLUWt12xKQtt",
+            accessToken = "ask9soUkv02QqbZgmZdeDAtt",
             version = Published,
         )
         
         val stories = client
-            .stories<Article> {
+            .stories<Post> {
                 filter {
-                    Article::scheduled greaterThan Instant.parse("2023-12-31T09:00:00Z")
+                    Post::schedule greaterThan Instant.parse("2026-10-15T09:00:00Z")
                 }
             }
             .flow
@@ -132,6 +137,7 @@ class FilterQueries {
             .first()
         
         println(stories)
+        assertTrue(stories.isNotEmpty(), "Expected the example to retrieve stories")
     }
 
     /**
@@ -142,14 +148,14 @@ class FilterQueries {
     fun gt_float() = runBlocking {
 
         val client = StoryblokClient(
-            accessToken = "krcV6QGxWORpYLUWt12xKQtt",
+            accessToken = "ask9soUkv02QqbZgmZdeDAtt",
             version = Published,
         )
         
         val stories = client
             .stories<Product> {
                 filter {
-                    Product::price greaterThan 1199.99
+                    Product::price greaterThan 300.99
                 }
             }
             .flow
@@ -157,6 +163,7 @@ class FilterQueries {
             .first()
         
         println(stories)
+        assertTrue(stories.isNotEmpty(), "Expected the example to retrieve stories")
     }
 
     /**
@@ -167,7 +174,7 @@ class FilterQueries {
     fun gt_int() = runBlocking {
 
         val client = StoryblokClient(
-            accessToken = "krcV6QGxWORpYLUWt12xKQtt",
+            accessToken = "ask9soUkv02QqbZgmZdeDAtt",
             version = Published,
         )
         
@@ -182,6 +189,7 @@ class FilterQueries {
             .first()
         
         println(stories)
+        assertTrue(stories.isNotEmpty(), "Expected the example to retrieve stories")
     }
 
     /**
@@ -192,14 +200,14 @@ class FilterQueries {
     fun `in`() = runBlocking {
 
         val client = StoryblokClient(
-            accessToken = "krcV6QGxWORpYLUWt12xKQtt",
+            accessToken = "ask9soUkv02QqbZgmZdeDAtt",
             version = Published,
         )
         
         val stories = client
-            .stories<Article> {
+            .stories<Post> {
                 filter {
-                    Article::categories isIn listOf("space-exploration", "solar-system")
+                    Post::topics isIn listOf("Design", "Finance")
                 }
             }
             .flow
@@ -207,6 +215,7 @@ class FilterQueries {
             .first()
         
         println(stories)
+        assertTrue(stories.isNotEmpty(), "Expected the example to retrieve stories")
     }
 
     /**
@@ -217,14 +226,14 @@ class FilterQueries {
     fun `is`() = runBlocking {
 
         val client = StoryblokClient(
-            accessToken = "krcV6QGxWORpYLUWt12xKQtt",
+            accessToken = "ask9soUkv02QqbZgmZdeDAtt",
             version = Published,
         )
         
         val stories = client
-            .stories<Article> {
+            .stories<Post> {
                 filter {
-                    Article::categories `is` NotEmptyArray
+                    Post::author `is` NotEmptyArray
                 }
             }
             .flow
@@ -232,6 +241,7 @@ class FilterQueries {
             .first()
         
         println(stories)
+        assertTrue(stories.isNotEmpty(), "Expected the example to retrieve stories")
     }
 
     /**
@@ -242,21 +252,20 @@ class FilterQueries {
     fun like() = runBlocking {
 
         val client = StoryblokClient(
-            accessToken = "krcV6QGxWORpYLUWt12xKQtt",
+            accessToken = "ask9soUkv02QqbZgmZdeDAtt",
             version = Published,
         )
         
         val stories = client
-            .stories<Article> {
-                filter {
-                    Article::headline like "*space*"
-                }
+            .stories {
+                parameter("filter_query[name][like]", "*Space*")
             }
             .flow
             .asItemSnapshotListFlow()
             .first()
         
         println(stories)
+        assertTrue(stories.isNotEmpty(), "Expected the example to retrieve stories")
     }
 
     /**
@@ -267,14 +276,14 @@ class FilterQueries {
     fun lt_date() = runBlocking {
 
         val client = StoryblokClient(
-            accessToken = "krcV6QGxWORpYLUWt12xKQtt",
+            accessToken = "ask9soUkv02QqbZgmZdeDAtt",
             version = Published,
         )
         
         val stories = client
-            .stories<Article> {
+            .stories<Post> {
                 filter {
-                    Article::scheduled lessThan Instant.parse("2023-12-31T09:00:00Z")
+                    Post::schedule lessThan Instant.parse("2026-10-13T12:00:00Z")
                 }
             }
             .flow
@@ -282,6 +291,7 @@ class FilterQueries {
             .first()
         
         println(stories)
+        assertTrue(stories.isNotEmpty(), "Expected the example to retrieve stories")
     }
 
     /**
@@ -292,14 +302,15 @@ class FilterQueries {
     fun lt_float() = runBlocking {
 
         val client = StoryblokClient(
-            accessToken = "krcV6QGxWORpYLUWt12xKQtt",
+            accessToken = "ask9soUkv02QqbZgmZdeDAtt",
             version = Published,
         )
         
         val stories = client
             .stories<Product> {
+                startsWith = "products"
                 filter {
-                    Product::price lessThan 1199.99
+                    Product::price lessThan 2.24
                 }
             }
             .flow
@@ -307,6 +318,7 @@ class FilterQueries {
             .first()
         
         println(stories)
+        assertTrue(stories.isNotEmpty(), "Expected the example to retrieve stories")
     }
 
     /**
@@ -317,14 +329,15 @@ class FilterQueries {
     fun lt_int() = runBlocking {
 
         val client = StoryblokClient(
-            accessToken = "krcV6QGxWORpYLUWt12xKQtt",
+            accessToken = "ask9soUkv02QqbZgmZdeDAtt",
             version = Published,
         )
         
         val stories = client
             .stories<Product> {
+                startsWith = "products/"
                 filter {
-                    Product::price lessThan 1200L
+                    Product::price lessThan 20L
                 }
             }
             .flow
@@ -332,6 +345,7 @@ class FilterQueries {
             .first()
         
         println(stories)
+        assertTrue(stories.isNotEmpty(), "Expected the example to retrieve stories")
     }
 
     /**
@@ -342,14 +356,14 @@ class FilterQueries {
     fun not_in() = runBlocking {
 
         val client = StoryblokClient(
-            accessToken = "krcV6QGxWORpYLUWt12xKQtt",
+            accessToken = "ask9soUkv02QqbZgmZdeDAtt",
             version = Published,
         )
         
         val stories = client
-            .stories<Article> {
+            .stories<Post> {
                 filter {
-                    Article::categories notIn listOf("space-exploration", "culture")
+                    Post::topics notIn listOf("Design", "Finance")
                 }
             }
             .flow
@@ -357,6 +371,7 @@ class FilterQueries {
             .first()
         
         println(stories)
+        assertTrue(stories.isNotEmpty(), "Expected the example to retrieve stories")
     }
 
     /**
@@ -367,14 +382,15 @@ class FilterQueries {
     fun not_like() = runBlocking {
 
         val client = StoryblokClient(
-            accessToken = "krcV6QGxWORpYLUWt12xKQtt",
+            accessToken = "ask9soUkv02QqbZgmZdeDAtt",
             version = Published,
         )
         
         val stories = client
-            .stories<Article> {
+            .stories<Post> {
+                startsWith = "posts"
                 filter {
-                    Article::headline notLike "*Mysteries*"
+                    Post::description notLike "*second*"
                 }
             }
             .flow
@@ -382,6 +398,7 @@ class FilterQueries {
             .first()
         
         println(stories)
+        assertTrue(stories.isNotEmpty(), "Expected the example to retrieve stories")
     }
 
     /**
@@ -392,15 +409,15 @@ class FilterQueries {
     fun `Filtering Stories by a Boolean Value`() = runBlocking {
 
         val client = StoryblokClient(
-            accessToken = "krcV6QGxWORpYLUWt12xKQtt",
+            accessToken = "ask9soUkv02QqbZgmZdeDAtt",
             version = Published,
         )
         
         val stories = client
-            .stories<Article> {
-                startsWith = "articles/"
+            .stories<Post> {
+                startsWith = "posts"
                 filter {
-                    Article::highlighted isIn listOf("true")
+                    Post::highlighted isIn listOf("true")
                 }
             }
             .flow
@@ -408,6 +425,7 @@ class FilterQueries {
             .first()
         
         println(stories)
+        assertTrue(stories.isNotEmpty(), "Expected the example to retrieve stories")
     }
 
     /**
@@ -418,16 +436,16 @@ class FilterQueries {
     fun `Filtering Stories by Defining a Value Range`() = runBlocking {
 
         val client = StoryblokClient(
-            accessToken = "krcV6QGxWORpYLUWt12xKQtt",
+            accessToken = "ask9soUkv02QqbZgmZdeDAtt",
             version = Published,
         )
         
         val stories = client
             .stories<Product> {
-                startsWith = "products/"
+                startsWith = "products"
                 filter {
                     Product::price lessThan 300.0
-                    Product::price greaterThan 100.0
+                    Product::price greaterThan 200.0
                 }
             }
             .flow
@@ -435,6 +453,7 @@ class FilterQueries {
             .first()
         
         println(stories)
+        assertTrue(stories.isNotEmpty(), "Expected the example to retrieve stories")
     }
 
 }
