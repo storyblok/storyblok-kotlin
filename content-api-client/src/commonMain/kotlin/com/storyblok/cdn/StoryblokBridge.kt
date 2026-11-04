@@ -1,5 +1,6 @@
 package com.storyblok.cdn
 
+import com.storyblok.InternalAPI
 import com.storyblok.cdn.schema.Component
 import com.storyblok.cdn.schema.Story
 import io.ktor.util.reflect.TypeInfo
@@ -18,8 +19,14 @@ import kotlinx.serialization.json.Json
  * A [StoryblokClient] holds one for its lifetime and [destroys][destroy] it with itself. That
  * outlives any single [story][StoryblokClient.story] collection, which come and go as the app
  * navigates, and the connection has to survive that.
+ *
+ * Public only so that the Compose SDK can reach the client's own, as [StoryblokClientImpl.bridge],
+ * and point the editor at the blocks it draws.
+ *
+ * @suppress
  */
-internal interface StoryblokBridge {
+@InternalAPI
+public interface StoryblokBridge {
 
     /**
      * [story] as the app should show it: what was fetched, then that story carrying the content the
@@ -35,18 +42,26 @@ internal interface StoryblokBridge {
      * one. Updates for any other story are ignored.
      * @param resolveLevel How deep to follow a value that is already being read.
      */
-    fun <T : Component> story(story: Story<T>, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>>
+    public fun <T : Component> story(story: Story<T>, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>>
+
+    /**
+     * Opens [block]'s form in the editor, as clicking it does on a web page.
+     *
+     * Does nothing for a block that carries no `_editable`, which only a draft story's blocks do.
+     */
+    public fun openBlock(block: Component)
 
     /**
      * Removes whatever the connection holds — on the web target its message listener.
      *
      * The editor is told nothing: a page may be torn down without the preview ending.
      */
-    fun destroy()
+    public fun destroy()
 }
 
 internal object NoVisualEditor : StoryblokBridge {
     override fun <T : Component> story(story: Story<T>, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>> = flowOf(story)
+    override fun openBlock(block: Component): Unit = Unit
     override fun destroy(): Unit = Unit
 }
 
