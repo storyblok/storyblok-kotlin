@@ -4,13 +4,16 @@ package com.storyblok.compose
 
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
@@ -25,9 +28,13 @@ import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.storyblok.InternalAPI
+import com.storyblok.cdn.SelectedBlock
 import com.storyblok.cdn.StoryblokBridge
 import com.storyblok.cdn.schema.Component
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.launch
 
 /** The outline the preview bridge package draws around the selected block. */
 private val OUTLINE = Color(0xFF05807F)
@@ -42,7 +49,12 @@ private val OUTLINE = Color(0xFF05807F)
 internal class VisualEditor(
     val bridge: StoryblokBridge,
     /** [bridge]'s selected block, collected once for every block in the tree. */
-    val selected: State<String?>,
+    val selected: State<SelectedBlock?>,
+    /**
+     * Where lazy lists scroll to a selected block from. It is the [Storyblok] call's, because the item
+     * that starts a scroll is soon scrolled out of composition, and would cancel the scroll with it.
+     */
+    val scope: CoroutineScope,
 ) {
     /** The innermost block under the pointer that last went down: the one a tap there opens. */
     var pressed: Component? = null
@@ -53,6 +65,13 @@ internal class VisualEditor(
      * not then yank it back into view.
      */
     var shown: String? = null
+
+    /**
+     * The selection each lazy list of [blocks][BlockScope.blocks] last followed. A list follows each
+     * selection once, for the same reason a block is only [shown] once: so that the user can scroll
+     * away from it.
+     */
+    val followed: MutableMap<LazyListState, SelectedBlock> = mutableMapOf()
 }
 
 /** The Visual Editor the blocks below are previewed in, or `null` outside one. */
@@ -69,7 +88,7 @@ internal val LocalVisualEditor = staticCompositionLocalOf<VisualEditor?> { null 
 @Composable
 internal fun Modifier.editable(block: Component, editor: VisualEditor): Modifier {
     val selected = remember(editor, block.uid) {
-        derivedStateOf { block.uid.isNotEmpty() && editor.selected.value == block.uid }
+        derivedStateOf { block.uid.isNotEmpty() && editor.selected.value?.uid == block.uid }
     }
     val requester = remember { BringIntoViewRequester() }
 
@@ -128,11 +147,42 @@ private suspend fun PointerInputScope.openOnTap(block: Component, editor: Visual
     }
     if (moved || editor.pressed !== block) return@awaitEachGesture
 
-    val wasSelected = editor.bridge.selectedBlock.value == block.uid
+    val wasSelected = editor.bridge.selectedBlock.value?.uid == block.uid
     editor.bridge.openBlock(block)
     // Held back only if this tap is what selected the block. One the editor cannot open — it has no
     // `_editable` — is never selected, and must not swallow every tap it is given.
-    if (wasSelected || editor.bridge.selectedBlock.value != block.uid) return@awaitEachGesture
+    if (wasSelected || editor.bridge.selectedBlock.value?.uid != block.uid) return@awaitEachGesture
     editor.shown = block.uid
     up.consume()
+}
+
+/**
+ * Scrolls [state]'s list to the item of [blocks] holding the block the editor selects, when that item
+ * is off screen and so has no block to bring itself into view.
+ *
+ * Every item of [blocks] that is composed runs this, and the first of them on screen acts. None of
+ * them may be the list's first item, and the list never says which index a key is at unless that
+ * item is on screen, so the index of [blocks]' first item is worked out from the one that acts.
+ */
+@Composable
+internal fun FollowSelection(item: Component, blocks: List<Component>, state: LazyListState) {
+    val editor = LocalVisualEditor.current ?: return
+    val current by rememberUpdatedState(blocks)
+
+    LaunchedEffect(editor, state, item.uid) {
+        snapshotFlow { editor.selected.value }
+            .filterNotNull()
+            .collect { selected ->
+                val visible = state.layoutInfo.visibleItemsInfo
+                val actor = visible.firstOrNull { info -> current.any { it.uid == info.key } } ?: return@collect
+                if (actor.key != item.uid || editor.followed[state] == selected) return@collect
+                editor.followed[state] = selected
+
+                val target = current.indexOfFirst { it.uid == selected.uid || it.uid in selected.ancestors }
+                if (target < 0) return@collect
+                val index = actor.index - current.indexOfFirst { it.uid == actor.key } + target
+                if (visible.any { it.index == index }) return@collect
+                editor.scope.launch { state.animateScrollToItem(index) }
+            }
+    }
 }

@@ -1,5 +1,9 @@
 package com.storyblok.compose
 
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
@@ -40,6 +44,47 @@ public interface BlockScope {
      */
     @Composable
     public fun AnnotatedString.Builder.RichText(content: RichText)
+
+    /**
+     * Adds [blocks] to a lazy list, one item each, rendered with [Block] and keyed by their `_uid`.
+     *
+     * ```kotlin
+     * val state = rememberLazyListState()
+     * LazyColumn(state = state) {
+     *     item { Header() }
+     *     blocks(page.body, state)
+     * }
+     * ```
+     *
+     * Outside Storyblok's Visual Editor this is all it does. In the editor, when the author selects a
+     * block whose item is off screen — in the editor's form, or by adding, moving or duplicating one —
+     * the list scrolls to that item, which a lazy list cannot do by itself: an item off screen is not
+     * composed, so it has no block to bring into view. That covers a block nested anywhere inside an
+     * item, as far as the editor says which blocks it is nested in.
+     *
+     * The list follows a selection while one of these items is on screen, and each selection only
+     * once, so the author can scroll away from it.
+     *
+     * Blocks are keyed by `_uid` so that the list can find them, and so that each keeps its state when
+     * the author moves it. If two share one, or one has none, they are keyed by position instead and
+     * the list does not follow the selection.
+     *
+     * @param blocks The blocks to add, such as a page's body.
+     * @param state The [LazyListState] the list was given, which it is scrolled with.
+     * @param itemContent Renders each block as its item: [Block] by default. Pass your own to give the
+     * blocks a modifier, such as `{ Block(it, Modifier.fillMaxWidth().animateItem()) }`.
+     */
+    public fun LazyListScope.blocks(
+        blocks: List<Component>,
+        state: LazyListState,
+        itemContent: @Composable LazyItemScope.(block: Component) -> Unit = { Block(it) },
+    ) {
+        val keyed = blocks.none { it.uid.isEmpty() } && blocks.distinctBy { it.uid }.size == blocks.size
+        items(blocks, key = if (keyed) { block -> block.uid } else null) { block ->
+            if (keyed) FollowSelection(block, blocks, state)
+            itemContent(block)
+        }
+    }
 
     /** @suppress */
     @Deprecated(

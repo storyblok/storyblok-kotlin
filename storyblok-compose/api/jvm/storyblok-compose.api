@@ -4,6 +4,8 @@ public abstract interface class com/storyblok/compose/BlockScope {
 	public synthetic fun Blok (Lcom/storyblok/cdn/schema/Component;Landroidx/compose/ui/Modifier;Landroidx/compose/runtime/Composer;II)V
 	public abstract fun RichText (Landroidx/compose/ui/text/AnnotatedString$Builder;Lcom/storyblok/cdn/schema/RichText;Landroidx/compose/runtime/Composer;I)V
 	public abstract fun RichText (Lcom/storyblok/cdn/schema/RichText;Landroidx/compose/ui/Modifier;Landroidx/compose/runtime/Composer;I)V
+	public fun blocks (Landroidx/compose/foundation/lazy/LazyListScope;Ljava/util/List;Landroidx/compose/foundation/lazy/LazyListState;Lkotlin/jvm/functions/Function4;)V
+	public static synthetic fun blocks$default (Lcom/storyblok/compose/BlockScope;Landroidx/compose/foundation/lazy/LazyListScope;Ljava/util/List;Landroidx/compose/foundation/lazy/LazyListState;Lkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
 }
 
 public final class com/storyblok/compose/BlockScope$ComposeDefaultImpls {
@@ -15,6 +17,8 @@ public final class com/storyblok/compose/BlockScope$ComposeDefaultImpls {
 public final class com/storyblok/compose/BlockScope$DefaultImpls {
 	public static fun Blok (Lcom/storyblok/compose/BlockScope;Lcom/storyblok/cdn/schema/Component;Landroidx/compose/ui/Modifier;Landroidx/compose/runtime/Composer;I)V
 	public static synthetic fun Blok (Lcom/storyblok/compose/BlockScope;Lcom/storyblok/cdn/schema/Component;Landroidx/compose/ui/Modifier;Landroidx/compose/runtime/Composer;II)V
+	public static fun blocks (Lcom/storyblok/compose/BlockScope;Landroidx/compose/foundation/lazy/LazyListScope;Ljava/util/List;Landroidx/compose/foundation/lazy/LazyListState;Lkotlin/jvm/functions/Function4;)V
+	public static synthetic fun blocks$default (Lcom/storyblok/compose/BlockScope;Landroidx/compose/foundation/lazy/LazyListScope;Ljava/util/List;Landroidx/compose/foundation/lazy/LazyListState;Lkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
 }
 
 public final class com/storyblok/compose/StoryblokKt {
@@ -28,6 +32,7 @@ public final class com/storyblok/compose/StoryblokScope : com/storyblok/cdn/Stor
 	public fun Blok (Lcom/storyblok/cdn/schema/Component;Landroidx/compose/ui/Modifier;Landroidx/compose/runtime/Composer;I)V
 	public fun RichText (Landroidx/compose/ui/text/AnnotatedString$Builder;Lcom/storyblok/cdn/schema/RichText;Landroidx/compose/runtime/Composer;I)V
 	public fun RichText (Lcom/storyblok/cdn/schema/RichText;Landroidx/compose/ui/Modifier;Landroidx/compose/runtime/Composer;I)V
+	public fun blocks (Landroidx/compose/foundation/lazy/LazyListScope;Ljava/util/List;Landroidx/compose/foundation/lazy/LazyListState;Lkotlin/jvm/functions/Function4;)V
 	public fun close ()V
 	public final fun getClient ()Lcom/storyblok/cdn/StoryblokClient;
 	public fun getHttp ()Lio/ktor/client/HttpClient;
@@ -61,6 +66,7 @@ public final class com/storyblok/compose/provider/BlockProviderScope : com/story
 	public fun RichText (Lcom/storyblok/cdn/schema/RichText;Landroidx/compose/ui/Modifier;Landroidx/compose/runtime/Composer;I)V
 	public final fun block (Lkotlin/reflect/KClass;Lkotlinx/serialization/KSerializer;)V
 	public final fun block (Lkotlin/reflect/KClass;Lkotlinx/serialization/KSerializer;Lkotlin/jvm/functions/Function4;)V
+	public fun blocks (Landroidx/compose/foundation/lazy/LazyListScope;Ljava/util/List;Landroidx/compose/foundation/lazy/LazyListState;Lkotlin/jvm/functions/Function4;)V
 	public final fun blok (Lkotlin/reflect/KClass;Lkotlinx/serialization/KSerializer;)V
 	public final fun blok (Lkotlin/reflect/KClass;Lkotlinx/serialization/KSerializer;Lkotlin/jvm/functions/Function4;)V
 	public final fun defaultRichText (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function4;)V

@@ -20,6 +20,8 @@ import kotlin.js.ExperimentalWasmJsInterop
 import kotlin.js.JsAny
 import kotlin.js.JsArray
 import kotlin.js.JsString
+import kotlin.js.length
+import kotlin.js.get
 import kotlin.js.toJsArray
 import kotlin.js.toJsString
 import web.events.EventType
@@ -136,10 +138,20 @@ internal external interface SelectionEvent : JsAny {
     val blockId: JsAny?
     /** The block whose form the editor opened, on `editedBlok`: its answer to an `edit` message. */
     val blok: EditedBlock?
+    /**
+     * The blocks from the story's content down to the selected one, on `enterComponent` and
+     * `editedBlok` — the path the preview bridge package builds its parent menu from.
+     */
+    val breadcrumbs: JsArray<Breadcrumb>?
 }
 
 internal external interface EditedBlock : JsAny {
     val uid: JsAny?
+}
+
+internal external interface Breadcrumb : JsAny {
+    @Suppress("PropertyName")
+    val _uid: JsAny?
 }
 
 /**
@@ -150,14 +162,20 @@ internal external interface EditedBlock : JsAny {
  * These are the events the preview bridge package outlines a block for. It also draws hover hints and
  * highlights, which are not selections and are not read here.
  */
-internal fun selectionAfter(event: SelectionEvent, selected: String?): String? =
+internal fun selectionAfter(event: SelectionEvent, selected: SelectedBlock?): SelectedBlock? =
     when ((event.action as? JsString)?.toString()) {
-        "enterComponent" -> event.componentId.uid() ?: selected
-        "editedBlok" -> event.blok?.uid.uid() ?: selected
-        "addedBlock", "movedBlock", "duplicatedBlock" -> event.blockId.uid() ?: selected
+        "enterComponent" -> event.componentId.uid()?.let { SelectedBlock(it, event.ancestorsOf(it)) } ?: selected
+        "editedBlok" -> event.blok?.uid.uid()?.let { SelectedBlock(it, event.ancestorsOf(it)) } ?: selected
+        "addedBlock", "movedBlock", "duplicatedBlock" -> event.blockId.uid()?.let { SelectedBlock(it) } ?: selected
         "deselectBlok" -> null
         else -> selected
     }
+
+/** The `_uid`s in this event's breadcrumbs other than [uid]'s own, or none when it carries none. */
+private fun SelectionEvent.ancestorsOf(uid: String): List<String> {
+    val path = breadcrumbs ?: return emptyList()
+    return (0 until path.length).mapNotNull { path[it]?._uid.uid() }.filter { it != uid }
+}
 
 private fun JsAny?.uid(): String? = (this as? JsString)?.toString()?.takeIf { it.isNotEmpty() }
 
@@ -194,7 +212,7 @@ private class VisualEditor(private val json: Json, private val resolveRelations:
      */
     private val edits = MutableStateFlow<StoryMetadata?>(null)
 
-    override val selectedBlock = MutableStateFlow<String?>(null)
+    override val selectedBlock = MutableStateFlow<SelectedBlock?>(null)
 
     @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
     private val listener: (MessageEvent<JsAny?>) -> Unit = listener@{ message ->
@@ -240,7 +258,7 @@ private class VisualEditor(private val json: Json, private val resolveRelations:
         window.parent.postMessage(edit(editable, resolveRelations), editorOrigin)
         // Selected now rather than when the editor answers, as the preview bridge package does, so the
         // tap shows at once.
-        selectedBlock.value = editable.uid
+        selectedBlock.value = SelectedBlock(editable.uid)
     }
 
     override fun destroy(): Unit = window.removeEventListener(MESSAGE, listener)

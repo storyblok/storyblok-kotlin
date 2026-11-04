@@ -1,5 +1,6 @@
 package com.storyblok
 
+import com.storyblok.cdn.SelectedBlock
 import com.storyblok.cdn.StoryblokBridge
 import com.storyblok.cdn.contentSerializer
 import com.storyblok.cdn.StoryblokClientImpl
@@ -114,7 +115,7 @@ class StoryblokBridgeTest {
 
             override fun openBlock(block: Component) = Unit
 
-            override val selectedBlock = MutableStateFlow<String?>(null)
+            override val selectedBlock = MutableStateFlow<SelectedBlock?>(null)
 
             override fun destroy() = Unit
         }

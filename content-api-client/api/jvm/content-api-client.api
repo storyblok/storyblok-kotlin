@@ -9,6 +9,20 @@ public final class com/storyblok/cdn/NoVisualEditor : com/storyblok/cdn/Storyblo
 	public fun story (Lcom/storyblok/cdn/schema/Story;Lio/ktor/util/reflect/TypeInfo;I)Lkotlinx/coroutines/flow/Flow;
 }
 
+public final class com/storyblok/cdn/SelectedBlock {
+	public fun <init> (Ljava/lang/String;Ljava/util/List;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/util/List;)Lcom/storyblok/cdn/SelectedBlock;
+	public static synthetic fun copy$default (Lcom/storyblok/cdn/SelectedBlock;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lcom/storyblok/cdn/SelectedBlock;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAncestors ()Ljava/util/List;
+	public final fun getUid ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public abstract interface class com/storyblok/cdn/StoryblokBridge {
 	public abstract fun destroy ()V
 	public abstract fun getSelectedBlock ()Lkotlinx/coroutines/flow/StateFlow;
