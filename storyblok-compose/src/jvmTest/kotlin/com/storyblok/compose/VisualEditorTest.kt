@@ -206,8 +206,26 @@ class VisualEditorTest {
         editor.selectedBlock.value = SelectedBlock("c1")
         waitForIdle()
 
-        assertEquals(Color(0xFF05807F), onNodeWithTag("c1").captureToImage().toPixelMap()[0, 0])
-        assertNotEquals(Color(0xFF05807F), onNodeWithTag("c2").captureToImage().toPixelMap()[0, 0])
+        assertEquals(Color(0xFF05807F), onNodeWithTag("c1").captureToImage().toPixelMap()[1, 1])
+        assertNotEquals(Color(0xFF05807F), onNodeWithTag("c2").captureToImage().toPixelMap()[1, 1])
+    }
+
+    @Test
+    fun `the outline's sides are drawn inside the block's edges`() = runComposeUiTest {
+        // A block as wide as the preview has its outermost pixels under the editor's frame, which hid
+        // the sides of an outline drawn on them while its top and bottom showed.
+        val editor = Editor()
+        setContent { Previewed(editor) { blocks.Block(card("c1")) } }
+
+        editor.selectedBlock.value = SelectedBlock("c1")
+        waitForIdle()
+
+        val pixels = onNodeWithTag("c1").captureToImage().toPixelMap()
+        val middle = pixels.height / 2
+        assertEquals(Color(0xFF05807F), pixels[1, middle], "left side")
+        assertEquals(Color(0xFF05807F), pixels[pixels.width - 2, middle], "right side")
+        assertNotEquals(Color(0xFF05807F), pixels[0, middle], "left edge")
+        assertNotEquals(Color(0xFF05807F), pixels[pixels.width - 1, middle], "right edge")
     }
 
     @Test
