@@ -44,6 +44,9 @@ final enum class com.storyblok.cdn.query/SortAs : kotlin/Enum<com.storyblok.cdn.
 }
 
 abstract interface com.storyblok.cdn/StoryblokBridge { // com.storyblok.cdn/StoryblokBridge|null[0]
+    abstract val selectedBlock // com.storyblok.cdn/StoryblokBridge.selectedBlock|{}selectedBlock[0]
+        abstract fun <get-selectedBlock>(): kotlinx.coroutines.flow/StateFlow<kotlin/String?> // com.storyblok.cdn/StoryblokBridge.selectedBlock.<get-selectedBlock>|<get-selectedBlock>(){}[0]
+
     abstract fun <#A1: com.storyblok.cdn.schema/Component> story(com.storyblok.cdn.schema/Story<#A1>, io.ktor.util.reflect/TypeInfo, kotlin/Int): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A1>> // com.storyblok.cdn/StoryblokBridge.story|story(com.storyblok.cdn.schema.Story<0:0>;io.ktor.util.reflect.TypeInfo;kotlin.Int){0§<com.storyblok.cdn.schema.Component>}[0]
     abstract fun destroy() // com.storyblok.cdn/StoryblokBridge.destroy|destroy(){}[0]
     abstract fun openBlock(com.storyblok.cdn.schema/Component) // com.storyblok.cdn/StoryblokBridge.openBlock|openBlock(com.storyblok.cdn.schema.Component){}[0]

@@ -3,6 +3,7 @@ public abstract interface annotation class com/storyblok/InternalAPI : java/lang
 
 public abstract interface class com/storyblok/cdn/StoryblokBridge {
 	public abstract fun destroy ()V
+	public abstract fun getSelectedBlock ()Lkotlinx/coroutines/flow/StateFlow;
 	public abstract fun openBlock (Lcom/storyblok/cdn/schema/Component;)V
 	public abstract fun story (Lcom/storyblok/cdn/schema/Story;Lio/ktor/util/reflect/TypeInfo;I)Lkotlinx/coroutines/flow/Flow;
 }

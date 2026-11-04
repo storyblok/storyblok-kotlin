@@ -7,6 +7,8 @@ import io.ktor.util.reflect.TypeInfo
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.serialization.json.Json
 
@@ -52,6 +54,15 @@ public interface StoryblokBridge {
     public fun openBlock(block: Component)
 
     /**
+     * The `_uid` of the block the author has selected, which the preview outlines and scrolls to — or
+     * `null` when none is.
+     *
+     * The author selects a block by clicking it in the editor's form, by adding, moving or duplicating
+     * one, or through [openBlock]. Outside the editor it is always `null`.
+     */
+    public val selectedBlock: StateFlow<String?>
+
+    /**
      * Removes whatever the connection holds — on the web target its message listener.
      *
      * The editor is told nothing: a page may be torn down without the preview ending.
@@ -62,6 +73,7 @@ public interface StoryblokBridge {
 internal object NoVisualEditor : StoryblokBridge {
     override fun <T : Component> story(story: Story<T>, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>> = flowOf(story)
     override fun openBlock(block: Component): Unit = Unit
+    override val selectedBlock: StateFlow<String?> = MutableStateFlow(null)
     override fun destroy(): Unit = Unit
 }
 
