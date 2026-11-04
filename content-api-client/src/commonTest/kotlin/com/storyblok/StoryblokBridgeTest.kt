@@ -23,6 +23,7 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.Flow
@@ -112,6 +113,8 @@ class StoryblokBridgeTest {
                 }
 
             override fun openBlock(block: Component) = Unit
+
+            override val selectedBlock = MutableStateFlow<String?>(null)
 
             override fun destroy() = Unit
         }

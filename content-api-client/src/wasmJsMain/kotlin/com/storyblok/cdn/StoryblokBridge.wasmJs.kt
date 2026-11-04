@@ -124,6 +124,43 @@ private external interface StoryMetadata : JsAny {
     val content: JsAny
 }
 
+/**
+ * Any message from the editor, read for the fields that say which block is selected. Which of them is
+ * set depends on [action].
+ */
+internal external interface SelectionEvent : JsAny {
+    val action: JsAny?
+    /** The block clicked in the editor's form, on `enterComponent`. */
+    val componentId: JsAny?
+    /** The block added, moved or duplicated, on `addedBlock`, `movedBlock` and `duplicatedBlock`. */
+    val blockId: JsAny?
+    /** The block whose form the editor opened, on `editedBlok`: its answer to an `edit` message. */
+    val blok: EditedBlock?
+}
+
+internal external interface EditedBlock : JsAny {
+    val uid: JsAny?
+}
+
+/**
+ * The block selected once the editor's [event] is handled, given the one [selected] before it: the
+ * block the event names, `null` for one that deselects, or [selected] for one that says nothing about
+ * selection.
+ *
+ * These are the events the preview bridge package outlines a block for. It also draws hover hints and
+ * highlights, which are not selections and are not read here.
+ */
+internal fun selectionAfter(event: SelectionEvent, selected: String?): String? =
+    when ((event.action as? JsString)?.toString()) {
+        "enterComponent" -> event.componentId.uid() ?: selected
+        "editedBlok" -> event.blok?.uid.uid() ?: selected
+        "addedBlock", "movedBlock", "duplicatedBlock" -> event.blockId.uid() ?: selected
+        "deselectBlok" -> null
+        else -> selected
+    }
+
+private fun JsAny?.uid(): String? = (this as? JsString)?.toString()?.takeIf { it.isNotEmpty() }
+
 internal actual fun StoryblokBridge(json: Json, resolveRelations: String): StoryblokBridge = when {
     // Node and any other host without a DOM, where there is no editor to be previewed by.
     !Object.hasOwn(globalThis, "window") -> NoVisualEditor
@@ -157,13 +194,17 @@ private class VisualEditor(private val json: Json, private val resolveRelations:
      */
     private val edits = MutableStateFlow<StoryMetadata?>(null)
 
+    override val selectedBlock = MutableStateFlow<String?>(null)
+
     @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
     private val listener: (MessageEvent<JsAny?>) -> Unit = listener@{ message ->
         // The editor is the only thing allowed to drive the preview: any page may frame this one
         // and post to it, and `data` is decoded and rendered unchecked.
         if (message.origin != editorOrigin) return@listener
 
-        // `input` is the only event worth reading. A save leaves the draft holding exactly what the
+        (message.data as? SelectionEvent)?.let { selectedBlock.value = selectionAfter(it, selectedBlock.value) }
+
+        // `input` is the only event worth reading for content. A save leaves the draft holding exactly what the
         // editor has already pushed here, and publishing or unpublishing does not touch the draft a
         // preview reads — so nothing the other events report needs fetching or reloading.
         //
@@ -197,6 +238,9 @@ private class VisualEditor(private val json: Json, private val resolveRelations:
     override fun openBlock(block: Component) {
         val editable = block.editableBlock() ?: return
         window.parent.postMessage(edit(editable, resolveRelations), editorOrigin)
+        // Selected now rather than when the editor answers, as the preview bridge package does, so the
+        // tap shows at once.
+        selectedBlock.value = editable.uid
     }
 
     override fun destroy(): Unit = window.removeEventListener(MESSAGE, listener)
