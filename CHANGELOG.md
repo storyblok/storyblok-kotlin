@@ -2,6 +2,10 @@
 
 **0.8.0**
 
+- In Storyblok's Visual Editor, on the `wasmJs` target, tapping a block drawn with `Block()` now opens its form in the
+  editor, as clicking a block does on a web page. The first tap on a block selects it rather than doing what the block
+  does with a tap. The selected block is outlined, and is scrolled into view when the author picks it in the editor's
+  form, or adds, moves or duplicates it. A block's composable must apply the `Modifier` it is given for this to work.
 - BREAKING CHANGE: Content that fails to deserialize now always surfaces from `StoryblokClient.story(...)` and
   `StoryblokClient.stories(...)` as a `SerializationException`, including a value a property's serializer cannot parse,
   such as a malformed date or uuid, and a `require` in a component's `init` block. These were reported as a

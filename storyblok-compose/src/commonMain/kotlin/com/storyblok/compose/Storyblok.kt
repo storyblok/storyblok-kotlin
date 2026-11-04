@@ -3,10 +3,13 @@
 package com.storyblok.compose
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import com.storyblok.InternalAPI
+import com.storyblok.cdn.NoVisualEditor
 import com.storyblok.cdn.StoryblokClient
 import com.storyblok.cdn.StoryblokClientImpl
 import com.storyblok.compose.provider.BlockProvider
@@ -71,7 +74,15 @@ public fun Storyblok(
 
     // Remembered so that a recomposition of Storyblok hands `content` the same receiver
     val scope = remember(client, blockProvider.blockScope) { StoryblokScope(client, blockProvider.blockScope) }
-    content(scope)
+
+    val bridge = client.bridge
+    val editor = if (bridge === NoVisualEditor) null else {
+        val selected = bridge.selectedBlock.collectAsState()
+        remember(bridge) { VisualEditor(bridge, selected) }
+    }
+    CompositionLocalProvider(LocalVisualEditor provides editor) {
+        content(scope)
+    }
 }
 
 /**

@@ -55,9 +55,12 @@ public interface BlockScope {
 internal value class BlockScopeImpl internal constructor(val providers: Map<Any, Provider>) : BlockScope {
 
     @Composable
-    override fun Block(content: Component, modifier: Modifier) =
-        providers.getOrElse(content::class) { error("No block registered for ${content.component}") }
-            .invoke(content, modifier)
+    override fun Block(content: Component, modifier: Modifier) {
+        val provider = providers.getOrElse(content::class) { error("No block registered for ${content.component}") }
+        // Ahead of the caller's modifier, so that a tap the editor holds back never reaches a clickable in it.
+        val editor = LocalVisualEditor.current
+        provider.invoke(content, if (editor == null) modifier else Modifier.editable(content, editor).then(modifier))
+    }
 
     @Composable
     override fun RichText(content: RichText, modifier: Modifier) =
