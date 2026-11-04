@@ -54,13 +54,13 @@ public interface StoryblokBridge {
     public fun openBlock(block: Component)
 
     /**
-     * The `_uid` of the block the author has selected, which the preview outlines and scrolls to — or
-     * `null` when none is.
+     * The block the author has selected, which the preview outlines and scrolls to — or `null` when
+     * none is.
      *
      * The author selects a block by clicking it in the editor's form, by adding, moving or duplicating
      * one, or through [openBlock]. Outside the editor it is always `null`.
      */
-    public val selectedBlock: StateFlow<String?>
+    public val selectedBlock: StateFlow<SelectedBlock?>
 
     /**
      * Removes whatever the connection holds — on the web target its message listener.
@@ -69,6 +69,23 @@ public interface StoryblokBridge {
      */
     public fun destroy()
 }
+
+/**
+ * A block the author has selected in the Visual Editor.
+ *
+ * @suppress
+ */
+@InternalAPI
+public data class SelectedBlock(
+    /** The block's `_uid`. */
+    public val uid: String,
+    /**
+     * The `_uid`s of the blocks it is nested in, outermost first — what lets a lazy list find the item
+     * holding a block it has not composed. Empty when the editor did not say, as it does not when a
+     * block is added, moved or duplicated.
+     */
+    public val ancestors: List<String> = emptyList(),
+)
 
 /**
  * The bridge of a client that is not being previewed: every target but the web, and a web page
@@ -82,7 +99,7 @@ public interface StoryblokBridge {
 public object NoVisualEditor : StoryblokBridge {
     override fun <T : Component> story(story: Story<T>, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>> = flowOf(story)
     override fun openBlock(block: Component): Unit = Unit
-    override val selectedBlock: StateFlow<String?> = MutableStateFlow(null)
+    override val selectedBlock: StateFlow<SelectedBlock?> = MutableStateFlow(null)
     override fun destroy(): Unit = Unit
 }
 

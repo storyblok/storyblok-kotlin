@@ -8,6 +8,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import com.storyblok.InternalAPI
 import com.storyblok.cdn.NoVisualEditor
 import com.storyblok.cdn.StoryblokClient
@@ -78,7 +79,8 @@ public fun Storyblok(
     val bridge = client.bridge
     val editor = if (bridge === NoVisualEditor) null else {
         val selected = bridge.selectedBlock.collectAsState()
-        remember(bridge) { VisualEditor(bridge, selected) }
+        val scope = rememberCoroutineScope()
+        remember(bridge) { VisualEditor(bridge, selected, scope) }
     }
     CompositionLocalProvider(LocalVisualEditor provides editor) {
         content(scope)

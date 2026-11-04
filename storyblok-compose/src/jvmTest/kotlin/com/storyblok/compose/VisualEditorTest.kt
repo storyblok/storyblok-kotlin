@@ -11,19 +11,25 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toPixelMap
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.performScrollToIndex
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.click
 import androidx.compose.ui.test.onNodeWithTag
@@ -33,6 +39,7 @@ import androidx.compose.ui.test.runComposeUiTest
 import androidx.compose.ui.test.swipeDown
 import androidx.compose.ui.unit.dp
 import com.storyblok.InternalAPI
+import com.storyblok.cdn.SelectedBlock
 import com.storyblok.cdn.StoryblokBridge
 import com.storyblok.cdn.schema.Component
 import com.storyblok.cdn.schema.Story
@@ -73,14 +80,14 @@ class VisualEditorTest {
      */
     private class Editor(private val uneditable: Set<String> = emptySet()) : StoryblokBridge {
         val opened = mutableListOf<String>()
-        override val selectedBlock = MutableStateFlow<String?>(null)
+        override val selectedBlock = MutableStateFlow<SelectedBlock?>(null)
 
         override fun <T : Component> story(story: Story<T>, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>> =
             flowOf(story)
 
         override fun openBlock(block: Component) {
             opened += block.uid
-            if (block.uid !in uneditable) selectedBlock.value = block.uid
+            if (block.uid !in uneditable) selectedBlock.value = SelectedBlock(block.uid)
         }
 
         override fun destroy() = Unit
@@ -111,7 +118,8 @@ class VisualEditorTest {
     @Composable
     private fun Previewed(editor: Editor, content: @Composable () -> Unit) {
         val selected = editor.selectedBlock.collectAsState()
-        CompositionLocalProvider(LocalVisualEditor provides remember { VisualEditor(editor, selected) }, content)
+        val scope = rememberCoroutineScope()
+        CompositionLocalProvider(LocalVisualEditor provides remember { VisualEditor(editor, selected, scope) }, content)
     }
 
     @Test
@@ -131,7 +139,7 @@ class VisualEditorTest {
         onNodeWithTag("c1").performClick()
 
         assertEquals(listOf("c1"), editor.opened)
-        assertEquals("c1", editor.selectedBlock.value)
+        assertEquals("c1", editor.selectedBlock.value?.uid)
         assertEquals(emptyList(), clicks)
     }
 
@@ -195,7 +203,7 @@ class VisualEditorTest {
         val editor = Editor()
         setContent { Previewed(editor) { blocks.Block(section("s1", "c1", "c2")) } }
 
-        editor.selectedBlock.value = "c1"
+        editor.selectedBlock.value = SelectedBlock("c1")
         waitForIdle()
 
         assertEquals(Color(0xFF05807F), onNodeWithTag("c1").captureToImage().toPixelMap()[0, 0])
@@ -213,7 +221,7 @@ class VisualEditorTest {
             }
         }
 
-        editor.selectedBlock.value = "c8"
+        editor.selectedBlock.value = SelectedBlock("c8")
         waitForIdle()
 
         onNodeWithTag("c8").assertIsDisplayed()
@@ -236,7 +244,7 @@ class VisualEditorTest {
         onNodeWithTag("c3").performTouchInput { click(Offset(centerX, 10f)) }
         waitForIdle()
 
-        assertEquals("c3", editor.selectedBlock.value)
+        assertEquals("c3", editor.selectedBlock.value?.uid)
         assertEquals(0, scroll.value)
     }
 
@@ -254,4 +262,98 @@ class VisualEditorTest {
         assertTrue(composed)
         assertNull(seen)
     }
+
+    /** A list 250dp tall, of [blocks] after [before] fixed items 100dp tall, as a page's body might follow a header. */
+    @Composable
+    private fun List(state: LazyListState, blocks: List<Component>, before: Int = 0) {
+        LazyColumn(Modifier.testTag("list").size(width = 200.dp, height = 250.dp), state = state) {
+            repeat(before) { item { Box(Modifier.testTag("header$it").height(100.dp)) } }
+            with(this@VisualEditorTest.blocks) { blocks(blocks, state) }
+        }
+    }
+
+    private fun cards(count: Int) = (1..count).map { card("c$it", clickable = false) }
+
+    @Test
+    fun `blocks fill a lazy list in order`() = runComposeUiTest {
+        setContent { List(LazyListState(), cards(2)) }
+
+        onNodeWithTag("c1").assertIsDisplayed()
+        onNodeWithTag("c2").assertIsDisplayed()
+    }
+
+    @Test
+    fun `selecting a block off screen scrolls the list to it`() = runComposeUiTest {
+        val editor = Editor()
+        val state = LazyListState()
+        setContent { Previewed(editor) { List(state, cards(20)) } }
+
+        editor.selectedBlock.value = SelectedBlock("c15")
+        waitForIdle()
+
+        onNodeWithTag("c15").assertIsDisplayed()
+    }
+
+    @Test
+    fun `items before the blocks are allowed for`() = runComposeUiTest {
+        val editor = Editor()
+        val state = LazyListState()
+        setContent { Previewed(editor) { List(state, cards(20), before = 2) } }
+
+        editor.selectedBlock.value = SelectedBlock("c15")
+        waitForIdle()
+
+        // Two headers, then c1 at index 2: c15 is item 16, scrolled to the top.
+        assertEquals(16, state.firstVisibleItemIndex)
+    }
+
+    @Test
+    fun `selecting a block nested in an item off screen scrolls to that item`() = runComposeUiTest {
+        val editor = Editor()
+        val state = LazyListState()
+        val sections = (1..10).map { section("s$it", "s$it-card") }
+        setContent { Previewed(editor) { List(state, sections) } }
+
+        editor.selectedBlock.value = SelectedBlock("s8-card", ancestors = listOf("page", "s8"))
+        waitForIdle()
+
+        onNodeWithTag("s8-card").assertIsDisplayed()
+    }
+
+    @Test
+    fun `a nested block the editor gives no ancestors for is not followed`() = runComposeUiTest {
+        // As when a block is added inside another: the list has nothing to find its item by.
+        val editor = Editor()
+        val state = LazyListState()
+        setContent { Previewed(editor) { List(state, (1..10).map { section("s$it", "s$it-card") }) } }
+
+        editor.selectedBlock.value = SelectedBlock("s8-card")
+        waitForIdle()
+
+        assertEquals(0, state.firstVisibleItemIndex)
+    }
+
+    @Test
+    fun `the list lets the author scroll away from a selection`() = runComposeUiTest {
+        val editor = Editor()
+        val state = LazyListState()
+        setContent { Previewed(editor) { List(state, cards(20)) } }
+
+        editor.selectedBlock.value = SelectedBlock("c15")
+        waitForIdle()
+        onNodeWithTag("list").performScrollToIndex(0)
+        waitForIdle()
+
+        // The items scrolled back in start following afresh; they must not take the list back to c15.
+        assertEquals(0, state.firstVisibleItemIndex)
+    }
+
+    @Test
+    fun `blocks that share a uid are still listed`() = runComposeUiTest {
+        // Lazy lists reject duplicate keys, so these are keyed by position.
+        setContent { List(LazyListState(), listOf(card("same", clickable = false), card("same", clickable = false))) }
+
+        onAllNodesWithTag("same").assertCountEquals(2)
+    }
+
 }

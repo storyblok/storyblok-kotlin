@@ -45,7 +45,7 @@ final enum class com.storyblok.cdn.query/SortAs : kotlin/Enum<com.storyblok.cdn.
 
 abstract interface com.storyblok.cdn/StoryblokBridge { // com.storyblok.cdn/StoryblokBridge|null[0]
     abstract val selectedBlock // com.storyblok.cdn/StoryblokBridge.selectedBlock|{}selectedBlock[0]
-        abstract fun <get-selectedBlock>(): kotlinx.coroutines.flow/StateFlow<kotlin/String?> // com.storyblok.cdn/StoryblokBridge.selectedBlock.<get-selectedBlock>|<get-selectedBlock>(){}[0]
+        abstract fun <get-selectedBlock>(): kotlinx.coroutines.flow/StateFlow<com.storyblok.cdn/SelectedBlock?> // com.storyblok.cdn/StoryblokBridge.selectedBlock.<get-selectedBlock>|<get-selectedBlock>(){}[0]
 
     abstract fun <#A1: com.storyblok.cdn.schema/Component> story(com.storyblok.cdn.schema/Story<#A1>, io.ktor.util.reflect/TypeInfo, kotlin/Int): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A1>> // com.storyblok.cdn/StoryblokBridge.story|story(com.storyblok.cdn.schema.Story<0:0>;io.ktor.util.reflect.TypeInfo;kotlin.Int){0§<com.storyblok.cdn.schema.Component>}[0]
     abstract fun destroy() // com.storyblok.cdn/StoryblokBridge.destroy|destroy(){}[0]
@@ -429,6 +429,22 @@ final class com.storyblok.cdn.schema/Link : com.storyblok.cdn.schema/Field { // 
     final object Companion { // com.storyblok.cdn.schema/Link.Companion|null[0]
         final fun serializer(): kotlinx.serialization/KSerializer<com.storyblok.cdn.schema/Link> // com.storyblok.cdn.schema/Link.Companion.serializer|serializer(){}[0]
     }
+}
+
+final class com.storyblok.cdn/SelectedBlock { // com.storyblok.cdn/SelectedBlock|null[0]
+    constructor <init>(kotlin/String, kotlin.collections/List<kotlin/String> = ...) // com.storyblok.cdn/SelectedBlock.<init>|<init>(kotlin.String;kotlin.collections.List<kotlin.String>){}[0]
+
+    final val ancestors // com.storyblok.cdn/SelectedBlock.ancestors|{}ancestors[0]
+        final fun <get-ancestors>(): kotlin.collections/List<kotlin/String> // com.storyblok.cdn/SelectedBlock.ancestors.<get-ancestors>|<get-ancestors>(){}[0]
+    final val uid // com.storyblok.cdn/SelectedBlock.uid|{}uid[0]
+        final fun <get-uid>(): kotlin/String // com.storyblok.cdn/SelectedBlock.uid.<get-uid>|<get-uid>(){}[0]
+
+    final fun component1(): kotlin/String // com.storyblok.cdn/SelectedBlock.component1|component1(){}[0]
+    final fun component2(): kotlin.collections/List<kotlin/String> // com.storyblok.cdn/SelectedBlock.component2|component2(){}[0]
+    final fun copy(kotlin/String = ..., kotlin.collections/List<kotlin/String> = ...): com.storyblok.cdn/SelectedBlock // com.storyblok.cdn/SelectedBlock.copy|copy(kotlin.String;kotlin.collections.List<kotlin.String>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.storyblok.cdn/SelectedBlock.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.storyblok.cdn/SelectedBlock.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.storyblok.cdn/SelectedBlock.toString|toString(){}[0]
 }
 
 final class com.storyblok.cdn/StoryblokClientImpl : com.storyblok.cdn/StoryblokClient { // com.storyblok.cdn/StoryblokClientImpl|null[0]
@@ -1085,7 +1101,7 @@ sealed class com.storyblok.cdn.schema/RichText { // com.storyblok.cdn.schema/Ric
 
 final object com.storyblok.cdn/NoVisualEditor : com.storyblok.cdn/StoryblokBridge { // com.storyblok.cdn/NoVisualEditor|null[0]
     final val selectedBlock // com.storyblok.cdn/NoVisualEditor.selectedBlock|{}selectedBlock[0]
-        final fun <get-selectedBlock>(): kotlinx.coroutines.flow/StateFlow<kotlin/String?> // com.storyblok.cdn/NoVisualEditor.selectedBlock.<get-selectedBlock>|<get-selectedBlock>(){}[0]
+        final fun <get-selectedBlock>(): kotlinx.coroutines.flow/StateFlow<com.storyblok.cdn/SelectedBlock?> // com.storyblok.cdn/NoVisualEditor.selectedBlock.<get-selectedBlock>|<get-selectedBlock>(){}[0]
 
     final fun <#A1: com.storyblok.cdn.schema/Component> story(com.storyblok.cdn.schema/Story<#A1>, io.ktor.util.reflect/TypeInfo, kotlin/Int): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A1>> // com.storyblok.cdn/NoVisualEditor.story|story(com.storyblok.cdn.schema.Story<0:0>;io.ktor.util.reflect.TypeInfo;kotlin.Int){0§<com.storyblok.cdn.schema.Component>}[0]
     final fun destroy() // com.storyblok.cdn/NoVisualEditor.destroy|destroy(){}[0]
