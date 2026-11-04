@@ -36,8 +36,14 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
-/** The outline the preview bridge package draws around the selected block. */
+/** The colour of the outline the preview bridge package draws around the selected block. */
 private val OUTLINE = Color(0xFF05807F)
+
+/**
+ * Twice the package's 1px. That was drawn for light web pages, and against a dark Compose theme a line
+ * of that teal so thin is barely visible.
+ */
+private val OUTLINE_WIDTH = 2.dp
 
 /**
  * The Visual Editor a [Storyblok] tree is previewed in.
@@ -110,12 +116,15 @@ internal fun Modifier.editable(block: Component, editor: VisualEditor): Modifier
         .drawWithContent {
             drawContent()
             if (!selected.value) return@drawWithContent
-            // Inset by half the stroke, which is drawn centred on the edge, so none of it falls outside the block.
-            val width = 1.dp.toPx()
+            // 1dp in from the edge rather than on it. A block as wide as the preview has its sides under
+            // the editor's frame, which hides a line drawn on the outermost pixels. The stroke is centred
+            // on its path, hence the half.
+            val width = OUTLINE_WIDTH.toPx()
+            val inset = 1.dp.toPx() + width / 2
             drawRect(
                 OUTLINE,
-                topLeft = Offset(width / 2, width / 2),
-                size = Size(size.width - width, size.height - width),
+                topLeft = Offset(inset, inset),
+                size = Size(size.width - 2 * inset, size.height - 2 * inset),
                 style = Stroke(width),
             )
         }
