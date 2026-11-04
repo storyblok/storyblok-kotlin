@@ -233,7 +233,7 @@ class FilterQueries {
         val stories = client
             .stories<Post> {
                 filter {
-                    Post::author `is` NotEmptyArray
+                    Post::categories `is` NotEmptyArray
                 }
             }
             .flow
