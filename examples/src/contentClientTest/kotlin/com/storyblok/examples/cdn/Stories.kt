@@ -1,4 +1,4 @@
-package ktorplugin.cdn
+package com.storyblok.examples.cdn
 
 import com.storyblok.ktor.Api.Config.Version.*
 import com.storyblok.cdn.StoryblokClient
@@ -11,50 +11,9 @@ import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.first
 import androidx.paging.asItemSnapshotListFlow
 import kotlin.test.Test
+import kotlin.test.assertTrue
 
 class Stories {
-
-    /**
-     * Retrieve a single story by full slug, ID, or UUID using the Content Delivery API. Includes parameters for resolving links and relations.
-     * https://www.storyblok.com/docs/api/content-delivery/v2/stories/retrieve-a-single-story
-     */
-    @Test
-    fun `Retrieve a Single Story`() = runTest {
-
-        val client = StoryblokClient(
-            accessToken = "ask9soUkv02QqbZgmZdeDAtt",
-            version = Published,
-        )
-        
-        val story = client
-            .story("posts/my-third-post")
-            .last()
-        
-        println(story)
-    }
-
-    /**
-     * Retrieve multiple stories from Storyblok using the Content Delivery API with filtering, pagination, sorting, and relation resolution options.
-     * https://www.storyblok.com/docs/api/content-delivery/v2/stories/retrieve-multiple-stories
-     */
-    @Test
-    fun `Retrieve Multiple Stories`() = runBlocking {
-
-        val client = StoryblokClient(
-            accessToken = "krcV6QGxWORpYLUWt12xKQtt",
-            version = Published,
-        )
-        
-        val stories = client
-            .stories {
-                startsWith = "articles"
-            }
-            .flow
-            .asItemSnapshotListFlow()
-            .first()
-        
-        println(stories)
-    }
 
     /**
      * Example showing how to retrieve a version of a story from a specific release by using the from_release query parameter.
@@ -64,14 +23,13 @@ class Stories {
     fun `Retrieving a Story from a Specific Release`() = runTest {
 
         val client = StoryblokClient(
-            accessToken = "krcV6QGxWORpYLUWt12xKQtt",
+            accessToken = "ask9soUkv02QqbZgmZdeDAtt",
             version = Draft,
-            cv = "1765990908",
         )
         
         val story = client
             .story("home") {
-                fromRelease = "124105888551306"
+                fromRelease = "230891299745176"
             }
             .last()
         
@@ -86,13 +44,13 @@ class Stories {
     fun `Retrieving Localized Stories by UUID`() = runTest {
 
         val client = StoryblokClient(
-            accessToken = "krcV6QGxWORpYLUWt12xKQtt",
+            accessToken = "ask9soUkv02QqbZgmZdeDAtt",
             version = Published,
-            language = "de",
+            language = "de-DE",
         )
         
         val story = client
-            .story(Uuid.parse("660452d2-1a68-4493-b5b6-2f03b6fa722b"))
+            .story(Uuid.parse("bfea4895-8a19-4e82-ae1c-1c591dce3094"))
             .last()
         
         println(story)
@@ -106,19 +64,20 @@ class Stories {
     fun `Retrieving Stories from a Folder`() = runBlocking {
 
         val client = StoryblokClient(
-            accessToken = "krcV6QGxWORpYLUWt12xKQtt",
+            accessToken = "ask9soUkv02QqbZgmZdeDAtt",
             version = Draft,
         )
         
         val stories = client
             .stories {
-                startsWith = "articles/"
+                startsWith = "posts"
             }
             .flow
             .asItemSnapshotListFlow()
             .first()
         
         println(stories)
+        assertTrue(stories.isNotEmpty(), "Expected the example to retrieve stories")
     }
 
     /**
@@ -129,13 +88,13 @@ class Stories {
     fun `Retrieving Stories in a Particular Language`() = runTest {
 
         val client = StoryblokClient(
-            accessToken = "krcV6QGxWORpYLUWt12xKQtt",
+            accessToken = "ask9soUkv02QqbZgmZdeDAtt",
             version = Published,
-            language = "de",
+            language = "de-DE",
         )
         
         val story = client
-            .story("articles/earths-symphony-navigating-wonders-challenges-blue-oasis")
+            .story("posts/my-first-post")
             .last()
         
         println(story)
@@ -146,22 +105,20 @@ class Stories {
      * https://www.storyblok.com/docs/api/content-delivery/v2/stories/examples/retrieving-stories-with-resolved-relations
      */
     @Test
-    fun `Retrieving Stories with Resolved Relations`() = runBlocking {
+    fun `Retrieving Stories with Resolved Relations`() = runTest {
 
         val client = StoryblokClient(
-            accessToken = "krcV6QGxWORpYLUWt12xKQtt",
+            accessToken = "ask9soUkv02QqbZgmZdeDAtt",
             version = Published,
         )
         
-        val stories = client
-            .stories {
-                parameter("resolve_relations", "article.categories,article.author")
+        val story = client
+            .story("posts/my-first-post") {
+                parameter("resolve_relations", "post.categories,post.author")
             }
-            .flow
-            .asItemSnapshotListFlow()
-            .first()
+            .last()
         
-        println(stories)
+        println(story)
     }
 
     /**
@@ -172,19 +129,21 @@ class Stories {
     fun `Sorting by Fields Associated with a Story Type`() = runBlocking {
 
         val client = StoryblokClient(
-            accessToken = "krcV6QGxWORpYLUWt12xKQtt",
+            accessToken = "ask9soUkv02QqbZgmZdeDAtt",
             version = Published,
         )
         
         val stories = client
-            .stories<Article> {
-                sortBy(Article::headline)
+            .stories<Post> {
+                sortBy(Post::topics)
+                startsWith = "posts"
             }
             .flow
             .asItemSnapshotListFlow()
             .first()
         
         println(stories)
+        assertTrue(stories.isNotEmpty(), "Expected the example to retrieve stories")
     }
 
     /**
@@ -195,19 +154,21 @@ class Stories {
     fun `Sorting by Story Object Property`() = runBlocking {
 
         val client = StoryblokClient(
-            accessToken = "krcV6QGxWORpYLUWt12xKQtt",
+            accessToken = "ask9soUkv02QqbZgmZdeDAtt",
             version = Published,
         )
         
         val stories = client
             .stories {
                 sortByDescending(Story<*>::firstPublishedAt)
+                startsWith = "authors"
             }
             .flow
             .asItemSnapshotListFlow()
             .first()
         
         println(stories)
+        assertTrue(stories.isNotEmpty(), "Expected the example to retrieve stories")
     }
 
 }
