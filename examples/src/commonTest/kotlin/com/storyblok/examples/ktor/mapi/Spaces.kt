@@ -1,0 +1,169 @@
+package com.storyblok.examples.ktor.mapi
+
+import com.storyblok.ktor.Api.*
+import com.storyblok.ktor.Api.Config.Management.AccessToken.Personal
+import com.storyblok.ktor.Storyblok
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.*
+import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.json.*
+import kotlin.test.Test
+
+class Spaces {
+
+    /**
+     * Trigger the backup task for your space. Make sure you&#39;ve configured backups in your space options.
+     * https://www.storyblok.com/docs/api/management/spaces/backup-a-space
+     */
+    @Test
+    fun `Backup a Space`() = runTest {
+
+        val client = HttpClient {
+            install(Storyblok(MAPI)) {
+                accessToken = Personal("YOUR_PERSONAL_ACCESS_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.post("spaces/288868932106293/backups") {
+            setBody(buildJsonObject { })
+        }
+        
+        println(response.body<JsonElement>())
+    }
+
+    /**
+     * This endpoint creates a new space.
+     * https://www.storyblok.com/docs/api/management/spaces/create-a-space
+     */
+    @Test
+    fun `Create a Space`() = runTest {
+
+        val client = HttpClient {
+            install(Storyblok(MAPI)) {
+                accessToken = Personal("YOUR_PERSONAL_ACCESS_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.post("spaces/") {
+            setBody(buildJsonObject {
+                putJsonObject("space") {
+                    put("name", "Example Space")
+                }
+            })
+        }
+        
+        println(response.body<JsonElement>())
+    }
+
+    /**
+     * Delete a space by its numeric id.
+     * https://www.storyblok.com/docs/api/management/spaces/delete-a-space
+     */
+    @Test
+    fun `Delete a Space`() = runTest {
+
+        val client = HttpClient {
+            install(Storyblok(MAPI)) {
+                accessToken = Personal("YOUR_PERSONAL_ACCESS_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.delete("spaces/288868932106293")
+        
+        println(response.body<JsonElement>())
+    }
+
+    /**
+     * Duplicate a space and all its content entries and components; Assets will not be duplicated and still will reference the original space.
+     * https://www.storyblok.com/docs/api/management/spaces/duplicate-a-space
+     */
+    @Test
+    fun `Duplicate a Space`() = runTest {
+
+        val client = HttpClient {
+            install(Storyblok(MAPI)) {
+                accessToken = Personal("YOUR_PERSONAL_ACCESS_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.post("spaces/") {
+            setBody(buildJsonObject {
+                put("dup_id", 12422)
+                putJsonObject("space") {
+                    put("name", "Example Space")
+                }
+            })
+        }
+        
+        println(response.body<JsonElement>())
+    }
+
+    /**
+     * Returns a single space object by providing a specific numeric id.
+     * https://www.storyblok.com/docs/api/management/spaces/retrieve-a-single-space
+     */
+    @Test
+    fun `Retrieve a Single Space`() = runTest {
+
+        val client = HttpClient {
+            install(Storyblok(MAPI)) {
+                accessToken = Personal("YOUR_PERSONAL_ACCESS_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.get("spaces/288868932106293/")
+        
+        println(response.body<JsonElement>())
+    }
+
+    /**
+     * Returns an array of space objects.
+     * https://www.storyblok.com/docs/api/management/spaces/retrieve-multiple-spaces
+     */
+    @Test
+    fun `Retrieve Multiple Spaces`() = runTest {
+
+        val client = HttpClient {
+            install(Storyblok(MAPI)) {
+                accessToken = Personal("YOUR_PERSONAL_ACCESS_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.get("spaces/")
+        
+        println(response.body<JsonElement>())
+    }
+
+    /**
+     * Update a space using the numeric ID.
+     * https://www.storyblok.com/docs/api/management/spaces/update-a-space
+     */
+    @Test
+    fun `Update a Space`() = runTest {
+
+        val client = HttpClient {
+            install(Storyblok(MAPI)) {
+                accessToken = Personal("YOUR_PERSONAL_ACCESS_TOKEN")
+            }
+            expectSuccess = false
+        }
+        
+        val response = client.put("spaces/288868932106293") {
+            setBody(buildJsonObject {
+                putJsonObject("space") {
+                    put("name", "Updated Example Space")
+                }
+            })
+        }
+        
+        println(response.body<JsonElement>())
+    }
+
+}
