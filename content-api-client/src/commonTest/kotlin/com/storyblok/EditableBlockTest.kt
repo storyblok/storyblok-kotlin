@@ -21,7 +21,7 @@ class EditableBlockTest {
     )
 
     @Test
-    fun `a draft block names itself, its story and its space`() {
+    fun `a draft block names itself and its story and space`() {
         val editable = assertNotNull(
             block("""<!--#storyblok#{"name": "teaser", "space": "1001", "uid": "u1", "id": "42"}-->""").editableBlock()
         )
