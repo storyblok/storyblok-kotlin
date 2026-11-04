@@ -57,18 +57,51 @@ private val MESSAGE = EventType<MessageEvent<JsAny?>>("message")
  */
 internal fun initialized(resolveRelations: String): InitializedAction = unsafeJso {
     action = "initialized"
-    config = unsafeJso {
-        this.resolveRelations = resolveRelations
-            .takeIf { it.isNotEmpty() }
-            ?.split(",")
-            ?.map { it.toJsString() }
-            ?.toJsArray()
-    }
+    config = bridgeParams(resolveRelations)
 }
 
 internal external interface InitializedAction : JsAny {
     var action: String
     var config: BridgeParams
+}
+
+/**
+ * The `edit` message, which opens [block]'s form in the editor.
+ *
+ * It repeats the handshake's [config][BridgeParams], as the preview bridge does: the editor reads it from both.
+ */
+internal fun edit(block: EditableBlock, resolveRelations: String): EditAction = unsafeJso {
+    action = "edit"
+    dataC = unsafeJso {
+        name = block.name
+        // Left off rather than sent as null, as a page's `_editable` that has no space leaves it off.
+        block.space?.let { space = it }
+        uid = block.uid
+        id = block.id
+    }
+    config = bridgeParams(resolveRelations)
+}
+
+internal external interface EditAction : JsAny {
+    var action: String
+    var dataC: EditableBlockData
+    var config: BridgeParams
+}
+
+/** An [EditableBlock], as the `edit` message carries it. */
+internal external interface EditableBlockData : JsAny {
+    var name: String
+    var space: String?
+    var uid: String
+    var id: String
+}
+
+private fun bridgeParams(resolveRelations: String): BridgeParams = unsafeJso {
+    this.resolveRelations = resolveRelations
+        .takeIf { it.isNotEmpty() }
+        ?.split(",")
+        ?.map { it.toJsString() }
+        ?.toJsArray()
 }
 
 /**
@@ -107,9 +140,10 @@ internal actual fun StoryblokBridge(json: Json, resolveRelations: String): Story
  * The page's connection to the Visual Editor, over `Window.postMessage`.
  *
  * Nothing is injected into the page. All it holds is one `window` message listener, which
- * [destroy] removes.
+ * [destroy] removes. Clicks are not listened for here: a Compose canvas is one element, so which
+ * block was clicked is for the UI to say, through [openBlock].
  */
-private class VisualEditor(private val json: Json, resolveRelations: String) : StoryblokBridge {
+private class VisualEditor(private val json: Json, private val resolveRelations: String) : StoryblokBridge {
 
     private val editorOrigin =
         if ("_storyblok_env=stage" in window.location.search) STAGE_EDITOR_ORIGIN else EDITOR_ORIGIN
@@ -159,6 +193,11 @@ private class VisualEditor(private val json: Json, resolveRelations: String) : S
                     ?.let { story.copy(content = it) }
             }
         }
+
+    override fun openBlock(block: Component) {
+        val editable = block.editableBlock() ?: return
+        window.parent.postMessage(edit(editable, resolveRelations), editorOrigin)
+    }
 
     override fun destroy(): Unit = window.removeEventListener(MESSAGE, listener)
 }

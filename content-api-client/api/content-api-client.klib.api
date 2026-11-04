@@ -43,6 +43,12 @@ final enum class com.storyblok.cdn.query/SortAs : kotlin/Enum<com.storyblok.cdn.
     final fun values(): kotlin/Array<com.storyblok.cdn.query/SortAs> // com.storyblok.cdn.query/SortAs.values|values#static(){}[0]
 }
 
+abstract interface com.storyblok.cdn/StoryblokBridge { // com.storyblok.cdn/StoryblokBridge|null[0]
+    abstract fun <#A1: com.storyblok.cdn.schema/Component> story(com.storyblok.cdn.schema/Story<#A1>, io.ktor.util.reflect/TypeInfo, kotlin/Int): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A1>> // com.storyblok.cdn/StoryblokBridge.story|story(com.storyblok.cdn.schema.Story<0:0>;io.ktor.util.reflect.TypeInfo;kotlin.Int){0§<com.storyblok.cdn.schema.Component>}[0]
+    abstract fun destroy() // com.storyblok.cdn/StoryblokBridge.destroy|destroy(){}[0]
+    abstract fun openBlock(com.storyblok.cdn.schema/Component) // com.storyblok.cdn/StoryblokBridge.openBlock|openBlock(com.storyblok.cdn.schema.Component){}[0]
+}
+
 abstract interface com.storyblok.cdn/StoryblokClient { // com.storyblok.cdn/StoryblokClient|null[0]
     abstract val http // com.storyblok.cdn/StoryblokClient.http|{}http[0]
         abstract fun <get-http>(): io.ktor.client/HttpClient // com.storyblok.cdn/StoryblokClient.http.<get-http>|<get-http>(){}[0]
@@ -424,7 +430,10 @@ final class com.storyblok.cdn.schema/Link : com.storyblok.cdn.schema/Field { // 
 
 final class com.storyblok.cdn/StoryblokClientImpl : com.storyblok.cdn/StoryblokClient { // com.storyblok.cdn/StoryblokClientImpl|null[0]
     constructor <init>(kotlin/Function1<com.storyblok.ktor/Api.Config.Content, kotlin/Unit>, kotlin/Function1<kotlinx.serialization.modules/SerializersModuleBuilder, kotlin/Unit>, kotlin/Function1<kotlinx.serialization.json/JsonBuilder, kotlin/Unit>, kotlinx.serialization.json/Json = ..., io.ktor.client/HttpClient = ...) // com.storyblok.cdn/StoryblokClientImpl.<init>|<init>(kotlin.Function1<com.storyblok.ktor.Api.Config.Content,kotlin.Unit>;kotlin.Function1<kotlinx.serialization.modules.SerializersModuleBuilder,kotlin.Unit>;kotlin.Function1<kotlinx.serialization.json.JsonBuilder,kotlin.Unit>;kotlinx.serialization.json.Json;io.ktor.client.HttpClient){}[0]
+    constructor <init>(kotlin/String, com.storyblok.ktor/Api.Config.Version, com.storyblok.ktor/Api.Config.Region, kotlin/String?, kotlin/String?, kotlin/String?, kotlinx.serialization.modules/SerializersModule) // com.storyblok.cdn/StoryblokClientImpl.<init>|<init>(kotlin.String;com.storyblok.ktor.Api.Config.Version;com.storyblok.ktor.Api.Config.Region;kotlin.String?;kotlin.String?;kotlin.String?;kotlinx.serialization.modules.SerializersModule){}[0]
 
+    final val bridge // com.storyblok.cdn/StoryblokClientImpl.bridge|{}bridge[0]
+        final fun <get-bridge>(): com.storyblok.cdn/StoryblokBridge // com.storyblok.cdn/StoryblokClientImpl.bridge.<get-bridge>|<get-bridge>(){}[0]
     final val http // com.storyblok.cdn/StoryblokClientImpl.http|{}http[0]
         final fun <get-http>(): io.ktor.client/HttpClient // com.storyblok.cdn/StoryblokClientImpl.http.<get-http>|<get-http>(){}[0]
     final val json // com.storyblok.cdn/StoryblokClientImpl.json|{}json[0]

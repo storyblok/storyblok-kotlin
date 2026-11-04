@@ -156,13 +156,15 @@ public class StoryblokClientImpl internal constructor(
             .sorted()
             .joinToString(","),
         /**
-         * The Visual Editor this client is being previewed in, if any.
+         * The Visual Editor this client is being previewed in, or [NoVisualEditor] outside one.
          *
          * Held for the client's lifetime and destroyed with it — including one that was passed in, which
          * this client then owns — so that it outlives the individual [story] collections that subscribe
          * to it. Those come and go as the app navigates, and the connection has to survive that.
+         *
+         * Public so that the Compose SDK can tell the editor which block was tapped.
          */
-        private val bridge: StoryblokBridge = StoryblokBridge(json, resolveRelations)
+        public val bridge: StoryblokBridge = StoryblokBridge(json, resolveRelations)
 ) : StoryblokClient {
 
     public constructor(
@@ -172,6 +174,31 @@ public class StoryblokClientImpl internal constructor(
         json: Json = storyblokJson(serializersModuleBuilder, jsonBuilder),
         http: HttpClient = HttpClient { configureStoryblok(json, apiBuilder) },
     ) : this(json, http)
+
+    /**
+     * Creates the client that [StoryblokClient]'s `accessToken` factory returns, typed so that the Compose SDK can
+     * reach its [bridge].
+     */
+    public constructor(
+        accessToken: String,
+        version: Api.Config.Version,
+        region: Api.Config.Region,
+        language: String?,
+        fallbackLanguage: String?,
+        cv: String?,
+        serializersModule: SerializersModule,
+    ) : this(
+        apiBuilder = {
+            this.region = region
+            this.accessToken = accessToken
+            this.version = version
+            this.language = language
+            this.fallbackLanguage = fallbackLanguage
+            this.cv = cv
+        },
+        serializersModuleBuilder = { include(serializersModule) },
+        jsonBuilder = lenientJson(version == Api.Config.Version.Published),
+    )
 
     /**
      * The relation-resolution parameters both story endpoints send, given the [resolveLevel] the caller asked for.

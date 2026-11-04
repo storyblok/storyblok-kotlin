@@ -111,6 +111,8 @@ class StoryblokBridgeTest {
                     }
                 }
 
+            override fun openBlock(block: Component) = Unit
+
             override fun destroy() = Unit
         }
 
