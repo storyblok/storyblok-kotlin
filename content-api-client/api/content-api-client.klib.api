@@ -472,9 +472,34 @@ final class com.storyblok.cdn/BlockBreadcrumb { // com.storyblok.cdn/BlockBreadc
     final fun toString(): kotlin/String // com.storyblok.cdn/BlockBreadcrumb.toString|toString(){}[0]
 }
 
-final class com.storyblok.cdn/BlockHints { // com.storyblok.cdn/BlockHints|null[0]
-    constructor <init>(kotlin/String? = ..., kotlin.collections/List<kotlin/String> = ..., kotlin/String? = ...) // com.storyblok.cdn/BlockHints.<init>|<init>(kotlin.String?;kotlin.collections.List<kotlin.String>;kotlin.String?){}[0]
+final class com.storyblok.cdn/BlockEdit { // com.storyblok.cdn/BlockEdit|null[0]
+    constructor <init>(kotlin/String, kotlin.collections/List<kotlin/String> = ..., kotlin.collections/List<com.storyblok.cdn/RichTextEdit> = ..., kotlin/Int = ...) // com.storyblok.cdn/BlockEdit.<init>|<init>(kotlin.String;kotlin.collections.List<kotlin.String>;kotlin.collections.List<com.storyblok.cdn.RichTextEdit>;kotlin.Int){}[0]
 
+    final val ancestors // com.storyblok.cdn/BlockEdit.ancestors|{}ancestors[0]
+        final fun <get-ancestors>(): kotlin.collections/List<kotlin/String> // com.storyblok.cdn/BlockEdit.ancestors.<get-ancestors>|<get-ancestors>(){}[0]
+    final val richText // com.storyblok.cdn/BlockEdit.richText|{}richText[0]
+        final fun <get-richText>(): kotlin.collections/List<com.storyblok.cdn/RichTextEdit> // com.storyblok.cdn/BlockEdit.richText.<get-richText>|<get-richText>(){}[0]
+    final val serial // com.storyblok.cdn/BlockEdit.serial|{}serial[0]
+        final fun <get-serial>(): kotlin/Int // com.storyblok.cdn/BlockEdit.serial.<get-serial>|<get-serial>(){}[0]
+    final val uid // com.storyblok.cdn/BlockEdit.uid|{}uid[0]
+        final fun <get-uid>(): kotlin/String // com.storyblok.cdn/BlockEdit.uid.<get-uid>|<get-uid>(){}[0]
+
+    final fun component1(): kotlin/String // com.storyblok.cdn/BlockEdit.component1|component1(){}[0]
+    final fun component2(): kotlin.collections/List<kotlin/String> // com.storyblok.cdn/BlockEdit.component2|component2(){}[0]
+    final fun component3(): kotlin.collections/List<com.storyblok.cdn/RichTextEdit> // com.storyblok.cdn/BlockEdit.component3|component3(){}[0]
+    final fun component4(): kotlin/Int // com.storyblok.cdn/BlockEdit.component4|component4(){}[0]
+    final fun copy(kotlin/String = ..., kotlin.collections/List<kotlin/String> = ..., kotlin.collections/List<com.storyblok.cdn/RichTextEdit> = ..., kotlin/Int = ...): com.storyblok.cdn/BlockEdit // com.storyblok.cdn/BlockEdit.copy|copy(kotlin.String;kotlin.collections.List<kotlin.String>;kotlin.collections.List<com.storyblok.cdn.RichTextEdit>;kotlin.Int){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.storyblok.cdn/BlockEdit.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.storyblok.cdn/BlockEdit.hashCode|hashCode(){}[0]
+    final fun nodeIn(com.storyblok.cdn.schema/RichText.Document): kotlin/Int? // com.storyblok.cdn/BlockEdit.nodeIn|nodeIn(com.storyblok.cdn.schema.RichText.Document){}[0]
+    final fun toString(): kotlin/String // com.storyblok.cdn/BlockEdit.toString|toString(){}[0]
+}
+
+final class com.storyblok.cdn/BlockHints { // com.storyblok.cdn/BlockHints|null[0]
+    constructor <init>(kotlin/String? = ..., kotlin.collections/List<kotlin/String> = ..., kotlin/String? = ..., com.storyblok.cdn/BlockEdit? = ...) // com.storyblok.cdn/BlockHints.<init>|<init>(kotlin.String?;kotlin.collections.List<kotlin.String>;kotlin.String?;com.storyblok.cdn.BlockEdit?){}[0]
+
+    final val edited // com.storyblok.cdn/BlockHints.edited|{}edited[0]
+        final fun <get-edited>(): com.storyblok.cdn/BlockEdit? // com.storyblok.cdn/BlockHints.edited.<get-edited>|<get-edited>(){}[0]
     final val highlighted // com.storyblok.cdn/BlockHints.highlighted|{}highlighted[0]
         final fun <get-highlighted>(): kotlin.collections/List<kotlin/String> // com.storyblok.cdn/BlockHints.highlighted.<get-highlighted>|<get-highlighted>(){}[0]
     final val highlightedFocus // com.storyblok.cdn/BlockHints.highlightedFocus|{}highlightedFocus[0]
@@ -485,7 +510,8 @@ final class com.storyblok.cdn/BlockHints { // com.storyblok.cdn/BlockHints|null[
     final fun component1(): kotlin/String? // com.storyblok.cdn/BlockHints.component1|component1(){}[0]
     final fun component2(): kotlin.collections/List<kotlin/String> // com.storyblok.cdn/BlockHints.component2|component2(){}[0]
     final fun component3(): kotlin/String? // com.storyblok.cdn/BlockHints.component3|component3(){}[0]
-    final fun copy(kotlin/String? = ..., kotlin.collections/List<kotlin/String> = ..., kotlin/String? = ...): com.storyblok.cdn/BlockHints // com.storyblok.cdn/BlockHints.copy|copy(kotlin.String?;kotlin.collections.List<kotlin.String>;kotlin.String?){}[0]
+    final fun component4(): com.storyblok.cdn/BlockEdit? // com.storyblok.cdn/BlockHints.component4|component4(){}[0]
+    final fun copy(kotlin/String? = ..., kotlin.collections/List<kotlin/String> = ..., kotlin/String? = ..., com.storyblok.cdn/BlockEdit? = ...): com.storyblok.cdn/BlockHints // com.storyblok.cdn/BlockHints.copy|copy(kotlin.String?;kotlin.collections.List<kotlin.String>;kotlin.String?;com.storyblok.cdn.BlockEdit?){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // com.storyblok.cdn/BlockHints.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.storyblok.cdn/BlockHints.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.storyblok.cdn/BlockHints.toString|toString(){}[0]
@@ -508,6 +534,25 @@ final class com.storyblok.cdn/BlockMenu { // com.storyblok.cdn/BlockMenu|null[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // com.storyblok.cdn/BlockMenu.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.storyblok.cdn/BlockMenu.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.storyblok.cdn/BlockMenu.toString|toString(){}[0]
+}
+
+final class com.storyblok.cdn/RichTextEdit { // com.storyblok.cdn/RichTextEdit|null[0]
+    constructor <init>(kotlin/Int, kotlin/Int, kotlin/String) // com.storyblok.cdn/RichTextEdit.<init>|<init>(kotlin.Int;kotlin.Int;kotlin.String){}[0]
+
+    final val index // com.storyblok.cdn/RichTextEdit.index|{}index[0]
+        final fun <get-index>(): kotlin/Int // com.storyblok.cdn/RichTextEdit.index.<get-index>|<get-index>(){}[0]
+    final val nodes // com.storyblok.cdn/RichTextEdit.nodes|{}nodes[0]
+        final fun <get-nodes>(): kotlin/Int // com.storyblok.cdn/RichTextEdit.nodes.<get-nodes>|<get-nodes>(){}[0]
+    final val text // com.storyblok.cdn/RichTextEdit.text|{}text[0]
+        final fun <get-text>(): kotlin/String // com.storyblok.cdn/RichTextEdit.text.<get-text>|<get-text>(){}[0]
+
+    final fun component1(): kotlin/Int // com.storyblok.cdn/RichTextEdit.component1|component1(){}[0]
+    final fun component2(): kotlin/Int // com.storyblok.cdn/RichTextEdit.component2|component2(){}[0]
+    final fun component3(): kotlin/String // com.storyblok.cdn/RichTextEdit.component3|component3(){}[0]
+    final fun copy(kotlin/Int = ..., kotlin/Int = ..., kotlin/String = ...): com.storyblok.cdn/RichTextEdit // com.storyblok.cdn/RichTextEdit.copy|copy(kotlin.Int;kotlin.Int;kotlin.String){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.storyblok.cdn/RichTextEdit.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.storyblok.cdn/RichTextEdit.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.storyblok.cdn/RichTextEdit.toString|toString(){}[0]
 }
 
 final class com.storyblok.cdn/SelectedBlock { // com.storyblok.cdn/SelectedBlock|null[0]

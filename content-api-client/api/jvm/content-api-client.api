@@ -29,16 +29,37 @@ public final class com/storyblok/cdn/BlockBreadcrumb {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/storyblok/cdn/BlockEdit {
+	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/util/List;I)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/util/List;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Ljava/util/List;
+	public final fun component4 ()I
+	public final fun copy (Ljava/lang/String;Ljava/util/List;Ljava/util/List;I)Lcom/storyblok/cdn/BlockEdit;
+	public static synthetic fun copy$default (Lcom/storyblok/cdn/BlockEdit;Ljava/lang/String;Ljava/util/List;Ljava/util/List;IILjava/lang/Object;)Lcom/storyblok/cdn/BlockEdit;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAncestors ()Ljava/util/List;
+	public final fun getRichText ()Ljava/util/List;
+	public final fun getSerial ()I
+	public final fun getUid ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun nodeIn (Lcom/storyblok/cdn/schema/RichText$Document;)Ljava/lang/Integer;
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class com/storyblok/cdn/BlockHints {
 	public fun <init> ()V
-	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/lang/String;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Lcom/storyblok/cdn/BlockEdit;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Lcom/storyblok/cdn/BlockEdit;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/util/List;
 	public final fun component3 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/util/List;Ljava/lang/String;)Lcom/storyblok/cdn/BlockHints;
-	public static synthetic fun copy$default (Lcom/storyblok/cdn/BlockHints;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;ILjava/lang/Object;)Lcom/storyblok/cdn/BlockHints;
+	public final fun component4 ()Lcom/storyblok/cdn/BlockEdit;
+	public final fun copy (Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Lcom/storyblok/cdn/BlockEdit;)Lcom/storyblok/cdn/BlockHints;
+	public static synthetic fun copy$default (Lcom/storyblok/cdn/BlockHints;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Lcom/storyblok/cdn/BlockEdit;ILjava/lang/Object;)Lcom/storyblok/cdn/BlockHints;
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEdited ()Lcom/storyblok/cdn/BlockEdit;
 	public final fun getHighlighted ()Ljava/util/List;
 	public final fun getHighlightedFocus ()Ljava/lang/String;
 	public final fun getHovered ()Ljava/lang/String;
@@ -73,6 +94,21 @@ public final class com/storyblok/cdn/NoVisualEditor : com/storyblok/cdn/Storyblo
 	public fun openBreadcrumb (Lcom/storyblok/cdn/BlockBreadcrumb;)V
 	public fun perform (Lcom/storyblok/cdn/BlockAction;)V
 	public fun story (Lcom/storyblok/cdn/schema/Story;Lio/ktor/util/reflect/TypeInfo;I)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class com/storyblok/cdn/RichTextEdit {
+	public fun <init> (IILjava/lang/String;)V
+	public final fun component1 ()I
+	public final fun component2 ()I
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (IILjava/lang/String;)Lcom/storyblok/cdn/RichTextEdit;
+	public static synthetic fun copy$default (Lcom/storyblok/cdn/RichTextEdit;IILjava/lang/String;ILjava/lang/Object;)Lcom/storyblok/cdn/RichTextEdit;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getIndex ()I
+	public final fun getNodes ()I
+	public final fun getText ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/storyblok/cdn/SelectedBlock {

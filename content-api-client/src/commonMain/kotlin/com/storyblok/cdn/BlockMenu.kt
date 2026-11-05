@@ -99,6 +99,8 @@ public data class BlockHints(
     public val highlighted: List<String> = emptyList(),
     /** The highlighted block to bring into view, if any is off screen. */
     public val highlightedFocus: String? = null,
+    /** Where the author last changed the story, to bring into view, or `null` before they have. */
+    public val edited: BlockEdit? = null,
 )
 
 /**
