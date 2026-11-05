@@ -398,10 +398,13 @@ private fun LazyListState.offScreenIndex(actor: LazyListItemInfo, blocks: List<C
 public fun FollowEdits(document: RichText.Document, state: LazyListState) {
     val editor = LocalVisualEditor.current ?: return
     val current by rememberUpdatedState(document)
+    // As first drawn, before the editor sent anything: what the first edit, which the editor's
+    // updates cannot place in rich text, is found by comparing the document with.
+    val before = remember(state) { document }
 
     // The document is read here as well as the edit, as the edit arrives before the document it edits.
     LaunchedEffect(editor, state) {
-        snapshotFlow { editor.hints.value.edited?.let { edit -> edit.nodeIn(current)?.let { edit.serial to it } } }
+        snapshotFlow { editor.hints.value.edited?.let { edit -> edit.nodeIn(current, before)?.let { edit.serial to it } } }
             .filterNotNull()
             .collect { (serial, index) ->
                 if (editor.followedEdits[state] == serial) return@collect

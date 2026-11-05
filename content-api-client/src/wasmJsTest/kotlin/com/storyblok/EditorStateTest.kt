@@ -288,10 +288,18 @@ class EditorStateTest {
             "body": [{"_uid": "u3", "component": "teaser", "headline": "$headline"}]}}}"""
 
     @Test
-    fun `the first update of a story is not an edit`() {
+    fun `the first update of a story is put in the selected block`() {
+        receive(editedTeaser)
         receive(input(42, "Hi"))
 
-        assertNull(state.hints.value.edited)
+        assertEquals(BlockEdit("u3", ancestors = listOf("page", "u2"), compared = false, serial = 1), state.hints.value.edited)
+    }
+
+    @Test
+    fun `the first update of a story with nothing selected is put in its content`() {
+        receive(input(42, "Hi"))
+
+        assertEquals(BlockEdit("page", compared = false, serial = 1), state.hints.value.edited)
     }
 
     @Test
@@ -299,7 +307,7 @@ class EditorStateTest {
         receive(input(42, "Hi"))
         receive(input(42, "Hello"))
 
-        assertEquals(BlockEdit("u3", ancestors = listOf("page"), serial = 1), state.hints.value.edited)
+        assertEquals(BlockEdit("u3", ancestors = listOf("page"), serial = 2), state.hints.value.edited)
     }
 
     @Test
@@ -308,7 +316,7 @@ class EditorStateTest {
         receive(input(42, "Hello"))
         receive(input(42, "Hello!"))
 
-        assertEquals(2, state.hints.value.edited?.serial)
+        assertEquals(3, state.hints.value.edited?.serial)
     }
 
     @Test
@@ -317,7 +325,7 @@ class EditorStateTest {
         receive(input(42, "Hello"))
         receive(input(42, "Hello"))
 
-        assertEquals(1, state.hints.value.edited?.serial)
+        assertEquals(2, state.hints.value.edited?.serial)
     }
 
     @Test
@@ -325,7 +333,7 @@ class EditorStateTest {
         receive(input(42, "Hi"))
         receive(input(43, "Hello"))
 
-        assertNull(state.hints.value.edited)
+        assertEquals(false, state.hints.value.edited?.compared)
     }
 
     @Test
