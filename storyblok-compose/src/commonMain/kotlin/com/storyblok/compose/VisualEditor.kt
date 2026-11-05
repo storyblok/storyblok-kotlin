@@ -4,6 +4,7 @@ package com.storyblok.compose
 
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
@@ -40,10 +41,12 @@ import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import com.storyblok.InternalAPI
+import com.storyblok.cdn.BlockEdit
 import com.storyblok.cdn.BlockHints
 import com.storyblok.cdn.SelectedBlock
 import com.storyblok.cdn.StoryblokBridge
 import com.storyblok.cdn.schema.Component
+import com.storyblok.cdn.schema.RichText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -107,6 +110,15 @@ internal class VisualEditor(
     val followed: FollowedLists = FollowedLists()
 
     /**
+     * The [serial][BlockEdit.serial] of the last edit a block was brought into view for. Each edit is
+     * shown once, so that the author can scroll away from the block they are typing in.
+     */
+    var shownEdit: Int = 0
+
+    /** The edit each lazy list last followed, and where, for the same reason as [followed]. */
+    val followedEdits: FollowedLists = FollowedLists()
+
+    /**
      * Where the selected block is in the window, clipped to what of it is on screen, for its
      * [menu][EditorMenu] to be drawn against. Paired with the block's `_uid`, as it lingers after the
      * selection moves on until the next selected block reports in.
@@ -144,7 +156,10 @@ internal class VisualEditor(
     }
 }
 
-/** A [SelectedBlock.reveal] a lazy list followed, to the item at [index] in the whole list. */
+/**
+ * A request a lazy list followed, to the item at [index] in the whole list: a [SelectedBlock.reveal], or
+ * a [BlockEdit.serial].
+ */
 internal data class Followed(val reveal: Int, val index: Int)
 
 /**
@@ -242,6 +257,20 @@ internal fun Modifier.editable(block: Component, editor: VisualEditor): Modifier
             .filter { it }
             // Launched apart, so that a scroll the author interrupts cancels only itself, not this collector.
             .collect { launch { requester.bringIntoView() } }
+    }
+
+    // The block the author changes, followed as they type. Started as the block enters composition,
+    // too, so that one the edit adds, or a lazy list scrolls to for it, is brought into view as well.
+    LaunchedEffect(editor, requester, block.uid) {
+        snapshotFlow { editor.hints.value.edited?.takeIf { block.uid.isNotEmpty() && it.uid == block.uid } }
+            .filterNotNull()
+            .collect { edit ->
+                // After the content that comes with the edit has been laid out, as for a selection.
+                repeat(2) { withFrameNanos {} }
+                if (editor.shownEdit == edit.serial) return@collect
+                editor.shownEdit = edit.serial
+                requester.bringIntoView()
+            }
     }
 
     DisposableEffect(editor, block.uid) {
@@ -351,8 +380,8 @@ private suspend fun PointerInputScope.openOnTap(block: () -> Component, editor: 
 }
 
 /**
- * Scrolls [state]'s list to the item of [blocks] holding the block the editor selects, when that item
- * is off screen and so has no block to bring itself into view.
+ * Scrolls [state]'s list to the item of [blocks] holding the block the editor selects, or the one the
+ * author changes, when that item is off screen and so has no block to bring itself into view.
  *
  * Every item of [blocks] that is composed runs this, and the first of them on screen acts. None of
  * them may be the list's first item, and the list never says which index a key is at unless that
@@ -383,30 +412,116 @@ internal fun FollowSelection(item: Component, blocks: List<Component>, state: La
                 follow(editor, item, current, state)
             }
     }
+
+    // The author's edits, followed as selections are: each once, read with the blocks and what is on
+    // screen, as an edit too can arrive before the content holding the block it changes.
+    LaunchedEffect(editor, state, item.uid) {
+        snapshotFlow {
+            editor.hints.value.edited?.let { edit ->
+                Triple(edit, current.map(Component::uid), state.layoutInfo.visibleItemsInfo.map { it.index to it.key })
+            }
+        }
+            .filterNotNull()
+            .collectLatest {
+                // A frame later, for the same reason as a selection.
+                withFrameNanos {}
+                followEdit(editor, item, current, state)
+            }
+    }
+}
+
+/**
+ * Scrolls [state], a list of [document]'s nodes one item each, to the node the author changes in the
+ * Visual Editor, when it is not wholly on screen. Outside the editor it does nothing.
+ *
+ * A lazy list needs this to follow an edit, since a node off screen is not composed and so cannot
+ * bring itself into view.
+ *
+ * @suppress
+ */
+@InternalAPI
+@Composable
+public fun FollowEdits(document: RichText.Document, state: LazyListState) {
+    val editor = LocalVisualEditor.current ?: return
+    val current by rememberUpdatedState(document)
+
+    // The document is read here as well as the edit, as the edit arrives before the document it edits.
+    LaunchedEffect(editor, state) {
+        snapshotFlow { editor.hints.value.edited?.let { edit -> edit.nodeIn(current)?.let { edit.serial to it } } }
+            .filterNotNull()
+            .collect { (serial, index) ->
+                if (editor.followedEdits[state]?.reveal == serial) return@collect
+                editor.followedEdits[state] = Followed(serial, index)
+                state.reveal(index)
+            }
+    }
+}
+
+/**
+ * Scrolls the item at [index] into view, as little as it takes: all of it if it fits, its start if it
+ * does not, and nothing if it fills the list already.
+ */
+private suspend fun LazyListState.reveal(index: Int) {
+    val item = layoutInfo.visibleItemsInfo.firstOrNull { it.index == index } ?: return animateScrollToItem(index)
+    val hiddenBefore = layoutInfo.viewportStartOffset - item.offset
+    val hiddenAfter = item.offset + item.size - layoutInfo.viewportEndOffset
+    when {
+        hiddenBefore > 0 && hiddenAfter > 0 -> Unit
+        hiddenBefore > 0 -> animateScrollBy(-hiddenBefore.toFloat())
+        hiddenAfter > 0 -> animateScrollBy(minOf(hiddenAfter, -hiddenBefore).toFloat())
+    }
 }
 
 private fun follow(editor: VisualEditor, item: Component, blocks: List<Component>, state: LazyListState) {
     val selected = editor.selected.value ?: return
+    follow(editor, item, blocks, state, selected.uid, selected.ancestors, selected.reveal, editor.followed) {
+        editor.shown = selected.reveal
+    }
+}
+
+private fun followEdit(editor: VisualEditor, item: Component, blocks: List<Component>, state: LazyListState) {
+    val edit = editor.hints.value.edited ?: return
+    follow(editor, item, blocks, state, edit.uid, edit.ancestors, edit.serial, editor.followedEdits) {
+        editor.shownEdit = edit.serial
+    }
+}
+
+/**
+ * Scrolls [state] to the item of [blocks] holding the block [uid], or the one of its [ancestors] that
+ * [blocks] has, once for each [request], if [item] is the first of [blocks] on screen and that item is
+ * not. [shown] is told when the scroll shows the block itself, which then need not bring itself into view.
+ */
+private fun follow(
+    editor: VisualEditor,
+    item: Component,
+    blocks: List<Component>,
+    state: LazyListState,
+    uid: String,
+    ancestors: List<String>,
+    request: Int,
+    followedLists: FollowedLists,
+    shown: () -> Unit,
+) {
     val keys = blocks.map { blockKey(it.uid) }
     val visible = state.layoutInfo.visibleItemsInfo.map { it.index to it.key }
     val actor = visible.firstOrNull { (_, key) -> key in keys } ?: return
     if (actor.second != blockKey(item.uid)) return
 
     // Not found is not followed: the block may yet arrive, or be another blocks()'s in this list.
-    val target = blocks.indexOfFirst { it.uid == selected.uid || it.uid in selected.ancestors }
+    val target = blocks.indexOfFirst { it.uid == uid || it.uid in ancestors }
     if (target < 0) return
     // Where it is in the whole list, so that a block moved to another blocks() in it is followed even
     // when it keeps its place within its group.
     val index = actor.first - keys.indexOf(actor.second) + target
     if (index < 0) return
-    val followed = Followed(selected.reveal, index)
-    if (editor.followed[state] == followed) return
-    editor.followed[state] = followed
+    val followed = Followed(request, index)
+    if (followedLists[state] == followed) return
+    followedLists[state] = followed
 
     if (visible.any { (visibleIndex, _) -> visibleIndex == index }) return
-    // The selected block's own item is shown by this scroll, which its block bringing itself into view
-    // as it arrives would only cut short. A block nested in the item still does, to find its place in it.
-    if (blocks[target].uid == selected.uid) editor.shown = selected.reveal
+    // The block's own item is shown by this scroll, which its block bringing itself into view as it
+    // arrives would only cut short. A block nested in the item still does, to find its place in it.
+    if (blocks[target].uid == uid) shown()
     editor.scope.launch { state.animateScrollToItem(index) }
 }
 

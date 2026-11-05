@@ -14,6 +14,9 @@
 - Added `BlockScope.blocks(blocks, state)`, which adds blocks to a `LazyColumn` or `LazyRow` keyed by their `_uid`.
   In the Visual Editor it also scrolls the list to a selected block that is off screen, which a lazy list cannot do by
   itself. `storyblok-compose` now exposes Compose Foundation as an `api` dependency.
+- A `wasmJs` preview in the Visual Editor now follows the author's edits: as they type, it scrolls to the block they
+  are changing, and to the node they are changing in rich text drawn by `storyblok-material3`'s default document.
+  `blocks()` lists scroll to an edited block that is off screen too.
 - BREAKING CHANGE: Content that fails to deserialize now always surfaces from `StoryblokClient.story(...)` and
   `StoryblokClient.stories(...)` as a `SerializationException`, including a value a property's serializer cannot parse,
   such as a malformed date or uuid, and a `require` in a component's `init` block. These were reported as a
