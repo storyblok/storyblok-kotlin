@@ -295,6 +295,16 @@ editing experience, with nothing to configure:
 For this to work, a block's composable must apply the `Modifier` it is given to its outermost layout, as in the examples
 above. Outside the editor, and on every other target, blocks behave exactly as before.
 
+### The editor's menu and hints
+
+The selected block has the editor's menu above it, as it does on a web page, labelled with the block's display name. It
+lists the blocks the selected one is nested in, to open one of those instead, and the actions the editor allows on it:
+adding a block before or after it, duplicating, copying, moving and deleting it.
+
+Blocks the editor points at are marked too. Hovering over a block in the editor's form outlines it in the preview, and
+blocks the editor highlights are tinted. While the mouse moves over the preview, every block is faintly outlined, so the
+author can see what there is to select.
+
 ### Blocks in a lazy list
 
 A lazy list only composes the items on or near the screen, so a block selected further down has nothing on screen to

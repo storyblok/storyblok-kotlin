@@ -79,12 +79,14 @@ public fun Storyblok(
     val bridge = client.bridge
     val editor = if (bridge === NoVisualEditor) null else {
         val selected = bridge.selectedBlock.collectAsState()
+        val hints = bridge.hints.collectAsState()
         val scope = rememberCoroutineScope()
-        remember(bridge) { VisualEditor(bridge, selected, scope) }
+        remember(bridge) { VisualEditor(bridge, selected, scope, hints) }
     }
     CompositionLocalProvider(LocalVisualEditor provides editor) {
         content(scope)
     }
+    if (editor != null) EditorMenu(editor)
 }
 
 /**
