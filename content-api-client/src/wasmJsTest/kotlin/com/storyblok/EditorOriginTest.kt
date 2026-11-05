@@ -56,9 +56,11 @@ class EditorOriginTest {
 
         inbox.receive("https://app.storyblokchina.cn", parseMessage("""{"action": "input", "story": {"id": 1, "content": {}}}"""))
         inbox.receive("https://app.storyblokchina.cn", parseMessage("""{"action": "enterComponent", "componentId": "u1"}"""))
+        inbox.receive("https://app.storyblokchina.cn", parseMessage("""{"action": "hoverComponent", "componentId": "u2"}"""))
 
         assertNotNull(inbox.edits.value)
         assertEquals("u1", inbox.selection.selected.value?.uid)
+        assertEquals("u2", inbox.state.hints.value.hovered)
     }
 
     @Test
@@ -69,10 +71,12 @@ class EditorOriginTest {
         for (origin in listOf("https://example.org", "https://app.storyblokchina.cn", "null")) {
             inbox.receive(origin, parseMessage("""{"action": "input", "story": {"id": 1, "content": {}}}"""))
             inbox.receive(origin, parseMessage("""{"action": "enterComponent", "componentId": "u1"}"""))
+            inbox.receive(origin, parseMessage("""{"action": "hoverComponent", "componentId": "u2"}"""))
         }
 
         assertNull(inbox.edits.value)
         assertNull(inbox.selection.selected.value)
+        assertNull(inbox.state.hints.value.hovered)
     }
 }
 

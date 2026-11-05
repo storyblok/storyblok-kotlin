@@ -40,9 +40,10 @@ private val LOGGER = KtorSimpleLogger("com.storyblok.cdn.VisualEditor")
 
 /*
  * The Visual Editor talks to an embedded preview over `Window.postMessage`, and that is all this
- * needs. `@storyblok/preview-bridge` wraps the same two messages, but everything else it does —
+ * needs. `@storyblok/preview-bridge` wraps the same messages, but everything else it does —
  * outlining blocks, hover hints, the selection overlay and its menus — reads and writes per-block
  * DOM that a Compose canvas does not have, and it does some of that work on every mouse movement.
+ * Here the messages are read into state ([EditorState]), and the Compose SDK draws all of that from it.
  */
 
 /**
@@ -263,12 +264,15 @@ internal class EditorSelection(
         selected.value = after
     }
 
-    /** The author tapped [uid] in the preview: selected, and on screen already, so not a request to scroll. */
-    fun opened(uid: String) {
+    /**
+     * The author tapped [uid] in the preview, or picked it from the blocks the selected one is nested
+     * in, which are [ancestors] to it: selected, and on screen already, so not a request to scroll.
+     */
+    fun opened(uid: String, ancestors: List<String> = emptyList()) {
         revealAgainBy = null
         tapAnsweredBy = timeSource.markNow() + tapAnsweredWithin
         val current = selected.value
-        if (current?.uid != uid) selected.value = SelectedBlock(uid, reveal = reveals)
+        if (current?.uid != uid) selected.value = SelectedBlock(uid, ancestors, reveals)
     }
 
     /** Whether an `enterComponent` now answers the last tap. Only the first one does. */
@@ -336,6 +340,8 @@ private class VisualEditor(
 
     override val selectedBlock: StateFlow<SelectedBlock?> get() = inbox.selection.selected
 
+    override val hints: StateFlow<BlockHints> get() = inbox.state.hints
+
     private val listener: (MessageEvent<JsAny?>) -> Unit = { inbox.receive(it.origin, it.data) }
 
     init {
@@ -363,16 +369,27 @@ private class VisualEditor(
         window.parent.postMessage(edit(editable, resolveRelations, fallbackLanguage), editorOrigin)
         // Selected now rather than when the editor answers, as the preview bridge package does, so the
         // tap shows at once.
-        inbox.selection.opened(editable.uid)
+        inbox.state.open(editable)
     }
 
     override fun canOpen(block: Component): Boolean = block.editableBlock() != null
+
+    override fun perform(action: BlockAction) {
+        inbox.state.action(action)?.let { window.parent.postMessage(it, editorOrigin) }
+    }
+
+    override fun openBreadcrumb(breadcrumb: BlockBreadcrumb) {
+        inbox.state.open(breadcrumb, resolveRelations, fallbackLanguage)?.let { window.parent.postMessage(it, editorOrigin) }
+    }
+
+    override fun dismissHover() = inbox.state.dismissHover()
 
     override fun destroy(): Unit = window.removeEventListener(MESSAGE, listener)
 }
 
 /**
- * What the editor at [editorOrigin] has sent: the story as it holds it, and the block selected in it.
+ * What the editor at [editorOrigin] has sent: the story as it holds it, the block selected in it,
+ * that block's menu, and the blocks the editor points the author at.
  */
 internal class EditorInbox(private val editorOrigin: String) {
 
@@ -386,6 +403,9 @@ internal class EditorInbox(private val editorOrigin: String) {
     internal val edits = MutableStateFlow<StoryMetadata?>(null)
 
     internal val selection = EditorSelection()
+
+    /** The selection again, with its menu, and the hints: what every message says other than the story. */
+    internal val state = EditorState(selection)
 
     /** Reads a message posted to the page from [origin]. */
     @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
@@ -405,7 +425,7 @@ internal class EditorInbox(private val editorOrigin: String) {
 
         // After the content, so that a block asked to be brought into view again is already where
         // that content puts it.
-        (data as? SelectionEvent)?.let(selection::handle)
+        state.receive(data)
     }
 }
 
