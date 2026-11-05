@@ -17,6 +17,9 @@
   name, the blocks it is nested in, and the actions the editor allows (add a block before or after it, duplicate, copy,
   move forward or backward, delete). Hovering over a block in the editor's form outlines it in the preview, blocks the
   editor highlights are tinted, and every block is faintly outlined while the mouse moves over the preview.
+- A `wasmJs` preview in the Visual Editor now follows the author's edits: as they type, it scrolls to the block they
+  are changing, and to the node they are changing in rich text drawn by `storyblok-material3`'s default document.
+  `blocks()` lists scroll to an edited block that is off screen too.
 - BREAKING CHANGE: Content that fails to deserialize now always surfaces from `StoryblokClient.story(...)` and
   `StoryblokClient.stories(...)` as a `SerializationException`, including a value a property's serializer cannot parse,
   such as a malformed date or uuid, and a `require` in a component's `init` block. These were reported as a
