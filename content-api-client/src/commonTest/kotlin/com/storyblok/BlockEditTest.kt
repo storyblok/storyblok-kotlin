@@ -104,9 +104,33 @@ class BlockEditTest {
                 {"type": "text", "text": "Tw"}, {"type": "text", "text": "os", "marks": [{"type": "bold"}]}]}]}""",
         ) as RichText.Document
 
-        assertEquals(1, BlockEdit("post", richText = listOf(RichTextEdit(1, 2, "Twos"))).nodeIn(document))
-        assertNull(BlockEdit("post", richText = listOf(RichTextEdit(1, 3, "Twos"))).nodeIn(document))
-        assertNull(BlockEdit("post", richText = listOf(RichTextEdit(1, 2, "Two"))).nodeIn(document))
-        assertNull(BlockEdit("post").nodeIn(document))
+        assertEquals(1, BlockEdit("post", richText = listOf(RichTextEdit(1, 2, "Twos"))).nodeIn(document, document))
+        assertNull(BlockEdit("post", richText = listOf(RichTextEdit(1, 3, "Twos"))).nodeIn(document, document))
+        assertNull(BlockEdit("post", richText = listOf(RichTextEdit(1, 2, "Two"))).nodeIn(document, document))
+        assertNull(BlockEdit("post").nodeIn(document, document))
+    }
+
+    private fun doc(vararg paragraphs: String, bold: Boolean = false) = Json.decodeFromString(
+        RichText.serializer(),
+        """{"type": "doc", "content": [${paragraphs.joinToString { text ->
+            val marks = if (bold) """, "marks": [{"type": "bold"}]""" else ""
+            """{"type": "paragraph", "content": [{"type": "text", "text": "$text"$marks}]}"""
+        }}]}""",
+    ) as RichText.Document
+
+    private val first = BlockEdit("post", compared = false)
+
+    @Test
+    fun `the first edit is found in a document by the text of its nodes`() {
+        assertEquals(1, first.nodeIn(doc("One", "Twos", "Three"), before = doc("One", "Two", "Three")))
+        assertEquals(1, first.nodeIn(doc("One", "", "Two"), before = doc("One", "Two")))
+        assertEquals(0, first.nodeIn(doc("One"), before = doc("One", "Two")))
+    }
+
+    @Test
+    fun `the first edit is not in a document whose text did not change`() {
+        assertNull(first.nodeIn(doc("One", "Two"), before = doc("One", "Two")))
+        // Formatting alone is missed, as only text is compared.
+        assertNull(first.nodeIn(doc("One", "Two", bold = true), before = doc("One", "Two")))
     }
 }

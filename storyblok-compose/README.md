@@ -321,8 +321,9 @@ navigates by `fullSlug` within the preview meets the same prefix. The
 As the author types, the preview scrolls to what they are changing, if it is off screen. The editor does not say where
 its cursor is, so the preview compares each update with the one before it. It brings into view the innermost block whose
 fields changed, or the block added. In rich text, the default document from `storyblok-material3`'s `blockProvider`
-scrolls to the paragraph, heading or other node that changed. Moving the cursor without typing changes nothing, so the
-preview does not follow it. Each edit is followed once, so the author can scroll away while they type.
+scrolls to the paragraph, heading or other node that changed. The first update after the preview loads has nothing
+before it, so the preview assumes the edit is in the selected block, and the document compares the text of its nodes
+instead. Moving the cursor without typing changes nothing, so the preview does not follow it. Each edit is followed once, so the author can scroll away while they type.
 
 ### Blocks in a lazy list
 

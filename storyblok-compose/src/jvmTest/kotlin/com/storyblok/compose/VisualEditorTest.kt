@@ -1199,6 +1199,26 @@ class VisualEditorTest {
     }
 
     @Test
+    fun `the first edit is found in a document by its text`() = runComposeUiTest {
+        val editor = Editor()
+        val state = LazyListState()
+        var shown by mutableStateOf(document(20))
+        setContent { Previewed(editor) { Document(shown, state) } }
+
+        // The editor's first update has nothing before it to be compared with.
+        editor.hints.value = BlockHints(edited = BlockEdit("post", compared = false, serial = 1))
+        waitForIdle()
+        assertEquals(0, state.firstVisibleItemIndex)
+        shown = Json.decodeFromString(
+            RichText.serializer(),
+            """{"type": "doc", "content": [${(1..20).joinToString { """{"type": "paragraph", "content": [{"type": "text", "text": "$it${if (it == 16) "!" else ""}"}]}""" }}]}""",
+        ) as RichText.Document
+        waitForIdle()
+
+        onNodeWithTag("node15").assertIsDisplayed()
+    }
+
+    @Test
     fun `a document outside the editor is left where it is`() = runComposeUiTest {
         val state = LazyListState()
         setContent { Document(document(20), state) }

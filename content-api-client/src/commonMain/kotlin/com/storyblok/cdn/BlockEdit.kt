@@ -24,6 +24,12 @@ public data class BlockEdit(
     public val ancestors: List<String> = emptyList(),
     /** The node the edit is in in each rich text document on the way to it, outermost first. */
     public val richText: List<RichTextEdit> = emptyList(),
+    /**
+     * Whether the edit was found by comparing the story with the one before it. The first the editor
+     * sends has none to be compared with, so its edit is put in the selected block, and [richText] is
+     * not known.
+     */
+    public val compared: Boolean = true,
     /** Counts the edits, so that two in the same place are still two. */
     public val serial: Int = 0,
 ) {
@@ -33,12 +39,27 @@ public data class BlockEdit(
      *
      * Rich text has no ids, so a document is recognised by its shape: as many nodes as the edited one,
      * with the same text in the edited node. Two documents that alike would both show the edit.
+     *
+     * An edit that was not [compared] says nothing about rich text, so [document] is compared with
+     * [before], as it was drawn before the editor sent anything, by the text of each node. That misses
+     * an edit that only changes formatting.
      */
-    public fun nodeIn(document: RichText.Document): Int? = richText.firstNotNullOfOrNull { edit ->
-        edit.index.takeIf {
-            document.content.size == edit.nodes && document.content.getOrNull(it)?.plainText() == edit.text
+    public fun nodeIn(document: RichText.Document, before: RichText.Document): Int? {
+        if (!compared) return changedNode(before, document)
+        return richText.firstNotNullOfOrNull { edit ->
+            edit.index.takeIf {
+                document.content.size == edit.nodes && document.content.getOrNull(it)?.plainText() == edit.text
+            }
         }
     }
+}
+
+/** The first node of [after] whose text differs from [before]'s, or the last when nodes were only removed from its end. */
+private fun changedNode(before: RichText.Document, after: RichText.Document): Int? {
+    val old = before.content.map { it.plainText() }
+    val new = after.content.map { it.plainText() }
+    if (old == new || new.isEmpty()) return null
+    return new.indices.firstOrNull { new[it] != old.getOrNull(it) } ?: new.lastIndex
 }
 
 /**

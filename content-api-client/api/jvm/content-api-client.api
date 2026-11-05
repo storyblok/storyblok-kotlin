@@ -30,21 +30,23 @@ public final class com/storyblok/cdn/BlockBreadcrumb {
 }
 
 public final class com/storyblok/cdn/BlockEdit {
-	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/util/List;I)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/util/List;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/util/List;ZI)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/util/List;ZIILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/util/List;
 	public final fun component3 ()Ljava/util/List;
-	public final fun component4 ()I
-	public final fun copy (Ljava/lang/String;Ljava/util/List;Ljava/util/List;I)Lcom/storyblok/cdn/BlockEdit;
-	public static synthetic fun copy$default (Lcom/storyblok/cdn/BlockEdit;Ljava/lang/String;Ljava/util/List;Ljava/util/List;IILjava/lang/Object;)Lcom/storyblok/cdn/BlockEdit;
+	public final fun component4 ()Z
+	public final fun component5 ()I
+	public final fun copy (Ljava/lang/String;Ljava/util/List;Ljava/util/List;ZI)Lcom/storyblok/cdn/BlockEdit;
+	public static synthetic fun copy$default (Lcom/storyblok/cdn/BlockEdit;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ZIILjava/lang/Object;)Lcom/storyblok/cdn/BlockEdit;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAncestors ()Ljava/util/List;
+	public final fun getCompared ()Z
 	public final fun getRichText ()Ljava/util/List;
 	public final fun getSerial ()I
 	public final fun getUid ()Ljava/lang/String;
 	public fun hashCode ()I
-	public final fun nodeIn (Lcom/storyblok/cdn/schema/RichText$Document;)Ljava/lang/Integer;
+	public final fun nodeIn (Lcom/storyblok/cdn/schema/RichText$Document;Lcom/storyblok/cdn/schema/RichText$Document;)Ljava/lang/Integer;
 	public fun toString ()Ljava/lang/String;
 }
 

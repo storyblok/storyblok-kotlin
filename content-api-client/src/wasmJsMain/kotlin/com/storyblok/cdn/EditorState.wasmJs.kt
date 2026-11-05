@@ -7,6 +7,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.contentOrNull
 import kotlin.js.ExperimentalWasmJsInterop
 import kotlin.js.JsAny
 import kotlin.js.JsString
@@ -83,13 +85,24 @@ internal class EditorState(private val selection: EditorSelection = EditorSelect
 
     fun dismissHover() = hints.update { it.copy(hovered = null) }
 
+    /** The edit [content], the first the editor sent, makes: in the selected block, or else the content itself. */
+    private fun firstEdit(content: JsonElement): BlockEdit? {
+        val selected = selectedBlock.value
+        if (selected != null) return BlockEdit(selected.uid, selected.ancestors, compared = false)
+        val root = ((content as? JsonObject)?.get("_uid") as? JsonPrimitive)?.contentOrNull?.takeIf { it.isNotEmpty() } ?: return null
+        return BlockEdit(root, compared = false)
+    }
+
     /**
      * Takes in the story the editor sent with an `input`, finding where the author changed it.
      *
      * That converts the whole content on every keystroke, as decoding it for the preview does too. It
      * is compared as converted, rather than through the JavaScript values, because the same comparison
-     * is then plain, testable code. The first story the editor sends, or one with another id, is only
-     * kept to compare the next with: there is nothing yet to compare it with.
+     * is then plain, testable code.
+     *
+     * The first story the editor sends, or one with another id, has nothing to be compared with. Its
+     * edit is put in the selected block, as the author can only type in a form they have opened, or in
+     * the story's content when none is selected. Where in rich text it is, is left to the document.
      */
     private fun edited(story: EditedStory) {
         val id = story.id?.toLong()?.toString()
@@ -97,7 +110,10 @@ internal class EditorState(private val selection: EditorSelection = EditorSelect
         val previous = content?.takeIf { (storyId, _) -> id != null && storyId == id }?.second
         val next = story.content.toJsonElement(resolveLevel = 1)
         content = id to next
-        val edit = editBetween(previous ?: return, next) ?: return
+        val edit = when (previous) {
+            null -> firstEdit(next) ?: return
+            else -> editBetween(previous, next) ?: return
+        }
         hints.update { it.copy(edited = edit.copy(serial = ++edits)) }
     }
 }
