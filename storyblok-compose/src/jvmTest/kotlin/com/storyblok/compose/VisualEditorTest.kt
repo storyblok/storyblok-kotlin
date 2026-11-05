@@ -63,6 +63,16 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performMouseInput
+import com.storyblok.cdn.BlockAction
+import com.storyblok.cdn.BlockBreadcrumb
+import com.storyblok.cdn.BlockHints
+import com.storyblok.cdn.BlockMenu
+import kotlinx.coroutines.flow.update
+import kotlin.test.assertFalse
 
 /** Blocks as the Visual Editor previews them: opened by a tap, outlined and scrolled to while selected. */
 class VisualEditorTest {
@@ -86,7 +96,10 @@ class VisualEditorTest {
      */
     private class Editor(private val uneditable: Set<String> = emptySet()) : StoryblokBridge {
         val opened = mutableListOf<String>()
+        val performed = mutableListOf<BlockAction>()
+        val openedBreadcrumbs = mutableListOf<String>()
         override val selectedBlock = MutableStateFlow<SelectedBlock?>(null)
+        override val hints = MutableStateFlow(BlockHints())
 
         override fun <T : Component> story(story: Story<T>, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>> =
             flowOf(story)
@@ -100,6 +113,18 @@ class VisualEditorTest {
         }
 
         override fun canOpen(block: Component) = block.uid !in uneditable
+
+        override fun perform(action: BlockAction) {
+            performed += action
+        }
+
+        // As the real bridge does: a parent picked from the menu is on screen, so not asked to be brought into view.
+        override fun openBreadcrumb(breadcrumb: BlockBreadcrumb) {
+            openedBreadcrumbs += breadcrumb.uid
+            selectedBlock.value = SelectedBlock(breadcrumb.uid, reveal = selectedBlock.value?.reveal ?: 0)
+        }
+
+        override fun dismissHover() = hints.update { it.copy(hovered = null) }
 
         override fun destroy() = Unit
     }
@@ -129,8 +154,12 @@ class VisualEditorTest {
     @Composable
     private fun Previewed(editor: Editor, content: @Composable () -> Unit) {
         val selected = editor.selectedBlock.collectAsState()
+        val hints = editor.hints.collectAsState()
         val scope = rememberCoroutineScope()
-        CompositionLocalProvider(LocalVisualEditor provides remember { VisualEditor(editor, selected, scope) }, content)
+        // As Storyblok provides it, menu and all.
+        val visualEditor = remember { VisualEditor(editor, selected, scope, hints) }
+        CompositionLocalProvider(LocalVisualEditor provides visualEditor, content)
+        EditorMenu(visualEditor)
     }
 
     @Test
@@ -680,4 +709,285 @@ class VisualEditorTest {
         assertNull(lists[b])
     }
 
+    /** The menu the editor describes for card [uid] in section `s1` on page `page`, offering [actions]. */
+    private fun cardMenu(uid: String = "c1", actions: List<BlockAction> = BlockAction.entries) = BlockMenu(
+        label = "Teaser Card",
+        breadcrumbs = listOf(BlockBreadcrumb("page", "page", "Page"), BlockBreadcrumb("s1", "section", "Section"), BlockBreadcrumb(uid, "card", "Teaser Card")),
+        actions = actions,
+    )
+
+    @Test
+    fun `the selected block's menu shows its label`() = runComposeUiTest {
+        val editor = Editor()
+        setContent { Previewed(editor) { blocks.Block(card("page")) } }
+
+        editor.selectedBlock.value = SelectedBlock("page", menu = BlockMenu("Page", listOf(BlockBreadcrumb("page", "page", "Page"))))
+        waitForIdle()
+
+        onNodeWithText("Page").assertIsDisplayed()
+        // The story's content has no parents and no actions.
+        onNodeWithContentDescription(PARENTS_DESCRIPTION).assertDoesNotExist()
+        onNodeWithContentDescription(ACTIONS_DESCRIPTION).assertDoesNotExist()
+    }
+
+    @Test
+    fun `a block has no menu until the editor describes it`() = runComposeUiTest {
+        val editor = Editor()
+        setContent { Previewed(editor) { blocks.Block(card("c1")) } }
+
+        onNodeWithTag("c1").performClick()
+        waitForIdle()
+
+        onNodeWithContentDescription(PARENTS_DESCRIPTION).assertDoesNotExist()
+        onNodeWithText("Teaser Card").assertDoesNotExist()
+    }
+
+    @Test
+    fun `no menu is shown for a selected block that is not drawn`() = runComposeUiTest {
+        val editor = Editor()
+        setContent { Previewed(editor) { blocks.Block(card("c1")) } }
+
+        editor.selectedBlock.value = SelectedBlock("c9", menu = cardMenu("c9"))
+        waitForIdle()
+
+        onNodeWithText("Teaser Card").assertDoesNotExist()
+    }
+
+    @Test
+    fun `a nested block's menu lists the blocks it is nested in`() = runComposeUiTest {
+        val editor = Editor()
+        setContent { Previewed(editor) { blocks.Block(section("s1", "c1")) } }
+        editor.selectedBlock.value = SelectedBlock("c1", menu = cardMenu())
+        waitForIdle()
+
+        onNodeWithText("Teaser Card").assertIsDisplayed()
+        onNodeWithContentDescription(PARENTS_DESCRIPTION).performClick()
+
+        onNodeWithText("Page").assertIsDisplayed()
+        onNodeWithText("Section").assertIsDisplayed()
+        onAllNodesWithText("Teaser Card").assertCountEquals(2)
+    }
+
+    @Test
+    fun `choosing a parent opens it`() = runComposeUiTest {
+        val editor = Editor()
+        setContent { Previewed(editor) { blocks.Block(section("s1", "c1")) } }
+        editor.selectedBlock.value = SelectedBlock("c1", menu = cardMenu())
+        waitForIdle()
+
+        onNodeWithContentDescription(PARENTS_DESCRIPTION).performClick()
+        onNodeWithText("Section").performClick()
+        waitForIdle()
+
+        assertEquals(listOf("s1"), editor.openedBreadcrumbs)
+        // The editor describes the parent in answer to that, so it is not asked a second time.
+        assertEquals(emptyList<String>(), editor.opened)
+        onNodeWithText("Page").assertDoesNotExist()
+    }
+
+    @Test
+    fun `the selected block cannot be chosen from its own breadcrumbs`() = runComposeUiTest {
+        val editor = Editor()
+        setContent { Previewed(editor) { blocks.Block(section("s1", "c1")) } }
+        editor.selectedBlock.value = SelectedBlock("c1", menu = cardMenu())
+        waitForIdle()
+
+        onNodeWithContentDescription(PARENTS_DESCRIPTION).performClick()
+        onAllNodesWithText("Teaser Card")[1].performClick()
+
+        assertEquals(emptyList<String>(), editor.openedBreadcrumbs)
+    }
+
+    @Test
+    fun `the actions menu shows only the actions the editor allows`() = runComposeUiTest {
+        val editor = Editor()
+        setContent { Previewed(editor) { blocks.Block(section("s1", "c1")) } }
+        editor.selectedBlock.value = SelectedBlock("c1", menu = cardMenu(actions = listOf(BlockAction.AddBlockBefore, BlockAction.MoveForward)))
+        waitForIdle()
+
+        onNodeWithContentDescription(ACTIONS_DESCRIPTION).performClick()
+
+        onNodeWithText("Add Block Before").assertIsDisplayed()
+        onNodeWithText("Move Forward").assertIsDisplayed()
+        for (absent in listOf("Add Block After", "Duplicate", "Copy", "Move Backward", "Delete")) {
+            onNodeWithText(absent).assertDoesNotExist()
+        }
+    }
+
+    @Test
+    fun `a block the editor allows nothing has no actions button`() = runComposeUiTest {
+        val editor = Editor()
+        setContent { Previewed(editor) { blocks.Block(section("s1", "c1")) } }
+        editor.selectedBlock.value = SelectedBlock("c1", menu = cardMenu(actions = emptyList()))
+        waitForIdle()
+
+        onNodeWithContentDescription(PARENTS_DESCRIPTION).assertIsDisplayed()
+        onNodeWithContentDescription(ACTIONS_DESCRIPTION).assertDoesNotExist()
+    }
+
+    @Test
+    fun `each action asks the editor for itself`() = runComposeUiTest {
+        val editor = Editor()
+        setContent { Previewed(editor) { blocks.Block(section("s1", "c1")) } }
+
+        for (action in BlockAction.entries) {
+            // A fresh selection each time, as an action that moves or deletes the block hides its menu.
+            editor.selectedBlock.value = null
+            waitForIdle()
+            editor.selectedBlock.value = SelectedBlock("c1", menu = cardMenu())
+            waitForIdle()
+            onNodeWithContentDescription(ACTIONS_DESCRIPTION).performClick()
+            onNodeWithText(action.label).performClick()
+            waitForIdle()
+        }
+
+        assertEquals(BlockAction.entries.toList(), editor.performed)
+    }
+
+    @Test
+    fun `adding a block leaves the menu up`() = runComposeUiTest {
+        val editor = Editor()
+        setContent { Previewed(editor) { blocks.Block(section("s1", "c1")) } }
+        editor.selectedBlock.value = SelectedBlock("c1", menu = cardMenu())
+        waitForIdle()
+
+        onNodeWithContentDescription(ACTIONS_DESCRIPTION).performClick()
+        onNodeWithText("Add Block After").performClick()
+        waitForIdle()
+
+        onNodeWithText("Add Block After").assertDoesNotExist()
+        onNodeWithText("Teaser Card").assertIsDisplayed()
+    }
+
+    @Test
+    fun `moving a block hides its menu until the editor selects it again`() = runComposeUiTest {
+        val editor = Editor()
+        setContent { Previewed(editor) { blocks.Block(section("s1", "c1")) } }
+        editor.selectedBlock.value = SelectedBlock("c1", menu = cardMenu())
+        waitForIdle()
+
+        onNodeWithContentDescription(ACTIONS_DESCRIPTION).performClick()
+        onNodeWithText("Move Forward").performClick()
+        waitForIdle()
+        onNodeWithText("Teaser Card").assertDoesNotExist()
+
+        // As the editor reports the move, and then describes the block it was asked for.
+        editor.selectedBlock.value = SelectedBlock("c1")
+        waitForIdle()
+        editor.selectedBlock.value = SelectedBlock("c1", menu = cardMenu())
+        waitForIdle()
+        onNodeWithText("Teaser Card").assertIsDisplayed()
+    }
+
+    @Test
+    fun `a block the editor selects without describing it is opened for its menu`() = runComposeUiTest {
+        // As when the author adds, moves or duplicates one.
+        val editor = Editor()
+        setContent { Previewed(editor) { blocks.Block(section("s1", "c1", "c2")) } }
+
+        editor.selectedBlock.value = SelectedBlock("c2")
+        waitForIdle()
+
+        assertEquals(listOf("c2"), editor.opened)
+    }
+
+    @Test
+    fun `a tapped block is opened once`() = runComposeUiTest {
+        val editor = Editor()
+        setContent { Previewed(editor) { blocks.Block(card("c1")) } }
+
+        onNodeWithTag("c1").performClick()
+        waitForIdle()
+
+        assertEquals(listOf("c1"), editor.opened)
+    }
+
+    @Test
+    fun `another block can be tapped while the menu is up`() = runComposeUiTest {
+        val editor = Editor()
+        setContent { Previewed(editor) { blocks.Block(section("s1", "c1", "c2")) } }
+        editor.selectedBlock.value = SelectedBlock("c1", menu = cardMenu())
+        waitForIdle()
+
+        onNodeWithTag("c2").performClick()
+
+        assertEquals("c2", editor.selectedBlock.value?.uid)
+    }
+
+    @Test
+    fun `a block hovered in the editor's form is outlined`() = runComposeUiTest {
+        val editor = Editor()
+        setContent { Previewed(editor) { blocks.Block(section("s1", "c1", "c2")) } }
+
+        editor.hints.value = BlockHints(hovered = "c2")
+        waitForIdle()
+
+        val middle = onNodeWithTag("c2").captureToImage().toPixelMap().let { it[1, it.height / 2] }
+        assertEquals(Color(0xFF05807F), middle)
+        assertNotEquals(Color(0xFF05807F), onNodeWithTag("c1").captureToImage().toPixelMap().let { it[1, it.height / 2] })
+    }
+
+    @Test
+    fun `the hover hint goes once the mouse rests on the page`() = runComposeUiTest {
+        val editor = Editor()
+        setContent { Previewed(editor) { blocks.Block(section("s1", "c1", "c2")) } }
+        editor.hints.value = BlockHints(hovered = "c2")
+        waitForIdle()
+
+        onNodeWithTag("c1").performMouseInput { moveTo(center) }
+        mainClock.advanceTimeBy(500)
+        assertEquals("c2", editor.hints.value.hovered)
+        mainClock.advanceTimeBy(500)
+
+        assertNull(editor.hints.value.hovered)
+    }
+
+    @Test
+    fun `highlighted blocks are tinted`() = runComposeUiTest {
+        val editor = Editor()
+        setContent { Previewed(editor) { blocks.Block(section("s1", "c1", "c2")) } }
+
+        editor.hints.value = BlockHints(highlighted = listOf("c1"))
+        waitForIdle()
+
+        val pixels = onNodeWithTag("c1").captureToImage().toPixelMap()
+        assertNotEquals(Color.White, pixels[pixels.width / 2, pixels.height / 2])
+        assertEquals(Color(0xFF05807F), pixels[1, pixels.height / 2])
+        val other = onNodeWithTag("c2").captureToImage().toPixelMap()
+        assertEquals(Color.White, other[other.width / 2, other.height / 2])
+    }
+
+    @Test
+    fun `the block the editor highlights for attention is brought into view`() = runComposeUiTest {
+        val editor = Editor()
+        setContent {
+            Previewed(editor) {
+                Column(Modifier.size(width = 200.dp, height = 250.dp).verticalScroll(rememberScrollState())) {
+                    (1..10).forEach { blocks.Block(card("c$it")) }
+                }
+            }
+        }
+
+        editor.hints.value = BlockHints(highlighted = listOf("c2", "c8"), highlightedFocus = "c8")
+        waitForIdle()
+
+        onNodeWithTag("c8").assertIsDisplayed()
+    }
+
+    @Test
+    fun `every block is outlined while the mouse moves over the page`() = runComposeUiTest {
+        val editor = Editor()
+        setContent { Previewed(editor) { blocks.Block(section("s1", "c1", "c2")) } }
+        fun outlined(tag: String) = onNodeWithTag(tag).captureToImage().toPixelMap().let { pixels ->
+            (5 until pixels.height - 5).any { pixels[1, it] != Color.White }
+        }
+        assertFalse(outlined("c2"))
+
+        onNodeWithTag("c1").performMouseInput { moveTo(center) }
+        mainClock.advanceTimeBy(100)
+        assertTrue(outlined("c2"))
+
+        mainClock.advanceTimeBy(1000)
+        assertFalse(outlined("c2"))
+    }
 }
