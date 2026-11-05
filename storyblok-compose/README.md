@@ -305,6 +305,15 @@ Blocks the editor points at are marked too. Hovering over a block in the editor'
 blocks the editor highlights are tinted. While the mouse moves over the preview, every block is faintly outlined, so the
 author can see what there is to select.
 
+### Following the author's edits
+
+As the author types, the preview scrolls to what they are changing, if it is off screen. The editor does not say where
+its cursor is, so the preview compares each update with the one before it. It brings into view the innermost block whose
+fields changed, or the block added. In rich text, the default document from `storyblok-material3`'s `blockProvider`
+scrolls to the paragraph, heading or other node that changed. The first update after the preview loads has nothing
+before it, so the preview assumes the edit is in the selected block, and the document compares the text of its nodes
+instead. Moving the cursor without typing changes nothing, so the preview does not follow it. Each edit is followed once, so the author can scroll away while they type.
+
 ### Blocks in a lazy list
 
 A lazy list only composes the items on or near the screen, so a block selected further down has nothing on screen to
@@ -324,7 +333,8 @@ block<Page> { page, modifier ->
 
 This works for a block nested anywhere inside an item, as long as the editor says which blocks it is nested in. It does
 when the author picks a block in the form, but not when they add, move or duplicate one inside another. The list
-follows each selection once, while at least one of the blocks is on screen, so the author can still scroll away.
+follows each selection once, while at least one of the blocks is on screen, so the author can still scroll away. It
+follows the author's edits in the same way.
 
 `blocks()` keys each item by the block's `_uid`, so a block keeps its state when the author moves it. Outside the
 editor it simply adds the blocks.

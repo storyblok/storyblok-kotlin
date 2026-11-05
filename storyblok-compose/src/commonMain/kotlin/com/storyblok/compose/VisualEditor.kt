@@ -4,6 +4,8 @@ package com.storyblok.compose
 
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.animateScrollBy
+import androidx.compose.foundation.lazy.LazyListItemInfo
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
@@ -39,10 +41,12 @@ import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import com.storyblok.InternalAPI
+import com.storyblok.cdn.BlockEdit
 import com.storyblok.cdn.BlockHints
 import com.storyblok.cdn.SelectedBlock
 import com.storyblok.cdn.StoryblokBridge
 import com.storyblok.cdn.schema.Component
+import com.storyblok.cdn.schema.RichText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -103,6 +107,15 @@ internal class VisualEditor(
      * away from it.
      */
     val followed: MutableMap<LazyListState, SelectedBlock> = mutableMapOf()
+
+    /**
+     * The [serial][BlockEdit.serial] of the last edit a block was brought into view for. Each edit is
+     * shown once, so that the author can scroll away from the block they are typing in.
+     */
+    var shownEdit: Int = 0
+
+    /** The [serial][BlockEdit.serial] of the edit each lazy list last followed, for the same reason. */
+    val followedEdits: MutableMap<LazyListState, Int> = mutableMapOf()
 
     /**
      * Where the selected block is in the window, clipped to what of it is on screen, for its
@@ -207,6 +220,18 @@ internal fun Modifier.editable(block: Component, editor: VisualEditor): Modifier
             .collect { requester.bringIntoView() }
     }
 
+    // The block the author changes, followed as they type. Started as the block enters composition,
+    // too, so that one the edit adds, or a lazy list scrolls to for it, is brought into view as well.
+    LaunchedEffect(editor, requester, block.uid) {
+        snapshotFlow { editor.hints.value.edited?.takeIf { block.uid.isNotEmpty() && it.uid == block.uid } }
+            .filterNotNull()
+            .collect { edit ->
+                if (editor.shownEdit == edit.serial) return@collect
+                editor.shownEdit = edit.serial
+                requester.bringIntoView()
+            }
+    }
+
     DisposableEffect(editor, block.uid) {
         onDispose {
             if (editor.selectedBounds.value?.first == block.uid) editor.selectedBounds.value = null
@@ -305,8 +330,8 @@ private suspend fun PointerInputScope.openOnTap(block: Component, editor: Visual
 }
 
 /**
- * Scrolls [state]'s list to the item of [blocks] holding the block the editor selects, when that item
- * is off screen and so has no block to bring itself into view.
+ * Scrolls [state]'s list to the item of [blocks] holding the block the editor selects, or the one the
+ * author changes, when that item is off screen and so has no block to bring itself into view.
  *
  * Every item of [blocks] that is composed runs this, and the first of them on screen acts. None of
  * them may be the list's first item, and the list never says which index a key is at unless that
@@ -321,16 +346,85 @@ internal fun FollowSelection(item: Component, blocks: List<Component>, state: La
         snapshotFlow { editor.selected.value }
             .filterNotNull()
             .collect { selected ->
-                val visible = state.layoutInfo.visibleItemsInfo
-                val actor = visible.firstOrNull { info -> current.any { it.uid == info.key } } ?: return@collect
-                if (actor.key != item.uid || editor.followed[state] == selected) return@collect
+                val actor = state.actor(item, current) ?: return@collect
+                if (editor.followed[state] == selected) return@collect
                 editor.followed[state] = selected
-
-                val target = current.indexOfFirst { it.uid == selected.uid || it.uid in selected.ancestors }
-                if (target < 0) return@collect
-                val index = actor.index - current.indexOfFirst { it.uid == actor.key } + target
-                if (visible.any { it.index == index }) return@collect
+                val index = state.offScreenIndex(actor, current, selected.uid, selected.ancestors) ?: return@collect
                 editor.scope.launch { state.animateScrollToItem(index) }
             }
+    }
+
+    // The blocks are read here as well as the edit, as the edit can arrive before the blocks it adds.
+    LaunchedEffect(editor, state, item.uid) {
+        snapshotFlow { editor.hints.value.edited?.takeIf { edit -> current.any { it.uid == edit.uid || it.uid in edit.ancestors } } }
+            .filterNotNull()
+            .collect { edit ->
+                val actor = state.actor(item, current) ?: return@collect
+                if (editor.followedEdits[state] == edit.serial) return@collect
+                editor.followedEdits[state] = edit.serial
+                val index = state.offScreenIndex(actor, current, edit.uid, edit.ancestors) ?: return@collect
+                editor.scope.launch { state.animateScrollToItem(index) }
+            }
+    }
+}
+
+/** The first item of [blocks] on screen, if it is [item]'s: the one item that acts for them all. */
+private fun LazyListState.actor(item: Component, blocks: List<Component>): LazyListItemInfo? = layoutInfo.visibleItemsInfo
+    .firstOrNull { info -> blocks.any { it.uid == info.key } }
+    ?.takeIf { it.key == item.uid }
+
+/**
+ * The index in the list of the item of [blocks] holding block [uid], nested in [ancestors], worked out
+ * from [actor]'s — or `null` when no item holds it, or that item is on screen.
+ */
+private fun LazyListState.offScreenIndex(actor: LazyListItemInfo, blocks: List<Component>, uid: String, ancestors: List<String>): Int? {
+    val target = blocks.indexOfFirst { it.uid == uid || it.uid in ancestors }
+    if (target < 0) return null
+    val index = actor.index - blocks.indexOfFirst { it.uid == actor.key } + target
+    return index.takeUnless { layoutInfo.visibleItemsInfo.any { it.index == index } }
+}
+
+/**
+ * Scrolls [state], a list of [document]'s nodes one item each, to the node the author changes in the
+ * Visual Editor, when it is not wholly on screen. Outside the editor it does nothing.
+ *
+ * A lazy list needs this to follow an edit, since a node off screen is not composed and so cannot
+ * bring itself into view.
+ *
+ * @suppress
+ */
+@InternalAPI
+@Composable
+public fun FollowEdits(document: RichText.Document, state: LazyListState) {
+    val editor = LocalVisualEditor.current ?: return
+    val current by rememberUpdatedState(document)
+    // As first drawn, before the editor sent anything: what the first edit, which the editor's
+    // updates cannot place in rich text, is found by comparing the document with.
+    val before = remember(state) { document }
+
+    // The document is read here as well as the edit, as the edit arrives before the document it edits.
+    LaunchedEffect(editor, state) {
+        snapshotFlow { editor.hints.value.edited?.let { edit -> edit.nodeIn(current, before)?.let { edit.serial to it } } }
+            .filterNotNull()
+            .collect { (serial, index) ->
+                if (editor.followedEdits[state] == serial) return@collect
+                editor.followedEdits[state] = serial
+                state.reveal(index)
+            }
+    }
+}
+
+/**
+ * Scrolls the item at [index] into view, as little as it takes: all of it if it fits, its start if it
+ * does not, and nothing if it fills the list already.
+ */
+private suspend fun LazyListState.reveal(index: Int) {
+    val item = layoutInfo.visibleItemsInfo.firstOrNull { it.index == index } ?: return animateScrollToItem(index)
+    val hiddenBefore = layoutInfo.viewportStartOffset - item.offset
+    val hiddenAfter = item.offset + item.size - layoutInfo.viewportEndOffset
+    when {
+        hiddenBefore > 0 && hiddenAfter > 0 -> Unit
+        hiddenBefore > 0 -> animateScrollBy(-hiddenBefore.toFloat())
+        hiddenAfter > 0 -> animateScrollBy(minOf(hiddenAfter, -hiddenBefore).toFloat())
     }
 }

@@ -18,6 +18,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -45,11 +48,14 @@ import androidx.compose.ui.unit.dp
 import com.storyblok.InternalAPI
 import com.storyblok.cdn.BlockAction
 import com.storyblok.cdn.BlockBreadcrumb
+import com.storyblok.cdn.BlockEdit
 import com.storyblok.cdn.BlockHints
 import com.storyblok.cdn.BlockMenu
+import com.storyblok.cdn.RichTextEdit
 import com.storyblok.cdn.SelectedBlock
 import com.storyblok.cdn.StoryblokBridge
 import com.storyblok.cdn.schema.Component
+import com.storyblok.cdn.schema.RichText
 import com.storyblok.cdn.schema.Story
 import com.storyblok.compose.provider.blockProviderWithoutRichText
 import com.storyblok.ktor.Api.Config.Version
@@ -58,6 +64,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -683,5 +690,185 @@ class VisualEditorTest {
 
         mainClock.advanceTimeBy(1000)
         assertFalse(outlined("c2"))
+    }
+
+    /** A scrolling column 250dp tall of ten cards 100dp tall, [scroll] scrolling it. */
+    @Composable
+    private fun Cards(scroll: ScrollState) {
+        Column(Modifier.size(width = 200.dp, height = 250.dp).verticalScroll(scroll)) {
+            (1..10).forEach { blocks.Block(card("c$it", clickable = false)) }
+        }
+    }
+
+    @Test
+    fun `the block the author changes is brought into view`() = runComposeUiTest {
+        val editor = Editor()
+        setContent { Previewed(editor) { Cards(rememberScrollState()) } }
+
+        editor.hints.value = BlockHints(edited = BlockEdit("c8", serial = 1))
+        waitForIdle()
+
+        onNodeWithTag("c8").assertIsDisplayed()
+    }
+
+    @Test
+    fun `each edit is brought into view once`() = runComposeUiTest {
+        val editor = Editor()
+        val scroll = ScrollState(0)
+        setContent { Previewed(editor) { Cards(scroll) } }
+
+        editor.hints.value = BlockHints(edited = BlockEdit("c8", serial = 1))
+        waitForIdle()
+        runOnIdle { runBlocking { scroll.scrollTo(0) } }
+        // Another hint changing leaves the edit as it was, and the author where they scrolled to.
+        editor.hints.update { it.copy(hovered = "c1") }
+        waitForIdle()
+        assertEquals(0, scroll.value)
+
+        editor.hints.value = BlockHints(edited = BlockEdit("c8", serial = 2))
+        waitForIdle()
+        onNodeWithTag("c8").assertIsDisplayed()
+    }
+
+    @Test
+    fun `changing a block off screen scrolls the list to it`() = runComposeUiTest {
+        val editor = Editor()
+        val state = LazyListState()
+        setContent { Previewed(editor) { List(state, cards(20)) } }
+
+        editor.hints.value = BlockHints(edited = BlockEdit("c15", ancestors = listOf("page"), serial = 1))
+        waitForIdle()
+
+        onNodeWithTag("c15").assertIsDisplayed()
+    }
+
+    @Test
+    fun `changing a block nested in an item off screen scrolls to that item`() = runComposeUiTest {
+        val editor = Editor()
+        val state = LazyListState()
+        setContent { Previewed(editor) { List(state, (1..10).map { section("s$it", "s$it-card") }) } }
+
+        editor.hints.value = BlockHints(edited = BlockEdit("s8-card", ancestors = listOf("page", "s8"), serial = 1))
+        waitForIdle()
+
+        onNodeWithTag("s8-card").assertIsDisplayed()
+    }
+
+    @Test
+    fun `a block added off screen is scrolled to once the list holds it`() = runComposeUiTest {
+        val editor = Editor()
+        val state = LazyListState()
+        var listed by mutableStateOf(cards(20))
+        setContent { Previewed(editor) { List(state, listed) } }
+
+        // The editor's update is read for where it changed before it is decoded into blocks.
+        editor.hints.value = BlockHints(edited = BlockEdit("c21", ancestors = listOf("page"), serial = 1))
+        waitForIdle()
+        assertEquals(0, state.firstVisibleItemIndex)
+
+        listed = cards(21)
+        waitForIdle()
+        onNodeWithTag("c21").assertIsDisplayed()
+    }
+
+    /** A rich text document of [count] paragraphs, each holding its number. */
+    private fun document(count: Int) = Json.decodeFromString(
+        RichText.serializer(),
+        """{"type": "doc", "content": [${(1..count).joinToString { """{"type": "paragraph", "content": [{"type": "text", "text": "$it"}]}""" }}]}""",
+    ) as RichText.Document
+
+    /** A list 250dp tall of [document]'s nodes, 100dp tall each, following edits to them as the default document does. */
+    @Composable
+    private fun Document(document: RichText.Document, state: LazyListState) {
+        FollowEdits(document, state)
+        LazyColumn(Modifier.size(width = 200.dp, height = 250.dp), state = state) {
+            items(document.content.size) { Box(Modifier.testTag("node$it").fillMaxWidth().height(100.dp)) }
+        }
+    }
+
+    /** An edit to [document(count)][document], in its node at [index]. */
+    private fun nodeEdit(index: Int, count: Int, serial: Int = 1) =
+        BlockEdit("post", richText = listOf(RichTextEdit(index, count, "${index + 1}")), serial = serial)
+
+    @Test
+    fun `a document scrolls to the node the author changes`() = runComposeUiTest {
+        val editor = Editor()
+        val state = LazyListState()
+        setContent { Previewed(editor) { Document(document(20), state) } }
+
+        editor.hints.value = BlockHints(edited = nodeEdit(15, 20))
+        waitForIdle()
+
+        onNodeWithTag("node15").assertIsDisplayed()
+    }
+
+    @Test
+    fun `a node partly on screen is scrolled in only as far as it takes`() = runComposeUiTest {
+        val editor = Editor()
+        val state = LazyListState()
+        setContent { Previewed(editor) { Document(document(20), state) } }
+
+        // The third node is half on screen.
+        editor.hints.value = BlockHints(edited = nodeEdit(2, 20))
+        waitForIdle()
+
+        assertEquals(0, state.firstVisibleItemIndex)
+        assertEquals(50.dp, with(density) { state.firstVisibleItemScrollOffset.toDp() })
+    }
+
+    @Test
+    fun `an edit to another document is not followed`() = runComposeUiTest {
+        val editor = Editor()
+        val state = LazyListState()
+        setContent { Previewed(editor) { Document(document(20), state) } }
+
+        editor.hints.value = BlockHints(edited = nodeEdit(15, 21))
+        waitForIdle()
+
+        assertEquals(0, state.firstVisibleItemIndex)
+    }
+
+    @Test
+    fun `a document follows an edit once it arrives edited`() = runComposeUiTest {
+        val editor = Editor()
+        val state = LazyListState()
+        var shown by mutableStateOf(document(20))
+        setContent { Previewed(editor) { Document(shown, state) } }
+
+        // The edit is read from the editor's update before the update is decoded into the document.
+        editor.hints.value = BlockHints(edited = nodeEdit(20, 21))
+        waitForIdle()
+        shown = document(21)
+        waitForIdle()
+
+        onNodeWithTag("node20").assertIsDisplayed()
+    }
+
+    @Test
+    fun `the first edit is found in a document by its text`() = runComposeUiTest {
+        val editor = Editor()
+        val state = LazyListState()
+        var shown by mutableStateOf(document(20))
+        setContent { Previewed(editor) { Document(shown, state) } }
+
+        // The editor's first update has nothing before it to be compared with.
+        editor.hints.value = BlockHints(edited = BlockEdit("post", compared = false, serial = 1))
+        waitForIdle()
+        assertEquals(0, state.firstVisibleItemIndex)
+        shown = Json.decodeFromString(
+            RichText.serializer(),
+            """{"type": "doc", "content": [${(1..20).joinToString { """{"type": "paragraph", "content": [{"type": "text", "text": "$it${if (it == 16) "!" else ""}"}]}""" }}]}""",
+        ) as RichText.Document
+        waitForIdle()
+
+        onNodeWithTag("node15").assertIsDisplayed()
+    }
+
+    @Test
+    fun `a document outside the editor is left where it is`() = runComposeUiTest {
+        val state = LazyListState()
+        setContent { Document(document(20), state) }
+
+        assertEquals(0, state.firstVisibleItemIndex)
     }
 }
