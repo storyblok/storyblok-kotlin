@@ -4,6 +4,7 @@ package com.storyblok
 
 import com.storyblok.cdn.BlockAction
 import com.storyblok.cdn.BlockBreadcrumb
+import com.storyblok.cdn.BlockEdit
 import com.storyblok.cdn.BlockHints
 import com.storyblok.cdn.BlockMenu
 import com.storyblok.cdn.EditableBlock
@@ -280,6 +281,51 @@ class EditorStateTest {
         receive("""{"action": "highlightComponent", "storyId": "42", "componentIds": []}""")
 
         assertEquals(BlockHints(), state.hints.value)
+    }
+
+    private fun input(id: Int, headline: String) =
+        """{"action": "input", "story": {"id": $id, "content": {"_uid": "page", "component": "page",
+            "body": [{"_uid": "u3", "component": "teaser", "headline": "$headline"}]}}}"""
+
+    @Test
+    fun `the first update of a story is not an edit`() {
+        receive(input(42, "Hi"))
+
+        assertNull(state.hints.value.edited)
+    }
+
+    @Test
+    fun `an update names the block it changed`() {
+        receive(input(42, "Hi"))
+        receive(input(42, "Hello"))
+
+        assertEquals(BlockEdit("u3", ancestors = listOf("page"), serial = 1), state.hints.value.edited)
+    }
+
+    @Test
+    fun `each edit is told apart from the one before`() {
+        receive(input(42, "Hi"))
+        receive(input(42, "Hello"))
+        receive(input(42, "Hello!"))
+
+        assertEquals(2, state.hints.value.edited?.serial)
+    }
+
+    @Test
+    fun `an update that changes nothing leaves the last edit`() {
+        receive(input(42, "Hi"))
+        receive(input(42, "Hello"))
+        receive(input(42, "Hello"))
+
+        assertEquals(1, state.hints.value.edited?.serial)
+    }
+
+    @Test
+    fun `another story's update is not compared with the last`() {
+        receive(input(42, "Hi"))
+        receive(input(43, "Hello"))
+
+        assertNull(state.hints.value.edited)
     }
 
     @Test
