@@ -11,6 +11,7 @@ import js.objects.Object
 import js.objects.unsafeJso
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerializationException
@@ -34,9 +35,10 @@ private val LOGGER = KtorSimpleLogger("com.storyblok.cdn.VisualEditor")
 
 /*
  * The Visual Editor talks to an embedded preview over `Window.postMessage`, and that is all this
- * needs. `@storyblok/preview-bridge` wraps the same two messages, but everything else it does —
+ * needs. `@storyblok/preview-bridge` wraps the same messages, but everything else it does —
  * outlining blocks, hover hints, the selection overlay and its menus — reads and writes per-block
  * DOM that a Compose canvas does not have, and it does some of that work on every mouse movement.
+ * Here the messages are read into state ([EditorState]), and the Compose SDK draws all of that from it.
  */
 
 /**
@@ -212,7 +214,12 @@ private class VisualEditor(private val json: Json, private val resolveRelations:
      */
     private val edits = MutableStateFlow<StoryMetadata?>(null)
 
-    override val selectedBlock = MutableStateFlow<SelectedBlock?>(null)
+    /** The selection, its menu and the hints, which every message but `input` is read for. */
+    private val state = EditorState()
+
+    override val selectedBlock: StateFlow<SelectedBlock?> get() = state.selectedBlock
+
+    override val hints: StateFlow<BlockHints> get() = state.hints
 
     @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
     private val listener: (MessageEvent<JsAny?>) -> Unit = listener@{ message ->
@@ -220,7 +227,7 @@ private class VisualEditor(private val json: Json, private val resolveRelations:
         // and post to it, and `data` is decoded and rendered unchecked.
         if (message.origin != editorOrigin) return@listener
 
-        (message.data as? SelectionEvent)?.let { selectedBlock.value = selectionAfter(it, selectedBlock.value) }
+        state.receive(message.data)
 
         // `input` is the only event worth reading for content. A save leaves the draft holding exactly what the
         // editor has already pushed here, and publishing or unpublishing does not touch the draft a
@@ -258,8 +265,18 @@ private class VisualEditor(private val json: Json, private val resolveRelations:
         window.parent.postMessage(edit(editable, resolveRelations), editorOrigin)
         // Selected now rather than when the editor answers, as the preview bridge package does, so the
         // tap shows at once.
-        selectedBlock.value = SelectedBlock(editable.uid)
+        state.open(editable)
     }
+
+    override fun perform(action: BlockAction) {
+        state.action(action)?.let { window.parent.postMessage(it, editorOrigin) }
+    }
+
+    override fun openBreadcrumb(breadcrumb: BlockBreadcrumb) {
+        state.open(breadcrumb, resolveRelations)?.let { window.parent.postMessage(it, editorOrigin) }
+    }
+
+    override fun dismissHover() = state.dismissHover()
 
     override fun destroy(): Unit = window.removeEventListener(MESSAGE, listener)
 }

@@ -43,13 +43,34 @@ final enum class com.storyblok.cdn.query/SortAs : kotlin/Enum<com.storyblok.cdn.
     final fun values(): kotlin/Array<com.storyblok.cdn.query/SortAs> // com.storyblok.cdn.query/SortAs.values|values#static(){}[0]
 }
 
+final enum class com.storyblok.cdn/BlockAction : kotlin/Enum<com.storyblok.cdn/BlockAction> { // com.storyblok.cdn/BlockAction|null[0]
+    enum entry AddBlockAfter // com.storyblok.cdn/BlockAction.AddBlockAfter|null[0]
+    enum entry AddBlockBefore // com.storyblok.cdn/BlockAction.AddBlockBefore|null[0]
+    enum entry Copy // com.storyblok.cdn/BlockAction.Copy|null[0]
+    enum entry Delete // com.storyblok.cdn/BlockAction.Delete|null[0]
+    enum entry Duplicate // com.storyblok.cdn/BlockAction.Duplicate|null[0]
+    enum entry MoveBackward // com.storyblok.cdn/BlockAction.MoveBackward|null[0]
+    enum entry MoveForward // com.storyblok.cdn/BlockAction.MoveForward|null[0]
+
+    final val entries // com.storyblok.cdn/BlockAction.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<com.storyblok.cdn/BlockAction> // com.storyblok.cdn/BlockAction.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): com.storyblok.cdn/BlockAction // com.storyblok.cdn/BlockAction.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<com.storyblok.cdn/BlockAction> // com.storyblok.cdn/BlockAction.values|values#static(){}[0]
+}
+
 abstract interface com.storyblok.cdn/StoryblokBridge { // com.storyblok.cdn/StoryblokBridge|null[0]
     abstract val selectedBlock // com.storyblok.cdn/StoryblokBridge.selectedBlock|{}selectedBlock[0]
         abstract fun <get-selectedBlock>(): kotlinx.coroutines.flow/StateFlow<com.storyblok.cdn/SelectedBlock?> // com.storyblok.cdn/StoryblokBridge.selectedBlock.<get-selectedBlock>|<get-selectedBlock>(){}[0]
+    open val hints // com.storyblok.cdn/StoryblokBridge.hints|{}hints[0]
+        open fun <get-hints>(): kotlinx.coroutines.flow/StateFlow<com.storyblok.cdn/BlockHints> // com.storyblok.cdn/StoryblokBridge.hints.<get-hints>|<get-hints>(){}[0]
 
     abstract fun <#A1: com.storyblok.cdn.schema/Component> story(com.storyblok.cdn.schema/Story<#A1>, io.ktor.util.reflect/TypeInfo, kotlin/Int): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A1>> // com.storyblok.cdn/StoryblokBridge.story|story(com.storyblok.cdn.schema.Story<0:0>;io.ktor.util.reflect.TypeInfo;kotlin.Int){0§<com.storyblok.cdn.schema.Component>}[0]
     abstract fun destroy() // com.storyblok.cdn/StoryblokBridge.destroy|destroy(){}[0]
     abstract fun openBlock(com.storyblok.cdn.schema/Component) // com.storyblok.cdn/StoryblokBridge.openBlock|openBlock(com.storyblok.cdn.schema.Component){}[0]
+    open fun dismissHover() // com.storyblok.cdn/StoryblokBridge.dismissHover|dismissHover(){}[0]
+    open fun openBreadcrumb(com.storyblok.cdn/BlockBreadcrumb) // com.storyblok.cdn/StoryblokBridge.openBreadcrumb|openBreadcrumb(com.storyblok.cdn.BlockBreadcrumb){}[0]
+    open fun perform(com.storyblok.cdn/BlockAction) // com.storyblok.cdn/StoryblokBridge.perform|perform(com.storyblok.cdn.BlockAction){}[0]
 }
 
 abstract interface com.storyblok.cdn/StoryblokClient { // com.storyblok.cdn/StoryblokClient|null[0]
@@ -431,17 +452,77 @@ final class com.storyblok.cdn.schema/Link : com.storyblok.cdn.schema/Field { // 
     }
 }
 
+final class com.storyblok.cdn/BlockBreadcrumb { // com.storyblok.cdn/BlockBreadcrumb|null[0]
+    constructor <init>(kotlin/String, kotlin/String, kotlin/String) // com.storyblok.cdn/BlockBreadcrumb.<init>|<init>(kotlin.String;kotlin.String;kotlin.String){}[0]
+
+    final val component // com.storyblok.cdn/BlockBreadcrumb.component|{}component[0]
+        final fun <get-component>(): kotlin/String // com.storyblok.cdn/BlockBreadcrumb.component.<get-component>|<get-component>(){}[0]
+    final val label // com.storyblok.cdn/BlockBreadcrumb.label|{}label[0]
+        final fun <get-label>(): kotlin/String // com.storyblok.cdn/BlockBreadcrumb.label.<get-label>|<get-label>(){}[0]
+    final val uid // com.storyblok.cdn/BlockBreadcrumb.uid|{}uid[0]
+        final fun <get-uid>(): kotlin/String // com.storyblok.cdn/BlockBreadcrumb.uid.<get-uid>|<get-uid>(){}[0]
+
+    final fun component1(): kotlin/String // com.storyblok.cdn/BlockBreadcrumb.component1|component1(){}[0]
+    final fun component2(): kotlin/String // com.storyblok.cdn/BlockBreadcrumb.component2|component2(){}[0]
+    final fun component3(): kotlin/String // com.storyblok.cdn/BlockBreadcrumb.component3|component3(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/String = ..., kotlin/String = ...): com.storyblok.cdn/BlockBreadcrumb // com.storyblok.cdn/BlockBreadcrumb.copy|copy(kotlin.String;kotlin.String;kotlin.String){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.storyblok.cdn/BlockBreadcrumb.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.storyblok.cdn/BlockBreadcrumb.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.storyblok.cdn/BlockBreadcrumb.toString|toString(){}[0]
+}
+
+final class com.storyblok.cdn/BlockHints { // com.storyblok.cdn/BlockHints|null[0]
+    constructor <init>(kotlin/String? = ..., kotlin.collections/List<kotlin/String> = ..., kotlin/String? = ...) // com.storyblok.cdn/BlockHints.<init>|<init>(kotlin.String?;kotlin.collections.List<kotlin.String>;kotlin.String?){}[0]
+
+    final val highlighted // com.storyblok.cdn/BlockHints.highlighted|{}highlighted[0]
+        final fun <get-highlighted>(): kotlin.collections/List<kotlin/String> // com.storyblok.cdn/BlockHints.highlighted.<get-highlighted>|<get-highlighted>(){}[0]
+    final val highlightedFocus // com.storyblok.cdn/BlockHints.highlightedFocus|{}highlightedFocus[0]
+        final fun <get-highlightedFocus>(): kotlin/String? // com.storyblok.cdn/BlockHints.highlightedFocus.<get-highlightedFocus>|<get-highlightedFocus>(){}[0]
+    final val hovered // com.storyblok.cdn/BlockHints.hovered|{}hovered[0]
+        final fun <get-hovered>(): kotlin/String? // com.storyblok.cdn/BlockHints.hovered.<get-hovered>|<get-hovered>(){}[0]
+
+    final fun component1(): kotlin/String? // com.storyblok.cdn/BlockHints.component1|component1(){}[0]
+    final fun component2(): kotlin.collections/List<kotlin/String> // com.storyblok.cdn/BlockHints.component2|component2(){}[0]
+    final fun component3(): kotlin/String? // com.storyblok.cdn/BlockHints.component3|component3(){}[0]
+    final fun copy(kotlin/String? = ..., kotlin.collections/List<kotlin/String> = ..., kotlin/String? = ...): com.storyblok.cdn/BlockHints // com.storyblok.cdn/BlockHints.copy|copy(kotlin.String?;kotlin.collections.List<kotlin.String>;kotlin.String?){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.storyblok.cdn/BlockHints.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.storyblok.cdn/BlockHints.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.storyblok.cdn/BlockHints.toString|toString(){}[0]
+}
+
+final class com.storyblok.cdn/BlockMenu { // com.storyblok.cdn/BlockMenu|null[0]
+    constructor <init>(kotlin/String, kotlin.collections/List<com.storyblok.cdn/BlockBreadcrumb> = ..., kotlin.collections/List<com.storyblok.cdn/BlockAction> = ...) // com.storyblok.cdn/BlockMenu.<init>|<init>(kotlin.String;kotlin.collections.List<com.storyblok.cdn.BlockBreadcrumb>;kotlin.collections.List<com.storyblok.cdn.BlockAction>){}[0]
+
+    final val actions // com.storyblok.cdn/BlockMenu.actions|{}actions[0]
+        final fun <get-actions>(): kotlin.collections/List<com.storyblok.cdn/BlockAction> // com.storyblok.cdn/BlockMenu.actions.<get-actions>|<get-actions>(){}[0]
+    final val breadcrumbs // com.storyblok.cdn/BlockMenu.breadcrumbs|{}breadcrumbs[0]
+        final fun <get-breadcrumbs>(): kotlin.collections/List<com.storyblok.cdn/BlockBreadcrumb> // com.storyblok.cdn/BlockMenu.breadcrumbs.<get-breadcrumbs>|<get-breadcrumbs>(){}[0]
+    final val label // com.storyblok.cdn/BlockMenu.label|{}label[0]
+        final fun <get-label>(): kotlin/String // com.storyblok.cdn/BlockMenu.label.<get-label>|<get-label>(){}[0]
+
+    final fun component1(): kotlin/String // com.storyblok.cdn/BlockMenu.component1|component1(){}[0]
+    final fun component2(): kotlin.collections/List<com.storyblok.cdn/BlockBreadcrumb> // com.storyblok.cdn/BlockMenu.component2|component2(){}[0]
+    final fun component3(): kotlin.collections/List<com.storyblok.cdn/BlockAction> // com.storyblok.cdn/BlockMenu.component3|component3(){}[0]
+    final fun copy(kotlin/String = ..., kotlin.collections/List<com.storyblok.cdn/BlockBreadcrumb> = ..., kotlin.collections/List<com.storyblok.cdn/BlockAction> = ...): com.storyblok.cdn/BlockMenu // com.storyblok.cdn/BlockMenu.copy|copy(kotlin.String;kotlin.collections.List<com.storyblok.cdn.BlockBreadcrumb>;kotlin.collections.List<com.storyblok.cdn.BlockAction>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.storyblok.cdn/BlockMenu.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.storyblok.cdn/BlockMenu.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.storyblok.cdn/BlockMenu.toString|toString(){}[0]
+}
+
 final class com.storyblok.cdn/SelectedBlock { // com.storyblok.cdn/SelectedBlock|null[0]
-    constructor <init>(kotlin/String, kotlin.collections/List<kotlin/String> = ...) // com.storyblok.cdn/SelectedBlock.<init>|<init>(kotlin.String;kotlin.collections.List<kotlin.String>){}[0]
+    constructor <init>(kotlin/String, kotlin.collections/List<kotlin/String> = ..., com.storyblok.cdn/BlockMenu? = ...) // com.storyblok.cdn/SelectedBlock.<init>|<init>(kotlin.String;kotlin.collections.List<kotlin.String>;com.storyblok.cdn.BlockMenu?){}[0]
 
     final val ancestors // com.storyblok.cdn/SelectedBlock.ancestors|{}ancestors[0]
         final fun <get-ancestors>(): kotlin.collections/List<kotlin/String> // com.storyblok.cdn/SelectedBlock.ancestors.<get-ancestors>|<get-ancestors>(){}[0]
+    final val menu // com.storyblok.cdn/SelectedBlock.menu|{}menu[0]
+        final fun <get-menu>(): com.storyblok.cdn/BlockMenu? // com.storyblok.cdn/SelectedBlock.menu.<get-menu>|<get-menu>(){}[0]
     final val uid // com.storyblok.cdn/SelectedBlock.uid|{}uid[0]
         final fun <get-uid>(): kotlin/String // com.storyblok.cdn/SelectedBlock.uid.<get-uid>|<get-uid>(){}[0]
 
     final fun component1(): kotlin/String // com.storyblok.cdn/SelectedBlock.component1|component1(){}[0]
     final fun component2(): kotlin.collections/List<kotlin/String> // com.storyblok.cdn/SelectedBlock.component2|component2(){}[0]
-    final fun copy(kotlin/String = ..., kotlin.collections/List<kotlin/String> = ...): com.storyblok.cdn/SelectedBlock // com.storyblok.cdn/SelectedBlock.copy|copy(kotlin.String;kotlin.collections.List<kotlin.String>){}[0]
+    final fun component3(): com.storyblok.cdn/BlockMenu? // com.storyblok.cdn/SelectedBlock.component3|component3(){}[0]
+    final fun copy(kotlin/String = ..., kotlin.collections/List<kotlin/String> = ..., com.storyblok.cdn/BlockMenu? = ...): com.storyblok.cdn/SelectedBlock // com.storyblok.cdn/SelectedBlock.copy|copy(kotlin.String;kotlin.collections.List<kotlin.String>;com.storyblok.cdn.BlockMenu?){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // com.storyblok.cdn/SelectedBlock.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.storyblok.cdn/SelectedBlock.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.storyblok.cdn/SelectedBlock.toString|toString(){}[0]

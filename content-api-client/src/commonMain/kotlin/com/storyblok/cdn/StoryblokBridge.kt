@@ -63,6 +63,29 @@ public interface StoryblokBridge {
     public val selectedBlock: StateFlow<SelectedBlock?>
 
     /**
+     * Asks the editor to do [action] to the [selected block][selectedBlock], as its menu does on a web
+     * page.
+     *
+     * Does nothing unless the selected block has a [menu][SelectedBlock.menu] offering [action].
+     */
+    public fun perform(action: BlockAction): Unit = Unit
+
+    /**
+     * Opens the form of [breadcrumb]'s block, from the selected block's [menu][SelectedBlock.menu], and
+     * selects it.
+     */
+    public fun openBreadcrumb(breadcrumb: BlockBreadcrumb): Unit = Unit
+
+    /** The blocks the editor is pointing the author at, other than the selected one. */
+    public val hints: StateFlow<BlockHints> get() = NO_HINTS
+
+    /**
+     * Hides the [hovered][BlockHints.hovered] block's hint, as the package does once the pointer has
+     * moved over the preview and come to rest.
+     */
+    public fun dismissHover(): Unit = Unit
+
+    /**
      * Removes whatever the connection holds — on the web target its message listener.
      *
      * The editor is told nothing: a page may be torn down without the preview ending.
@@ -85,7 +108,15 @@ public data class SelectedBlock(
      * block is added, moved or duplicated.
      */
     public val ancestors: List<String> = emptyList(),
+    /**
+     * The menu the preview draws on it, or `null` until the editor has described one. The editor does
+     * when it opens the block's form or the author clicks the block there, not when a block is added,
+     * moved or duplicated.
+     */
+    public val menu: BlockMenu? = null,
 )
+
+private val NO_HINTS: StateFlow<BlockHints> = MutableStateFlow(BlockHints())
 
 /**
  * The bridge of a client that is not being previewed: every target but the web, and a web page
