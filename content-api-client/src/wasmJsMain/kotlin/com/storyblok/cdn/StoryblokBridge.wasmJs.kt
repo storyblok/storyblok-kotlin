@@ -180,17 +180,11 @@ private fun SelectionEvent.ancestorsOf(uid: String): List<String> {
 private fun JsAny?.uid(): String? = (this as? JsString)?.toString()?.takeIf { it.isNotEmpty() }
 
 /** Whether this page is being previewed in the Visual Editor. */
-private fun inVisualEditor(): Boolean = when {
+private fun inVisualEditor(): Boolean =
     // Node and any other host without a DOM, where there is no editor to be previewed by.
-    !Object.hasOwn(globalThis, "window") -> false
-    // The preview token is what the Storyblok SDKs take as "this page is being previewed", rather
-    // than `_storyblok` — which names the story being edited and so goes stale as soon as the app
-    // navigates within the preview.
-    "_storyblok_tk" !in window.location.search -> false
-    // A top-level window is its own parent, and there is no editor on the other side of one.
-    window.parent == window -> false
-    else -> true
-}
+    Object.hasOwn(globalThis, "window") &&
+        // A top-level window is its own parent.
+        inVisualEditor(window.location.search, framed = window.parent != window)
 
 internal actual fun StoryblokBridge(json: Json, resolveRelations: String): StoryblokBridge =
     if (inVisualEditor()) VisualEditor(json, resolveRelations) else NoVisualEditor
