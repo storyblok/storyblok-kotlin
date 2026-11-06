@@ -18,8 +18,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -87,7 +90,10 @@ class VisualEditorTest {
 
         override fun openBlock(block: Component) {
             opened += block.uid
-            if (block.uid !in uneditable) selectedBlock.value = SelectedBlock(block.uid)
+            // As the real bridge does: a tap selects without asking to be brought into view.
+            val current = selectedBlock.value
+            if (block.uid in uneditable || current?.uid == block.uid) return
+            selectedBlock.value = SelectedBlock(block.uid, reveal = current?.reveal ?: 0)
         }
 
         override fun destroy() = Unit
@@ -372,6 +378,119 @@ class VisualEditorTest {
         setContent { List(LazyListState(), listOf(card("same", clickable = false), card("same", clickable = false))) }
 
         onAllNodesWithTag("same").assertCountEquals(2)
+    }
+
+
+    @Test
+    fun `a block selected before it arrives is scrolled to when it does`() = runComposeUiTest {
+        // The editor can send addedBlock before the content holding the new block.
+        val editor = Editor()
+        val state = LazyListState()
+        var cards by mutableStateOf(cards(20))
+        setContent { Previewed(editor) { List(state, cards) } }
+
+        editor.selectedBlock.value = SelectedBlock("c21", reveal = 1)
+        waitForIdle()
+        cards = cards + card("c21", clickable = false)
+        waitForIdle()
+
+        onNodeWithTag("c21").assertIsDisplayed()
+    }
+
+    @Test
+    fun `a moved block is followed to where it lands`() = runComposeUiTest {
+        // The move is announced before the content that moves the block, which first finds it on screen.
+        val editor = Editor()
+        val state = LazyListState()
+        var cards by mutableStateOf(cards(20))
+        setContent { Previewed(editor) { List(state, cards) } }
+
+        editor.selectedBlock.value = SelectedBlock("c2", reveal = 1)
+        waitForIdle()
+        cards = cards.filterNot { it.uid == "c2" } + cards.first { it.uid == "c2" }
+        waitForIdle()
+
+        onNodeWithTag("c2").assertIsDisplayed()
+    }
+
+    @Test
+    fun `moving the same block again follows it again`() = runComposeUiTest {
+        val editor = Editor()
+        val state = LazyListState()
+        setContent { Previewed(editor) { List(state, cards(20)) } }
+
+        editor.selectedBlock.value = SelectedBlock("c15", reveal = 1)
+        waitForIdle()
+        onNodeWithTag("list").performScrollToIndex(0)
+        waitForIdle()
+        editor.selectedBlock.value = SelectedBlock("c15", reveal = 2)
+        waitForIdle()
+
+        onNodeWithTag("c15").assertIsDisplayed()
+    }
+
+    @Test
+    fun `a block selected again after deselection is scrolled to again`() = runComposeUiTest {
+        val editor = Editor()
+        val state = LazyListState()
+        setContent { Previewed(editor) { List(state, cards(20)) } }
+
+        editor.selectedBlock.value = SelectedBlock("c15", reveal = 1)
+        waitForIdle()
+        onNodeWithTag("list").performScrollToIndex(0)
+        editor.selectedBlock.value = null
+        waitForIdle()
+        editor.selectedBlock.value = SelectedBlock("c15", reveal = 2)
+        waitForIdle()
+
+        onNodeWithTag("c15").assertIsDisplayed()
+    }
+
+    @Test
+    fun `a composed block selected again after deselection is brought into view again`() = runComposeUiTest {
+        val editor = Editor()
+        val scroll = ScrollState(0)
+        setContent {
+            Previewed(editor) {
+                Column(Modifier.size(width = 200.dp, height = 250.dp).verticalScroll(scroll)) {
+                    (1..10).forEach { blocks.Block(card("c$it", clickable = false)) }
+                }
+            }
+        }
+
+        editor.selectedBlock.value = SelectedBlock("c8", reveal = 1)
+        waitForIdle()
+        runOnIdle { kotlinx.coroutines.runBlocking { scroll.scrollTo(0) } }
+        editor.selectedBlock.value = null
+        waitForIdle()
+        editor.selectedBlock.value = SelectedBlock("c8", reveal = 2)
+        waitForIdle()
+
+        onNodeWithTag("c8").assertIsDisplayed()
+    }
+
+    @Test
+    fun `two groups of blocks in one list each follow their own`() = runComposeUiTest {
+        // The first group's item is on screen too, and must not take the selection for its own.
+        val editor = Editor()
+        val state = LazyListState()
+        val first = listOf(card("a1", clickable = false))
+        val second = cards(20)
+        setContent {
+            Previewed(editor) {
+                LazyColumn(Modifier.size(width = 200.dp, height = 250.dp), state = state) {
+                    with(blocks) {
+                        blocks(first, state)
+                        blocks(second, state)
+                    }
+                }
+            }
+        }
+
+        editor.selectedBlock.value = SelectedBlock("c15", reveal = 1)
+        waitForIdle()
+
+        onNodeWithTag("c15").assertIsDisplayed()
     }
 
 }

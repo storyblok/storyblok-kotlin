@@ -159,14 +159,28 @@ internal external interface Breadcrumb : JsAny {
  * block the event names, `null` for one that deselects, or [selected] for one that says nothing about
  * selection.
  *
+ * A selection the editor asks to be brought into view takes [reveal] as its [SelectedBlock.reveal]:
+ * one picked in the editor's form, and one added, moved or duplicated, however often the same block
+ * is. The editor confirming the block it already has selected — its answer to a tap — keeps the
+ * number it had, since that block is on screen.
+ *
  * These are the events the preview bridge package outlines a block for. It also draws hover hints and
  * highlights, which are not selections and are not read here.
  */
-internal fun selectionAfter(event: SelectionEvent, selected: SelectedBlock?): SelectedBlock? =
+internal fun selectionAfter(event: SelectionEvent, selected: SelectedBlock?, reveal: Int): SelectedBlock? =
     when ((event.action as? JsString)?.toString()) {
-        "enterComponent" -> event.componentId.uid()?.let { SelectedBlock(it, event.ancestorsOf(it)) } ?: selected
-        "editedBlok" -> event.blok?.uid.uid()?.let { SelectedBlock(it, event.ancestorsOf(it)) } ?: selected
-        "addedBlock", "movedBlock", "duplicatedBlock" -> event.blockId.uid()?.let { SelectedBlock(it) } ?: selected
+        "enterComponent" -> event.componentId.uid()?.let { SelectedBlock(it, event.ancestorsOf(it), reveal) } ?: selected
+        "editedBlok" -> event.blok?.uid.uid()?.let { uid ->
+            when (uid) {
+                selected?.uid -> selected.copy(ancestors = event.ancestorsOf(uid).ifEmpty { selected.ancestors })
+                else -> SelectedBlock(uid, event.ancestorsOf(uid), reveal)
+            }
+        } ?: selected
+        // These carry no breadcrumbs. A block moved within its parent is still nested where it was, so
+        // the selected block keeps the ancestors the editor last gave for it.
+        "addedBlock", "movedBlock", "duplicatedBlock" -> event.blockId.uid()?.let { uid ->
+            SelectedBlock(uid, if (uid == selected?.uid) selected.ancestors else emptyList(), reveal)
+        } ?: selected
         "deselectBlok" -> null
         else -> selected
     }
@@ -214,13 +228,20 @@ private class VisualEditor(private val json: Json, private val resolveRelations:
 
     override val selectedBlock = MutableStateFlow<SelectedBlock?>(null)
 
+    /** The last [SelectedBlock.reveal] handed out, which outlives deselection. */
+    private var reveals = 0
+
     @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
     private val listener: (MessageEvent<JsAny?>) -> Unit = listener@{ message ->
         // The editor is the only thing allowed to drive the preview: any page may frame this one
         // and post to it, and `data` is decoded and rendered unchecked.
         if (message.origin != editorOrigin) return@listener
 
-        (message.data as? SelectionEvent)?.let { selectedBlock.value = selectionAfter(it, selectedBlock.value) }
+        (message.data as? SelectionEvent)?.let {
+            val selected = selectionAfter(it, selectedBlock.value, reveal = reveals + 1)
+            if (selected != null && selected.reveal > reveals) reveals = selected.reveal
+            selectedBlock.value = selected
+        }
 
         // `input` is the only event worth reading for content. A save leaves the draft holding exactly what the
         // editor has already pushed here, and publishing or unpublishing does not touch the draft a
@@ -257,8 +278,10 @@ private class VisualEditor(private val json: Json, private val resolveRelations:
         val editable = block.editableBlock() ?: return
         window.parent.postMessage(edit(editable, resolveRelations), editorOrigin)
         // Selected now rather than when the editor answers, as the preview bridge package does, so the
-        // tap shows at once.
-        selectedBlock.value = SelectedBlock(editable.uid)
+        // tap shows at once. Not a request to scroll: the block is where the author tapped.
+        val current = selectedBlock.value
+        selectedBlock.value =
+            if (current?.uid == editable.uid) current else SelectedBlock(editable.uid, reveal = reveals)
     }
 
     override fun destroy(): Unit = window.removeEventListener(MESSAGE, listener)
