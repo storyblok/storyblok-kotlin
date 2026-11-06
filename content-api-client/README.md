@@ -506,6 +506,11 @@ client.story<Page>("home")
     .collect { story -> println(story.content.title) }
 ```
 
+In the editor, the client also requests content in the language the author picks there, in place of the `language` it
+was configured with, so that [field-level translations](https://www.storyblok.com/docs/concepts/internationalization)
+show as they are edited. The editor reloads the preview to switch language, passing the language in the URL. In the
+space's default language, outside the editor and on every other target, the configured `language` is used.
+
 ## Error handling
 
 API errors are wrapped in [`StoryblokClientException`](https://storyblok.github.io/storyblok-kotlin/content-api-client/com.storyblok.cdn/-storyblok-client-exception/index.html):
