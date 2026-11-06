@@ -5,6 +5,7 @@ package com.storyblok.compose
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -491,6 +492,109 @@ class VisualEditorTest {
         waitForIdle()
 
         onNodeWithTag("c15").assertIsDisplayed()
+    }
+
+
+    @Test
+    fun `a drag that moves only as it is released is not a tap`() = runComposeUiTest {
+        val editor = Editor()
+        setContent { Previewed(editor) { blocks.Block(card("c1")) } }
+
+        onNodeWithTag("c1").performTouchInput {
+            down(center)
+            // Moves the pointer without an event of its own, so the release is the first to report it.
+            updatePointerTo(0, center + Offset(0f, 80f))
+            up()
+        }
+
+        assertEquals(emptyList(), editor.opened)
+    }
+
+    @Test
+    fun `a block moved in a column is brought into view where it lands`() = runComposeUiTest {
+        // As the bridge does when the content follows the move: the block is asked for again.
+        val editor = Editor()
+        val scroll = ScrollState(0)
+        var cards by mutableStateOf(cards(10))
+        setContent {
+            Previewed(editor) {
+                Column(Modifier.size(width = 200.dp, height = 250.dp).verticalScroll(scroll)) {
+                    cards.forEach { blocks.Block(it) }
+                }
+            }
+        }
+
+        editor.selectedBlock.value = SelectedBlock("c2", reveal = 1)
+        waitForIdle()
+        cards = cards.filterNot { it.uid == "c2" } + cards.first { it.uid == "c2" }
+        editor.selectedBlock.value = SelectedBlock("c2", reveal = 2)
+        waitForIdle()
+
+        onNodeWithTag("c2").assertIsDisplayed()
+    }
+
+    @Test
+    fun `a selection is followed once its blocks come on screen`() = runComposeUiTest {
+        // The first card is composed ahead of the scroll before the selection arrives, and only then
+        // scrolled on screen, with nothing else changing.
+        val editor = Editor()
+        val state = LazyListState()
+        setContent { Previewed(editor) { List(state, cards(20), before = 3) } }
+
+        runOnIdle { kotlinx.coroutines.runBlocking { state.scrollBy(10f) } }
+        waitForIdle()
+        editor.selectedBlock.value = SelectedBlock("c15", reveal = 1)
+        waitForIdle()
+        runOnIdle { kotlinx.coroutines.runBlocking { state.scrollBy(60f) } }
+        waitForIdle()
+
+        onNodeWithTag("c15").assertIsDisplayed()
+    }
+
+    @Test
+    fun `a block moved to another group of blocks is followed`() = runComposeUiTest {
+        // It keeps its place within its group, so only its place in the whole list tells the move apart.
+        val editor = Editor()
+        val state = LazyListState()
+        var first by mutableStateOf(listOf(card("a1", false), card("a2", false), card("a3", false)))
+        var second by mutableStateOf(cards(20))
+        setContent {
+            Previewed(editor) {
+                LazyColumn(Modifier.size(width = 200.dp, height = 250.dp), state = state) {
+                    with(blocks) {
+                        blocks(first, state)
+                        blocks(second, state)
+                    }
+                }
+            }
+        }
+
+        editor.selectedBlock.value = SelectedBlock("a2", reveal = 1)
+        waitForIdle()
+        // The move is announced before the content that makes it.
+        editor.selectedBlock.value = SelectedBlock("a2", reveal = 2)
+        waitForIdle()
+        val moved = first[1]
+        first = first - moved
+        second = listOf(second[0], moved) + second.drop(1)
+        waitForIdle()
+
+        onNodeWithTag("a2").assertIsDisplayed()
+    }
+
+    @Test
+    fun `only the most recently followed lists are remembered`() {
+        val lists = FollowedLists(capacity = 2)
+        val (a, b, c) = listOf(LazyListState(), LazyListState(), LazyListState())
+
+        lists[a] = Followed(1, 0)
+        lists[b] = Followed(1, 0)
+        lists[a] = Followed(2, 0)
+        lists[c] = Followed(2, 0)
+
+        assertEquals(2, lists.size)
+        assertEquals(Followed(2, 0), lists[a])
+        assertNull(lists[b])
     }
 
 }
