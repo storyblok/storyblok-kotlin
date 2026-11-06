@@ -15,10 +15,12 @@ multi-module build. Every published module ships the same version, set by `story
 | `examples`              | the two client modules  | Docs-site snippets as tests. Not published. **They call the live Storyblok APIs.**                                                               |
 
 - `samples/JetNews` (Android) and `samples/JetNewsCMP` (Android, iOS, wasmJs web preview) are
-  **separate Gradle builds**. They consume the SDK from Maven Central or `mavenLocal()`, not as
-  project dependencies. Maven Central is checked first, so to try local SDK changes in a sample,
-  `publishToMavenLocal` under a version that isn't on Central: set it in both the root and the
-  sample's `gradle/libs.versions.toml`, and revert both before committing.
+  **separate Gradle builds**. They consume the SDK as a Maven dependency, not as a project
+  dependency, and list `mavenLocal()` first (for `com.storyblok` only), so a `publishToMavenLocal`
+  build wins over the same version on Central. To try local SDK changes in a sample, set the root
+  `storyblok-kotlin` version to the one the sample pins, publish, and restore it before
+  committing. Then delete that version from `~/.m2/repository/com/storyblok/`, or it keeps
+  shadowing the real release.
 - Each published module has `README.md` (GitHub), `Module.md` (Dokka) and `api/` (ABI dumps).
 - `kotlin-js-store/` holds the committed yarn locks for the JS and Wasm test tooling.
 
@@ -55,7 +57,8 @@ Run Gradle from the repo root. JVM tests are the fast inner loop. CI runs the re
   `tvosSimulatorArm64Test`, `watchosSimulatorArm64Test`. Apple targets need macOS with Xcode.
 - There is no linter or formatter. The compiler (explicit API mode), ABI validation and Dokka's
   `failOnWarning` are the checks. Follow `kotlin.code.style=official`.
-- `storyblok-compose` and `storyblok-material3` have no tests yet. Their CI jobs only compile.
+- `storyblok-compose` has JVM UI tests only (`jvmTest`, on the Compose Desktop runtime for the
+  build machine). `storyblok-material3` has no tests yet. Their other CI jobs only compile.
 - `:examples` tests hit the real API with demo tokens. Run them on purpose, not as a regression
   suite: `./gradlew :examples:jvmTest --tests 'ktorplugin.cdn.*'`.
 - Toolchain: Gradle wrapper 9.x on a JetBrains JDK 21 daemon (auto-provisioned via foojay). CI uses
@@ -79,7 +82,8 @@ Run Gradle from the repo root. JVM tests are the fast inner loop. CI runs the re
 - **Logging:** `KtorSimpleLogger("com.storyblok...")`, never `println` in library code.
 - **Tests:** `kotlin.test` + `kotlinx-coroutines-test` (`runTest`), Ktor `MockEngine` for HTTP.
   Backticked sentence names (`` fun `retries up to 5 times on 429`() ``). Put tests in `commonTest`
-  unless they need a platform. A bug fix needs a regression test.
+  unless they need a platform. Kotlin/Native rejects some characters in names that JVM and JS
+  accept, commas among them, so keep those out of `commonTest`. A bug fix needs a regression test.
 - **Docs:** KDoc on every public declaration. A user-facing change updates the module `README.md`
   and `Module.md` where they cover it, plus a `CHANGELOG.md` entry under the next version.
 - **Storyblok terms:** Use "block", not "blok" (the API was renamed in 0.3.0). Use "story",

@@ -1,11 +1,14 @@
 package com.storyblok.cdn
 
+import com.storyblok.InternalAPI
 import com.storyblok.cdn.schema.Component
 import com.storyblok.cdn.schema.Story
 import io.ktor.util.reflect.TypeInfo
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.serialization.json.Json
 
@@ -18,8 +21,14 @@ import kotlinx.serialization.json.Json
  * A [StoryblokClient] holds one for its lifetime and [destroys][destroy] it with itself. That
  * outlives any single [story][StoryblokClient.story] collection, which come and go as the app
  * navigates, and the connection has to survive that.
+ *
+ * Public only so that the Compose SDK can reach the client's own, as [StoryblokClientImpl.bridge],
+ * and point the editor at the blocks it draws.
+ *
+ * @suppress
  */
-internal interface StoryblokBridge {
+@InternalAPI
+public interface StoryblokBridge {
 
     /**
      * [story] as the app should show it: what was fetched, then that story carrying the content the
@@ -35,19 +44,72 @@ internal interface StoryblokBridge {
      * one. Updates for any other story are ignored.
      * @param resolveLevel How deep to follow a value that is already being read.
      */
-    fun <T : Component> story(story: Story<T>, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>>
+    public fun <T : Component> story(story: Story<T>, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>>
 
     /**
-     * Removes whatever the connection holds — on the web target the bridge's event listeners,
-     * timers and injected DOM.
+     * Opens [block]'s form in the editor, as clicking it does on a web page.
+     *
+     * Does nothing for a block that carries no `_editable`, which only a draft story's blocks do.
+     */
+    public fun openBlock(block: Component)
+
+    /**
+     * The block the author has selected, which the preview outlines and scrolls to — or `null` when
+     * none is.
+     *
+     * The author selects a block by clicking it in the editor's form, by adding, moving or duplicating
+     * one, or through [openBlock]. Outside the editor it is always `null`.
+     */
+    public val selectedBlock: StateFlow<SelectedBlock?>
+
+    /**
+     * Removes whatever the connection holds — on the web target its message listener.
      *
      * The editor is told nothing: a page may be torn down without the preview ending.
      */
-    fun destroy()
+    public fun destroy()
 }
 
-internal object NoVisualEditor : StoryblokBridge {
+/**
+ * A block the author has selected in the Visual Editor.
+ *
+ * @suppress
+ */
+@InternalAPI
+public data class SelectedBlock(
+    /** The block's `_uid`. */
+    public val uid: String,
+    /**
+     * The `_uid`s of the blocks it is nested in, outermost first — what lets a lazy list find the item
+     * holding a block it has not composed. Empty when the editor did not say, as it does not when a
+     * block is added, moved or duplicated.
+     */
+    public val ancestors: List<String> = emptyList(),
+    /**
+     * Which of the editor's requests to bring a block into view this selection answers. A new number
+     * asks the preview to scroll to [uid]. The same number again is a selection that should not move
+     * it, such as the editor confirming a block the author tapped.
+     *
+     * It counts up for as long as the bridge lives, deselections included, so that selecting a block
+     * again, or moving the same block twice, still reads as a new request rather than as the same
+     * value, which a `StateFlow` would not emit at all.
+     */
+    public val reveal: Int = 0,
+)
+
+/**
+ * The bridge of a client that is not being previewed: every target but the web, and a web page
+ * outside the editor.
+ *
+ * Public only so that the Compose SDK can tell, and leave the blocks it draws alone.
+ *
+ * @suppress
+ */
+@InternalAPI
+public object NoVisualEditor : StoryblokBridge {
     override fun <T : Component> story(story: Story<T>, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>> = flowOf(story)
+    override fun openBlock(block: Component): Unit = Unit
+    override val selectedBlock: StateFlow<SelectedBlock?> = MutableStateFlow(null)
     override fun destroy(): Unit = Unit
 }
 
@@ -59,9 +121,6 @@ internal object NoVisualEditor : StoryblokBridge {
  * The relations are fixed here rather than per subscription because the bridge posts them to the
  * editor as it initializes. A page shows one story fetched with one set of relations, so there is
  * nothing to vary them by.
- *
- * At most one bridge should be open per page: the preview bridge's own `initOnlyOnce` makes a second
- * one either silently do nothing or reset the first one's listeners.
  */
 internal expect fun StoryblokBridge(json: Json, resolveRelations: String): StoryblokBridge
 

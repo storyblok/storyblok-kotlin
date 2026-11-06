@@ -1,10 +1,18 @@
+@file:OptIn(InternalAPI::class)
+
 package com.storyblok.compose
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import com.storyblok.InternalAPI
+import com.storyblok.cdn.NoVisualEditor
 import com.storyblok.cdn.StoryblokClient
+import com.storyblok.cdn.StoryblokClientImpl
 import com.storyblok.compose.provider.BlockProvider
 import com.storyblok.ktor.Api.Config.Region
 import com.storyblok.ktor.Api.Config.Region.EU
@@ -16,7 +24,8 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 private val clientKeys = mutableSetOf<List<Any?>>()
-private val clients = mutableMapOf<List<Any?>, StoryblokClient>()
+// Implementations rather than StoryblokClient, so that the client's Visual Editor bridge is in reach
+private val clients = mutableMapOf<List<Any?>, StoryblokClientImpl>()
 
 /**
  * Entry point composable for rendering Storyblok content.
@@ -61,12 +70,21 @@ public fun Storyblok(
     }
 
     val client = clients.getOrPut(clientKey) {
-        StoryblokClient(accessToken, version, region, language, fallbackLanguage, cv, blockProvider.serializersModule)
+        StoryblokClientImpl(accessToken, version, region, language, fallbackLanguage, cv, blockProvider.serializersModule)
     }
 
     // Remembered so that a recomposition of Storyblok hands `content` the same receiver
     val scope = remember(client, blockProvider.blockScope) { StoryblokScope(client, blockProvider.blockScope) }
-    content(scope)
+
+    val bridge = client.bridge
+    val editor = if (bridge === NoVisualEditor) null else {
+        val selected = bridge.selectedBlock.collectAsState()
+        val scope = rememberCoroutineScope()
+        remember(bridge) { VisualEditor(bridge, selected, scope) }
+    }
+    CompositionLocalProvider(LocalVisualEditor provides editor) {
+        content(scope)
+    }
 }
 
 /**

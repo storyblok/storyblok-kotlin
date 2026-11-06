@@ -1,5 +1,6 @@
 package com.storyblok
 
+import com.storyblok.cdn.SelectedBlock
 import com.storyblok.cdn.StoryblokBridge
 import com.storyblok.cdn.contentSerializer
 import com.storyblok.cdn.StoryblokClientImpl
@@ -23,6 +24,7 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.Flow
@@ -110,6 +112,10 @@ class StoryblokBridgeTest {
                         story.edited(edited, typeInfo)?.let { emit(it) }
                     }
                 }
+
+            override fun openBlock(block: Component) = Unit
+
+            override val selectedBlock = MutableStateFlow<SelectedBlock?>(null)
 
             override fun destroy() = Unit
         }

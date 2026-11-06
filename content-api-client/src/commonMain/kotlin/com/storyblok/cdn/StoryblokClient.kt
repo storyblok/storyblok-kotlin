@@ -235,15 +235,7 @@ public interface StoryblokClient {
             lenientJsonParsing: Boolean = false,
             serializersModuleBuilder: SerializersModuleBuilder.() -> Unit,
             apiBuilder: Api.Config.Content.() -> Unit,
-        ): StoryblokClient = this(
-            apiBuilder,
-            serializersModuleBuilder,
-            jsonBuilder = {
-                explicitNulls = !lenientJsonParsing
-                coerceInputValues = lenientJsonParsing
-                ignoreUnknownKeys = lenientJsonParsing
-            }
-        )
+        ): StoryblokClient = this(apiBuilder, serializersModuleBuilder, lenientJson(lenientJsonParsing))
 
         /**
          * Creates a [StoryblokClient] with minimal configuration.
@@ -264,17 +256,14 @@ public interface StoryblokClient {
             fallbackLanguage: String? = null,
             cv: String? = null,
             serializersModule: SerializersModule = EmptySerializersModule()
-        ): StoryblokClient = this(
-            lenientJsonParsing = version == Version.Published,
-            serializersModuleBuilder = { include(serializersModule) },
-            apiBuilder = {
-                this.region = region
-                this.accessToken = accessToken
-                this.version = version
-                this.language = language
-                this.fallbackLanguage = fallbackLanguage
-                this.cv = cv
-            }
-        )
+        ): StoryblokClient =
+            StoryblokClientImpl(accessToken, version, region, language, fallbackLanguage, cv, serializersModule)
     }
+}
+
+/** The JSON settings `lenientJsonParsing` stands for: ignoring unknown keys and coercing nulls, or neither. */
+internal fun lenientJson(lenient: Boolean): JsonBuilder.() -> Unit = {
+    explicitNulls = !lenient
+    coerceInputValues = lenient
+    ignoreUnknownKeys = lenient
 }

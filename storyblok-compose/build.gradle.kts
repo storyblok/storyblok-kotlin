@@ -25,6 +25,17 @@ dokka {
     }
 }
 
+/** The Compose for Desktop artifact suffix for the machine the build runs on, such as `macos-arm64`. */
+val desktopTarget: String = run {
+    val os = System.getProperty("os.name").lowercase()
+    val arch = if (System.getProperty("os.arch") in setOf("aarch64", "arm64")) "arm64" else "x64"
+    when {
+        "mac" in os -> "macos"
+        "win" in os -> "windows"
+        else -> "linux"
+    } + "-" + arch
+}
+
 kotlin {
     explicitApi()
     @OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
@@ -61,6 +72,7 @@ kotlin {
             api(project(":content-api-client"))
             api(libs.compose.runtime)
             api(libs.compose.ui)
+            api(libs.compose.foundation)
             api(libs.androidx.paging.compose)
             implementation(libs.androidx.lifecycle.runtime.compose)
         }
@@ -74,6 +86,10 @@ kotlin {
 
         jvmTest.dependencies {
             implementation(libs.logback.classic)
+            implementation(libs.compose.ui.test)
+            // Compose for Desktop's runtime for this machine, which UI tests draw with. The Compose
+            // Gradle plugin would name it as compose.desktop.currentOs; this module does not apply it.
+            implementation("org.jetbrains.compose.desktop:desktop-jvm-$desktopTarget:${libs.versions.compose.multiplatform.get()}")
         }
     }
 

@@ -223,6 +223,18 @@ block<Page> { page, modifier ->
 }
 ```
 
+To render a list of blocks in a `LazyColumn` or `LazyRow`, use `blocks()`, which also lets the list follow the
+selection in the Visual Editor (see [Blocks in a lazy list](#blocks-in-a-lazy-list)):
+
+```kotlin
+block<Page> { page, modifier ->
+    val state = rememberLazyListState()
+    LazyColumn(modifier, state = state) {
+        blocks(page.body, state)
+    }
+}
+```
+
 ### Rendering rich text
 
 Use `RichText()` to render rich text content:
@@ -267,6 +279,45 @@ val articleStory by story<Article>(Uuid.parse("...")).collectAsState(null)
 ```
 
 The `story()` functions also accept a `resolveLevel` parameter to control how deeply story relations are resolved — see [Story relations](../content-api-client/README.md#story-relations) in the Content Delivery API Client guide.
+
+## Visual Editor preview
+
+When a [Compose Multiplatform for Web](https://lp.jetbrains.com/cmp-for-web/) (`wasmJs`) build is previewed in Storyblok's
+[Visual Editor](https://www.storyblok.com/docs/concepts/visual-editor), every block drawn with `Block()` becomes part of the
+editing experience, with nothing to configure:
+
+- **Tapping a block opens its form in the editor.** A tap on a nested block opens the innermost one under it. The first tap
+  on a block only selects it, so tapping a card that navigates opens the card instead of following it. A second tap does
+  what the block does.
+- **The selected block is outlined**, and when the author picks one in the editor's form, or adds, moves or duplicates one,
+  it is scrolled into view.
+
+For this to work, a block's composable must apply the `Modifier` it is given to its outermost layout, as in the examples
+above. Outside the editor, and on every other target, blocks behave exactly as before.
+
+### Blocks in a lazy list
+
+A lazy list only composes the items on or near the screen, so a block selected further down has nothing on screen to
+scroll into view. Add blocks to a `LazyColumn` or `LazyRow` with
+[`blocks()`](https://storyblok.github.io/storyblok-kotlin/storyblok-compose/com.storyblok.compose/-block-scope/blocks.html),
+passing the same state the list was given, and the list scrolls to the item holding the selected block itself:
+
+```kotlin
+block<Page> { page, modifier ->
+    val state = rememberLazyListState()
+    LazyColumn(modifier, state = state) {
+        item { Text(page.title) }
+        blocks(page.body, state)
+    }
+}
+```
+
+This works for a block nested anywhere inside an item, as long as the editor says which blocks it is nested in. It does
+when the author picks a block in the form, but not when they add, move or duplicate one inside another. The list
+follows each selection once, while at least one of the blocks is on screen, so the author can still scroll away.
+
+`blocks()` keys each item by the block's `_uid`, so a block keeps its state when the author moves it. Outside the
+editor it simply adds the blocks.
 
 ## Configuration options
 
