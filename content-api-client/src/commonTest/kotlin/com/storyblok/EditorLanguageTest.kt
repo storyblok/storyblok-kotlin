@@ -4,6 +4,7 @@ import com.storyblok.cdn.configureStoryblok
 import com.storyblok.cdn.editorLanguage
 import com.storyblok.cdn.fileCacheStorage
 import com.storyblok.cdn.httpCacheStorage
+import com.storyblok.cdn.inVisualEditor
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respondOk
@@ -14,7 +15,9 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 /** Following the language the author picks in the Visual Editor. */
 class EditorLanguageTest {
@@ -55,6 +58,21 @@ class EditorLanguageTest {
     fun `a hyphenated language code is read with an underscore`() {
         assertEquals("es_co", editorLanguage("?_storyblok_lang=es-co"))
         assertEquals("pt_br", editorLanguage("?_storyblok_lang=pt%2Dbr"))
+    }
+
+    @Test
+    fun `a framed page with a preview token is in the editor`() {
+        assertTrue(inVisualEditor("?_storyblok_tk[space_id]=313862&_storyblok_lang=de", framed = true))
+    }
+
+    @Test
+    fun `a top-level page is not in the editor whatever its URL says`() {
+        assertFalse(inVisualEditor("?_storyblok_tk[space_id]=313862&_storyblok_lang=de", framed = false))
+    }
+
+    @Test
+    fun `a framed page without a preview token is not in the editor`() {
+        assertFalse(inVisualEditor("?_storyblok=580906535&_storyblok_lang=de", framed = true))
     }
 
     @Test

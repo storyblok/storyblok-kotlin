@@ -126,6 +126,17 @@ public object NoVisualEditor : StoryblokBridge {
 internal expect fun StoryblokBridge(json: Json, resolveRelations: String): StoryblokBridge
 
 /**
+ * Whether a page with this URL [query] string, [framed] in another page or not, is being previewed in
+ * the Visual Editor.
+ *
+ * The preview token is what the Storyblok SDKs take as "this page is being previewed", rather than
+ * `_storyblok` — which names the story being edited and so goes stale as soon as the app navigates
+ * within the preview. A page that is not framed has no editor on the other side of it, whatever its
+ * URL says.
+ */
+internal fun inVisualEditor(query: String, framed: Boolean): Boolean = framed && "_storyblok_tk" in query
+
+/**
  * The language the Visual Editor previewing this page shows, as the Content Delivery API's `language`
  * parameter takes it — or `null` outside the editor and for the space's default language.
  *
