@@ -291,6 +291,9 @@ editing experience, with nothing to configure:
   what the block does.
 - **The selected block is outlined**, and when the author picks one in the editor's form, or adds, moves or duplicates one,
   it is scrolled into view.
+- **The preview follows the editor's language.** Content is requested in the language the author picks in the editor, in
+  place of the `language` passed to `Storyblok(...)`, so field-level translations show as they are edited. The space's
+  default language keeps the app's own.
 
 For this to work, a block's composable must apply the `Modifier` it is given to its outermost layout, as in the examples
 above. Outside the editor, and on every other target, blocks behave exactly as before.
@@ -328,7 +331,7 @@ The `Storyblok` composable accepts the following configuration:
 | `accessToken` | Your Storyblok access token |
 | `version` | Content version (`Draft` or `Published`) |
 | `region` | Server location of your space (`EU`, `USA`, `CAN`, `AUS`, `CHN`, or `Custom`). Defaults to `EU` |
-| `language` | Language code for content retrieval |
+| `language` | Language code for content retrieval. In the Visual Editor, the language the author picks takes its place |
 | `fallbackLanguage` | Fallback language for untranslated fields |
 | `cv` | Cache version timestamp |
 | `blockProvider` | The block provider for component rendering |

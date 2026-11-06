@@ -193,17 +193,21 @@ private fun SelectionEvent.ancestorsOf(uid: String): List<String> {
 
 private fun JsAny?.uid(): String? = (this as? JsString)?.toString()?.takeIf { it.isNotEmpty() }
 
-internal actual fun StoryblokBridge(json: Json, resolveRelations: String): StoryblokBridge = when {
+/** Whether this page is being previewed in the Visual Editor. */
+private fun inVisualEditor(): Boolean =
     // Node and any other host without a DOM, where there is no editor to be previewed by.
-    !Object.hasOwn(globalThis, "window") -> NoVisualEditor
-    // The preview token is what the Storyblok SDKs take as "this page is being previewed", rather
-    // than `_storyblok` — which names the story being edited and so goes stale as soon as the app
-    // navigates within the preview.
-    "_storyblok_tk" !in window.location.search -> NoVisualEditor
-    // A top-level window is its own parent, and there is no editor on the other side of one.
-    window.parent == window -> NoVisualEditor
-    else -> VisualEditor(json, resolveRelations)
-}
+    Object.hasOwn(globalThis, "window") &&
+        // A top-level window is its own parent.
+        inVisualEditor(window.location.search, framed = window.parent != window)
+
+internal actual fun StoryblokBridge(json: Json, resolveRelations: String): StoryblokBridge =
+    if (inVisualEditor()) VisualEditor(json, resolveRelations) else NoVisualEditor
+
+// Read once, when the client is created: the editor reloads the preview to switch language, so the
+// URL's language cannot change while the page lives. The same checks as the bridge's keep a page
+// outside the editor on the app's own language, whatever its URL says.
+internal actual fun editorLanguage(): String? =
+    if (inVisualEditor()) editorLanguage(window.location.search) else null
 
 /**
  * The page's connection to the Visual Editor, over `Window.postMessage`.
