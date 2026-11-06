@@ -11,6 +11,7 @@ import js.objects.Object
 import js.objects.unsafeJso
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerializationException
@@ -24,6 +25,10 @@ import kotlin.js.length
 import kotlin.js.get
 import kotlin.js.toJsArray
 import kotlin.js.toJsString
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource
 import web.events.EventType
 import web.events.addEventListener
 import web.events.removeEventListener
@@ -185,6 +190,61 @@ internal fun selectionAfter(event: SelectionEvent, selected: SelectedBlock?, rev
         else -> selected
     }
 
+/**
+ * The block selected in the editor, kept from the editor's messages and the preview's own taps.
+ *
+ * It also makes up for not knowing which comes first when a block is added, moved or duplicated: the
+ * event that selects it, or the content that puts it where it now is. Whichever is first, the block
+ * is asked to be brought into view as the event arrives. The content arriving within [revealAgainWithin]
+ * of it asks once more, for where the block now is, so that a preview that scrolled to the block's old
+ * place, or to nothing because the block was not there yet, ends up showing it.
+ */
+internal class EditorSelection(
+    private val timeSource: TimeSource = TimeSource.Monotonic,
+    private val revealAgainWithin: Duration = 1.seconds,
+) {
+    val selected: MutableStateFlow<SelectedBlock?> = MutableStateFlow(null)
+
+    /** The last [SelectedBlock.reveal] handed out, which outlives deselection. */
+    private var reveals = 0
+
+    /** Until when the next content update asks for the selected block to be brought into view again. */
+    private var revealAgainBy: TimeMark? = null
+
+    /** Handles any message from the editor: one that selects, one that carries content, or neither. */
+    fun handle(event: SelectionEvent) {
+        val action = (event.action as? JsString)?.toString()
+        if (action == "input") return contentArrived()
+
+        val before = selected.value
+        val after = selectionAfter(event, before, reveal = reveals + 1)
+        if (after != null && after.reveal > reveals) reveals = after.reveal
+        when {
+            action in ADDED_OR_MOVED && after != before -> revealAgainBy = timeSource.markNow() + revealAgainWithin
+            after != before -> revealAgainBy = null
+        }
+        selected.value = after
+    }
+
+    /** The author tapped [uid] in the preview: selected, and on screen already, so not a request to scroll. */
+    fun opened(uid: String) {
+        revealAgainBy = null
+        val current = selected.value
+        if (current?.uid != uid) selected.value = SelectedBlock(uid, reveal = reveals)
+    }
+
+    private fun contentArrived() {
+        val deadline = revealAgainBy ?: return
+        revealAgainBy = null
+        if (deadline.hasPassedNow()) return
+        selected.value = selected.value?.copy(reveal = ++reveals)
+    }
+
+    private companion object {
+        val ADDED_OR_MOVED = setOf("addedBlock", "movedBlock", "duplicatedBlock")
+    }
+}
+
 /** The `_uid`s in this event's breadcrumbs other than [uid]'s own, or none when it carries none. */
 private fun SelectionEvent.ancestorsOf(uid: String): List<String> {
     val path = breadcrumbs ?: return emptyList()
@@ -226,10 +286,9 @@ private class VisualEditor(private val json: Json, private val resolveRelations:
      */
     private val edits = MutableStateFlow<StoryMetadata?>(null)
 
-    override val selectedBlock = MutableStateFlow<SelectedBlock?>(null)
+    private val selection = EditorSelection()
 
-    /** The last [SelectedBlock.reveal] handed out, which outlives deselection. */
-    private var reveals = 0
+    override val selectedBlock: StateFlow<SelectedBlock?> get() = selection.selected
 
     @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
     private val listener: (MessageEvent<JsAny?>) -> Unit = listener@{ message ->
@@ -237,21 +296,18 @@ private class VisualEditor(private val json: Json, private val resolveRelations:
         // and post to it, and `data` is decoded and rendered unchecked.
         if (message.origin != editorOrigin) return@listener
 
-        (message.data as? SelectionEvent)?.let {
-            val selected = selectionAfter(it, selectedBlock.value, reveal = reveals + 1)
-            if (selected != null && selected.reveal > reveals) reveals = selected.reveal
-            selectedBlock.value = selected
-        }
-
         // `input` is the only event worth reading for content. A save leaves the draft holding exactly what the
         // editor has already pushed here, and publishing or unpublishing does not touch the draft a
         // preview reads — so nothing the other events report needs fetching or reloading.
         //
         // The payload is handed on as it arrived, so that every subscriber reads it at its own
         // resolve level rather than at whichever one subscribed first.
-        val input = message.data as? InputBridgeEvent ?: return@listener
-        if (input.action != "input") return@listener
-        input.story?.let { edits.value = it }
+        val input = message.data as? InputBridgeEvent
+        if (input?.action == "input") input.story?.let { edits.value = it }
+
+        // After the content, so that a block asked to be brought into view again is already where
+        // that content puts it.
+        (message.data as? SelectionEvent)?.let(selection::handle)
     }
 
     init {
@@ -278,10 +334,8 @@ private class VisualEditor(private val json: Json, private val resolveRelations:
         val editable = block.editableBlock() ?: return
         window.parent.postMessage(edit(editable, resolveRelations), editorOrigin)
         // Selected now rather than when the editor answers, as the preview bridge package does, so the
-        // tap shows at once. Not a request to scroll: the block is where the author tapped.
-        val current = selectedBlock.value
-        selectedBlock.value =
-            if (current?.uid == editable.uid) current else SelectedBlock(editable.uid, reveal = reveals)
+        // tap shows at once.
+        selection.opened(editable.uid)
     }
 
     override fun destroy(): Unit = window.removeEventListener(MESSAGE, listener)
