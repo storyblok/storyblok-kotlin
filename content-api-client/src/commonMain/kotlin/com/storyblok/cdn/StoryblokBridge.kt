@@ -3,6 +3,7 @@ package com.storyblok.cdn
 import com.storyblok.InternalAPI
 import com.storyblok.cdn.schema.Component
 import com.storyblok.cdn.schema.Story
+import io.ktor.http.parseQueryString
 import io.ktor.util.reflect.TypeInfo
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
@@ -113,6 +114,28 @@ public object NoVisualEditor : StoryblokBridge {
  * nothing to vary them by.
  */
 internal expect fun StoryblokBridge(json: Json, resolveRelations: String): StoryblokBridge
+
+/**
+ * The language the Visual Editor previewing this page shows, as the Content Delivery API's `language`
+ * parameter takes it — or `null` outside the editor and for the space's default language.
+ *
+ * Only the web target can be embedded in the editor, so it is always `null` on every other target.
+ */
+internal expect fun editorLanguage(): String?
+
+/**
+ * The language the Visual Editor shows, read from the `_storyblok_lang` in a preview page's [query]
+ * string (with or without its leading `?`), or `null` when there is none or it is `default`, the
+ * space's default language.
+ *
+ * The editor gives the language as the preview URL rather than in a message: switching language
+ * reloads the preview with a new `_storyblok_lang`. A code configured with a hyphen comes back with an
+ * underscore, the only form the Content Delivery API accepts.
+ */
+internal fun editorLanguage(query: String): String? =
+    parseQueryString(query.removePrefix("?"))["_storyblok_lang"]
+        ?.takeUnless { it.isEmpty() || it.equals("default", ignoreCase = true) }
+        ?.replace('-', '_')
 
 @Suppress("UNCHECKED_CAST")
 internal fun <T : Component> TypeInfo.contentSerializer(): KSerializer<T> =

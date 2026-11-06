@@ -76,10 +76,22 @@ private val JsonObject.rels: Map<String, JsonObject>
 
 /**
  * Configures an [HttpClient] for the Content Delivery API.
+ *
+ * @param editorLanguage The language the Visual Editor previewing the page shows, which every request
+ * asks for in place of [apiBuilder]'s, or `null` to keep [apiBuilder]'s.
  */
-internal fun HttpClientConfig<*>.configureStoryblok(json: Json, apiBuilder: Api.Config.Content.() -> Unit) {
+internal fun HttpClientConfig<*>.configureStoryblok(
+    json: Json,
+    editorLanguage: String? = editorLanguage(),
+    apiBuilder: Api.Config.Content.() -> Unit,
+) {
     install(ContentNegotiation) { json(json) }
-    install(Storyblok(Api.CDN), apiBuilder)
+    install(Storyblok(Api.CDN)) {
+        apiBuilder()
+        // The author picks which language to preview in the editor, so the app's own choice gives way
+        // to it there, as the field-level translations being edited would otherwise never show.
+        editorLanguage?.let { language = it }
+    }
     install(HttpCache) {
         httpCacheStorage(PUBLIC_CACHE_NAME)?.let { publicStorage(it) }
         httpCacheStorage(PRIVATE_CACHE_NAME)?.let { privateStorage(it) }
@@ -172,7 +184,7 @@ public class StoryblokClientImpl internal constructor(
         serializersModuleBuilder: SerializersModuleBuilder.() -> Unit,
         jsonBuilder: JsonBuilder.() -> Unit,
         json: Json = storyblokJson(serializersModuleBuilder, jsonBuilder),
-        http: HttpClient = HttpClient { configureStoryblok(json, apiBuilder) },
+        http: HttpClient = HttpClient { configureStoryblok(json, apiBuilder = apiBuilder) },
     ) : this(json, http)
 
     /**
