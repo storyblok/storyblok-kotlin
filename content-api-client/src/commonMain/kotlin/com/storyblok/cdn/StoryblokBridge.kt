@@ -85,6 +85,16 @@ public data class SelectedBlock(
      * block is added, moved or duplicated.
      */
     public val ancestors: List<String> = emptyList(),
+    /**
+     * Which of the editor's requests to bring a block into view this selection answers. A new number
+     * asks the preview to scroll to [uid]. The same number again is a selection that should not move
+     * it, such as the editor confirming a block the author tapped.
+     *
+     * It counts up for as long as the bridge lives, deselections included, so that selecting a block
+     * again, or moving the same block twice, still reads as a new request rather than as the same
+     * value, which a `StateFlow` would not emit at all.
+     */
+    public val reveal: Int = 0,
 )
 
 /**

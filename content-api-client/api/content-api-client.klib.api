@@ -432,16 +432,19 @@ final class com.storyblok.cdn.schema/Link : com.storyblok.cdn.schema/Field { // 
 }
 
 final class com.storyblok.cdn/SelectedBlock { // com.storyblok.cdn/SelectedBlock|null[0]
-    constructor <init>(kotlin/String, kotlin.collections/List<kotlin/String> = ...) // com.storyblok.cdn/SelectedBlock.<init>|<init>(kotlin.String;kotlin.collections.List<kotlin.String>){}[0]
+    constructor <init>(kotlin/String, kotlin.collections/List<kotlin/String> = ..., kotlin/Int = ...) // com.storyblok.cdn/SelectedBlock.<init>|<init>(kotlin.String;kotlin.collections.List<kotlin.String>;kotlin.Int){}[0]
 
     final val ancestors // com.storyblok.cdn/SelectedBlock.ancestors|{}ancestors[0]
         final fun <get-ancestors>(): kotlin.collections/List<kotlin/String> // com.storyblok.cdn/SelectedBlock.ancestors.<get-ancestors>|<get-ancestors>(){}[0]
+    final val reveal // com.storyblok.cdn/SelectedBlock.reveal|{}reveal[0]
+        final fun <get-reveal>(): kotlin/Int // com.storyblok.cdn/SelectedBlock.reveal.<get-reveal>|<get-reveal>(){}[0]
     final val uid // com.storyblok.cdn/SelectedBlock.uid|{}uid[0]
         final fun <get-uid>(): kotlin/String // com.storyblok.cdn/SelectedBlock.uid.<get-uid>|<get-uid>(){}[0]
 
     final fun component1(): kotlin/String // com.storyblok.cdn/SelectedBlock.component1|component1(){}[0]
     final fun component2(): kotlin.collections/List<kotlin/String> // com.storyblok.cdn/SelectedBlock.component2|component2(){}[0]
-    final fun copy(kotlin/String = ..., kotlin.collections/List<kotlin/String> = ...): com.storyblok.cdn/SelectedBlock // com.storyblok.cdn/SelectedBlock.copy|copy(kotlin.String;kotlin.collections.List<kotlin.String>){}[0]
+    final fun component3(): kotlin/Int // com.storyblok.cdn/SelectedBlock.component3|component3(){}[0]
+    final fun copy(kotlin/String = ..., kotlin.collections/List<kotlin/String> = ..., kotlin/Int = ...): com.storyblok.cdn/SelectedBlock // com.storyblok.cdn/SelectedBlock.copy|copy(kotlin.String;kotlin.collections.List<kotlin.String>;kotlin.Int){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // com.storyblok.cdn/SelectedBlock.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.storyblok.cdn/SelectedBlock.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.storyblok.cdn/SelectedBlock.toString|toString(){}[0]

@@ -32,7 +32,6 @@ import com.storyblok.cdn.SelectedBlock
 import com.storyblok.cdn.StoryblokBridge
 import com.storyblok.cdn.schema.Component
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
@@ -66,19 +65,22 @@ internal class VisualEditor(
     var pressed: Component? = null
 
     /**
-     * The block last brought into view, or opened by a tap and so on screen already. A selection
-     * scrolls to its block once, so that a lazy list scrolling a selected block out and back in does
-     * not then yank it back into view.
+     * The [SelectedBlock.reveal] last brought into view, or answered by a tap, whose block is on screen
+     * already. Each is scrolled to once, so that a lazy list scrolling a selected block out and back in
+     * does not then yank it back into view, while a new request for the same block still scrolls.
      */
-    var shown: String? = null
+    var shown: Int? = null
 
     /**
-     * The selection each lazy list of [blocks][BlockScope.blocks] last followed. A list follows each
-     * selection once, for the same reason a block is only [shown] once: so that the user can scroll
-     * away from it.
+     * The request each lazy list of [blocks][BlockScope.blocks] last followed, and where it found the
+     * selected block's item. A list follows each request once, for the same reason a block is only
+     * [shown] once: so that the user can scroll away. It follows it again only if that item moves.
      */
-    val followed: MutableMap<LazyListState, SelectedBlock> = mutableMapOf()
+    val followed: MutableMap<LazyListState, Followed> = mutableMapOf()
 }
+
+/** A [SelectedBlock.reveal] a lazy list followed, to the item at [index] in its blocks. */
+internal data class Followed(val reveal: Int, val index: Int)
 
 /** The Visual Editor the blocks below are previewed in, or `null` outside one. */
 internal val LocalVisualEditor = staticCompositionLocalOf<VisualEditor?> { null }
@@ -100,12 +102,12 @@ internal fun Modifier.editable(block: Component, editor: VisualEditor): Modifier
 
     // Read from snapshots rather than composition, so that a change of selection recomposes nothing:
     // only the block that gains it and the one that loses it redraw.
-    LaunchedEffect(selected, requester) {
-        snapshotFlow { selected.value }
-            .filter { it }
-            .collect {
-                if (editor.shown == block.uid) return@collect
-                editor.shown = block.uid
+    LaunchedEffect(editor, block.uid, requester) {
+        snapshotFlow { editor.selected.value?.takeIf { block.uid.isNotEmpty() && it.uid == block.uid } }
+            .filterNotNull()
+            .collect { selection ->
+                if (editor.shown == selection.reveal) return@collect
+                editor.shown = selection.reveal
                 requester.bringIntoView()
             }
     }
@@ -160,8 +162,9 @@ private suspend fun PointerInputScope.openOnTap(block: Component, editor: Visual
     editor.bridge.openBlock(block)
     // Held back only if this tap is what selected the block. One the editor cannot open — it has no
     // `_editable` — is never selected, and must not swallow every tap it is given.
-    if (wasSelected || editor.bridge.selectedBlock.value?.uid != block.uid) return@awaitEachGesture
-    editor.shown = block.uid
+    val selection = editor.bridge.selectedBlock.value
+    if (wasSelected || selection?.uid != block.uid) return@awaitEachGesture
+    editor.shown = selection.reveal
     up.consume()
 }
 
@@ -178,18 +181,24 @@ internal fun FollowSelection(item: Component, blocks: List<Component>, state: La
     val editor = LocalVisualEditor.current ?: return
     val current by rememberUpdatedState(blocks)
 
+    // The blocks are read as well as the selection, because the two arrive separately: a block can be
+    // selected before the content holding it does, and a moved block before the content that moves it.
     LaunchedEffect(editor, state, item.uid) {
-        snapshotFlow { editor.selected.value }
+        snapshotFlow { editor.selected.value?.let { it to current.map(Component::uid) } }
             .filterNotNull()
-            .collect { selected ->
+            .collect { (selected, uids) ->
                 val visible = state.layoutInfo.visibleItemsInfo
-                val actor = visible.firstOrNull { info -> current.any { it.uid == info.key } } ?: return@collect
-                if (actor.key != item.uid || editor.followed[state] == selected) return@collect
-                editor.followed[state] = selected
+                val actor = visible.firstOrNull { it.key in uids } ?: return@collect
+                if (actor.key != item.uid) return@collect
 
-                val target = current.indexOfFirst { it.uid == selected.uid || it.uid in selected.ancestors }
+                // Not found is not followed: the block may yet arrive, or be another blocks()'s in this list.
+                val target = uids.indexOfFirst { it == selected.uid || it in selected.ancestors }
                 if (target < 0) return@collect
-                val index = actor.index - current.indexOfFirst { it.uid == actor.key } + target
+                val followed = Followed(selected.reveal, target)
+                if (editor.followed[state] == followed) return@collect
+                editor.followed[state] = followed
+
+                val index = actor.index - uids.indexOf(actor.key) + target
                 if (visible.any { it.index == index }) return@collect
                 editor.scope.launch { state.animateScrollToItem(index) }
             }
