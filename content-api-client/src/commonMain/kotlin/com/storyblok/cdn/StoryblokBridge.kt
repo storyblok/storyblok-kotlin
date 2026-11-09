@@ -127,26 +127,31 @@ internal expect fun StoryblokBridge(json: Json, resolveRelations: String): Story
 internal fun inVisualEditor(query: String, framed: Boolean): Boolean = framed && "_storyblok_tk" in query
 
 /**
- * The language the Visual Editor previewing this page shows, as the Content Delivery API's `language`
- * parameter takes it — or `null` outside the editor and for the space's default language.
+ * The language a Visual Editor preview shows: a [code] exactly as the space configures it, which is
+ * how the Content Delivery API's `language` parameter takes it, or `null` for the space's default
+ * language.
+ */
+internal data class EditorLanguage(val code: String?)
+
+/**
+ * The language the Visual Editor previewing this page shows, or `null` outside the editor.
  *
  * Only the web target can be embedded in the editor, so it is always `null` on every other target.
  */
-internal expect fun editorLanguage(): String?
+internal expect fun editorLanguage(): EditorLanguage?
 
 /**
  * The language the Visual Editor shows, read from the `_storyblok_lang` in a preview page's [query]
- * string (with or without its leading `?`), or `null` when there is none or it is `default`, the
- * space's default language.
+ * string (with or without its leading `?`). The editor names the space's default language `default`,
+ * and a preview URL without a language is read as showing the default language too.
  *
  * The editor gives the language as the preview URL rather than in a message: switching language
- * reloads the preview with a new `_storyblok_lang`. A code configured with a hyphen comes back with an
- * underscore, the only form the Content Delivery API accepts.
+ * reloads the preview with a new `_storyblok_lang`.
  */
-internal fun editorLanguage(query: String): String? =
+internal fun editorLanguage(query: String): EditorLanguage = EditorLanguage(
     parseQueryString(query.removePrefix("?"))["_storyblok_lang"]
-        ?.takeUnless { it.isEmpty() || it.equals("default", ignoreCase = true) }
-        ?.replace('-', '_')
+        ?.takeUnless { it.isEmpty() || it.equals("default", ignoreCase = true) },
+)
 
 @Suppress("UNCHECKED_CAST")
 internal fun <T : Component> TypeInfo.contentSerializer(): KSerializer<T> =

@@ -192,7 +192,7 @@ internal actual fun StoryblokBridge(json: Json, resolveRelations: String): Story
 // Read once, when the client is created: the editor reloads the preview to switch language, so the
 // URL's language cannot change while the page lives. The same checks as the bridge's keep a page
 // outside the editor on the app's own language, whatever its URL says.
-internal actual fun editorLanguage(): String? =
+internal actual fun editorLanguage(): EditorLanguage? =
     if (inVisualEditor()) editorLanguage(window.location.search) else null
 
 /**

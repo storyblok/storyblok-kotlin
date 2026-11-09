@@ -508,8 +508,15 @@ client.story<Page>("home")
 
 In the editor, the client also requests content in the language the author picks there, in place of the `language` it
 was configured with, so that [field-level translations](https://www.storyblok.com/docs/concepts/internationalization)
-show as they are edited. The editor reloads the preview to switch language, passing the language in the URL. In the
-space's default language, outside the editor and on every other target, the configured `language` is used.
+show as they are edited. In the space's default language it requests none. The editor reloads the preview to switch
+language, passing the language in the URL and putting it in front of the path (`/de/articles/my-article`), and a
+story's `fullSlug` then starts with it too. An app that routes by path has to allow for both: see
+[Previewing other languages](../storyblok-compose/README.md#previewing-other-languages). Outside the editor and on every
+other target, the configured `language` is used.
+
+This is done by the clients `StoryblokClient(...)` creates. A Ktor client of your own that installs the
+[`ktor-client-storyblok`](../ktor-client-storyblok/README.md) plugin directly keeps asking for the `language` it was
+configured with.
 
 ## Error handling
 
