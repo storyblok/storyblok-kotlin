@@ -33,6 +33,7 @@ import web.events.EventType
 import web.events.addEventListener
 import web.events.removeEventListener
 import web.messaging.MessageEvent
+import web.dom.document
 import web.window.window
 
 private val LOGGER = KtorSimpleLogger("com.storyblok.cdn.VisualEditor")
@@ -45,8 +46,8 @@ private val LOGGER = KtorSimpleLogger("com.storyblok.cdn.VisualEditor")
  */
 
 /**
- * The editor's origin, which is both where the handshake is sent and the only origin a story is
- * accepted from.
+ * The editor most spaces are edited in. Its origin is both where the handshake is sent and the only
+ * origin a story is accepted from.
  *
  * Always `https`: the editor is served over it, and `postMessage` drops a message whose target
  * origin does not match the parent exactly.
@@ -55,6 +56,23 @@ private const val EDITOR_ORIGIN = "https://app.storyblok.com"
 
 /** Storyblok's staging editor, which a preview opts into through the URL the editor gave it. */
 private const val STAGE_EDITOR_ORIGIN = "https://app-beta.storyblok.com"
+
+/** The editor for spaces in the China region. */
+private const val CHINA_EDITOR_ORIGIN = "https://app.storyblokchina.cn"
+
+private val EDITOR_ORIGINS = listOf(EDITOR_ORIGIN, STAGE_EDITOR_ORIGIN, CHINA_EDITOR_ORIGIN)
+
+/**
+ * The origin of the editor framing this page, given the page's [referrer] and the [query] of its URL.
+ *
+ * The referrer is the editor that loaded the preview, and is trusted only to pick one of Storyblok's
+ * own editors: a page that frames this one under any other origin still gets nothing in. Without a
+ * referrer naming one, as under a policy that sends none, the query decides between the two editors
+ * the preview bridge package knows.
+ */
+internal fun editorOrigin(referrer: String, query: String): String =
+    EDITOR_ORIGINS.firstOrNull { referrer == it || referrer.startsWith("$it/") }
+        ?: if ("_storyblok_env=stage" in query) STAGE_EDITOR_ORIGIN else EDITOR_ORIGIN
 
 private val MESSAGE = EventType<MessageEvent<JsAny?>>("message")
 
@@ -125,13 +143,13 @@ internal external interface BridgeParams : JsAny {
 }
 
 /** The `input` message, carrying the story as the editor currently holds it. */
-private external interface InputBridgeEvent : JsAny {
+internal external interface InputBridgeEvent : JsAny {
     val action: String?
     val story: StoryMetadata?
 }
 
 /** A partial description of a story. Only its id is read here; the rest is converted whole. */
-private external interface StoryMetadata : JsAny {
+internal external interface StoryMetadata : JsAny {
     val id: Double
     val content: JsAny
 }
@@ -207,6 +225,8 @@ internal fun selectionAfter(event: SelectionEvent, selected: SelectedBlock?, rev
 internal class EditorSelection(
     private val timeSource: TimeSource = TimeSource.Monotonic,
     private val revealAgainWithin: Duration = 1.seconds,
+    /** How long after a tap the editor's `enterComponent` for the tapped block is its answer to it. */
+    private val tapAnsweredWithin: Duration = 2.seconds,
 ) {
     val selected: MutableStateFlow<SelectedBlock?> = MutableStateFlow(null)
 
@@ -216,13 +236,25 @@ internal class EditorSelection(
     /** Until when the next content update asks for the selected block to be brought into view again. */
     private var revealAgainBy: TimeMark? = null
 
+    /**
+     * Until when an `enterComponent` for the block just tapped is the editor navigating its form to that
+     * block, which it does after its `editedBlok` when the block was not open yet, rather than the author
+     * picking it there.
+     */
+    private var tapAnsweredBy: TimeMark? = null
+
     /** Handles any message from the editor: one that selects, one that carries content, or neither. */
     fun handle(event: SelectionEvent) {
         val action = (event.action as? JsString)?.toString()
         if (action == "input") return contentArrived()
 
         val before = selected.value
-        val after = selectionAfter(event, before, reveal = reveals + 1)
+        var after = selectionAfter(event, before, reveal = reveals + 1)
+        if (action == "enterComponent" && before != null && after?.uid == before.uid && answersTap()) {
+            // The tapped block is where the author tapped it, and must not be scrolled.
+            after = after.copy(reveal = before.reveal)
+        }
+        if (after?.uid != before?.uid) tapAnsweredBy = null
         if (after != null && after.reveal > reveals) reveals = after.reveal
         when {
             action in ADDED_OR_MOVED && after != before -> revealAgainBy = timeSource.markNow() + revealAgainWithin
@@ -234,8 +266,16 @@ internal class EditorSelection(
     /** The author tapped [uid] in the preview: selected, and on screen already, so not a request to scroll. */
     fun opened(uid: String) {
         revealAgainBy = null
+        tapAnsweredBy = timeSource.markNow() + tapAnsweredWithin
         val current = selected.value
         if (current?.uid != uid) selected.value = SelectedBlock(uid, reveal = reveals)
+    }
+
+    /** Whether an `enterComponent` now answers the last tap. Only the first one does. */
+    private fun answersTap(): Boolean {
+        val deadline = tapAnsweredBy ?: return false
+        tapAnsweredBy = null
+        return !deadline.hasPassedNow()
     }
 
     private fun contentArrived() {
@@ -266,7 +306,11 @@ private fun inVisualEditor(): Boolean =
         inVisualEditor(window.location.search, framed = window.parent != window)
 
 internal actual fun StoryblokBridge(json: Json, resolveRelations: String, fallbackLanguage: String?): StoryblokBridge =
-    if (inVisualEditor()) VisualEditor(json, resolveRelations, fallbackLanguage) else NoVisualEditor
+    if (inVisualEditor()) {
+        VisualEditor(json, resolveRelations, fallbackLanguage, editorOrigin(document.referrer, window.location.search))
+    } else {
+        NoVisualEditor
+    }
 
 // Read once, when the client is created: the editor reloads the preview to switch language, so the
 // URL's language cannot change while the page lives. The same checks as the bridge's keep a page
@@ -285,43 +329,14 @@ private class VisualEditor(
     private val json: Json,
     private val resolveRelations: String,
     private val fallbackLanguage: String?,
+    private val editorOrigin: String,
 ) : StoryblokBridge {
 
-    private val editorOrigin =
-        if ("_storyblok_env=stage" in window.location.search) STAGE_EDITOR_ORIGIN else EDITOR_ORIGIN
+    private val inbox = EditorInbox(editorOrigin)
 
-    /**
-     * The story as the editor currently holds it, still a JavaScript value, for every subscriber —
-     * `null` until the author touches something.
-     *
-     * One listener feeds it rather than one per subscription, so that the newest edit outlives the
-     * restart every completed fetch causes.
-     */
-    private val edits = MutableStateFlow<StoryMetadata?>(null)
+    override val selectedBlock: StateFlow<SelectedBlock?> get() = inbox.selection.selected
 
-    private val selection = EditorSelection()
-
-    override val selectedBlock: StateFlow<SelectedBlock?> get() = selection.selected
-
-    @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
-    private val listener: (MessageEvent<JsAny?>) -> Unit = listener@{ message ->
-        // The editor is the only thing allowed to drive the preview: any page may frame this one
-        // and post to it, and `data` is decoded and rendered unchecked.
-        if (message.origin != editorOrigin) return@listener
-
-        // `input` is the only event worth reading for content. A save leaves the draft holding exactly what the
-        // editor has already pushed here, and publishing or unpublishing does not touch the draft a
-        // preview reads — so nothing the other events report needs fetching or reloading.
-        //
-        // The payload is handed on as it arrived, so that every subscriber reads it at its own
-        // resolve level rather than at whichever one subscribed first.
-        val input = message.data as? InputBridgeEvent
-        if (input?.action == "input") input.story?.let { edits.value = it }
-
-        // After the content, so that a block asked to be brought into view again is already where
-        // that content puts it.
-        (message.data as? SelectionEvent)?.let(selection::handle)
-    }
+    private val listener: (MessageEvent<JsAny?>) -> Unit = { inbox.receive(it.origin, it.data) }
 
     init {
         // Listening first, so that nothing the editor sends in answer to the handshake is missed.
@@ -329,7 +344,7 @@ private class VisualEditor(
         window.parent.postMessage(initialized(resolveRelations, fallbackLanguage), editorOrigin)
     }
 
-    override fun <T : Component> story(story: Story<T>, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>> = edits
+    override fun <T : Component> story(story: Story<T>, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>> = inbox.edits
         .mapNotNull { edited ->
             // Only the content is taken from the editor. The envelope is the one that was fetched,
             // which is fresher, this flow being restarted by every fetch. It is not a way of
@@ -348,10 +363,50 @@ private class VisualEditor(
         window.parent.postMessage(edit(editable, resolveRelations, fallbackLanguage), editorOrigin)
         // Selected now rather than when the editor answers, as the preview bridge package does, so the
         // tap shows at once.
-        selection.opened(editable.uid)
+        inbox.selection.opened(editable.uid)
     }
 
+    override fun canOpen(block: Component): Boolean = block.editableBlock() != null
+
     override fun destroy(): Unit = window.removeEventListener(MESSAGE, listener)
+}
+
+/**
+ * What the editor at [editorOrigin] has sent: the story as it holds it, and the block selected in it.
+ */
+internal class EditorInbox(private val editorOrigin: String) {
+
+    /**
+     * The story as the editor currently holds it, still a JavaScript value, for every subscriber —
+     * `null` until the author touches something.
+     *
+     * One listener feeds it rather than one per subscription, so that the newest edit outlives the
+     * restart every completed fetch causes.
+     */
+    internal val edits = MutableStateFlow<StoryMetadata?>(null)
+
+    internal val selection = EditorSelection()
+
+    /** Reads a message posted to the page from [origin]. */
+    @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
+    fun receive(origin: String, data: JsAny?) {
+        // The editor is the only thing allowed to drive the preview: any page may frame this one
+        // and post to it, and `data` is decoded and rendered unchecked.
+        if (origin != editorOrigin) return
+
+        // `input` is the only event worth reading for content. A save leaves the draft holding exactly what the
+        // editor has already pushed here, and publishing or unpublishing does not touch the draft a
+        // preview reads — so nothing the other events report needs fetching or reloading.
+        //
+        // The payload is handed on as it arrived, so that every subscriber reads it at its own
+        // resolve level rather than at whichever one subscribed first.
+        val input = data as? InputBridgeEvent
+        if (input?.action == "input") input.story?.let { edits.value = it }
+
+        // After the content, so that a block asked to be brought into view again is already where
+        // that content puts it.
+        (data as? SelectionEvent)?.let(selection::handle)
+    }
 }
 
 /**

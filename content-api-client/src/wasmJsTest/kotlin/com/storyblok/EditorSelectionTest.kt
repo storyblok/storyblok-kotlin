@@ -111,6 +111,48 @@ class EditorSelectionTest {
     }
 
     @Test
+    fun `the editor navigating its form to a tapped block does not bring it into view`() {
+        // Its answer to an edit for a block that was not open yet: editedBlok, then enterComponent.
+        send("""{"action": "enterComponent", "componentId": "u1"}""")
+        selection.opened("u2")
+        val tapped = reveal
+        send("""{"action": "editedBlok", "blok": {"uid": "u2"}}""")
+        send("""{"action": "enterComponent", "componentId": "u2", "breadcrumbs": [{"_uid": "page"}, {"_uid": "u2"}]}""")
+
+        assertEquals(tapped, reveal)
+        assertEquals(listOf("page"), selection.selected.value?.ancestors)
+    }
+
+    @Test
+    fun `picking the tapped block in the form later brings it into view`() {
+        selection.opened("u1")
+        val tapped = reveal
+        clock += 3.seconds
+        send("""{"action": "enterComponent", "componentId": "u1"}""")
+
+        assertEquals(tapped!! + 1, reveal)
+    }
+
+    @Test
+    fun `only the editor's first answer to a tap is taken as one`() {
+        selection.opened("u1")
+        send("""{"action": "enterComponent", "componentId": "u1"}""")
+        val answered = reveal
+        send("""{"action": "enterComponent", "componentId": "u1"}""")
+
+        assertEquals(answered!! + 1, reveal)
+    }
+
+    @Test
+    fun `another block picked after a tap is brought into view`() {
+        selection.opened("u1")
+        val tapped = reveal
+        send("""{"action": "enterComponent", "componentId": "u2"}""")
+
+        assertEquals(tapped!! + 1, reveal)
+    }
+
+    @Test
     fun `selecting again after deselecting gets a new request`() {
         send("""{"action": "enterComponent", "componentId": "u1"}""")
         val first = reveal

@@ -55,6 +55,15 @@ public interface StoryblokBridge {
     public fun openBlock(block: Component)
 
     /**
+     * Whether [openBlock] can open [block]: whether it carries an `_editable`, which only a draft
+     * story's blocks do.
+     *
+     * A block that cannot be opened leaves a tap on it to the nearest block around it that can, as a
+     * click on a web page opens the nearest element the editor marked.
+     */
+    public fun canOpen(block: Component): Boolean
+
+    /**
      * The block the author has selected, which the preview outlines and scrolls to — or `null` when
      * none is.
      *
@@ -110,6 +119,7 @@ public data class SelectedBlock(
 public object NoVisualEditor : StoryblokBridge {
     override fun <T : Component> story(story: Story<T>, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>> = flowOf(story)
     override fun openBlock(block: Component): Unit = Unit
+    override fun canOpen(block: Component): Boolean = false
     override val selectedBlock: StateFlow<SelectedBlock?> = MutableStateFlow(null)
     override fun destroy(): Unit = Unit
 }

@@ -48,6 +48,7 @@ abstract interface com.storyblok.cdn/StoryblokBridge { // com.storyblok.cdn/Stor
         abstract fun <get-selectedBlock>(): kotlinx.coroutines.flow/StateFlow<com.storyblok.cdn/SelectedBlock?> // com.storyblok.cdn/StoryblokBridge.selectedBlock.<get-selectedBlock>|<get-selectedBlock>(){}[0]
 
     abstract fun <#A1: com.storyblok.cdn.schema/Component> story(com.storyblok.cdn.schema/Story<#A1>, io.ktor.util.reflect/TypeInfo, kotlin/Int): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A1>> // com.storyblok.cdn/StoryblokBridge.story|story(com.storyblok.cdn.schema.Story<0:0>;io.ktor.util.reflect.TypeInfo;kotlin.Int){0§<com.storyblok.cdn.schema.Component>}[0]
+    abstract fun canOpen(com.storyblok.cdn.schema/Component): kotlin/Boolean // com.storyblok.cdn/StoryblokBridge.canOpen|canOpen(com.storyblok.cdn.schema.Component){}[0]
     abstract fun destroy() // com.storyblok.cdn/StoryblokBridge.destroy|destroy(){}[0]
     abstract fun openBlock(com.storyblok.cdn.schema/Component) // com.storyblok.cdn/StoryblokBridge.openBlock|openBlock(com.storyblok.cdn.schema.Component){}[0]
 }
@@ -1107,6 +1108,7 @@ final object com.storyblok.cdn/NoVisualEditor : com.storyblok.cdn/StoryblokBridg
         final fun <get-selectedBlock>(): kotlinx.coroutines.flow/StateFlow<com.storyblok.cdn/SelectedBlock?> // com.storyblok.cdn/NoVisualEditor.selectedBlock.<get-selectedBlock>|<get-selectedBlock>(){}[0]
 
     final fun <#A1: com.storyblok.cdn.schema/Component> story(com.storyblok.cdn.schema/Story<#A1>, io.ktor.util.reflect/TypeInfo, kotlin/Int): kotlinx.coroutines.flow/Flow<com.storyblok.cdn.schema/Story<#A1>> // com.storyblok.cdn/NoVisualEditor.story|story(com.storyblok.cdn.schema.Story<0:0>;io.ktor.util.reflect.TypeInfo;kotlin.Int){0§<com.storyblok.cdn.schema.Component>}[0]
+    final fun canOpen(com.storyblok.cdn.schema/Component): kotlin/Boolean // com.storyblok.cdn/NoVisualEditor.canOpen|canOpen(com.storyblok.cdn.schema.Component){}[0]
     final fun destroy() // com.storyblok.cdn/NoVisualEditor.destroy|destroy(){}[0]
     final fun openBlock(com.storyblok.cdn.schema/Component) // com.storyblok.cdn/NoVisualEditor.openBlock|openBlock(com.storyblok.cdn.schema.Component){}[0]
 }
