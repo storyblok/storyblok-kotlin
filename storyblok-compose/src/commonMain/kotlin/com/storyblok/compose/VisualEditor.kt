@@ -269,7 +269,8 @@ internal fun Modifier.editable(block: Component, editor: VisualEditor): Modifier
                 repeat(2) { withFrameNanos {} }
                 if (editor.shownEdit == edit.serial) return@collect
                 editor.shownEdit = edit.serial
-                requester.bringIntoView()
+                // Launched apart, so that a scroll the author interrupts cancels only itself, not this collector.
+                launch { requester.bringIntoView() }
             }
     }
 
@@ -455,7 +456,8 @@ public fun FollowEdits(document: RichText.Document, state: LazyListState) {
             .collect { (serial, index) ->
                 if (editor.followedEdits[state]?.reveal == serial) return@collect
                 editor.followedEdits[state] = Followed(serial, index)
-                state.reveal(index)
+                // Launched apart, so that a scroll the author interrupts cancels only itself, not this collector.
+                launch { state.reveal(index) }
             }
     }
 }

@@ -111,7 +111,8 @@ internal class EditorState(private val selection: EditorSelection = EditorSelect
         val next = story.content.toJsonElement(resolveLevel = 1)
         content = id to next
         val edit = when (previous) {
-            null -> firstEdit(next) ?: return
+            // Nothing to place it in. The last story's edit is cleared, so that nothing follows it here.
+            null -> firstEdit(next) ?: return hints.update { it.copy(edited = null) }
             else -> editBetween(previous, next) ?: return
         }
         hints.update { it.copy(edited = edit.copy(serial = ++edits)) }

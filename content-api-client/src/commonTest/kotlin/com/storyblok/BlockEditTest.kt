@@ -86,6 +86,22 @@ class BlockEditTest {
     }
 
     @Test
+    fun `a change to a document's own attributes is no node's`() {
+        val before = """{"_uid": "post", "component": "post", "body": {"type": "doc", "content": [${paragraph("One")}, ${paragraph("Two")}]}}"""
+        val after = before.replace("""{"type": "doc",""", """{"type": "doc", "attrs": {"backgroundColor": "#fff"},""")
+
+        assertEquals(BlockEdit("post"), edit(before, after))
+    }
+
+    @Test
+    fun `blocks are matched by uid among many`() {
+        val many = (1..500).map { teaser("t$it", "Teaser $it") }
+        val edited = many.toMutableList().apply { this[499] = teaser("t500", "Changed") }
+
+        assertEquals(BlockEdit("t500", ancestors = listOf("page")), edit(page(*many.toTypedArray()), page(*edited.toTypedArray())))
+    }
+
+    @Test
     fun `a block in rich text is edited in its node`() {
         fun post(headline: String) = """{"_uid": "post", "component": "post", "body": {"type": "doc", "content": [
             {"type": "blok", "attrs": {"id": "x", "body": [${teaser("t", headline)}]}}, ${paragraph("Body")}]}}"""

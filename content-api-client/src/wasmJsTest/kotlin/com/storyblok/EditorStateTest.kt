@@ -364,6 +364,16 @@ class EditorStateTest {
     }
 
     @Test
+    fun `another story with nothing to put its first update in clears the last edit`() {
+        receive(input(42, "Hi"))
+        receive(input(42, "Hello"))
+
+        receive("""{"action": "input", "story": {"id": 43, "content": {"component": "page"}}}""")
+
+        assertNull(state.hints.value.edited)
+    }
+
+    @Test
     fun `a message that is not an object is ignored`() {
         state.receive(parse("\"editedBlok\""))
         state.receive(null)

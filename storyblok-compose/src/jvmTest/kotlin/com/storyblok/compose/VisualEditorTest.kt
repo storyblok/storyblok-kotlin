@@ -1219,6 +1219,26 @@ class VisualEditorTest {
     }
 
     @Test
+    fun `a document still follows edits after the author interrupts a scroll`() = runComposeUiTest {
+        val editor = Editor()
+        val state = LazyListState()
+        setContent { Previewed(editor) { Document(document(20), state) } }
+
+        mainClock.autoAdvance = false
+        editor.hints.value = BlockHints(edited = nodeEdit(15, 20, serial = 1))
+        repeat(3) { mainClock.advanceTimeByFrame() }
+        // The author scrolls while the list is still on its way to the node.
+        runOnIdle { runBlocking { state.scrollToItem(0) } }
+        mainClock.autoAdvance = true
+        waitForIdle()
+
+        editor.hints.value = BlockHints(edited = nodeEdit(18, 20, serial = 2))
+        waitForIdle()
+
+        onNodeWithTag("node18").assertIsDisplayed()
+    }
+
+    @Test
     fun `a document outside the editor is left where it is`() = runComposeUiTest {
         val state = LazyListState()
         setContent { Document(document(20), state) }

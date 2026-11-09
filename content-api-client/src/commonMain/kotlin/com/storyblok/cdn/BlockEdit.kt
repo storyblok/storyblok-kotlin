@@ -115,9 +115,12 @@ private fun changed(previous: JsonElement?, next: JsonElement, spot: Spot): Spot
         }
         is JsonArray -> {
             val before = previous as? JsonArray ?: return spot
+            // Indexed once, so that matching every block is linear in the length of the array, not quadratic.
+            val beforeByUid = HashMap<String, JsonElement>()
+            before.forEach { old -> (old as? JsonObject)?.blockUid()?.let { beforeByUid.getOrPut(it) { old } } }
             next.forEachIndexed { index, element ->
                 val uid = (element as? JsonObject)?.blockUid()
-                val old = if (uid == null) before.getOrNull(index) else before.firstOrNull { (it as? JsonObject)?.blockUid() == uid }
+                val old = if (uid == null) before.getOrNull(index) else beforeByUid[uid]
                 changed(old, element, spot)?.let { return it }
             }
             // Only removed or reordered, which is a change to whatever holds the array.
@@ -134,7 +137,8 @@ private fun changed(previous: JsonElement?, next: JsonElement, spot: Spot): Spot
 private fun changedDocument(before: JsonObject, next: JsonObject, spot: Spot): Spot {
     val nodes = next["content"] as? JsonArray ?: return spot
     val old = before["content"] as? JsonArray
-    if (nodes.isEmpty()) return spot
+    // Only the document's own attributes changed, such as its background: no node is the edit.
+    if (nodes.isEmpty() || nodes == old) return spot
     // When nothing differs as far as the edited document goes, nodes were removed from its end.
     val index = nodes.indices.firstOrNull { nodes[it] != old?.getOrNull(it) } ?: nodes.lastIndex
     val inside = Spot(spot.blocks, spot.richText + RichTextEdit(index, nodes.size, nodes[index].plainText()))
