@@ -42,6 +42,10 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.runComposeUiTest
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.runSkikoComposeUiTest
 import androidx.compose.ui.test.swipeDown
 import androidx.compose.ui.unit.dp
 import com.storyblok.InternalAPI
@@ -877,6 +881,53 @@ class VisualEditorTest {
         editor.selectedBlock.value = SelectedBlock("c1", menu = cardMenu())
         waitForIdle()
         onNodeWithText("Teaser Card").assertIsDisplayed()
+    }
+
+    @Test
+    fun `a moved block's menu comes back when the move and its description arrive together`() = runComposeUiTest {
+        val editor = Editor()
+        setContent { Previewed(editor) { blocks.Block(section("s1", "c1")) } }
+        editor.selectedBlock.value = SelectedBlock("c1", reveal = 1, menu = cardMenu())
+        waitForIdle()
+        onNodeWithContentDescription(ACTIONS_DESCRIPTION).performClick()
+        onNodeWithText("Move Forward").performClick()
+        waitForIdle()
+
+        // With no frame between them, the menu comes back as it was: the move is a new request.
+        editor.selectedBlock.value = SelectedBlock("c1", reveal = 2)
+        editor.selectedBlock.value = SelectedBlock("c1", reveal = 2, menu = cardMenu())
+        waitForIdle()
+
+        onNodeWithText("Teaser Card").assertIsDisplayed()
+    }
+
+    @Test
+    fun `a block tapped again and then moved is asked for its menu again`() = runComposeUiTest {
+        val editor = Editor()
+        setContent { Previewed(editor) { blocks.Block(card("c1", clickable = false)) } }
+        editor.selectedBlock.value = SelectedBlock("c1", reveal = 1, menu = cardMenu())
+        waitForIdle()
+
+        // The editor answers a tap on the selected block with the menu it has already.
+        onNodeWithTag("c1").performClick()
+        waitForIdle()
+        editor.selectedBlock.value = SelectedBlock("c1", reveal = 2)
+        waitForIdle()
+
+        assertEquals(listOf("c1", "c1"), editor.opened)
+    }
+
+    @Test
+    fun `every action can be reached in a short preview`() = runSkikoComposeUiTest(Size(400f, 160f), Density(1f)) {
+        val editor = Editor()
+        setContent { Previewed(editor) { blocks.Block(section("s1", "c1")) } }
+        editor.selectedBlock.value = SelectedBlock("c1", menu = cardMenu())
+        waitForIdle()
+
+        onNodeWithContentDescription(ACTIONS_DESCRIPTION).performClick()
+        onNodeWithText("Delete").performScrollTo().performClick()
+
+        assertEquals(listOf(BlockAction.Delete), editor.performed)
     }
 
     @Test

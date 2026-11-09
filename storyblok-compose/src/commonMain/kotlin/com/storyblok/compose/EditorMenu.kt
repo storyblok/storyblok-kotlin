@@ -9,6 +9,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -201,7 +203,11 @@ private fun Label(text: String, modifier: Modifier = Modifier) = BasicText(
 private fun Icon(icon: ImageVector) =
     Image(rememberVectorPainter(icon), contentDescription = null, Modifier.padding(horizontal = 3.dp).size(24.dp))
 
-/** One of the menu's lists, below the button it belongs to unless there is no room there. */
+/**
+ * One of the menu's lists, below the button it belongs to unless there is no room there. It scrolls when
+ * it is taller than the window, as a list of actions can be in a short preview, so that every row can
+ * be reached.
+ */
 @Composable
 private fun Dropdown(offsetX: Dp, content: @Composable () -> Unit) {
     val density = LocalDensity.current
@@ -215,6 +221,7 @@ private fun Dropdown(offsetX: Dp, content: @Composable () -> Unit) {
                 .border(1.dp, DROPDOWN_BORDER, CORNERS)
                 .background(Color.White, CORNERS)
                 .clip(CORNERS)
+                .verticalScroll(rememberScrollState())
                 .padding(vertical = 11.dp)
                 .width(IntrinsicSize.Max)
                 .widthIn(min = 156.dp),

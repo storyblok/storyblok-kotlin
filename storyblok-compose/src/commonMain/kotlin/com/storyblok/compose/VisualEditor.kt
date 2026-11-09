@@ -240,7 +240,8 @@ internal fun Modifier.editable(block: Component, editor: VisualEditor): Modifier
     LaunchedEffect(editor, requester, block.uid) {
         snapshotFlow { block.uid.isNotEmpty() && editor.hints.value.highlightedFocus == block.uid }
             .filter { it }
-            .collect { requester.bringIntoView() }
+            // Launched apart, so that a scroll the author interrupts cancels only itself, not this collector.
+            .collect { launch { requester.bringIntoView() } }
     }
 
     DisposableEffect(editor, block.uid) {
@@ -334,8 +335,12 @@ private suspend fun PointerInputScope.openOnTap(block: () -> Component, editor: 
 
     // The block as it is now, which an edit during the press may have replaced.
     val tapped = block()
-    val wasSelected = editor.bridge.selectedBlock.value?.uid == tapped.uid
-    editor.awaitingMenu = tapped.uid
+    val before = editor.bridge.selectedBlock.value
+    val wasSelected = before?.uid == tapped.uid
+    // Only a block without a menu waits for one. A block that has one keeps its selection, and the
+    // editor's answer repeats the same menu, so nothing would ever stop it waiting: a later move would
+    // then be taken for the menu still on its way, and the block not asked for it again.
+    if (!wasSelected || before.menu == null) editor.awaitingMenu = tapped.uid
     editor.bridge.openBlock(tapped)
     // Held back only if this tap is what selected the block. One the editor did not select must not
     // swallow every tap it is given.
