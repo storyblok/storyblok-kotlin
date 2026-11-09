@@ -1,25 +1,92 @@
 public abstract interface annotation class com/storyblok/InternalAPI : java/lang/annotation/Annotation {
 }
 
+public final class com/storyblok/cdn/BlockAction : java/lang/Enum {
+	public static final field AddBlockAfter Lcom/storyblok/cdn/BlockAction;
+	public static final field AddBlockBefore Lcom/storyblok/cdn/BlockAction;
+	public static final field Copy Lcom/storyblok/cdn/BlockAction;
+	public static final field Delete Lcom/storyblok/cdn/BlockAction;
+	public static final field Duplicate Lcom/storyblok/cdn/BlockAction;
+	public static final field MoveBackward Lcom/storyblok/cdn/BlockAction;
+	public static final field MoveForward Lcom/storyblok/cdn/BlockAction;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/storyblok/cdn/BlockAction;
+	public static fun values ()[Lcom/storyblok/cdn/BlockAction;
+}
+
+public final class com/storyblok/cdn/BlockBreadcrumb {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/storyblok/cdn/BlockBreadcrumb;
+	public static synthetic fun copy$default (Lcom/storyblok/cdn/BlockBreadcrumb;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/storyblok/cdn/BlockBreadcrumb;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getComponent ()Ljava/lang/String;
+	public final fun getLabel ()Ljava/lang/String;
+	public final fun getUid ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/storyblok/cdn/BlockHints {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/util/List;Ljava/lang/String;)Lcom/storyblok/cdn/BlockHints;
+	public static synthetic fun copy$default (Lcom/storyblok/cdn/BlockHints;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;ILjava/lang/Object;)Lcom/storyblok/cdn/BlockHints;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getHighlighted ()Ljava/util/List;
+	public final fun getHighlightedFocus ()Ljava/lang/String;
+	public final fun getHovered ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/storyblok/cdn/BlockMenu {
+	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/util/List;Lkotlinx/serialization/json/JsonObject;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/util/List;Lkotlinx/serialization/json/JsonObject;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/util/List;Ljava/util/List;Lkotlinx/serialization/json/JsonObject;)Lcom/storyblok/cdn/BlockMenu;
+	public static synthetic fun copy$default (Lcom/storyblok/cdn/BlockMenu;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Lkotlinx/serialization/json/JsonObject;ILjava/lang/Object;)Lcom/storyblok/cdn/BlockMenu;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getActions ()Ljava/util/List;
+	public final fun getBreadcrumbs ()Ljava/util/List;
+	public final fun getLabel ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class com/storyblok/cdn/NoVisualEditor : com/storyblok/cdn/StoryblokBridge {
 	public static final field INSTANCE Lcom/storyblok/cdn/NoVisualEditor;
 	public fun canOpen (Lcom/storyblok/cdn/schema/Component;)Z
 	public fun destroy ()V
+	public fun dismissHover ()V
+	public fun getHints ()Lkotlinx/coroutines/flow/StateFlow;
 	public fun getSelectedBlock ()Lkotlinx/coroutines/flow/StateFlow;
 	public fun openBlock (Lcom/storyblok/cdn/schema/Component;)V
+	public fun openBreadcrumb (Lcom/storyblok/cdn/BlockBreadcrumb;)V
+	public fun perform (Lcom/storyblok/cdn/BlockAction;)V
 	public fun story (Lcom/storyblok/cdn/schema/Story;Lio/ktor/util/reflect/TypeInfo;I)Lkotlinx/coroutines/flow/Flow;
 }
 
 public final class com/storyblok/cdn/SelectedBlock {
-	public fun <init> (Ljava/lang/String;Ljava/util/List;I)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;Ljava/util/List;ILcom/storyblok/cdn/BlockMenu;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;ILcom/storyblok/cdn/BlockMenu;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/util/List;
 	public final fun component3 ()I
-	public final fun copy (Ljava/lang/String;Ljava/util/List;I)Lcom/storyblok/cdn/SelectedBlock;
-	public static synthetic fun copy$default (Lcom/storyblok/cdn/SelectedBlock;Ljava/lang/String;Ljava/util/List;IILjava/lang/Object;)Lcom/storyblok/cdn/SelectedBlock;
+	public final fun component4 ()Lcom/storyblok/cdn/BlockMenu;
+	public final fun copy (Ljava/lang/String;Ljava/util/List;ILcom/storyblok/cdn/BlockMenu;)Lcom/storyblok/cdn/SelectedBlock;
+	public static synthetic fun copy$default (Lcom/storyblok/cdn/SelectedBlock;Ljava/lang/String;Ljava/util/List;ILcom/storyblok/cdn/BlockMenu;ILjava/lang/Object;)Lcom/storyblok/cdn/SelectedBlock;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAncestors ()Ljava/util/List;
+	public final fun getMenu ()Lcom/storyblok/cdn/BlockMenu;
 	public final fun getReveal ()I
 	public final fun getUid ()Ljava/lang/String;
 	public fun hashCode ()I
@@ -29,9 +96,20 @@ public final class com/storyblok/cdn/SelectedBlock {
 public abstract interface class com/storyblok/cdn/StoryblokBridge {
 	public abstract fun canOpen (Lcom/storyblok/cdn/schema/Component;)Z
 	public abstract fun destroy ()V
+	public fun dismissHover ()V
+	public fun getHints ()Lkotlinx/coroutines/flow/StateFlow;
 	public abstract fun getSelectedBlock ()Lkotlinx/coroutines/flow/StateFlow;
 	public abstract fun openBlock (Lcom/storyblok/cdn/schema/Component;)V
+	public fun openBreadcrumb (Lcom/storyblok/cdn/BlockBreadcrumb;)V
+	public fun perform (Lcom/storyblok/cdn/BlockAction;)V
 	public abstract fun story (Lcom/storyblok/cdn/schema/Story;Lio/ktor/util/reflect/TypeInfo;I)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class com/storyblok/cdn/StoryblokBridge$DefaultImpls {
+	public static fun dismissHover (Lcom/storyblok/cdn/StoryblokBridge;)V
+	public static fun getHints (Lcom/storyblok/cdn/StoryblokBridge;)Lkotlinx/coroutines/flow/StateFlow;
+	public static fun openBreadcrumb (Lcom/storyblok/cdn/StoryblokBridge;Lcom/storyblok/cdn/BlockBreadcrumb;)V
+	public static fun perform (Lcom/storyblok/cdn/StoryblokBridge;Lcom/storyblok/cdn/BlockAction;)V
 }
 
 public abstract interface class com/storyblok/cdn/StoryblokClient {

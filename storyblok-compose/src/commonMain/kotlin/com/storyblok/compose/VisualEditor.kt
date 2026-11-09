@@ -8,7 +8,10 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -20,25 +23,46 @@ import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.PointerType
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import com.storyblok.InternalAPI
+import com.storyblok.cdn.BlockHints
 import com.storyblok.cdn.SelectedBlock
 import com.storyblok.cdn.StoryblokBridge
 import com.storyblok.cdn.schema.Component
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
 /** The colour of the outline the preview bridge package draws around the selected block. */
 private val OUTLINE = Color(0xFF05807F)
+
+/** The colour of the line the package outlines every block with while the pointer moves over the page. */
+private val BLOCK_OUTLINE = Color(182, 186, 191, 128)
+
+/** The colour the package fills a highlighted block with. */
+private val HIGHLIGHT = Color(89, 197, 198, 51)
+
+/** How long the pointer has to rest before the outlines around every block go, as in the package. */
+private const val OUTLINE_LINGER_MILLIS = 800L
 
 /**
  * Twice the package's 1px. That was drawn for light web pages, and against a dark Compose theme a line
@@ -62,6 +86,8 @@ internal class VisualEditor(
      * that starts a scroll is soon scrolled out of composition, and would cancel the scroll with it.
      */
     val scope: CoroutineScope,
+    /** [bridge]'s hints, collected once for every block in the tree. */
+    val hints: State<BlockHints> = mutableStateOf(BlockHints()),
 ) {
     /** The innermost block under the pointer that last went down: the one a tap there opens. */
     var pressed: Component? = null
@@ -79,6 +105,43 @@ internal class VisualEditor(
      * [shown] once: so that the user can scroll away. It follows it again only if that item moves.
      */
     val followed: FollowedLists = FollowedLists()
+
+    /**
+     * Where the selected block is in the window, clipped to what of it is on screen, for its
+     * [menu][EditorMenu] to be drawn against. Paired with the block's `_uid`, as it lingers after the
+     * selection moves on until the next selected block reports in.
+     */
+    val selectedBounds: MutableState<Pair<String, Rect>?> = mutableStateOf(null)
+
+    /**
+     * The block asked to open its form and not yet described by the editor in answer. A selection the
+     * editor gives no menu for is opened, so that the editor describes it, unless it is this one.
+     */
+    var awaitingMenu: String? = null
+
+    /** Whether every block is outlined, as they are while the pointer moves over the page. */
+    val outlined: MutableState<Boolean> = mutableStateOf(false)
+
+    /** When the pointer last moved, as its events time it, which every block under it hears of. */
+    private var lastMove = -1L
+
+    private var outlineTimer: Job? = null
+
+    /**
+     * Outlines every block until the pointer has rested for a while, then hides them and the hovered
+     * block's hint, as the package does on a web page.
+     */
+    fun pointerMoved(uptimeMillis: Long) {
+        if (uptimeMillis == lastMove) return
+        lastMove = uptimeMillis
+        outlined.value = true
+        outlineTimer?.cancel()
+        outlineTimer = scope.launch {
+            delay(OUTLINE_LINGER_MILLIS)
+            outlined.value = false
+            bridge.dismissHover()
+        }
+    }
 }
 
 /** A [SelectedBlock.reveal] a lazy list followed, to the item at [index] in the whole list. */
@@ -111,7 +174,11 @@ internal val LocalVisualEditor = staticCompositionLocalOf<VisualEditor?> { null 
 
 /**
  * [block] as the editor previews it: a tap opens its form, and while it is selected it is outlined and
- * brought into view.
+ * brought into view, with its [menu][EditorMenu] above it.
+ *
+ * It is also outlined, more faintly, while the pointer moves over the page; outlined while the author
+ * hovers over it in the editor's form; and highlighted, and brought into view, when the editor
+ * highlights it.
  *
  * The first tap on a block only selects it, as on a web page in the editor, so that tapping a block
  * that is itself clickable — a card that navigates, say — opens it instead of following it. A second
@@ -126,6 +193,14 @@ internal fun Modifier.editable(block: Component, editor: VisualEditor): Modifier
     // Read through state rather than keyed on, so that every edit's new instance of the block neither
     // restarts the tap detector, losing a press it spans, nor compares the whole block to the last one.
     val current by rememberUpdatedState(block)
+    val hovered = remember(editor, block.uid) {
+        derivedStateOf { block.uid.isNotEmpty() && editor.hints.value.hovered == block.uid }
+    }
+    val highlighted = remember(editor, block.uid) {
+        derivedStateOf { block.uid.isNotEmpty() && block.uid in editor.hints.value.highlighted }
+    }
+    // Where the block was last placed, for its menu to be put against the moment it is selected.
+    val placed = remember { Placement() }
 
     // Read from snapshots rather than composition, so that a change of selection recomposes nothing:
     // only the block that gains it and the one that loses it redraw.
@@ -133,6 +208,7 @@ internal fun Modifier.editable(block: Component, editor: VisualEditor): Modifier
         snapshotFlow { editor.selected.value?.takeIf { block.uid.isNotEmpty() && it.uid == block.uid } }
             .filterNotNull()
             .collect { selection ->
+                placed.coordinates?.let { editor.selectedBounds.value = block.uid to it.boundsInWindow() }
                 // Content that arrives with the request recomposes where blocks are, which cancels this
                 // effect if its place now shows another block, so that the block is brought into view
                 // where it lands rather than where it was. Two frames, because a frame resumes its waiters
@@ -144,24 +220,89 @@ internal fun Modifier.editable(block: Component, editor: VisualEditor): Modifier
             }
     }
 
+    // The editor describes the block it selects through the form, and the one a tap or a breadcrumb
+    // asks it to open. A block it selects by adding, moving or duplicating it is asked for, as the
+    // package asks for it, so that its menu comes back. Keyed on the uid, as the tap detector is, so that
+    // an edit's new instance of the block does not restart it.
+    LaunchedEffect(editor, block.uid) {
+        snapshotFlow { editor.selected.value?.takeIf { block.uid.isNotEmpty() && it.uid == block.uid } }
+            .filterNotNull()
+            .collect { selection ->
+                if (selection.menu != null) {
+                    if (editor.awaitingMenu == block.uid) editor.awaitingMenu = null
+                } else if (editor.awaitingMenu != block.uid) {
+                    editor.awaitingMenu = block.uid
+                    editor.bridge.openBlock(current)
+                }
+            }
+    }
+
+    LaunchedEffect(editor, requester, block.uid) {
+        snapshotFlow { block.uid.isNotEmpty() && editor.hints.value.highlightedFocus == block.uid }
+            .filter { it }
+            // Launched apart, so that a scroll the author interrupts cancels only itself, not this collector.
+            .collect { launch { requester.bringIntoView() } }
+    }
+
+    DisposableEffect(editor, block.uid) {
+        onDispose {
+            if (editor.selectedBounds.value?.first == block.uid) editor.selectedBounds.value = null
+        }
+    }
+
     return this
         .pointerInput(block.uid, editor) { openOnTap({ current }, editor) }
+        .pointerInput(editor) { outlineOnMove(editor) }
         .bringIntoViewRequester(requester)
+        .onGloballyPositioned {
+            placed.coordinates = it
+            if (selected.value) editor.selectedBounds.value = block.uid to it.boundsInWindow()
+        }
         .drawWithContent {
             drawContent()
-            if (!selected.value) return@drawWithContent
-            // 1dp in from the edge rather than on it. A block as wide as the preview has its sides under
-            // the editor's frame, which hides a line drawn on the outermost pixels. The stroke is centred
-            // on its path, hence the half.
-            val width = OUTLINE_WIDTH.toPx()
-            val inset = 1.dp.toPx() + width / 2
-            drawRect(
-                OUTLINE,
-                topLeft = Offset(inset, inset),
-                size = Size(size.width - 2 * inset, size.height - 2 * inset),
-                style = Stroke(width),
-            )
+            if (highlighted.value) {
+                drawRect(HIGHLIGHT)
+                drawOutline(OUTLINE, 1.dp.toPx())
+            }
+            when {
+                selected.value -> drawOutline(OUTLINE, OUTLINE_WIDTH.toPx())
+                hovered.value -> drawOutline(OUTLINE, 1.dp.toPx())
+                editor.outlined.value -> drawOutline(BLOCK_OUTLINE, 1.dp.toPx(), dashed = true)
+            }
         }
+}
+
+private class Placement {
+    var coordinates: LayoutCoordinates? = null
+}
+
+/**
+ * A line around the block, 1dp in from its edges rather than on them. A block as wide as the preview
+ * has its sides under the editor's frame, which hides a line drawn on the outermost pixels.
+ */
+private fun DrawScope.drawOutline(color: Color, width: Float, dashed: Boolean = false) {
+    // The stroke is centred on its path, hence the half.
+    val inset = 1.dp.toPx() + width / 2
+    drawRect(
+        color,
+        topLeft = Offset(inset, inset),
+        size = Size(size.width - 2 * inset, size.height - 2 * inset),
+        style = Stroke(width, pathEffect = if (dashed) PathEffect.dashPathEffect(floatArrayOf(3.dp.toPx(), 3.dp.toPx())) else null),
+    )
+}
+
+/**
+ * Tells [editor] whenever a mouse moves over the block. Hover events, which only a mouse makes, reach
+ * every block under the pointer rather than the page as a whole, so this costs nothing while the
+ * pointer is still or outside the preview.
+ */
+private suspend fun PointerInputScope.outlineOnMove(editor: VisualEditor) = awaitPointerEventScope {
+    while (true) {
+        val event = awaitPointerEvent(PointerEventPass.Initial)
+        if (event.type != PointerEventType.Move && event.type != PointerEventType.Enter) continue
+        val change = event.changes.firstOrNull { it.type == PointerType.Mouse } ?: continue
+        editor.pointerMoved(change.uptimeMillis)
+    }
 }
 
 /**
@@ -194,7 +335,12 @@ private suspend fun PointerInputScope.openOnTap(block: () -> Component, editor: 
 
     // The block as it is now, which an edit during the press may have replaced.
     val tapped = block()
-    val wasSelected = editor.bridge.selectedBlock.value?.uid == tapped.uid
+    val before = editor.bridge.selectedBlock.value
+    val wasSelected = before?.uid == tapped.uid
+    // Only a block without a menu waits for one. A block that has one keeps its selection, and the
+    // editor's answer repeats the same menu, so nothing would ever stop it waiting: a later move would
+    // then be taken for the menu still on its way, and the block not asked for it again.
+    if (!wasSelected || before.menu == null) editor.awaitingMenu = tapped.uid
     editor.bridge.openBlock(tapped)
     // Held back only if this tap is what selected the block. One the editor did not select must not
     // swallow every tap it is given.
