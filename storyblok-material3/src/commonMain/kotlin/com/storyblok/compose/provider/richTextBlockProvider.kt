@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material3.HorizontalDivider
@@ -40,8 +41,10 @@ import androidx.compose.ui.text.style.TextDecoration.Companion.Underline
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.storyblok.InternalAPI
 import com.storyblok.cdn.schema.Component
 import com.storyblok.cdn.schema.RichText
+import com.storyblok.compose.FollowEdits
 import com.storyblok.material3.richtext.CssColorParser
 import com.storyblok.material3.richtext.buildAnnotatedString
 import com.storyblok.material3.richtext.withList
@@ -68,7 +71,11 @@ public fun blockProvider(
     builder()
 
     defaultRichText<RichText.Document> { document, modifier ->
-        LazyColumn(modifier) {
+        val state = rememberLazyListState()
+        // In the Visual Editor, scrolls to the node the author is typing in.
+        @OptIn(InternalAPI::class)
+        FollowEdits(document, state)
+        LazyColumn(modifier, state) {
             items(document.content, key = { it.hashCode() }) {
                 RichText(it, Modifier.fillMaxWidth().padding(bottom = 16.dp))
             }
