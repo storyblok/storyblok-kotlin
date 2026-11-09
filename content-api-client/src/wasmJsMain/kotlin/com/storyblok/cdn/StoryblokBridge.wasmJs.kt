@@ -54,12 +54,13 @@ private const val STAGE_EDITOR_ORIGIN = "https://app-beta.storyblok.com"
 private val MESSAGE = EventType<MessageEvent<JsAny?>>("message")
 
 /**
- * The `initialized` message, which tells the editor to resolve the relations the Content Delivery
- * API request asks for before it sends anything.
+ * The `initialized` message, which tells the editor to resolve the relations, and fill untranslated
+ * fields from the fallback language, as the Content Delivery API request asks before it sends
+ * anything.
  */
-internal fun initialized(resolveRelations: String): InitializedAction = unsafeJso {
+internal fun initialized(resolveRelations: String, fallbackLanguage: String?): InitializedAction = unsafeJso {
     action = "initialized"
-    config = bridgeParams(resolveRelations)
+    config = bridgeParams(resolveRelations, fallbackLanguage)
 }
 
 internal external interface InitializedAction : JsAny {
@@ -72,7 +73,7 @@ internal external interface InitializedAction : JsAny {
  *
  * It repeats the handshake's [config][BridgeParams], as the preview bridge does: the editor reads it from both.
  */
-internal fun edit(block: EditableBlock, resolveRelations: String): EditAction = unsafeJso {
+internal fun edit(block: EditableBlock, resolveRelations: String, fallbackLanguage: String?): EditAction = unsafeJso {
     action = "edit"
     dataC = unsafeJso {
         name = block.name
@@ -81,7 +82,7 @@ internal fun edit(block: EditableBlock, resolveRelations: String): EditAction = 
         uid = block.uid
         id = block.id
     }
-    config = bridgeParams(resolveRelations)
+    config = bridgeParams(resolveRelations, fallbackLanguage)
 }
 
 internal external interface EditAction : JsAny {
@@ -98,20 +99,24 @@ internal external interface EditableBlockData : JsAny {
     var id: String
 }
 
-private fun bridgeParams(resolveRelations: String): BridgeParams = unsafeJso {
+private fun bridgeParams(resolveRelations: String, fallbackLanguage: String?): BridgeParams = unsafeJso {
     this.resolveRelations = resolveRelations
         .takeIf { it.isNotEmpty() }
         ?.split(",")
         ?.map { it.toJsString() }
         ?.toJsArray()
+    // Without it, the editor fills an untranslated field with the default language's value in every
+    // edit, where the fetched story had the fallback language's.
+    fallbackLang = fallbackLanguage
 }
 
 /**
- * What the editor is asked to do before it sends anything back. Only the relations are set; the
- * preview bridge's other options all concern DOM this preview does not have.
+ * What the editor is asked to do before it sends anything back. Only the relations and the fallback
+ * language are set; the preview bridge's other options all concern DOM this preview does not have.
  */
 internal external interface BridgeParams : JsAny {
     var resolveRelations: JsArray<JsString>?
+    var fallbackLang: String?
 }
 
 /** The `input` message, carrying the story as the editor currently holds it. */
@@ -186,8 +191,8 @@ private fun inVisualEditor(): Boolean =
         // A top-level window is its own parent.
         inVisualEditor(window.location.search, framed = window.parent != window)
 
-internal actual fun StoryblokBridge(json: Json, resolveRelations: String): StoryblokBridge =
-    if (inVisualEditor()) VisualEditor(json, resolveRelations) else NoVisualEditor
+internal actual fun StoryblokBridge(json: Json, resolveRelations: String, fallbackLanguage: String?): StoryblokBridge =
+    if (inVisualEditor()) VisualEditor(json, resolveRelations, fallbackLanguage) else NoVisualEditor
 
 // Read once, when the client is created: the editor reloads the preview to switch language, so the
 // URL's language cannot change while the page lives. The same checks as the bridge's keep a page
@@ -202,7 +207,11 @@ internal actual fun editorLanguage(): EditorLanguage? =
  * [destroy] removes. Clicks are not listened for here: a Compose canvas is one element, so which
  * block was clicked is for the UI to say, through [openBlock].
  */
-private class VisualEditor(private val json: Json, private val resolveRelations: String) : StoryblokBridge {
+private class VisualEditor(
+    private val json: Json,
+    private val resolveRelations: String,
+    private val fallbackLanguage: String?,
+) : StoryblokBridge {
 
     private val editorOrigin =
         if ("_storyblok_env=stage" in window.location.search) STAGE_EDITOR_ORIGIN else EDITOR_ORIGIN
@@ -240,7 +249,7 @@ private class VisualEditor(private val json: Json, private val resolveRelations:
     init {
         // Listening first, so that nothing the editor sends in answer to the handshake is missed.
         window.addEventListener(MESSAGE, listener)
-        window.parent.postMessage(initialized(resolveRelations), editorOrigin)
+        window.parent.postMessage(initialized(resolveRelations, fallbackLanguage), editorOrigin)
     }
 
     override fun <T : Component> story(story: Story<T>, typeInfo: TypeInfo, resolveLevel: Int): Flow<Story<T>> = edits
@@ -259,7 +268,7 @@ private class VisualEditor(private val json: Json, private val resolveRelations:
 
     override fun openBlock(block: Component) {
         val editable = block.editableBlock() ?: return
-        window.parent.postMessage(edit(editable, resolveRelations), editorOrigin)
+        window.parent.postMessage(edit(editable, resolveRelations, fallbackLanguage), editorOrigin)
         // Selected now rather than when the editor answers, as the preview bridge package does, so the
         // tap shows at once.
         selectedBlock.value = SelectedBlock(editable.uid)

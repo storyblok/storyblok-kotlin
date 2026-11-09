@@ -20,12 +20,12 @@ class EditMessageTest {
 
     @Test
     fun `the message is the edit action`() {
-        assertEquals("edit", edit(teaser, "").action)
+        assertEquals("edit", edit(teaser, "", fallbackLanguage = null).action)
     }
 
     @Test
     fun `the message names the block as its editable does`() {
-        val block = edit(teaser, "").dataC
+        val block = edit(teaser, "", fallbackLanguage = null).dataC
 
         assertEquals(
             listOf("teaser", "1001", "u1", "42"),
@@ -35,14 +35,14 @@ class EditMessageTest {
 
     @Test
     fun `a block without a space is sent without one`() {
-        val block = edit(EditableBlock(name = "teaser", uid = "u1", id = "42"), "").dataC
+        val block = edit(EditableBlock(name = "teaser", uid = "u1", id = "42"), "", fallbackLanguage = null).dataC
 
         assertFalse(Object.hasOwn(block, "space"))
     }
 
     @Test
     fun `the message repeats the relations the handshake asked for`() {
-        val relations = edit(teaser, "feed.posts,post.author").config.resolveRelations!!
+        val relations = edit(teaser, "feed.posts,post.author", fallbackLanguage = null).config.resolveRelations!!
 
         assertEquals(
             listOf("feed.posts", "post.author"),
@@ -52,6 +52,11 @@ class EditMessageTest {
 
     @Test
     fun `a client with no relations repeats none`() {
-        assertNull(edit(teaser, "").config.resolveRelations)
+        assertNull(edit(teaser, "", fallbackLanguage = null).config.resolveRelations)
+    }
+
+    @Test
+    fun `the edit message repeats the fallback language`() {
+        assertEquals("en", edit(teaser, "", fallbackLanguage = "en").config.fallbackLang)
     }
 }

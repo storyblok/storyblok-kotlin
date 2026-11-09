@@ -106,14 +106,14 @@ public object NoVisualEditor : StoryblokBridge {
 
 /**
  * Opens the page's bridge, asking the editor to resolve [resolveRelations] — formatted as the
- * `resolve_relations` request parameter formats them — in everything it sends back, and decoding
- * what it sends with [json].
+ * `resolve_relations` request parameter formats them — and to fill untranslated fields from
+ * [fallbackLanguage] in everything it sends back, and decoding what it sends with [json].
  *
- * The relations are fixed here rather than per subscription because the bridge posts them to the
- * editor as it initializes. A page shows one story fetched with one set of relations, so there is
- * nothing to vary them by.
+ * Both are fixed here rather than per subscription because the bridge posts them to the editor as it
+ * initializes. A page shows one story fetched with one set of relations, in one fallback language,
+ * so there is nothing to vary them by.
  */
-internal expect fun StoryblokBridge(json: Json, resolveRelations: String): StoryblokBridge
+internal expect fun StoryblokBridge(json: Json, resolveRelations: String, fallbackLanguage: String?): StoryblokBridge
 
 /**
  * Whether a page with this URL [query] string, [framed] in another page or not, is being previewed in
