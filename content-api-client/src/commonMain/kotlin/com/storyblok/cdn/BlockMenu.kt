@@ -31,6 +31,12 @@ public data class BlockMenu(
     public val breadcrumbs: List<BlockBreadcrumb> = emptyList(),
     /** What the editor lets the author do to the block from the preview, in the order its menu lists them. */
     public val actions: List<BlockAction> = emptyList(),
+    /**
+     * The last of the breadcrumbs as the editor sent them, which an action on the block is sent back
+     * with, as the package sends it, rather than as a copy that would lose what this does not read.
+     * Kept with the menu so that an action always names the block the menu was drawn for.
+     */
+    internal val target: JsonObject? = null,
 )
 
 /**
@@ -136,33 +142,28 @@ internal fun humanize(name: String): String = name
  * What the editor has said about itself, which the [menus][BlockMenu] it describes are labelled and
  * filled in from.
  */
-internal class EditorContext {
+internal data class EditorContext(
     /** The editor's version, from `enterEditmode`. Only `v2` lets a block be copied. */
-    var appVersion: String = "v1"
-
+    val appVersion: String = "v1",
     /** Display names by technical name, from `enterEditmode`. */
-    var componentNames: Map<String, String> = emptyMap()
-
+    val componentNames: Map<String, String> = emptyMap(),
     /** The id of the story being edited, which opening a block's form has to name. */
-    var storyId: String? = null
-
+    val storyId: String? = null,
+) {
     /**
-     * The breadcrumbs of the last menu, as the editor sent them. An action is sent with the last of
-     * them, as the package sends it, rather than with a copy that would lose what this does not read.
+     * This context once [message] is taken in: with the editor's version and display names from
+     * `enterEditmode`, and the story being edited from any message that names it.
      */
-    var breadcrumbs: List<JsonObject> = emptyList()
-
-    /**
-     * Takes what [message] says about the editor: its version and display names on `enterEditmode`,
-     * and the story being edited on any message that names it.
-     */
-    fun update(message: JsonObject) {
-        message.string("storyId")?.let { storyId = it }
-        if (message.string("action") != "enterEditmode") return
-        message.string("appVersion")?.let { appVersion = it }
-        (message["componentNames"] as? JsonObject)?.let { names ->
-            componentNames = names.mapNotNull { (name, display) -> display.string()?.let { name to it } }.toMap()
-        }
+    fun after(message: JsonObject): EditorContext {
+        val named = message.string("storyId")?.let { copy(storyId = it) } ?: this
+        if (message.string("action") != "enterEditmode") return named
+        return named.copy(
+            appVersion = message.string("appVersion") ?: appVersion,
+            componentNames = (message["componentNames"] as? JsonObject)
+                ?.mapNotNull { (name, display) -> display.string()?.let { name to it } }
+                ?.toMap()
+                ?: componentNames,
+        )
     }
 
     /**
@@ -182,7 +183,6 @@ internal class EditorContext {
             val component = crumb.string("component").orEmpty()
             BlockBreadcrumb(crumbUid, component, displayName(component, componentNames))
         }
-        this.breadcrumbs = path
         val name = block?.string("name") ?: path.lastOrNull()?.string("component").orEmpty()
         return BlockMenu(
             label = displayName(name, componentNames),
@@ -196,11 +196,9 @@ internal class EditorContext {
                 parentIndex = path.lastOrNull()?.get("_parentindex")?.int(),
                 appVersion = appVersion,
             ),
+            target = path.lastOrNull()?.takeIf { it.string("_uid") == uid },
         )
     }
-
-    /** The breadcrumb, as the editor sent it, that an action on the block [uid] is sent with. */
-    fun actionTarget(uid: String): JsonObject? = breadcrumbs.lastOrNull()?.takeIf { it.string("_uid") == uid }
 }
 
 /**

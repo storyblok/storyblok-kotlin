@@ -492,7 +492,7 @@ final class com.storyblok.cdn/BlockHints { // com.storyblok.cdn/BlockHints|null[
 }
 
 final class com.storyblok.cdn/BlockMenu { // com.storyblok.cdn/BlockMenu|null[0]
-    constructor <init>(kotlin/String, kotlin.collections/List<com.storyblok.cdn/BlockBreadcrumb> = ..., kotlin.collections/List<com.storyblok.cdn/BlockAction> = ...) // com.storyblok.cdn/BlockMenu.<init>|<init>(kotlin.String;kotlin.collections.List<com.storyblok.cdn.BlockBreadcrumb>;kotlin.collections.List<com.storyblok.cdn.BlockAction>){}[0]
+    constructor <init>(kotlin/String, kotlin.collections/List<com.storyblok.cdn/BlockBreadcrumb> = ..., kotlin.collections/List<com.storyblok.cdn/BlockAction> = ..., kotlinx.serialization.json/JsonObject? = ...) // com.storyblok.cdn/BlockMenu.<init>|<init>(kotlin.String;kotlin.collections.List<com.storyblok.cdn.BlockBreadcrumb>;kotlin.collections.List<com.storyblok.cdn.BlockAction>;kotlinx.serialization.json.JsonObject?){}[0]
 
     final val actions // com.storyblok.cdn/BlockMenu.actions|{}actions[0]
         final fun <get-actions>(): kotlin.collections/List<com.storyblok.cdn/BlockAction> // com.storyblok.cdn/BlockMenu.actions.<get-actions>|<get-actions>(){}[0]
@@ -504,7 +504,7 @@ final class com.storyblok.cdn/BlockMenu { // com.storyblok.cdn/BlockMenu|null[0]
     final fun component1(): kotlin/String // com.storyblok.cdn/BlockMenu.component1|component1(){}[0]
     final fun component2(): kotlin.collections/List<com.storyblok.cdn/BlockBreadcrumb> // com.storyblok.cdn/BlockMenu.component2|component2(){}[0]
     final fun component3(): kotlin.collections/List<com.storyblok.cdn/BlockAction> // com.storyblok.cdn/BlockMenu.component3|component3(){}[0]
-    final fun copy(kotlin/String = ..., kotlin.collections/List<com.storyblok.cdn/BlockBreadcrumb> = ..., kotlin.collections/List<com.storyblok.cdn/BlockAction> = ...): com.storyblok.cdn/BlockMenu // com.storyblok.cdn/BlockMenu.copy|copy(kotlin.String;kotlin.collections.List<com.storyblok.cdn.BlockBreadcrumb>;kotlin.collections.List<com.storyblok.cdn.BlockAction>){}[0]
+    final fun copy(kotlin/String = ..., kotlin.collections/List<com.storyblok.cdn/BlockBreadcrumb> = ..., kotlin.collections/List<com.storyblok.cdn/BlockAction> = ..., kotlinx.serialization.json/JsonObject? = ...): com.storyblok.cdn/BlockMenu // com.storyblok.cdn/BlockMenu.copy|copy(kotlin.String;kotlin.collections.List<com.storyblok.cdn.BlockBreadcrumb>;kotlin.collections.List<com.storyblok.cdn.BlockAction>;kotlinx.serialization.json.JsonObject?){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // com.storyblok.cdn/BlockMenu.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.storyblok.cdn/BlockMenu.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.storyblok.cdn/BlockMenu.toString|toString(){}[0]

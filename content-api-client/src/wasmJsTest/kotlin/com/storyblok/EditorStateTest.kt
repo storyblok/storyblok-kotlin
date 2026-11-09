@@ -27,6 +27,9 @@ class EditorStateTest {
 
     private fun receive(json: String) = state.receive(parse(json))
 
+    /** The selected block, with its menu as the author sees it: without the breadcrumb actions are sent with. */
+    private val selected get() = state.selectedBlock.value?.let { it.copy(menu = it.menu?.copy(target = null)) }
+
     private val enterEditmode = """{"action": "enterEditmode", "storyId": "42", "appVersion": "v2",
         "componentNames": {"page": "Page", "grid": "Grid", "teaser": "Teaser Card"}}"""
 
@@ -54,7 +57,7 @@ class EditorStateTest {
                 reveal = 1,
                 menu = BlockMenu("Teaser Card", breadcrumbs, BlockAction.entries),
             ),
-            state.selectedBlock.value,
+            selected,
         )
     }
 
@@ -63,7 +66,7 @@ class EditorStateTest {
         receive(enterEditmode)
         receive(editedTeaser.replace(""""action": "editedBlok"""", """"action": "enterComponent", "storyId": "42", "componentId": "u3""""))
 
-        assertEquals(BlockMenu("Teaser Card", breadcrumbs, BlockAction.entries), state.selectedBlock.value?.menu)
+        assertEquals(BlockMenu("Teaser Card", breadcrumbs, BlockAction.entries), selected?.menu)
     }
 
     @Test
@@ -112,7 +115,7 @@ class EditorStateTest {
                 "canAddBlocks": true, "canDeleteBlocks": true}"""
         )
 
-        assertEquals(BlockMenu("Page", listOf(BlockBreadcrumb("page", "page", "Page")), emptyList()), state.selectedBlock.value?.menu)
+        assertEquals(BlockMenu("Page", listOf(BlockBreadcrumb("page", "page", "Page")), emptyList()), selected?.menu)
     }
 
     @Test
@@ -206,6 +209,17 @@ class EditorStateTest {
     fun `an action the menu does not offer is not sent`() {
         receive(editedTeaser.replace(""""canDeleteBlocks": true""", """"canDeleteBlocks": false"""))
 
+        assertNull(state.action(BlockAction.Delete))
+    }
+
+    @Test
+    fun `a parent chosen from the menu has no actions until the editor describes it`() {
+        receive(enterEditmode)
+        receive(editedTeaser)
+
+        state.open(breadcrumbs[1], "", null)
+
+        // The teaser's breadcrumb would name the wrong block.
         assertNull(state.action(BlockAction.Delete))
     }
 

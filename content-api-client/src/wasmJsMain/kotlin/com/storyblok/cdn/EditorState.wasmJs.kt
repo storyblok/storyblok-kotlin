@@ -21,7 +21,8 @@ import kotlin.js.js
  */
 internal class EditorState(private val selection: EditorSelection = EditorSelection()) {
 
-    val context = EditorContext()
+    /** What the editor has said about itself so far, replaced as each message adds to it. */
+    private var context = EditorContext()
 
     val selectedBlock: MutableStateFlow<SelectedBlock?> get() = selection.selected
 
@@ -35,12 +36,12 @@ internal class EditorState(private val selection: EditorSelection = EditorSelect
         if (action == "input") {
             // Read for the story's id alone. Converting the story here as well would double the work
             // every keystroke costs, for content that is converted where it is decoded.
-            (event as StoryIdEvent).story?.id?.let { context.storyId = it.toLong().toString() }
+            (event as StoryIdEvent).story?.id?.let { context = context.copy(storyId = it.toLong().toString()) }
             selection.handle(event)
             return
         }
         val message = data.toJsonElement(resolveLevel = 1) as? JsonObject ?: return
-        context.update(message)
+        context = context.after(message)
         selection.handle(event)
         selectedBlock.value = selectedBlock.value?.let { selected ->
             context.menuOf(message, selected.uid)?.let { selected.copy(menu = it) } ?: selected
@@ -50,7 +51,7 @@ internal class EditorState(private val selection: EditorSelection = EditorSelect
 
     /** Selects [block], which a tap has just asked the editor to open, keeping its menu if it is selected already. */
     fun open(block: EditableBlock) {
-        context.storyId = block.id
+        context = context.copy(storyId = block.id)
         selection.opened(block.uid)
     }
 
@@ -61,7 +62,7 @@ internal class EditorState(private val selection: EditorSelection = EditorSelect
     fun action(action: BlockAction): BlockActionMessage? {
         val selected = selectedBlock.value ?: return null
         if (action !in selected.menu?.actions.orEmpty()) return null
-        return blockAction(action, context.actionTarget(selected.uid) ?: return null)
+        return blockAction(action, selected.menu?.target ?: return null)
     }
 
     /**
