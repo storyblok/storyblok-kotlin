@@ -2,10 +2,6 @@
 
 **0.8.0**
 
-- On the `wasmJs` target, the Visual Editor connection no longer uses the `@storyblok/preview-bridge` npm package. It
-  injected a stylesheet and elements into the page and handled every mouse movement, all to outline blocks that a
-  Compose canvas has no elements for. Messages are now accepted only from the editor's own origin, so another page that
-  frames the preview can no longer push content into it.
 - In Storyblok's Visual Editor, on the `wasmJs` target, tapping a block drawn with `Block()` now opens its form in the
   editor, as clicking a block does on a web page. The first tap on a block selects it rather than doing what the block
   does with a tap. The selected block is outlined, and is scrolled into view when the author picks it in the editor's
