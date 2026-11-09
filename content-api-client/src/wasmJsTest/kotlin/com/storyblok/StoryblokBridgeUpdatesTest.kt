@@ -16,6 +16,6 @@ class StoryblokBridgeUpdatesTest {
 
     @Test
     fun `a page that is not an editor preview connects to no editor`() {
-        assertSame(NoVisualEditor, StoryblokBridge(Json, resolveRelations = ""))
+        assertSame(NoVisualEditor, StoryblokBridge(Json, resolveRelations = "", fallbackLanguage = null))
     }
 }

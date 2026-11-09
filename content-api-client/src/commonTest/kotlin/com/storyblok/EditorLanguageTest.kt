@@ -1,6 +1,7 @@
 package com.storyblok
 
 import com.storyblok.cdn.EditorLanguage
+import com.storyblok.cdn.FallbackLanguage
 import com.storyblok.cdn.configureStoryblok
 import com.storyblok.cdn.editorLanguage
 import com.storyblok.cdn.fileCacheStorage
@@ -99,6 +100,23 @@ class EditorLanguageTest {
     @Test
     fun `requests keep the app's language outside the editor`() = runTest {
         assertEquals(listOf("en"), languagesRequested(editorLanguage = null, appLanguage = "en"))
+    }
+
+    @Test
+    fun `a configured client records its fallback language for the editor`() {
+        HttpClient(MockEngine { respondOk() }) {
+            configureStoryblok(Json, editorLanguage = null) {
+                accessToken = "mock-api-key"
+                fallbackLanguage = "en"
+            }
+        }.use { assertEquals("en", it.attributes.getOrNull(FallbackLanguage)) }
+    }
+
+    @Test
+    fun `a client without a fallback language records none`() {
+        HttpClient(MockEngine { respondOk() }) {
+            configureStoryblok(Json, editorLanguage = null) { accessToken = "mock-api-key" }
+        }.use { assertNull(it.attributes.getOrNull(FallbackLanguage)) }
     }
 
     /** The `language` parameters a story request carries from a client configured with these languages. */
