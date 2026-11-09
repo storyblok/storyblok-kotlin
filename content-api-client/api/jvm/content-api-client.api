@@ -3,6 +3,7 @@ public abstract interface annotation class com/storyblok/InternalAPI : java/lang
 
 public final class com/storyblok/cdn/NoVisualEditor : com/storyblok/cdn/StoryblokBridge {
 	public static final field INSTANCE Lcom/storyblok/cdn/NoVisualEditor;
+	public fun canOpen (Lcom/storyblok/cdn/schema/Component;)Z
 	public fun destroy ()V
 	public fun getSelectedBlock ()Lkotlinx/coroutines/flow/StateFlow;
 	public fun openBlock (Lcom/storyblok/cdn/schema/Component;)V
@@ -26,6 +27,7 @@ public final class com/storyblok/cdn/SelectedBlock {
 }
 
 public abstract interface class com/storyblok/cdn/StoryblokBridge {
+	public abstract fun canOpen (Lcom/storyblok/cdn/schema/Component;)Z
 	public abstract fun destroy ()V
 	public abstract fun getSelectedBlock ()Lkotlinx/coroutines/flow/StateFlow;
 	public abstract fun openBlock (Lcom/storyblok/cdn/schema/Component;)V

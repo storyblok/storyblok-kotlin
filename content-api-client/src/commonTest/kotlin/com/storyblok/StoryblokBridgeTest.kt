@@ -115,6 +115,8 @@ class StoryblokBridgeTest {
 
             override fun openBlock(block: Component) = Unit
 
+            override fun canOpen(block: Component) = false
+
             override val selectedBlock = MutableStateFlow<SelectedBlock?>(null)
 
             override fun destroy() = Unit
