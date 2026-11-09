@@ -187,7 +187,8 @@ public sealed class Api<T : Api.Config>(internal val config: () -> T) {
              *
              * Accepts any language code configured in the Storyblok space.
              *
-             * Note that the language code needs to be provided with underscores, even if it is defined with hyphens. E.g., es_co instead of es-co.
+             * Give the code exactly as the space defines it, hyphens included (`es-co`, not `es_co`): one the space does not
+             * define silently falls back to the default language.
              * */
             public var language: String? = null
             /**
