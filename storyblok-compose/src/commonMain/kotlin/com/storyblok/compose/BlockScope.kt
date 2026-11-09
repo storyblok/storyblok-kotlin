@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
+import com.storyblok.InternalAPI
 import com.storyblok.cdn.schema.Component
 import com.storyblok.cdn.schema.RichText
 import com.storyblok.compose.provider.Provider
@@ -66,8 +67,10 @@ public interface BlockScope {
      * once, so the author can scroll away from it.
      *
      * Blocks are keyed by `_uid` so that the list can find them, and so that each keeps its state when
-     * the author moves it. If two share one, or one has none, they are keyed by position instead and
-     * the list does not follow the selection.
+     * the author moves it. The keys cannot clash with your own items' keys. If two of [blocks] share a
+     * `_uid`, or one has none, they are keyed by position instead and the list does not follow the
+     * selection. The same block added twice to one list, through two calls, is a duplicate key, which
+     * a lazy list rejects.
      *
      * @param blocks The blocks to add, such as a page's body.
      * @param state The [LazyListState] the list was given, which it is scrolled with.
@@ -80,7 +83,7 @@ public interface BlockScope {
         itemContent: @Composable LazyItemScope.(block: Component) -> Unit = { Block(it) },
     ) {
         val keyed = blocks.none { it.uid.isEmpty() } && blocks.distinctBy { it.uid }.size == blocks.size
-        items(blocks, key = if (keyed) { block -> block.uid } else null) { block ->
+        items(blocks, key = if (keyed) { block -> blockKey(block.uid) } else null) { block ->
             if (keyed) FollowSelection(block, blocks, state)
             itemContent(block)
         }
@@ -99,11 +102,13 @@ public interface BlockScope {
 @JvmInline
 internal value class BlockScopeImpl internal constructor(val providers: Map<Any, Provider>) : BlockScope {
 
+    @OptIn(InternalAPI::class)
     @Composable
     override fun Block(content: Component, modifier: Modifier) {
         val provider = providers.getOrElse(content::class) { error("No block registered for ${content.component}") }
         // Ahead of the caller's modifier, so that a tap the editor holds back never reaches a clickable in it.
-        val editor = LocalVisualEditor.current
+        // Left off a block the editor cannot open, so that a tap on it opens the block around it.
+        val editor = LocalVisualEditor.current?.takeIf { it.bridge.canOpen(content) }
         provider.invoke(content, if (editor == null) modifier else Modifier.editable(content, editor).then(modifier))
     }
 

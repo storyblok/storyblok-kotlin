@@ -18,12 +18,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -96,6 +98,8 @@ class VisualEditorTest {
             if (block.uid in uneditable || current?.uid == block.uid) return
             selectedBlock.value = SelectedBlock(block.uid, reveal = current?.reveal ?: 0)
         }
+
+        override fun canOpen(block: Component) = block.uid !in uneditable
 
         override fun destroy() = Unit
     }
@@ -193,6 +197,33 @@ class VisualEditorTest {
 
         assertEquals(listOf("c1"), clicks)
         assertNull(editor.selectedBlock.value)
+    }
+
+    @Test
+    fun `a tap on a block the editor cannot open opens the block around it`() = runComposeUiTest {
+        // As a click on a web page opens the nearest element the editor marked.
+        val editor = Editor(uneditable = setOf("c1"))
+        setContent { Previewed(editor) { blocks.Block(section("s1", "c1")) } }
+
+        onNodeWithTag("c1").performClick()
+
+        assertEquals(listOf("s1"), editor.opened)
+    }
+
+    @Test
+    fun `a tap that spans an edit still opens the block`() = runComposeUiTest {
+        // Every edit decodes the content afresh, so the block arrives as a new instance mid-press.
+        val editor = Editor()
+        var card by mutableStateOf(card("c1"))
+        setContent { Previewed(editor) { blocks.Block(card) } }
+
+        onNodeWithTag("c1").performTouchInput { down(center) }
+        card = card("c1")
+        waitForIdle()
+        onNodeWithTag("c1").performTouchInput { up() }
+
+        assertEquals(listOf("c1"), editor.opened)
+        assertEquals(emptyList(), clicks)
     }
 
     @Test
@@ -396,6 +427,58 @@ class VisualEditorTest {
         waitForIdle()
 
         onNodeWithTag("c21").assertIsDisplayed()
+    }
+
+    @Test
+    fun `a block added at the top before it arrives is shown where it lands`() = runComposeUiTest {
+        // The order addedBlock usually comes in: the selection, then the content. The list's layout
+        // still had the old first item at the top when the new blocks were read.
+        val editor = Editor()
+        val state = LazyListState()
+        var cards by mutableStateOf(cards(20))
+        setContent { Previewed(editor) { List(state, cards) } }
+
+        editor.selectedBlock.value = SelectedBlock("new", reveal = 1)
+        waitForIdle()
+        cards = listOf(card("new", clickable = false)) + cards
+        waitForIdle()
+
+        onNodeWithTag("new").assertIsDisplayed()
+        assertEquals(0, state.firstVisibleItemIndex)
+    }
+
+    @Test
+    fun `a block added above the screen is scrolled to once`() = runComposeUiTest {
+        val editor = Editor()
+        val state = LazyListState(firstVisibleItemIndex = 10)
+        var cards by mutableStateOf(cards(20))
+        val passed = mutableListOf<Int>()
+        setContent {
+            Previewed(editor) { List(state, cards) }
+            LaunchedEffect(state) { snapshotFlow { state.firstVisibleItemIndex }.collect { passed += it } }
+        }
+
+        editor.selectedBlock.value = SelectedBlock("new", reveal = 1)
+        waitForIdle()
+        cards = cards.take(5) + card("new", clickable = false) + cards.drop(5)
+        waitForIdle()
+
+        onNodeWithTag("new").assertIsDisplayed()
+        // Straight there, rather than to the item above it first and then back down.
+        assertEquals(5, passed.min())
+    }
+
+    @Test
+    fun `blocks can share a list with items keyed by the same uid`() = runComposeUiTest {
+        setContent {
+            LazyColumn(Modifier.size(width = 200.dp, height = 250.dp)) {
+                item(key = "c1") { Box(Modifier.testTag("own").height(10.dp)) }
+                with(blocks) { blocks(listOf(card("c1", clickable = false)), LazyListState()) }
+            }
+        }
+
+        onNodeWithTag("own").assertExists()
+        onNodeWithTag("c1").assertIsDisplayed()
     }
 
     @Test

@@ -33,6 +33,7 @@ import com.storyblok.cdn.SelectedBlock
 import com.storyblok.cdn.StoryblokBridge
 import com.storyblok.cdn.schema.Component
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
@@ -122,6 +123,9 @@ internal fun Modifier.editable(block: Component, editor: VisualEditor): Modifier
         derivedStateOf { block.uid.isNotEmpty() && editor.selected.value?.uid == block.uid }
     }
     val requester = remember { BringIntoViewRequester() }
+    // Read through state rather than keyed on, so that every edit's new instance of the block neither
+    // restarts the tap detector, losing a press it spans, nor compares the whole block to the last one.
+    val current by rememberUpdatedState(block)
 
     // Read from snapshots rather than composition, so that a change of selection recomposes nothing:
     // only the block that gains it and the one that loses it redraw.
@@ -141,7 +145,7 @@ internal fun Modifier.editable(block: Component, editor: VisualEditor): Modifier
     }
 
     return this
-        .pointerInput(block, editor) { openOnTap(block, editor) }
+        .pointerInput(block.uid, editor) { openOnTap({ current }, editor) }
         .bringIntoViewRequester(requester)
         .drawWithContent {
             drawContent()
@@ -169,9 +173,10 @@ internal fun Modifier.editable(block: Component, editor: VisualEditor): Modifier
  * under the pointer is the last to record itself as [pressed][VisualEditor.pressed], and the only one
  * that acts — and a tap it holds back is consumed before a clickable inside can see it.
  */
-private suspend fun PointerInputScope.openOnTap(block: Component, editor: VisualEditor) = awaitEachGesture {
+private suspend fun PointerInputScope.openOnTap(block: () -> Component, editor: VisualEditor) = awaitEachGesture {
     val down = awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
-    editor.pressed = block
+    val pressed = block()
+    editor.pressed = pressed
 
     var moved = false
     val up: PointerInputChange
@@ -185,14 +190,16 @@ private suspend fun PointerInputScope.openOnTap(block: Component, editor: Visual
             break
         }
     }
-    if (moved || editor.pressed !== block) return@awaitEachGesture
+    if (moved || editor.pressed !== pressed) return@awaitEachGesture
 
-    val wasSelected = editor.bridge.selectedBlock.value?.uid == block.uid
-    editor.bridge.openBlock(block)
-    // Held back only if this tap is what selected the block. One the editor cannot open — it has no
-    // `_editable` — is never selected, and must not swallow every tap it is given.
+    // The block as it is now, which an edit during the press may have replaced.
+    val tapped = block()
+    val wasSelected = editor.bridge.selectedBlock.value?.uid == tapped.uid
+    editor.bridge.openBlock(tapped)
+    // Held back only if this tap is what selected the block. One the editor did not select must not
+    // swallow every tap it is given.
     val selection = editor.bridge.selectedBlock.value
-    if (wasSelected || selection?.uid != block.uid) return@awaitEachGesture
+    if (wasSelected || selection?.uid != tapped.uid) return@awaitEachGesture
     editor.shown = selection.reveal
     up.consume()
 }
@@ -217,34 +224,49 @@ internal fun FollowSelection(item: Component, blocks: List<Component>, state: La
     LaunchedEffect(editor, state, item.uid) {
         snapshotFlow {
             editor.selected.value?.let { selected ->
-                Triple(
-                    selected,
-                    current.map(Component::uid),
-                    state.layoutInfo.visibleItemsInfo.map { it.index to it.key },
-                )
+                Triple(selected, current.map(Component::uid), state.layoutInfo.visibleItemsInfo.map { it.index to it.key })
             }
         }
             .filterNotNull()
-            .collect { (selected, uids, visible) ->
-                val actor = visible.firstOrNull { (_, key) -> key in uids } ?: return@collect
-                if (actor.second != item.uid) return@collect
-
-                // Not found is not followed: the block may yet arrive, or be another blocks()'s in this list.
-                val target = uids.indexOfFirst { it == selected.uid || it in selected.ancestors }
-                if (target < 0) return@collect
-                // Where it is in the whole list, so that a block moved to another blocks() in it is
-                // followed even when it keeps its place within its group.
-                val index = actor.first - uids.indexOf(actor.second) + target
-                val followed = Followed(selected.reveal, index)
-                if (editor.followed[state] == followed) return@collect
-                editor.followed[state] = followed
-
-                if (visible.any { (visibleIndex, _) -> visibleIndex == index }) return@collect
-                // The selected block's own item is shown by this scroll, which its block bringing itself
-                // into view as it arrives would only cut short. A block nested in the item still does, to
-                // find its place in it.
-                if (uids[target] == selected.uid) editor.shown = selected.reveal
-                editor.scope.launch { state.animateScrollToItem(index) }
+            .collectLatest {
+                // What changed is read again a frame later rather than taken from the snapshot, which can
+                // see the new blocks with the layout from before they were measured: a block inserted
+                // above the item acting would put every index one out. A frame resumes its waiters before
+                // it recomposes, so the blocks and the layout read then are from the same frame.
+                withFrameNanos {}
+                follow(editor, item, current, state)
             }
     }
 }
+
+private fun follow(editor: VisualEditor, item: Component, blocks: List<Component>, state: LazyListState) {
+    val selected = editor.selected.value ?: return
+    val keys = blocks.map { blockKey(it.uid) }
+    val visible = state.layoutInfo.visibleItemsInfo.map { it.index to it.key }
+    val actor = visible.firstOrNull { (_, key) -> key in keys } ?: return
+    if (actor.second != blockKey(item.uid)) return
+
+    // Not found is not followed: the block may yet arrive, or be another blocks()'s in this list.
+    val target = blocks.indexOfFirst { it.uid == selected.uid || it.uid in selected.ancestors }
+    if (target < 0) return
+    // Where it is in the whole list, so that a block moved to another blocks() in it is followed even
+    // when it keeps its place within its group.
+    val index = actor.first - keys.indexOf(actor.second) + target
+    if (index < 0) return
+    val followed = Followed(selected.reveal, index)
+    if (editor.followed[state] == followed) return
+    editor.followed[state] = followed
+
+    if (visible.any { (visibleIndex, _) -> visibleIndex == index }) return
+    // The selected block's own item is shown by this scroll, which its block bringing itself into view
+    // as it arrives would only cut short. A block nested in the item still does, to find its place in it.
+    if (blocks[target].uid == selected.uid) editor.shown = selected.reveal
+    editor.scope.launch { state.animateScrollToItem(index) }
+}
+
+/**
+ * The lazy list key of the block with [uid], set apart from the keys of the list's other items.
+ *
+ * A string, as a key has to be for Android to save the item's state.
+ */
+internal fun blockKey(uid: String): String = "storyblok:block:$uid"
