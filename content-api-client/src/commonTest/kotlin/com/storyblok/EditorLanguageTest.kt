@@ -1,5 +1,6 @@
 package com.storyblok
 
+import com.storyblok.cdn.EditorLanguage
 import com.storyblok.cdn.configureStoryblok
 import com.storyblok.cdn.editorLanguage
 import com.storyblok.cdn.fileCacheStorage
@@ -33,31 +34,31 @@ class EditorLanguageTest {
     @Test
     fun `the language in a preview URL is the editor's language`() {
         val query = "?_storyblok=580906535&_storyblok_c=page&_storyblok_lang=de&_storyblok_tk[space_id]=313862"
-        assertEquals("de", editorLanguage(query))
+        assertEquals("de", editorLanguage(query).code)
     }
 
     @Test
     fun `a query string without its question mark is read the same`() {
-        assertEquals("de", editorLanguage("_storyblok_lang=de"))
+        assertEquals("de", editorLanguage("_storyblok_lang=de").code)
     }
 
     @Test
-    fun `the default language is no editor language`() {
-        assertNull(editorLanguage("?_storyblok_lang=default"))
-        assertNull(editorLanguage("?_storyblok_lang=Default"))
+    fun `the editor names its default language default`() {
+        assertNull(editorLanguage("?_storyblok_lang=default").code)
+        assertNull(editorLanguage("?_storyblok_lang=Default").code)
     }
 
     @Test
-    fun `a preview URL without a language has no editor language`() {
-        assertNull(editorLanguage(""))
-        assertNull(editorLanguage("?_storyblok=580906535"))
-        assertNull(editorLanguage("?_storyblok_lang="))
+    fun `a preview URL without a language shows the default language`() {
+        assertNull(editorLanguage("").code)
+        assertNull(editorLanguage("?_storyblok=580906535").code)
+        assertNull(editorLanguage("?_storyblok_lang=").code)
     }
 
     @Test
-    fun `a hyphenated language code is read with an underscore`() {
-        assertEquals("es_co", editorLanguage("?_storyblok_lang=es-co"))
-        assertEquals("pt_br", editorLanguage("?_storyblok_lang=pt%2Dbr"))
+    fun `a hyphenated language code is read as the space configures it`() {
+        assertEquals("es-co", editorLanguage("?_storyblok_lang=es-co").code)
+        assertEquals("pt-br", editorLanguage("?_storyblok_lang=pt%2Dbr").code)
     }
 
     @Test
@@ -82,21 +83,26 @@ class EditorLanguageTest {
 
     @Test
     fun `requests ask for the editor's language in place of the app's`() = runTest {
-        assertEquals(listOf("de"), languagesRequested(editorLanguage = "de", appLanguage = "en"))
+        assertEquals(listOf("de"), languagesRequested(EditorLanguage("de"), appLanguage = "en"))
     }
 
     @Test
     fun `requests ask for the editor's language when the app sets none`() = runTest {
-        assertEquals(listOf("de"), languagesRequested(editorLanguage = "de", appLanguage = null))
+        assertEquals(listOf("de"), languagesRequested(EditorLanguage("de"), appLanguage = null))
     }
 
     @Test
-    fun `requests keep the app's language without an editor language`() = runTest {
+    fun `requests ask for no language in an editor showing the default language`() = runTest {
+        assertNull(languagesRequested(EditorLanguage(null), appLanguage = "en"))
+    }
+
+    @Test
+    fun `requests keep the app's language outside the editor`() = runTest {
         assertEquals(listOf("en"), languagesRequested(editorLanguage = null, appLanguage = "en"))
     }
 
     /** The `language` parameters a story request carries from a client configured with these languages. */
-    private suspend fun languagesRequested(editorLanguage: String?, appLanguage: String?): List<String>? {
+    private suspend fun languagesRequested(editorLanguage: EditorLanguage?, appLanguage: String?): List<String>? {
         var languages: List<String>? = null
         HttpClient(MockEngine { request ->
             languages = request.url.parameters.getAll("language")
