@@ -21,9 +21,7 @@ internal actual val contentVersion: Version
  */
 internal actual val initialStoryKey: StoryKey =
     window.location.pathname.trim('/').split('/').let { segments ->
-        // `default` names the default language, which has no path segment.
         val language = URLSearchParams(window.location.search.toJsString()).get("_storyblok_lang")
-            ?.takeUnless { it == "default" }
         val slug = (if (segments.first() == language) segments.drop(1) else segments).joinToString("/")
         if (slug.isEmpty()) HomeKey else StoryKey(slug = slug)
     }
