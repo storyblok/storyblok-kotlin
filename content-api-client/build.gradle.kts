@@ -68,7 +68,12 @@ kotlin {
     tvosArm64()
     tvosSimulatorArm64()
     wasmJs {
-        nodejs()
+        nodejs {
+            testTask {
+                // It reads the URL of a page in a frame, which only the browser has.
+                filter.excludeTestsMatching("com.storyblok.EditorPreviewUrlTest")
+            }
+        }
         browser {
             testTask {
                 useKarma { useChromeHeadless() }

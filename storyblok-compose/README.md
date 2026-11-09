@@ -284,7 +284,7 @@ The `story()` functions also accept a `resolveLevel` parameter to control how de
 
 When a [Compose Multiplatform for Web](https://lp.jetbrains.com/cmp-for-web/) (`wasmJs`) build is previewed in Storyblok's
 [Visual Editor](https://www.storyblok.com/docs/concepts/visual-editor), every block drawn with `Block()` becomes part of the
-editing experience, with nothing to configure:
+editing experience:
 
 - **Tapping a block opens its form in the editor.** A tap on a nested block opens the innermost one under it. The first tap
   on a block only selects it, so tapping a card that navigates opens the card instead of following it. A second tap does
@@ -292,11 +292,27 @@ editing experience, with nothing to configure:
 - **The selected block is outlined**, and when the author picks one in the editor's form, or adds, moves or duplicates one,
   it is scrolled into view.
 - **The preview follows the editor's language.** Content is requested in the language the author picks in the editor, in
-  place of the `language` passed to `Storyblok(...)`, so field-level translations show as they are edited. The space's
-  default language keeps the app's own.
+  place of the `language` passed to `Storyblok(...)`, so field-level translations show as they are edited. In the space's
+  default language no language is requested, whatever the app's own is.
 
 For this to work, a block's composable must apply the `Modifier` it is given to its outermost layout, as in the examples
 above. Outside the editor, and on every other target, blocks behave exactly as before.
+
+### Previewing other languages
+
+The editor previews a story under its path, and in any language but the default one it puts the language in front of
+that path: switching to German loads `/de/articles/my-article?_storyblok_lang=de&…`. An app that routes by path needs
+two things for that to work:
+
+- **Load the page's files from your app's root**, not relative to the current path. A relative script or resource URL
+  resolves under `/de/articles/` there, and the page stays blank. A `<base href="/">` in the page's `<head>` fixes it,
+  with your app's root in place of `/` when it is hosted under a sub-path.
+- **Take the language segment off the path** before looking the story up by slug. The language is the
+  `_storyblok_lang` query parameter, which in the default language is `default` and never appears in the path.
+
+Once a language is requested, a story's `fullSlug` starts with it too (`de/articles/my-article`), so an app that
+navigates by `fullSlug` within the preview meets the same prefix. The
+[JetNewsCMP sample](../samples/JetNewsCMP) does both.
 
 ### Blocks in a lazy list
 

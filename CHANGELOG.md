@@ -8,8 +8,8 @@
   form, or adds, moves or duplicates it. A block's composable must apply the `Modifier` it is given for this to work.
 - In Storyblok's Visual Editor, on the `wasmJs` target, the Content Delivery API client now requests content in the
   language the author picks in the editor, in place of the configured `language`. Field-level translations can now be
-  previewed. The space's default language, a page outside the editor and every other target keep the configured
-  `language`.
+  previewed. In the space's default language no language is requested. A page outside the editor and every other
+  target keep the configured `language`.
 - Added `BlockScope.blocks(blocks, state)`, which adds blocks to a `LazyColumn` or `LazyRow` keyed by their `_uid`.
   In the Visual Editor it also scrolls the list to a selected block that is off screen, which a lazy list cannot do by
   itself. `storyblok-compose` now exposes Compose Foundation as an `api` dependency.
