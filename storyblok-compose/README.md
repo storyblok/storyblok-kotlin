@@ -296,7 +296,9 @@ editing experience:
   default language no language is requested, whatever the app's own is.
 
 For this to work, a block's composable must apply the `Modifier` it is given to its outermost layout, as in the examples
-above. Outside the editor, and on every other target, blocks behave exactly as before.
+above. A block that ignores it gets no outline, and a tap on it opens the block around it instead. One that emits
+several layouts side by side, with no single outermost one, has to wrap them in one, such as a `Column(modifier)`, to
+take it. Outside the editor, and on every other target, blocks behave exactly as before.
 
 ### Previewing other languages
 
@@ -335,8 +337,9 @@ This works for a block nested anywhere inside an item, as long as the editor say
 when the author picks a block in the form, but not when they add, move or duplicate one inside another. The list
 follows each selection once, while at least one of the blocks is on screen, so the author can still scroll away.
 
-`blocks()` keys each item by the block's `_uid`, so a block keeps its state when the author moves it. Outside the
-editor it simply adds the blocks.
+`blocks()` keys each item by the block's `_uid`, so a block keeps its state when the author moves it. The keys can't
+clash with your own items' keys, but the same block can't be added to one list twice. Outside the editor it simply
+adds the blocks.
 
 ## Configuration options
 
