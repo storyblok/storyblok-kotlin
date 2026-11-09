@@ -15,6 +15,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ServerResponseException
+import io.ktor.client.plugins.api.createClientPlugin
 import io.ktor.client.plugins.cache.HttpCache
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.HttpRequestBuilder
@@ -25,6 +26,7 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.util.AttributeKey
 import io.ktor.util.logging.KtorSimpleLogger
 import io.ktor.util.logging.Logger
 import io.ktor.util.reflect.TypeInfo
@@ -75,6 +77,12 @@ private val JsonObject.rels: Map<String, JsonObject>
     get() = this["rels"]?.jsonArray.orEmpty().map { it.jsonObject }.associateBy { it["uuid"]!!.jsonPrimitive.content }
 
 /**
+ * The `fallbackLanguage` an [HttpClient] set up by [configureStoryblok] asks for, kept in its
+ * attributes so that the client's [StoryblokBridge] can pass it on to the Visual Editor.
+ */
+internal val FallbackLanguage: AttributeKey<String> = AttributeKey("StoryblokFallbackLanguage")
+
+/**
  * Configures an [HttpClient] for the Content Delivery API.
  *
  * @param editorLanguage The language the Visual Editor previewing the page shows, which every request
@@ -86,6 +94,7 @@ internal fun HttpClientConfig<*>.configureStoryblok(
     editorLanguage: EditorLanguage? = editorLanguage(),
     apiBuilder: Api.Config.Content.() -> Unit,
 ) {
+    var configuredFallbackLanguage: String? = null
     install(ContentNegotiation) { json(json) }
     install(Storyblok(Api.CDN)) {
         apiBuilder()
@@ -94,7 +103,12 @@ internal fun HttpClientConfig<*>.configureStoryblok(
         // includes the default language: the editor's live updates carry the language it shows, so a
         // preview fetched in another would change language on the first keystroke.
         editorLanguage?.let { language = it.code }
+        configuredFallbackLanguage = fallbackLanguage
     }
+    // Installed after the Storyblok plugin, whose configuration has run by the time this one is.
+    install(createClientPlugin("StoryblokFallbackLanguage") {
+        configuredFallbackLanguage?.let { client.attributes.put(FallbackLanguage, it) }
+    })
     install(HttpCache) {
         httpCacheStorage(PUBLIC_CACHE_NAME)?.let { publicStorage(it) }
         httpCacheStorage(PRIVATE_CACHE_NAME)?.let { privateStorage(it) }
@@ -179,7 +193,7 @@ public class StoryblokClientImpl internal constructor(
          *
          * Public so that the Compose SDK can tell the editor which block was tapped.
          */
-        public val bridge: StoryblokBridge = StoryblokBridge(json, resolveRelations)
+        public val bridge: StoryblokBridge = StoryblokBridge(json, resolveRelations, http.attributes.getOrNull(FallbackLanguage))
 ) : StoryblokClient {
 
     public constructor(

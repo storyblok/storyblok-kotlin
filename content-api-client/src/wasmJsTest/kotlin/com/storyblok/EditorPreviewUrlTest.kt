@@ -1,6 +1,9 @@
+@file:OptIn(ExperimentalWasmJsInterop::class)
+
 package com.storyblok
 
 import com.storyblok.cdn.EditorLanguage
+import com.storyblok.cdn.StoryblokClientImpl
 import com.storyblok.cdn.configureStoryblok
 import com.storyblok.cdn.editorLanguage
 import com.storyblok.cdn.fileCacheStorage
@@ -11,6 +14,7 @@ import io.ktor.client.engine.mock.respondOk
 import io.ktor.client.request.get
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
+import kotlin.js.ExperimentalWasmJsInterop
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -69,6 +73,23 @@ class EditorPreviewUrlTest {
         assertEquals(listOf("de"), languages)
     }
 
+    @Test
+    fun `a client in an editor preview sends the editor its fallback language`() {
+        val sent = withUrl(PREVIEW + "&_storyblok_lang=de") {
+            capturingParentMessages {
+                StoryblokClientImpl(
+                    apiBuilder = {
+                        accessToken = "mock-api-key"
+                        fallbackLanguage = "en"
+                    },
+                    serializersModuleBuilder = {},
+                    jsonBuilder = {},
+                ).close()
+            }
+        }
+        assertEquals(listOf("""{"action":"initialized","config":{"resolveRelations":null,"fallbackLang":"en"}}"""), sent)
+    }
+
     /** Runs [block] with the page's query string set to [query], restoring the URL after. */
     private fun <T> withUrl(query: String, block: () -> T): T {
         // A top-level window is its own parent.
@@ -86,3 +107,33 @@ class EditorPreviewUrlTest {
         const val PREVIEW = "?_storyblok_tk[space_id]=313862"
     }
 }
+
+/**
+ * The messages posted to the parent frame while [block] runs, as JSON, in place of being sent.
+ *
+ * The browser's test runner frames tests in a page of its own origin, so its `postMessage` can be
+ * replaced for the duration.
+ */
+private fun capturingParentMessages(block: () -> Unit): List<String> {
+    val captured = captureParentMessages()
+    try {
+        block()
+    } finally {
+        restoreParentMessages(captured)
+    }
+    return captured.messages().split('\n').filter { it.isNotEmpty() }
+}
+
+private external interface CapturedMessages : JsAny {
+    fun messages(): String
+}
+
+private fun captureParentMessages(): CapturedMessages = js(
+    """(() => {
+        const parent = window.parent, post = parent.postMessage, sent = [];
+        parent.postMessage = (message) => { sent.push(JSON.stringify(message)); };
+        return { post, messages: () => sent.join("\n") };
+    })()"""
+)
+
+private fun restoreParentMessages(captured: CapturedMessages): Unit = js("window.parent.postMessage = captured.post")
