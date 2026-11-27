@@ -24,6 +24,15 @@
 
 [Storyblok](https://www.storyblok.com) is a headless content management system (CMS) that empowers developers and content creators. It provides a visual editor for content teams while giving developers the flexibility to build with their preferred tech stack and deliver content through APIs to any platform or device.
 
+## ✅ Requirements
+
+- **Kotlin** 2.3 or later
+- **Android** 11 (API level 30) or later, with `compileSdk` 36 or later
+- **iOS** 17 or later
+- **JVM**: Java 17 or later
+
+We test Android and iOS by running the [JetNews samples](#-samples), and every target, including JS, Wasm and the other Kotlin/Native targets, with each module's test suite in CI. Kotlin/Native builds for iOS 14 and later by default, but we don't test versions below iOS 17.
+
 ## 📦 Modules
 
 This monorepo consists of the following modules:

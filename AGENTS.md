@@ -35,6 +35,10 @@ Targets differ per module. Check `build.gradle.kts` before using a platform API 
 - `storyblok-compose`, `storyblok-material3`: JVM, Android, JS, wasmJs, `iosArm64`,
   `iosSimulatorArm64`, `macosArm64`.
 
+The README's Requirements section lists the minimum versions we test (Android `minSdk`,
+`minCompileSdk`, iOS, Java), and the docs site's `/docs/libraries/kotlin/*` pages repeat it.
+Update both when you change `android-minSdk`, `android-compileSdk`, `jvmTarget` or the CI JDK.
+
 Platform code uses `expect`/`actual` across `jvmAndAndroidMain`, `nativeMain`, `jsMain` and
 `wasmJsMain` (a custom hierarchy group in each build file).
 
